@@ -14,7 +14,8 @@ Thank you for your interest in contributing. This document describes the convent
 
 - **All identifiers are written in English**: functions, variables, classes, files, routes.
 - **Product prose is written in Spanish**: user-facing strings, error messages shown to operators, and domain documentation. The platform operates in Spanish-speaking collection centers.
-- **Contributor-facing prose is written in English**: commit messages, pull request text, and repository documentation (this file, the README, security policy).
+- **Contributor-facing prose is written in English**: commit messages, pull request text, and all repository documentation (this file, the README, the security policy, and everything under `docs/`).
+- **Pull requests are bilingual**: the title is written in English and the body carries the same content twice, an `## English` section first and an `## Español` section after it. The Spanish section is not an abridged summary of the English one.
 
 ## Workflow
 

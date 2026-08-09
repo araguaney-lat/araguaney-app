@@ -111,6 +111,11 @@ al bloque, porque la etiqueta física ya puede estar pegada.
 - **Identificadores en inglés** (funciones, variables, clases, archivos, rutas).
   **Prosa de producto en español** (textos de interfaz, mensajes de error al operador).
   **Prosa para contribuidores en inglés** (commits, PR, README/CONTRIBUTING/SECURITY).
+- **Toda la documentación del repositorio va en inglés**, incluido todo `docs/`.
+  Esta regla difiere a propósito del repositorio del backend (donde el roadmap y el
+  razonamiento de dominio quedaron en español): aquí la audiencia primaria de `docs/`
+  es quien evalúa, compila o contribuye desde fuera. La única excepción es este
+  archivo, que mantiene el español por consistencia con su par del backend.
 - Nombres de tests en inglés; la frase explicativa va en el docstring o el mensaje del
   `assert`.
 - Archivos chicos y enfocados; feature-first, no por tipo.
