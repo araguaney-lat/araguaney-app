@@ -1,0 +1,31 @@
+# Generación del cliente de API desde el contrato vendoreado.
+#
+# El código de salida NO se edita a mano: para adoptar capacidades nuevas del
+# backend se actualiza api/openapi.json en su propio commit y se regenera con
+#   dart run swagger_parser
+# El CI verifica que lo commiteado corresponda al snapshot commiteado.
+
+swagger_parser:
+  schema_path: api/openapi.json
+  output_directory: lib/core/api/generated
+  language: dart
+  json_serializer: json_serializable
+  client_postfix: Api
+  put_clients_in_folder: true
+  put_in_folder: false
+  enums_to_json: true
+  unknown_enum_value: true
+  squash_clients: false
+  prefer_schema_source: true
+  replacement_rules: []
+
+  # El snapshot se conserva completo y fiel a lo que publica el backend, pero
+  # solo se genera cliente para la superficie que esta aplicación consume: /v1.
+  # Fuera quedan el sondeo de salud, el webhook de terceros y las páginas
+  # públicas por código, que sirven HTML o PNG a un navegador y no a un cliente
+  # tipado. Además, el backend expone `/health/jobs` con GET y HEAD bajo un
+  # mismo operationId, cosa que la especificación OpenAPI no permite y que hace
+  # colisionar dos métodos generados; se reportó al backend y no bloquea a la
+  # aplicación porque ese endpoint nunca se llama desde aquí.
+  include_paths:
+    - /v1/**

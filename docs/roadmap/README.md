@@ -11,14 +11,14 @@ it contains.
 
 ```mermaid
 pie title Tasks completed (94 tasks)
-    "Done" : 10
-    "Pending" : 84
+    "Done" : 18
+    "Pending" : 76
 ```
 
 | Phase | Name | Done | Pending | Progress |
 |-------|------|-----:|--------:|----------|
 | 0 | [Repository bootstrap and application scaffold](phase-00-bootstrap.md) | 10 | 0 | ✅ 100% |
-| 1 | [API contract and generated client](phase-01-api-contract-client.md) | 0 | 8 | ⬜ 0% |
+| 1 | [API contract and generated client](phase-01-api-contract-client.md) | 8 | 0 | ✅ 100% |
 | 2 | [Authentication and session](phase-02-auth-session.md) | 0 | 9 | ⬜ 0% |
 | 3 | [Local cache and read operations](phase-03-local-cache-read.md) | 0 | 9 | ⬜ 0% |
 | 4 | [QR scanning](phase-04-qr-scanning.md) | 0 | 6 | ⬜ 0% |
@@ -28,7 +28,7 @@ pie title Tasks completed (94 tasks)
 | 8 | [Android release and distribution](phase-08-android-release.md) | 0 | 9 | ⬜ 0% |
 | 9 | [iOS enablement](phase-09-ios-enablement.md) | 0 | 6 | ⬜ 0% |
 | 10 | [Operational parity backlog](phase-10-operational-parity.md) | 0 | 8 | ⬜ 0% |
-| **Total** | | **10** | **84** | **🟡 11%** |
+| **Total** | | **18** | **76** | **🟡 19%** |
 
 ## Dependencies worth naming
 

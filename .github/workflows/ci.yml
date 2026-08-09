@@ -35,3 +35,35 @@ jobs:
 
       - name: Run tests
         run: flutter test
+
+  api-client:
+    name: Generated client matches the contract snapshot
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      # Regenera desde el snapshot commiteado y compara. Falla si alguien editó
+      # el cliente a mano o actualizó api/openapi.json sin regenerar: las dos
+      # cosas rompen la promesa de que el cliente es exactamente el contrato.
+      - name: Regenerate the API client
+        run: |
+          dart run swagger_parser
+          dart run build_runner build --delete-conflicting-outputs
+          dart format lib/core/api/generated
+
+      - name: Fail if the committed client differs
+        run: |
+          if ! git diff --quiet -- api/openapi.json lib/core/api/generated; then
+            echo "El cliente generado no corresponde al snapshot commiteado."
+            echo "Regenera con: dart run swagger_parser && dart run build_runner build --delete-conflicting-outputs && dart format lib/core/api/generated"
+            git diff --stat -- api/openapi.json lib/core/api/generated
+            exit 1
+          fi

@@ -1,0 +1,11 @@
+# El cliente de esta carpeta se genera desde api/openapi.json y no se edita a
+# mano, así que las reglas de estilo del proyecto no le aplican: no hay a quién
+# pedirle que las cumpla. Los errores reales del analizador sí siguen activos, y
+# es lo que importa: si una regeneración produjera código que no compila,
+# queremos enterarnos aquí y no en el primer build.
+analyzer:
+  errors:
+    unnecessary_cast: ignore
+
+linter:
+  rules: {}
