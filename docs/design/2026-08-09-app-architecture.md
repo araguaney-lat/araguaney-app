@@ -62,9 +62,13 @@ api/
   openapi.json # vendored snapshot of the backend contract
 ```
 
-- State management with **Riverpod** (codegen): testable and without the ceremony of
+- State management with **Riverpod**: testable and without the ceremony of
   heavier alternatives. Bloc with strict hexagonal architecture was evaluated and
   discarded: for the team size, the boilerplate costs more than it protects.
+  Providers are hand-written (`Notifier` classes) on the stable 2.6 line for now;
+  the migration to Riverpod 3.x and its code generation is deferred until
+  `riverpod`/`riverpod_generator` are compatible with the `flutter_test` version
+  pins of the current stable Flutter SDK.
 - Language conventions identical to the backend: identifiers in English, product
   prose in Spanish, contributor-facing prose in English.
 

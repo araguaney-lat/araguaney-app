@@ -68,7 +68,7 @@ sobre la API `/v1` del backend:
 | Tema | Decisión |
 |---|---|
 | Estructura | Feature-first: `lib/features/<feature>/{data,domain,ui}` + `lib/core/` |
-| Estado | Riverpod (con codegen) |
+| Estado | Riverpod, línea 2.6 con providers manuales (`Notifier`). La migración a 3.x + codegen está pendiente de que `riverpod`/`riverpod_generator` sean compatibles con los pins de `flutter_test` del Flutter stable vigente |
 | HTTP | `dio` + cliente Dart **generado** del snapshot OpenAPI vendoreado en `api/openapi.json` |
 | DB local | Drift (SQLite tipado): cache de lectura + cola de captura offline |
 | Auth | JWT del backend; refresh token en Keychain/Keystore (`flutter_secure_storage`), access token solo en memoria; interceptor que rota en 401 |

@@ -1,0 +1,36 @@
+# Reglas de análisis del proyecto. Parten del set recomendado por Flutter y
+# endurecen el sistema de tipos: en un cliente que sincroniza capturas offline,
+# un cast implícito que falla en runtime es una captura que no llega.
+
+include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  language:
+    strict-casts: true
+    strict-inference: true
+    strict-raw-types: true
+  errors:
+    # Un TODO no es un error, pero no debe perderse en el ruido.
+    todo: info
+  exclude:
+    - "**/*.g.dart"
+    - "**/*.drift.dart"
+    - "lib/core/i18n/generated/**"
+
+linter:
+  rules:
+    - always_declare_return_types
+    - avoid_dynamic_calls
+    - avoid_slow_async_io
+    - cancel_subscriptions
+    - close_sinks
+    - directives_ordering
+    - only_throw_errors
+    - prefer_final_in_for_each
+    - prefer_final_locals
+    - prefer_single_quotes
+    - require_trailing_commas
+    - test_types_in_equals
+    - throw_in_finally
+    - unawaited_futures
+    - unnecessary_statements
