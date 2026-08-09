@@ -25,14 +25,14 @@
 
 | # | Task | Description | Complexity | Status |
 |---|------|-------------|------------|--------|
-| 1 | Vendor the OpenAPI snapshot | Commit `api/openapi.json` from the backend; document the refresh procedure (own commit, reviewable diff). | 🟠 Medium | ⬜ Pending |
-| 2 | Client generation | Wire the OpenAPI-to-Dart generator (`dio` dialect) into `lib/core/api/generated/`; generated code excluded from analysis, never hand-edited. | 🔴 High | ⬜ Pending |
-| 3 | Regeneration check in CI | CI fails if the committed generated client does not match the committed snapshot. | 🟠 Medium | ⬜ Pending |
-| 4 | Dio base configuration | Base URL from `AppConfig`, timeouts, JSON handling, user-agent with app version. | 🟠 Medium | ⬜ Pending |
-| 5 | Typed failures | Map the backend error envelope (`code`, `message`, `field`) to sealed failure types; generic Spanish messages for operators, detail preserved for diagnostics. | 🔴 High | ⬜ Pending |
-| 6 | Client version gate | Call `GET /v1/client/version` on startup; below minimum → blocking update screen. | 🟠 Medium | ⬜ Pending |
-| 7 | Tests | Error mapping and version gate against a mocked HTTP layer. | 🟠 Medium | ⬜ Pending |
-| 8 | Roadmap update | Mark tasks and update totals. | 🟢 Low | ⬜ Pending |
+| 1 | Vendor the OpenAPI snapshot | Commit `api/openapi.json` from the backend; document the refresh procedure (own commit, reviewable diff). | 🟠 Medium | ✅ Done |
+| 2 | Client generation | Wire the OpenAPI-to-Dart generator (`dio` dialect) into `lib/core/api/generated/`; generated code excluded from analysis, never hand-edited. | 🔴 High | ✅ Done |
+| 3 | Regeneration check in CI | CI fails if the committed generated client does not match the committed snapshot. | 🟠 Medium | ✅ Done |
+| 4 | Dio base configuration | Base URL from `AppConfig`, timeouts, JSON handling, user-agent with app version. | 🟠 Medium | ✅ Done |
+| 5 | Typed failures | Map the backend error envelope (`code`, `message`, `field`) to sealed failure types; generic Spanish messages for operators, detail preserved for diagnostics. | 🔴 High | ✅ Done |
+| 6 | Client version gate | Call `GET /v1/client/version` on startup; below minimum → blocking update screen. | 🟠 Medium | ✅ Done |
+| 7 | Tests | Error mapping and version gate against a mocked HTTP layer. | 🟠 Medium | ✅ Done |
+| 8 | Roadmap update | Mark tasks and update totals. | 🟢 Low | ✅ Done |
 
 ---
 
