@@ -6,7 +6,8 @@ plugins {
 
 android {
     namespace = "lat.araguaney.araguaney_app"
-    compileSdk = flutter.compileSdkVersion
+    // flutter_secure_storage 11 exige compilar contra el SDK 37 de Android.
+    compileSdk = 37
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
@@ -15,7 +16,6 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId = "lat.araguaney.araguaney_app"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
