@@ -1,0 +1,17 @@
+# Secrets and per-environment configuration — never versioned
+google-services.json
+GoogleService-Info.plist
+*.keystore
+*.jks
+key.properties
+.env
+.env.*
+
+# OS
+.DS_Store
+
+# Flutter/Dart (expanded when the Flutter project is scaffolded)
+.dart_tool/
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
