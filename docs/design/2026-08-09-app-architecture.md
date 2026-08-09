@@ -1,54 +1,55 @@
-# Diseño de arquitectura — Araguaney App
+# Architecture design — Araguaney App
 
-**Fecha:** 2026-08-09
-**Estado:** aprobado
-**Alcance:** decisiones de arquitectura del cliente móvil previas a la primera línea de código.
+**Date:** 2026-08-09
+**Status:** approved
+**Scope:** architecture decisions for the mobile client, prior to the first line of code.
 
-Este documento registra qué se decidió y por qué, incluidas las alternativas que se
-evaluaron y se descartaron. Las reglas de dominio citadas (frontera offline, contrato
-aditivo, controles de riesgo) se originan en el backend y están documentadas en el
-repositorio [`araguaney-lat/araguaney`](https://github.com/araguaney-lat/araguaney);
-aquí se referencian como restricciones que este cliente hereda, no como decisiones
-propias.
+This document records what was decided and why, including the alternatives that were
+evaluated and discarded. The domain rules cited here (the offline boundary, the
+additive API contract, the risk controls) originate in the backend and are documented
+in the [`araguaney-lat/araguaney`](https://github.com/araguaney-lat/araguaney)
+repository; they are referenced here as constraints this client inherits, not as
+decisions of its own.
 
 ---
 
-## 1. Premisas
+## 1. Premises
 
-1. **La aplicación es una capa fina.** Toda regla de negocio vive en el backend y se
-   aplica allá. El cliente captura, escanea, consulta y sincroniza. Si una feature
-   exige lógica en el cliente, la primera pregunta es si al backend le falta un
-   endpoint.
-2. **El contrato es `/v1` solo-aditivo.** Un binario instalado hace meses debe seguir
-   funcionando. El backend publica la versión mínima soportada
-   (`GET /v1/client/version`) para que una instalación vieja pida actualización en
-   lugar de fallar en silencio.
-3. **El repositorio es público** y cualquier organización puede compilar su propia
-   versión. Eso condiciona licencia, gestión de configuración (nada de proyectos de
-   infraestructura propios en el repo) y la relación con servicios de terceros.
-4. **El valor diferencial del móvil** sobre la web responsive existente es concreto:
-   cámara nativa para escaneo QR continuo, captura sin conexión en entornos de baja
-   cobertura y notificaciones push de eventos operativos. La paridad con el resto del
-   panel web es objetivo de largo plazo, no criterio de la primera versión.
+1. **The application is a thin layer.** Every business rule lives in the backend and
+   is enforced there. The client captures, scans, queries, and synchronizes. If a
+   feature seems to require logic in the client, the first question is whether the
+   backend is missing an endpoint.
+2. **The contract is `/v1`, additive-only.** A binary installed months ago must keep
+   working. The backend publishes the minimum supported client version
+   (`GET /v1/client/version`) so that an outdated installation prompts for an update
+   instead of failing silently.
+3. **The repository is public** and any organization can build its own version. This
+   conditions the license, configuration management (no first-party infrastructure
+   projects in the repository), and the relationship with third-party services.
+4. **The mobile client's differential value** over the existing responsive web
+   application is concrete: a native camera for continuous QR scanning, offline
+   capture in low-connectivity environments, and push notifications for operational
+   events. Parity with the rest of the web panel is a long-term goal, not a criterion
+   for the first version.
 
-## 2. Elección de framework
+## 2. Framework choice
 
-**Decisión: Flutter.**
+**Decision: Flutter.**
 
-| Alternativa | Evaluación |
+| Alternative | Assessment |
 |---|---|
-| **Flutter** | Un solo código para ambas plataformas con render propio (no webview). Ecosistema maduro para las necesidades específicas de este cliente: `mobile_scanner` (escaneo QR con cámara), Drift (SQLite tipado para cache y cola offline), tooling de análisis y formato de primera. Riesgo aceptado: Dart es un lenguaje minoritario y reduce el pool de contribuidores potenciales frente a TypeScript; se mitiga con arquitectura clara y documentación de contribución. |
-| React Native + Expo | Compartiría lenguaje con el frontend web (TypeScript). Se descartó por la menor ergonomía de la capa SQLite/offline, mayor rotación del ecosistema y porque el flujo de builds empuja hacia servicios de pago. |
-| Kotlin Multiplatform / Compose Multiplatform | El soporte iOS aún no tiene la madurez necesaria para apostarle un producto operativo. |
-| PWA / Capacitor sobre la web existente | La web ya ofrece captura offline, pero no da push confiable en iOS, ni escaneo de cámara de calidad, ni presencia en tiendas. No aporta el diferencial buscado. |
+| **Flutter** | A single codebase for both platforms with its own renderer (not a webview). A mature ecosystem for this client's specific needs: `mobile_scanner` (camera-based QR scanning), Drift (typed SQLite for caches and the offline queue), first-class analysis and formatting tooling. Accepted risk: Dart is a minority language and shrinks the pool of potential contributors compared to TypeScript; mitigated with a clear architecture and contribution documentation. |
+| React Native + Expo | Would share a language with the web frontend (TypeScript). Discarded due to the less ergonomic SQLite/offline layer, higher ecosystem churn, and a build workflow that pushes toward paid services. |
+| Kotlin Multiplatform / Compose Multiplatform | iOS support does not yet have the maturity required to bet an operational product on it. |
+| PWA / Capacitor over the existing web app | The web already offers offline capture, but provides no reliable push on iOS, no quality camera scanning, and no store presence. It does not deliver the differential being sought. |
 
-## 3. Estructura del proyecto
+## 3. Project structure
 
-- Organización **feature-first**, no por tipo:
+- **Feature-first** organization, not by type:
 
 ```
 lib/
-  core/        # api (cliente generado), auth, db (Drift), push, config, i18n
+  core/        # api (generated client), auth, db (Drift), push, config, i18n
   features/
     intake/    # data / domain / ui
     boxes/
@@ -56,156 +57,157 @@ lib/
     pallets/
     shipments/
     dashboard/
-test/          # espejo de lib/
+test/          # mirrors lib/
 api/
-  openapi.json # snapshot vendoreado del contrato del backend
+  openapi.json # vendored snapshot of the backend contract
 ```
 
-- Estado con **Riverpod** (codegen): testeable y sin la ceremonia de alternativas más
-  pesadas. Se evaluó Bloc con arquitectura hexagonal estricta y se descartó: para el
-  tamaño del equipo, el boilerplate cuesta más de lo que protege.
-- Convenciones de idioma idénticas al backend: identificadores en inglés, prosa de
-  producto en español, prosa para contribuidores en inglés.
+- State management with **Riverpod** (codegen): testable and without the ceremony of
+  heavier alternatives. Bloc with strict hexagonal architecture was evaluated and
+  discarded: for the team size, the boilerplate costs more than it protects.
+- Language conventions identical to the backend: identifiers in English, product
+  prose in Spanish, contributor-facing prose in English.
 
-## 4. Contrato con la API: cliente generado
+## 4. API contract: a generated client
 
-- El backend (FastAPI) publica su especificación OpenAPI. Este repositorio **vendorea
-  un snapshot** (`api/openapi.json`) y de él se genera el cliente Dart (dialecto
-  `dio`). Nadie escribe modelos a mano dos veces.
-- Actualizar el contrato es un PR que actualiza el snapshot y regenera el cliente: el
-  diff es revisable, los builds son deterministas y un fork puede compilar sin acceso
-  a ningún backend en vivo.
-- Las pruebas de contrato del backend garantizan que un snapshot nuevo nunca rompe a
-  un cliente viejo (compatibilidad aditiva dentro de `/v1`).
+- The backend (FastAPI) publishes its OpenAPI specification. This repository
+  **vendors a snapshot** (`api/openapi.json`) from which the Dart client is generated
+  (`dio` dialect). Nobody writes models by hand twice.
+- Updating the contract is a pull request that updates the snapshot and regenerates
+  the client: the diff is reviewable, builds are deterministic, and a fork can
+  compile without access to any live backend.
+- The backend's contract tests guarantee that a new snapshot never breaks an old
+  client (additive compatibility within `/v1`).
 
-## 5. Autenticación
+## 5. Authentication
 
-- Login directo contra `/v1/auth/login`; el backend emite access y refresh token y
-  rota el refresh en cada renovación.
-- **Refresh token en el almacén seguro de la plataforma** (Keychain en iOS, Keystore
-  en Android) vía `flutter_secure_storage`. **Access token solo en memoria.** Nunca en
-  SharedPreferences ni en archivos.
-- Interceptor HTTP: ante 401, renueva, reintenta una vez y, si falla, cierra la sesión
-  local.
-- Los flujos de TOTP y de cambio forzado de contraseña ya existen en el backend; el
-  cliente solo aporta las pantallas.
+- Direct login against `/v1/auth/login`; the backend issues access and refresh
+  tokens and rotates the refresh token on every renewal.
+- **The refresh token is stored in the platform's secure store** (Keychain on iOS,
+  Keystore on Android) via `flutter_secure_storage`. **The access token lives only in
+  memory.** Never in SharedPreferences or in files.
+- HTTP interceptor: on 401, renew, retry once, and on failure clear the local
+  session.
+- The TOTP and forced-password-change flows already exist in the backend; the client
+  only contributes the screens.
 
-## 6. Modelo offline
+## 6. Offline model
 
-### 6.1 Lectura
+### 6.1 Reading
 
-Disponible sin conexión en su totalidad: catálogo, stock y cajas del centro se cachean
-en la base local (Drift) y se refrescan al abrir la aplicación y por acción explícita.
+Fully available offline: the catalog, stock, and the center's boxes are cached in the
+local database (Drift) and refreshed when the application opens and on explicit user
+action.
 
-### 6.2 Escritura: la frontera es una regla de dominio
+### 6.2 Writing: the boundary is a domain rule
 
-**Solo la captura de donaciones (intake) escribe sin conexión.** Es la única operación
-que depende exclusivamente de lo que la persona tiene enfrente. Sellar una caja, armar
-una tarima o cerrar un envío dependen de estado compartido que puede estar cambiando
-en otro dispositivo; decidirlo sin conexión produciría dos verdades sobre la misma
-caja, y ese error termina en un manifiesto incorrecto frente a una aduana. Estas
-operaciones exigen conexión y la interfaz explica el motivo.
+**Only donation intake capture writes offline.** It is the only operation that
+depends exclusively on what the operator has in front of them. Sealing a box,
+building a pallet, or closing a shipment depends on shared state that may be changing
+on another device; deciding it without connectivity would produce two truths about
+the same box, and that error ends in an incorrect manifest in front of a customs
+authority. These operations require connectivity, and the interface explains why.
 
-La cola de captura porta las mismas invariantes que la captura offline de la
-aplicación web:
+The capture queue carries the same invariants as the web application's offline
+capture:
 
-1. La llave de idempotencia (`capture_id`) se genera **antes** del primer intento y no
-   cambia nunca: reintentar es el caso normal, no la excepción.
-2. El catálogo local conserva la visibilidad por campaña del servidor: un producto
-   elegible sin señal es uno que el servidor va a aceptar.
-3. La cola es **por usuario**: un dispositivo compartido nunca atribuye la captura de
-   una persona a la sesión de otra.
-4. **Nada se descarta solo**: un rechazo de negocio deja de reintentarse y espera una
-   decisión humana explícita, con el motivo del servidor visible.
+1. The idempotency key (`capture_id`) is generated **before** the first attempt and
+   never changes: retrying is the normal case, not the exception.
+2. The local catalog preserves the server's per-campaign visibility: a product
+   eligible without signal is one the server is going to accept.
+3. The queue is **per user**: a shared device never attributes one person's capture
+   to another person's session.
+4. **Nothing is discarded automatically**: a business rejection stops retrying and
+   waits for an explicit human decision, with the server's reason visible.
 
-Los códigos de caja se reservan con conexión para gastarse sin ella; una captura
-rechazada no devuelve sus códigos al bloque, porque la etiqueta física con ese número
-puede estar ya pegada a una caja.
+Box codes are reserved while online so they can be spent offline; a rejected capture
+does not return its codes to the pool, because the physical label with that number
+may already be attached to a box.
 
-### 6.3 Sincronización
+### 6.3 Synchronization
 
-En primer plano al abrir la aplicación, con contador visible de pendientes. La
-instrucción operativa es la misma que en la web: al recuperar señal, abrir la
-aplicación y esperar a que el contador llegue a cero. Queda abierta la puerta a
-sincronización oportunista en segundo plano (p. ej. `workmanager`) como mejora
-posterior que no cambia el diseño.
+In the foreground when the application opens, with a visible counter of pending
+captures. The operational instruction is the same as on the web: upon regaining
+signal, open the application and wait for the counter to reach zero. The door remains
+open to opportunistic background synchronization (e.g. `workmanager`) as a later
+improvement that does not change the design.
 
-## 7. Notificaciones push
+## 7. Push notifications
 
-- **Firebase Cloud Messaging es la única pieza de Firebase que se usa.** No se adopta
-  Firebase Auth, Firestore ni Analytics: autenticación, datos y almacenamiento son del
-  backend propio.
-- El acceso a FCM queda **aislado detrás de una interfaz interna** (`PushService`).
-  Consecuencia deliberada: existe un sabor de build `foss` que compila sin ninguna
-  dependencia de Firebase, con push desactivado. Eso permite a un fork operar sin
-  proyecto de Firebase y deja abierta la distribución por canales que excluyen
-  servicios propietarios (p. ej. F-Droid).
-- Cada fork que quiera push usa su propio proyecto de Firebase. Los archivos de
-  configuración (`google-services.json` y equivalentes) **no se versionan**; se
-  documentan con plantillas.
-- El lado servidor (registro de tokens por dispositivo y despacho de eventos) se
-  implementa en el repositorio del backend como una fase propia de su roadmap.
+- **Firebase Cloud Messaging is the only piece of Firebase in use.** Firebase Auth,
+  Firestore, and Analytics are not adopted: authentication, data, and storage belong
+  to the project's own backend.
+- Access to FCM is **isolated behind an internal interface** (`PushService`). A
+  deliberate consequence: a `foss` build flavor compiles without any Firebase
+  dependency, with push disabled. This lets a fork operate without a Firebase project
+  and keeps open distribution through channels that exclude proprietary services
+  (e.g. F-Droid).
+- Each fork that wants push uses its own Firebase project. Configuration files
+  (`google-services.json` and equivalents) **are not versioned**; they are documented
+  with templates.
+- The server side (per-device token registry and event dispatch) is implemented in
+  the backend repository as a phase of its own roadmap.
 
-## 8. Observabilidad
+## 8. Observability
 
-- Sentry (SDK de Flutter) para errores y crashes, con mensajes genéricos a la persona
-  operadora y detalle técnico solo en el evento.
-- El DSN se inyecta por configuración de build; el sabor `foss` y los forks pueden
-  operar sin Sentry.
+- Sentry (Flutter SDK) for errors and crashes, with generic messages shown to the
+  operator and technical detail only in the event.
+- The DSN is injected through build configuration; the `foss` flavor and forks can
+  operate without Sentry.
 
-## 9. Licencia
+## 9. License
 
-**GNU GPL v3.0 o posterior, con permiso adicional bajo la sección 7 para distribución
-por tiendas de aplicaciones** (ver `LICENSE` y `LICENSE-EXCEPTIONS.md`).
+**GNU GPL v3.0 or later, with an additional permission under section 7 for
+distribution through application stores** (see `LICENSE` and
+`LICENSE-EXCEPTIONS.md`).
 
-Razonamiento:
+Rationale:
 
-- El backend es AGPL-3.0. Cliente y servidor son programas separados que se comunican
-  por red, así que no hay interacción de licencias entre repositorios; la elección del
-  cliente se hace por sus propios méritos.
-- Se busca copyleft: un fork de la aplicación debe publicar su código, coherente con
-  el espíritu del proyecto.
-- La distribución de software GPL por tiendas de aplicaciones tiene un conflicto
-  conocido entre las condiciones de esas plataformas y la licencia. El mecanismo
-  estándar para resolverlo es un permiso adicional bajo la sección 7 de la GPLv3, que
-  autoriza expresamente la distribución por tiendas siempre que el código fuente
-  completo siga disponible bajo la licencia.
-- Se evaluaron AGPL-3.0 con acuerdo de licencia de contribuidor (fricción alta para
-  contribuciones externas) y MPL-2.0 (permitiría forks propietarios). Ambas se
-  descartaron.
+- The backend is AGPL-3.0. Client and server are separate programs communicating
+  over a network, so there is no license interaction between repositories; the
+  client's license is chosen on its own merits.
+- Copyleft is intended: a fork of the application must publish its code, consistent
+  with the spirit of the project.
+- Distributing GPL software through application stores has a known conflict between
+  those platforms' terms and the license. The standard mechanism to resolve it is an
+  additional permission under section 7 of GPLv3, which expressly authorizes store
+  distribution as long as the complete source code remains available under the
+  license.
+- AGPL-3.0 with a contributor license agreement (high friction for external
+  contributions) and MPL-2.0 (would allow proprietary forks) were evaluated and
+  discarded.
 
-## 10. Calidad y pruebas
+## 10. Quality and testing
 
-- Piso de cobertura: 80 %. Pruebas unitarias y de widget para todo comportamiento
-  nuevo.
-- La capa de base local y la cola offline se prueban contra **SQLite real en
-  memoria**, no contra dobles: la mayoría de los defectos de esa capa viven en el
-  manejo de transacciones y un doble no los reproduce. (Mismo criterio que llevó a la
-  web a probar contra una IndexedDB real.)
-- Golden tests para pantallas críticas de representación (ficha y etiqueta de caja).
-- Pruebas de integración del flujo captura → caja en emulador dentro de CI.
-- Gates de PR: `flutter analyze` sin issues, `dart format` aplicado, `flutter test`
-  en verde.
+- Coverage floor: 80%. Unit and widget tests for all new behavior.
+- The local database layer and the offline queue are tested against a **real
+  in-memory SQLite database**, not mocks: most defects in that layer live in
+  transaction handling, and mocks do not reproduce them. (The same criterion that led
+  the web application to test against a real IndexedDB.)
+- Golden tests for critical rendering screens (box record and label).
+- Integration tests for the capture → box flow on an emulator in CI.
+- Pull request gates: `flutter analyze` with no issues, `dart format` applied,
+  `flutter test` passing.
 
-## 11. Infraestructura de desarrollo y distribución
+## 11. Development infrastructure and distribution
 
-- **CI: GitHub Actions.** En repositorios públicos los runners (incluidos los de
-  macOS, necesarios para builds de iOS) no tienen costo, lo que permite construir y
-  probar ambas plataformas sin servicios adicionales.
-- **Android:** distribución por Google Play (internal testing → closed testing →
-  producción). Firma con keystore propio, fuera del repositorio.
-- **iOS:** el desarrollo y las pruebas locales no requieren cuenta de pago; la
-  distribución (TestFlight y App Store) requiere membresía del Apple Developer
-  Program y se activará cuando esa vía se priorice.
-- **Sabores de build:** `dev` / `prod` (y `foss`) mediante `--dart-define`
-  (URL de API, banderas de capacidades).
+- **CI: GitHub Actions.** On public repositories, runners (including the macOS
+  runners required for iOS builds) have no cost, which allows building and testing
+  both platforms without additional services.
+- **Android:** distribution through Google Play (internal testing → closed testing →
+  production). Signing with a self-managed keystore, kept outside the repository.
+- **iOS:** local development and testing require no paid account; distribution
+  (TestFlight and the App Store) requires Apple Developer Program membership and
+  will be activated when that channel is prioritized.
+- **Build flavors:** `dev` / `prod` (and `foss`) via `--dart-define` (API URL,
+  capability flags).
 
-## 12. Riesgos aceptados y mitigaciones
+## 12. Accepted risks and mitigations
 
-| Riesgo | Mitigación |
+| Risk | Mitigation |
 |---|---|
-| Deriva entre cliente y API | Snapshot OpenAPI vendoreado + pruebas de contrato en el backend + contrato aditivo |
-| Pool de contribuidores Dart menor que el de TypeScript | Arquitectura feature-first clara, CONTRIBUTING explícito, CI que hace evidente el estándar |
-| Doble mantenimiento web + app | La app se mantiene fina: ante lógica nueva, primero se evalúa si falta un endpoint |
-| Reimplementar la cola offline que ya existe en la web | Se reimplementan **invariantes documentadas como contrato**, no código traducido; las cuatro invariantes tienen pruebas propias en cada plataforma |
-| Dependencia de servicios propietarios (FCM) | Aislada tras interfaz propia; el sabor `foss` compila sin ella |
+| Drift between client and API | Vendored OpenAPI snapshot + contract tests in the backend + additive contract |
+| Smaller Dart contributor pool than TypeScript's | Clear feature-first architecture, explicit CONTRIBUTING, CI that makes the standard evident |
+| Double maintenance, web + app | The app stays thin: when new logic appears, the first question is whether an endpoint is missing |
+| Reimplementing the offline queue that already exists on the web | What is reimplemented are **invariants documented as a contract**, not translated code; the four invariants have their own tests on each platform |
+| Dependency on proprietary services (FCM) | Isolated behind an internal interface; the `foss` flavor compiles without it |
