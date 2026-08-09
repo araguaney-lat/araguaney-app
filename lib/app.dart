@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'core/i18n/generated/app_localizations.dart';
-import 'features/home/ui/home_view.dart';
+import 'core/routing/session_gate.dart';
 
-/// Raíz de la aplicación: tema, localización (español por defecto) y home.
+/// Raíz de la aplicación: tema, localización (español por defecto) y la puerta
+/// que decide qué se ve según haya sesión o no.
 class AraguaneyApp extends StatelessWidget {
   const AraguaneyApp({super.key});
 
@@ -24,7 +25,7 @@ class AraguaneyApp extends StatelessWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      home: const HomeView(),
+      home: const SessionGate(),
     );
   }
 }

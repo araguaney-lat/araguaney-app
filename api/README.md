@@ -49,9 +49,23 @@ The snapshot is kept complete and faithful to what the backend publishes, but
 probe, the third-party webhook, and the public by-code pages, which serve HTML
 or PNG to a browser rather than data to a typed client.
 
-## Known upstream defect
+## Known upstream defects
 
-The backend exposes `GET /health/jobs` and `HEAD /health/jobs` under a single
-`operationId`, which the OpenAPI specification does not allow and which makes
-two generated methods collide. It does not affect this application because the
-generation scope excludes that path, and it has been reported upstream.
+Both are recorded here rather than worked around silently, because each one has
+a one-line fix in the backend that would let this repository drop its
+workaround.
+
+**1. Duplicate `operationId` on the health probe.** The backend exposes
+`GET /health/jobs` and `HEAD /health/jobs` under a single `operationId`, which
+the OpenAPI specification does not allow and which makes two generated methods
+collide. It does not affect this application because the generation scope
+excludes that path.
+
+**2. Untyped login response.** `POST /v1/auth/login` does not declare a
+`response_model`, so the contract publishes an empty response schema and the
+generated method returns `void`, discarding the session it actually returns.
+Until the backend declares `response_model=Token`, `AuthRepository.login` issues
+that one request by hand. The response is still deserialized with the generated
+`Token` model, so the shape keeps coming from the contract rather than from a
+hand-written copy that would drift. Declaring the response model is additive and
+breaks no existing client.

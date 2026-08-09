@@ -40,6 +40,17 @@ abstract final class ApiErrorMapper {
     }
   }
 
+  /// Traduce cualquier cosa que se haya atrapado.
+  ///
+  /// Existe porque un `catch` amplio recibe `Object`, y quien lo escribe no
+  /// debería tener que distinguir a mano entre un fallo ya traducido, uno de
+  /// dio y un error de programación.
+  static ApiFailure fromAny(Object error) => switch (error) {
+    ApiFailure() => error,
+    DioException() => fromDioException(error),
+    _ => UnknownFailure(code: 'UNEXPECTED', message: error.toString()),
+  };
+
   /// Interpreta el cuerpo de una respuesta de error.
   ///
   /// Un backend sano manda `{"error": {...}}`, pero esta capa también tiene que

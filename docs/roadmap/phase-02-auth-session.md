@@ -25,15 +25,15 @@
 
 | # | Task | Description | Complexity | Status |
 |---|------|-------------|------------|--------|
-| 1 | Secure token storage | `flutter_secure_storage` for the refresh token; access token held in memory only. | 🟠 Medium | ⬜ Pending |
-| 2 | Login screen and flow | Credentials → tokens; Spanish operator-facing errors, generic on purpose. | 🟠 Medium | ⬜ Pending |
-| 3 | Refresh interceptor | On 401: renew (rotating), retry once, clear session on failure. Single-flight so concurrent 401s trigger one renewal. | 🔴 High | ⬜ Pending |
-| 4 | Forced password change | `must_change_password` → blocking change screen before any operation. | 🟠 Medium | ⬜ Pending |
-| 5 | TOTP challenge | Second-factor screen when the backend demands it. | 🟠 Medium | ⬜ Pending |
-| 6 | Logout | Local wipe plus server-side revocation. | 🟢 Low | ⬜ Pending |
-| 7 | Session state and guarding | Riverpod session provider; unauthenticated navigation lands on login. | 🟠 Medium | ⬜ Pending |
-| 8 | Tests | Interceptor behavior (renewal, rotation, single-flight, failure), session transitions. | 🔴 High | ⬜ Pending |
-| 9 | Roadmap update | Mark tasks and update totals. | 🟢 Low | ⬜ Pending |
+| 1 | Secure token storage | `flutter_secure_storage` for the refresh token; access token held in memory only. | 🟠 Medium | ✅ Done |
+| 2 | Login screen and flow | Credentials → tokens; Spanish operator-facing errors, generic on purpose. | 🟠 Medium | ✅ Done |
+| 3 | Refresh interceptor | On 401: renew (rotating), retry once, clear session on failure. Single-flight so concurrent 401s trigger one renewal. | 🔴 High | ✅ Done |
+| 4 | Forced password change | `must_change_password` → blocking change screen before any operation. | 🟠 Medium | ✅ Done |
+| 5 | TOTP challenge | Second-factor screen when the backend demands it. | 🟠 Medium | ✅ Done |
+| 6 | Logout | Local wipe plus server-side revocation. | 🟢 Low | ✅ Done |
+| 7 | Session state and guarding | Riverpod session provider; unauthenticated navigation lands on login. | 🟠 Medium | ✅ Done |
+| 8 | Tests | Interceptor behavior (renewal, rotation, single-flight, failure), session transitions. | 🔴 High | ✅ Done |
+| 9 | Roadmap update | Mark tasks and update totals. | 🟢 Low | ✅ Done |
 
 ---
 
