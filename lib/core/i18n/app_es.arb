@@ -1,0 +1,11 @@
+{
+  "@@locale": "es",
+  "appTitle": "Araguaney",
+  "@appTitle": {
+    "description": "Nombre de la aplicación, visible en el lanzador y la barra de título."
+  },
+  "homePlaceholderMessage": "Cliente móvil de Araguaney en desarrollo.",
+  "@homePlaceholderMessage": {
+    "description": "Mensaje temporal de la pantalla inicial durante el desarrollo del scaffold."
+  }
+}

@@ -10,8 +10,28 @@ key.properties
 # OS
 .DS_Store
 
-# Flutter/Dart (expanded when the Flutter project is scaffolded)
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# Flutter / Dart
 .dart_tool/
 build/
 .flutter-plugins
 .flutter-plugins-dependencies
+*.g.dart.bak
+
+# Generated l10n output
+lib/core/i18n/generated/
+
+# Android
+android/.gradle/
+android/local.properties
+android/app/.cxx/
+
+# iOS
+ios/Pods/
+ios/.symlinks/
+ios/Flutter/ephemeral/
+ios/Flutter/flutter_export_environment.sh
