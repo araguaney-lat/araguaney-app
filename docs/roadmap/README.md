@@ -11,8 +11,9 @@ it contains.
 
 ```mermaid
 pie title Tasks completed (94 tasks)
-    "Done" : 27
-    "Pending" : 67
+    "Done" : 35
+    "Pending" : 58
+    "Blocked" : 1
 ```
 
 | Phase | Name | Done | Pending | Progress |
@@ -20,7 +21,7 @@ pie title Tasks completed (94 tasks)
 | 0 | [Repository bootstrap and application scaffold](phase-00-bootstrap.md) | 10 | 0 | ✅ 100% |
 | 1 | [API contract and generated client](phase-01-api-contract-client.md) | 8 | 0 | ✅ 100% |
 | 2 | [Authentication and session](phase-02-auth-session.md) | 9 | 0 | ✅ 100% |
-| 3 | [Local cache and read operations](phase-03-local-cache-read.md) | 0 | 9 | ⬜ 0% |
+| 3 | [Local cache and read operations](phase-03-local-cache-read.md) | 8 | 1 | 🟨 89% (1 blocked) |
 | 4 | [QR scanning](phase-04-qr-scanning.md) | 0 | 6 | ⬜ 0% |
 | 5 | [Online intake and box operations](phase-05-intake-online.md) | 0 | 10 | ⬜ 0% |
 | 6 | [Offline capture queue](phase-06-offline-queue.md) | 0 | 10 | ⬜ 0% |
@@ -28,7 +29,15 @@ pie title Tasks completed (94 tasks)
 | 8 | [Android release and distribution](phase-08-android-release.md) | 0 | 9 | ⬜ 0% |
 | 9 | [iOS enablement](phase-09-ios-enablement.md) | 0 | 6 | ⬜ 0% |
 | 10 | [Operational parity backlog](phase-10-operational-parity.md) | 0 | 8 | ⬜ 0% |
-| **Total** | | **27** | **67** | **🟡 29%** |
+| **Total** | | **35** | **59** | **🟡 37%** |
+
+## Blocked work
+
+- **Phase 03, task 5 (center stock screen)** needs a session-scoped backend
+  endpoint returning stock by category for the caller's center. The `/v1`
+  contract only aggregates stock nationally, and computing it on the device
+  would require the client to decide which box statuses count as stock — a rule
+  that belongs to the backend.
 
 ## Dependencies worth naming
 
