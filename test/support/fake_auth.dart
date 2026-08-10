@@ -1,14 +1,23 @@
 import 'package:araguaney_app/core/api/api_failure.dart';
 import 'package:araguaney_app/core/api/generated/models/token.dart';
+import 'package:araguaney_app/core/api/generated/models/user_out.dart';
 import 'package:araguaney_app/core/auth/auth_repository.dart';
 import 'package:araguaney_app/core/auth/token_storage.dart';
 import 'package:dio/dio.dart';
 
+/// Borrado del modelo de lectura que solo cuenta cuántas veces lo llamaron.
+class FakeReadModelReset {
+  int count = 0;
+
+  Future<void> call() async => count++;
+}
+
 /// Almacén en memoria que registra lo que se le pidió.
 class FakeTokenStorage implements TokenStorage {
-  FakeTokenStorage({this.stored});
+  FakeTokenStorage({this.stored, this.storedUserId});
 
   String? stored;
+  String? storedUserId;
   int clearCount = 0;
   final List<String> written = [];
 
@@ -22,8 +31,15 @@ class FakeTokenStorage implements TokenStorage {
   }
 
   @override
+  Future<String?> readUserId() async => storedUserId;
+
+  @override
+  Future<void> writeUserId(String? userId) async => storedUserId = userId;
+
+  @override
   Future<void> clear() async {
     stored = null;
+    storedUserId = null;
     clearCount++;
   }
 }
@@ -51,6 +67,12 @@ class FakeAuthRepository extends AuthRepository {
   ApiFailure? totpError;
   Token? changePasswordToken;
 
+  /// Quién contesta `GET /v1/auth/me`. Nulo con [meError] puesto simula que no
+  /// se pudo confirmar la identidad.
+  String meUserId = 'user-1';
+  ApiFailure? meError;
+  int meCount = 0;
+
   int refreshCount = 0;
   int logoutCount = 0;
   String? lastRefreshTokenUsed;
@@ -72,6 +94,26 @@ class FakeAuthRepository extends AuthRepository {
   }) async {
     if (totpError case final error?) throw error;
     return totpToken!;
+  }
+
+  @override
+  Future<UserOut> me(String accessToken) async {
+    meCount++;
+    if (meError case final error?) throw error;
+    return UserOut(
+      id: meUserId,
+      email: 'persona@centro.test',
+      role: 'user',
+      username: 'persona',
+      isActive: true,
+      mustAcceptTerms: false,
+      totpEnabled: false,
+      avatarUrl: null,
+      centerId: 'center-1',
+      centerRole: 'volunteer',
+      countryCode: 'VE',
+      fullName: 'Persona de prueba',
+    );
   }
 
   @override

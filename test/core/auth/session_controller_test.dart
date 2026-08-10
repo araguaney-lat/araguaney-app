@@ -3,6 +3,7 @@ import 'package:araguaney_app/core/auth/auth_providers.dart';
 import 'package:araguaney_app/core/auth/auth_repository.dart';
 import 'package:araguaney_app/core/auth/session.dart';
 import 'package:araguaney_app/core/auth/session_controller.dart';
+import 'package:araguaney_app/core/db/db_providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -11,11 +12,17 @@ import '../../support/fake_auth.dart';
 ({ProviderContainer container, SessionController controller}) _build({
   required FakeAuthRepository repository,
   required FakeTokenStorage storage,
+  FakeReadModelReset? readModelReset,
 }) {
   final container = ProviderContainer(
     overrides: [
       authRepositoryProvider.overrideWithValue(repository),
       tokenStorageProvider.overrideWithValue(storage),
+      // Sin esto, iniciar sesión abriría la base de verdad y con ella un canal
+      // de plataforma que en una prueba unitaria no existe.
+      readModelResetProvider.overrideWithValue(
+        (readModelReset ?? FakeReadModelReset()).call,
+      ),
     ],
   );
   addTearDown(container.dispose);

@@ -12,15 +12,23 @@ import 'sync_outcome.dart';
 /// abiertas hubiera, y entender por qué se hizo una petición exigiría revisar
 /// todas. Aquí hay una respuesta a esa pregunta.
 class SyncCoordinator {
-  SyncCoordinator(this._ref);
+  SyncCoordinator(this._ref) {
+    _ref.onDispose(() => _disposed = true);
+  }
 
   final Ref _ref;
   bool _running = false;
 
+  /// Una sincronización sobrevive a la pantalla que la pidió: cerrar sesión
+  /// desmonta los providers mientras las peticiones siguen en vuelo. Sin esta
+  /// marca, la respuesta tardía intentaría escribir en un contenedor que ya no
+  /// existe.
+  bool _disposed = false;
+
   /// Refresca catálogo y cajas. Si ya hay un refresco en curso, no encola otro:
   /// al recuperar la señal es normal que lleguen varias señales seguidas.
   Future<void> refreshAll() async {
-    if (_running) return;
+    if (_running || _disposed) return;
     _running = true;
     try {
       final outcomes = await Future.wait([
@@ -39,7 +47,7 @@ class SyncCoordinator {
   /// informa como en línea aunque la operación fallara. Solo un fallo de red
   /// marca sin señal.
   void report(List<SyncOutcome> outcomes) {
-    if (outcomes.isEmpty) return;
+    if (outcomes.isEmpty || _disposed) return;
 
     final connectivity = _ref.read(connectivityControllerProvider.notifier);
     final reachable = outcomes.any(

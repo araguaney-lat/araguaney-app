@@ -5,9 +5,20 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 /// **Solo el refresh se persiste.** El access token vive en memoria y muere con
 /// el proceso: dura poco, se puede volver a pedir con el refresh y escribirlo en
 /// disco solo agrandaría la superficie de un dispositivo compartido o perdido.
+/// También guarda **qué persona** abrió esa sesión. El token no lo dice —lleva
+/// centro y rol, no identidad—, y sin ese dato un dispositivo compartido no
+/// puede saber si quien acaba de entrar es la misma persona del turno anterior
+/// o alguien que no debería ver su cache.
 abstract interface class TokenStorage {
   Future<String?> readRefreshToken();
   Future<void> writeRefreshToken(String token);
+
+  Future<String?> readUserId();
+
+  /// Guarda la identidad. Un [userId] nulo la borra: es lo que corresponde
+  /// cuando no se pudo confirmar quién es.
+  Future<void> writeUserId(String? userId);
+
   Future<void> clear();
 }
 
@@ -36,6 +47,7 @@ class SecureTokenStorage implements TokenStorage {
   final FlutterSecureStorage _storage;
 
   static const _refreshTokenKey = 'refresh_token';
+  static const _userIdKey = 'user_id';
 
   @override
   Future<String?> readRefreshToken() => _storage.read(key: _refreshTokenKey);
@@ -45,5 +57,16 @@ class SecureTokenStorage implements TokenStorage {
       _storage.write(key: _refreshTokenKey, value: token);
 
   @override
-  Future<void> clear() => _storage.delete(key: _refreshTokenKey);
+  Future<String?> readUserId() => _storage.read(key: _userIdKey);
+
+  @override
+  Future<void> writeUserId(String? userId) => userId == null
+      ? _storage.delete(key: _userIdKey)
+      : _storage.write(key: _userIdKey, value: userId);
+
+  @override
+  Future<void> clear() async {
+    await _storage.delete(key: _refreshTokenKey);
+    await _storage.delete(key: _userIdKey);
+  }
 }
