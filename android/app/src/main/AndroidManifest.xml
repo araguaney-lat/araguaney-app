@@ -1,6 +1,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- La plantilla de Flutter declara este permiso solo en los manifiestos de
+         depuración y perfil, para el servicio de recarga en caliente. Una
+         aplicación que habla con una API lo necesita también en release, y sin
+         esta línea el build de producción se queda sin red mientras el de
+         depuración funciona: un fallo que no aparece hasta la tienda. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
-        android:label="araguaney_app"
+        android:label="Araguaney"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

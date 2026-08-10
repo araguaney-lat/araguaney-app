@@ -1,0 +1,42 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../features/home/ui/home_view.dart';
+import '../../features/session/ui/change_password_view.dart';
+import '../../features/session/ui/login_view.dart';
+import '../../features/session/ui/totp_challenge_view.dart';
+import '../auth/auth_providers.dart';
+import '../auth/session.dart';
+
+/// Decide qué se ve según el estado de la sesión.
+///
+/// La navegación no autenticada no existe: no hay una ruta a la que llegar sin
+/// sesión y luego rebotar, sino un único sitio que decide. Así no queda ninguna
+/// pantalla accesible por descuido desde un enlace o un `pop`.
+class SessionGate extends ConsumerWidget {
+  const SessionGate({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(sessionControllerProvider);
+
+    return switch (state) {
+      SessionRestoring() => const _RestoringView(),
+      SessionAbsent() => const LoginView(),
+      SessionAwaitingTotp() => const TotpChallengeView(),
+      // El cambio obligatorio se interpone incluso con sesión válida: el
+      // servidor lo exige y saltarlo dejaría viva una clave temporal.
+      SessionActive(:final session) when session.mustChangePassword =>
+        const ChangePasswordView(),
+      SessionActive() => const HomeView(),
+    };
+  }
+}
+
+class _RestoringView extends StatelessWidget {
+  const _RestoringView();
+
+  @override
+  Widget build(BuildContext context) =>
+      const Scaffold(body: Center(child: CircularProgressIndicator()));
+}

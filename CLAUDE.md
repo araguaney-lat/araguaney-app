@@ -118,6 +118,12 @@ al bloque, porque la etiqueta física ya puede estar pegada.
   archivo, que mantiene el español por consistencia con su par del backend.
 - Nombres de tests en inglés; la frase explicativa va en el docstring o el mensaje del
   `assert`.
+- **Los textos que ve quien opera van en español, escritos en el widget.** El
+  `AppLocalizations` generado existe para el título de la aplicación y para que
+  Material y las fechas se localicen, no como capa de traducción: el panel es
+  para centros que operan en español y no hay un segundo idioma de operación que
+  sostener. Si algún día lo hay, mover los textos a `app_es.arb` es una fase, no
+  una nota al pie.
 - Archivos chicos y enfocados; feature-first, no por tipo.
 - `flutter analyze` limpio y `dart format` aplicado como gate de todo PR.
 - Lo que toca Drift o la cola offline se prueba contra SQLite real en memoria, no
