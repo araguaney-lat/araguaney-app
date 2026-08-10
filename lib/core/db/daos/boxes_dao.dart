@@ -47,6 +47,25 @@ class BoxesDao extends DatabaseAccessor<AppDatabase> with _$BoxesDaoMixin {
     );
   }
 
+  /// Una caja con su producto, para el detalle.
+  Stream<BoxWithProduct?> watchWithProduct(String id) {
+    final query = select(boxes).join([
+      leftOuterJoin(
+        productTypes,
+        productTypes.id.equalsExp(boxes.productTypeId),
+      ),
+    ])..where(boxes.id.equals(id));
+
+    return query.watchSingleOrNull().map(
+      (row) => row == null
+          ? null
+          : BoxWithProduct(
+              box: row.readTable(boxes),
+              productName: row.readTableOrNull(productTypes)?.displayName,
+            ),
+    );
+  }
+
   Stream<BoxRow?> watchById(String id) =>
       (select(boxes)..where((t) => t.id.equals(id))).watchSingleOrNull();
 

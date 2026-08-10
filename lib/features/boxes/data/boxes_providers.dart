@@ -17,7 +17,7 @@ final boxesProvider = StreamProvider<List<BoxWithProduct>>(
   (ref) => ref.watch(boxesRepositoryProvider).watchBoxes(),
 );
 
-final boxProvider = StreamProvider.family<BoxRow?, String>(
+final boxProvider = StreamProvider.family<BoxWithProduct?, String>(
   (ref, id) => ref.watch(boxesRepositoryProvider).watchBox(id),
 );
 

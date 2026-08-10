@@ -6,6 +6,11 @@
          depuración funciona: un fallo que no aparece hasta la tienda. -->
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <!-- El estado de la red lo consulta connectivity_plus para saber si vale la
+         pena intentar sincronizar. Solo lee si hay interfaz levantada; que la
+         haya no implica que el servidor conteste, y eso lo decide el tráfico. -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <application
         android:label="Araguaney"
         android:name="${applicationName}"

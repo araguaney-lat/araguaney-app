@@ -38,7 +38,8 @@ class BoxesRepository {
 
   Stream<List<BoxWithProduct>> watchBoxes() => _db.boxesDao.watchAll();
 
-  Stream<BoxRow?> watchBox(String id) => _db.boxesDao.watchById(id);
+  Stream<BoxWithProduct?> watchBox(String id) =>
+      _db.boxesDao.watchWithProduct(id);
 
   Future<BoxRow?> findBox(String id) => _db.boxesDao.findById(id);
 
