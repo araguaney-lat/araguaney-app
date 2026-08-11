@@ -10,6 +10,7 @@ import '../models/pallet_close_in.dart';
 import '../models/pallet_create.dart';
 import '../models/pallet_detail_out.dart';
 import '../models/pallet_out.dart';
+import '../models/pallet_public_out.dart';
 import '../models/qr_event_out.dart';
 
 part 'pallets_api.g.dart';
@@ -17,6 +18,12 @@ part 'pallets_api.g.dart';
 @RestApi()
 abstract class PalletsApi {
   factory PalletsApi(Dio dio, {String? baseUrl}) = _PalletsApi;
+
+  /// Pallet Public Ficha
+  @GET('/p/{code}')
+  Future<PalletPublicOut> palletPublicFichaPCodeGet({
+    @Path('code') required String code,
+  });
 
   /// List Pallets
   @GET('/v1/pallets')

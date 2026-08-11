@@ -4,8 +4,9 @@
 
 import 'package:dio/dio.dart';
 
-import 'clients/auth_api.dart';
 import 'clients/boxes_api.dart';
+import 'clients/pallets_api.dart';
+import 'clients/auth_api.dart';
 import 'clients/campaigns_api.dart';
 import 'clients/catalog_api.dart';
 import 'clients/center_applications_api.dart';
@@ -19,7 +20,6 @@ import 'clients/exports_api.dart';
 import 'clients/incidents_api.dart';
 import 'clients/intakes_api.dart';
 import 'clients/messages_api.dart';
-import 'clients/pallets_api.dart';
 import 'clients/product_types_api.dart';
 import 'clients/reports_api.dart';
 import 'clients/requests_api.dart';
@@ -37,8 +37,9 @@ class RestClient {
 
   static String get version => '0.1.0';
 
-  AuthApi? _auth;
   BoxesApi? _boxes;
+  PalletsApi? _pallets;
+  AuthApi? _auth;
   CampaignsApi? _campaigns;
   CatalogApi? _catalog;
   CenterApplicationsApi? _centerApplications;
@@ -52,7 +53,6 @@ class RestClient {
   IncidentsApi? _incidents;
   IntakesApi? _intakes;
   MessagesApi? _messages;
-  PalletsApi? _pallets;
   ProductTypesApi? _productTypes;
   ReportsApi? _reports;
   RequestsApi? _requests;
@@ -61,9 +61,11 @@ class RestClient {
   StudioApi? _studio;
   TransfersApi? _transfers;
 
-  AuthApi get auth => _auth ??= AuthApi(_dio, baseUrl: _baseUrl);
-
   BoxesApi get boxes => _boxes ??= BoxesApi(_dio, baseUrl: _baseUrl);
+
+  PalletsApi get pallets => _pallets ??= PalletsApi(_dio, baseUrl: _baseUrl);
+
+  AuthApi get auth => _auth ??= AuthApi(_dio, baseUrl: _baseUrl);
 
   CampaignsApi get campaigns =>
       _campaigns ??= CampaignsApi(_dio, baseUrl: _baseUrl);
@@ -97,8 +99,6 @@ class RestClient {
 
   MessagesApi get messages =>
       _messages ??= MessagesApi(_dio, baseUrl: _baseUrl);
-
-  PalletsApi get pallets => _pallets ??= PalletsApi(_dio, baseUrl: _baseUrl);
 
   ProductTypesApi get productTypes =>
       _productTypes ??= ProductTypesApi(_dio, baseUrl: _baseUrl);

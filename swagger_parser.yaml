@@ -20,12 +20,20 @@ swagger_parser:
   replacement_rules: []
 
   # El snapshot se conserva completo y fiel a lo que publica el backend, pero
-  # solo se genera cliente para la superficie que esta aplicación consume: /v1.
-  # Fuera quedan el sondeo de salud, el webhook de terceros y las páginas
-  # públicas por código, que sirven HTML o PNG a un navegador y no a un cliente
-  # tipado. Además, el backend expone `/health/jobs` con GET y HEAD bajo un
-  # mismo operationId, cosa que la especificación OpenAPI no permite y que hace
-  # colisionar dos métodos generados; se reportó al backend y no bloquea a la
-  # aplicación porque ese endpoint nunca se llama desde aquí.
+  # solo se genera cliente para la superficie que esta aplicación consume.
+  #
+  # Eso es `/v1` más las dos fichas públicas por código. Estas últimas devuelven
+  # JSON tipado (`BoxPublicOut`, `PalletPublicOut`) y son la única forma de
+  # resolver un código escaneado que no esté en el cache: no hay ruta
+  # autenticada que traduzca código a identificador. Sus variantes `qr.png`
+  # quedan fuera, que esas sí sirven una imagen a un navegador.
+  #
+  # Fuera queda también el sondeo de salud, el webhook de terceros y las páginas
+  # públicas que sirven HTML. Además, el backend expone `/health/jobs` con GET y
+  # HEAD bajo un mismo operationId, cosa que la especificación OpenAPI no
+  # permite y que hace colisionar dos métodos generados; se reportó al backend y
+  # no bloquea a la aplicación porque ese endpoint nunca se llama desde aquí.
   include_paths:
     - /v1/**
+    - /b/{code}
+    - /p/{code}
