@@ -10,16 +10,20 @@ class Session {
     required this.accessToken,
     required this.refreshToken,
     required this.role,
+    required this.userId,
     required this.centerId,
     required this.centerRole,
     required this.mustChangePassword,
     required this.mustAcceptTerms,
   });
 
-  factory Session.fromToken(Token token) => Session(
+  /// El token no lleva identidad, así que [userId] se resuelve aparte y se
+  /// inyecta aquí. Es nulo cuando no se pudo confirmar quién es.
+  factory Session.fromToken(Token token, {String? userId}) => Session(
     accessToken: token.accessToken,
     refreshToken: token.refreshToken,
     role: token.role,
+    userId: userId,
     centerId: token.centerId,
     centerRole: token.centerRole,
     mustChangePassword: token.mustChangePassword,
@@ -28,6 +32,10 @@ class Session {
 
   final String accessToken;
   final String? refreshToken;
+
+  /// Quién abrió la sesión. Es la clave del alcance del cache y, en la fase
+  /// siguiente, de la cola de captura.
+  final String? userId;
 
   /// Rol de plataforma del boilerplate: `user`, `admin` o `superadmin`.
   final String? role;
@@ -51,6 +59,7 @@ class Session {
     accessToken: accessToken ?? this.accessToken,
     refreshToken: refreshToken ?? this.refreshToken,
     role: role,
+    userId: userId,
     centerId: centerId,
     centerRole: centerRole,
     mustChangePassword: mustChangePassword,

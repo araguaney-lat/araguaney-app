@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import '../api/api_error_mapper.dart';
 import '../api/api_failure.dart';
 import '../api/generated/models/token.dart';
+import '../api/generated/models/user_out.dart';
 
 /// Resultado de un intento de inicio de sesión.
 sealed class LoginResult {
@@ -84,6 +85,21 @@ class AuthRepository {
       data: {'partial_token': partialToken, 'code': code.trim()},
     );
     return Token.fromJson(response.data!);
+  }
+
+  /// Quién es la persona detrás de este token.
+  ///
+  /// Va con la cabecera puesta a mano y por el cliente **sin sesión**: la
+  /// identidad hay que resolverla *antes* de exponer la sesión al resto de la
+  /// aplicación, y el cliente con sesión saca su token de una sesión que
+  /// todavía no existe. Es el dato que decide si el cache del turno anterior se
+  /// borra.
+  Future<UserOut> me(String accessToken) async {
+    final response = await _dio.get<Map<String, dynamic>>(
+      '/v1/auth/me',
+      options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
+    );
+    return UserOut.fromJson(response.data!);
   }
 
   /// Renueva la sesión. El backend **rota** el refresh en cada uso, así que

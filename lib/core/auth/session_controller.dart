@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../api/api_error_mapper.dart';
 import '../api/api_failure.dart';
 import '../api/generated/models/token.dart';
+import '../db/db_providers.dart';
 import 'auth_providers.dart';
 import 'auth_repository.dart';
 import 'session.dart';
@@ -76,7 +77,7 @@ class SessionController extends Notifier<SessionState> {
       );
       switch (result) {
         case LoginSucceeded(:final token):
-          await _adopt(token);
+          await _adopt(token, identifyUser: true);
         case LoginNeedsTotp(:final partialToken):
           state = SessionAwaitingTotp(partialToken: partialToken);
       }
@@ -94,7 +95,7 @@ class SessionController extends Notifier<SessionState> {
         partialToken: current.partialToken,
         code: code,
       );
-      await _adopt(token);
+      await _adopt(token, identifyUser: true);
     } on Object catch (error) {
       final failure = _failureFor(error);
       // Un token parcial caduca en minutos. Si venció, se vuelve al inicio de
@@ -162,14 +163,50 @@ class SessionController extends Notifier<SessionState> {
   Future<void> expire() =>
       _clear(message: 'Tu sesión expiró. Inicia sesión de nuevo.');
 
-  Future<void> _adopt(Token token) async {
-    final session = Session.fromToken(token);
+  /// Adopta el token como sesión activa.
+  ///
+  /// [identifyUser] solo es cierto donde la persona puede haber cambiado: al
+  /// iniciar sesión y al superar el segundo factor. Restaurar y renovar parten
+  /// de un refresh guardado, y un refresh no se convierte en otra persona.
+  Future<void> _adopt(Token token, {bool identifyUser = false}) async {
     // El backend rota el refresh en cada uso: se guarda el nuevo o el anterior
     // queda inservible en el dispositivo.
-    if (session.refreshToken case final refresh?) {
+    if (token.refreshToken case final refresh?) {
       await _storage.writeRefreshToken(refresh);
     }
-    state = SessionActive(session);
+
+    final userId = identifyUser
+        ? await _adoptIdentity(token.accessToken)
+        : await _storage.readUserId();
+
+    state = SessionActive(Session.fromToken(token, userId: userId));
+  }
+
+  /// Resuelve quién inició sesión y decide si el cache del turno anterior
+  /// sobrevive.
+  ///
+  /// Se borra salvo que la identidad coincida con la guardada. Los dos casos
+  /// que parecen excesivos son los que importan: una instalación nueva no tiene
+  /// identidad guardada y borra una base vacía, que no cuesta nada; y si el
+  /// servidor no contesta quién es, se borra igual. Fallar hacia el borrado es
+  /// la única dirección segura, porque la alternativa es enseñarle los datos de
+  /// una persona a la siguiente que agarre el teléfono del centro.
+  Future<String?> _adoptIdentity(String accessToken) async {
+    final previous = await _storage.readUserId();
+
+    String? current;
+    try {
+      current = (await _repository.me(accessToken)).id;
+    } on Object {
+      current = null;
+    }
+
+    if (current == null || current != previous) {
+      await ref.read(readModelResetProvider)();
+    }
+    await _storage.writeUserId(current);
+
+    return current;
   }
 
   Future<void> _clear({String? message}) async {
