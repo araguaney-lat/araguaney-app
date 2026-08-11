@@ -41,9 +41,10 @@ contract's public QR endpoint is stale documentation upstream.
 
 No authenticated route translates a code into an identifier, for boxes or for
 pallets. The public fichas `GET /b/{code}` and `GET /p/{code}` fill that gap:
-they return typed JSON and their Turnstile gate lives in the web proxy rather
-than in the API route. Adopting them widened `swagger_parser.yaml` past `/v1`,
-in its own commit and with the client regenerated.
+the contract's read path for a scanned code, unauthenticated by design and
+carrying only what anyone scanning the label is meant to see. Adopting them
+widened `swagger_parser.yaml` past `/v1`, in its own commit and with the client
+regenerated.
 
 Donations are the exception: `GET /v1/donations/{code}` resolves by code with
 the session, so a `DN-` scan opens the real record.

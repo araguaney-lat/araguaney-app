@@ -32,10 +32,11 @@ generators are `intake_service`, `box_code_service` and `pallet_service`.
 | `DN-` donation | `GET /v1/donations/{code}` | — |
 
 There is no authenticated endpoint that translates a code into an identifier.
-The public fichas fill that gap: they return typed JSON and their Turnstile gate
-lives in the web proxy, not in the API route, so the application can call them.
-Adopting them meant widening `swagger_parser.yaml` beyond `/v1` — done in its
-own commit, with the client regenerated rather than hand-written.
+The public fichas fill that gap. They are the contract's read path for a scanned
+code — unauthenticated by design, rate-limited by the server, and carrying only
+what anyone scanning the label is meant to see — and they return typed JSON.
+Adopting them meant widening `swagger_parser.yaml` beyond `/v1`, done in its own
+commit with the client regenerated rather than hand-written.
 
 ## Design
 
