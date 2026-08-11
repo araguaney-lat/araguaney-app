@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../core/api/api_providers.dart';
+import '../../../core/api/generated/models/campaign_out.dart';
 import '../../../core/api/generated/models/donor_input.dart';
 import '../../../core/api/generated/models/intake_out.dart';
 import '../domain/box_draft_input.dart';
@@ -16,6 +17,16 @@ final captureIdGeneratorProvider = Provider<String Function()>(
 
 final intakeRepositoryProvider = Provider<IntakeRepository>(
   (ref) => IntakeRepository(ref.watch(restClientProvider).intakes),
+);
+
+/// Campañas en las que participa quien capturó la sesión. Se consultan en
+/// línea: elegir campaña es parte del camino de escritura, que en esta fase
+/// exige señal de todos modos.
+final myCampaignsProvider = FutureProvider<List<CampaignOut>>(
+  (ref) => ref
+      .watch(restClientProvider)
+      .campaigns
+      .listMyCampaignsV1CampaignsMineGet(),
 );
 
 /// Las capturas registradas del centro. Se consultan en línea: la lectura sin

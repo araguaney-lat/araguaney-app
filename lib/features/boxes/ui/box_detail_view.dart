@@ -5,8 +5,10 @@ import '../../../core/connectivity/connectivity_controller.dart';
 import '../../../core/db/app_database.dart';
 import '../../../core/db/daos/boxes_dao.dart';
 import '../../../core/sync/sync_coordinator.dart';
+import '../../../core/sync/sync_outcome.dart';
 import '../../../core/ui/record_field.dart';
 import '../data/boxes_providers.dart';
+import 'box_label_view.dart';
 import 'box_status_label.dart';
 
 /// Ficha de una caja, con el mismo contenido que su registro en la web.
@@ -49,20 +51,97 @@ class _BoxDetailViewState extends ConsumerState<BoxDetailView> {
     ref.read(syncCoordinatorProvider).report([outcome]);
   }
 
+  /// Sellar exige conexión: decide sobre estado compartido que puede estar
+  /// cambiando en otro dispositivo. Sin señal la pantalla lo explica en vez de
+  /// encolar una decisión a ciegas.
+  Future<void> _seal() async {
+    setState(() => _sealing = true);
+    final outcome = await ref.read(boxesRepositoryProvider).seal(widget.boxId);
+    if (!mounted) return;
+
+    ref.read(syncCoordinatorProvider).report([outcome]);
+    setState(() => _sealing = false);
+
+    if (outcome case SyncFailed(:final failure)) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(failure.operatorMessage)));
+    }
+  }
+
+  bool _sealing = false;
+
   @override
   Widget build(BuildContext context) {
     final box = ref.watch(boxProvider(widget.boxId));
+    final offline =
+        ref.watch(connectivityControllerProvider) == ConnectivityStatus.offline;
 
     return Scaffold(
-      appBar: AppBar(title: Text(widget.code)),
+      appBar: AppBar(
+        title: Text(widget.code),
+        actions: [
+          IconButton(
+            tooltip: 'Ver etiqueta',
+            icon: const Icon(Icons.qr_code_2),
+            onPressed: () =>
+                Navigator.of(context).push(BoxLabelView.route(widget.code)),
+          ),
+        ],
+      ),
       body: switch (box) {
         AsyncData(value: final item?) => _BoxFields(item: item),
         AsyncData() => const _NotCachedView(),
         AsyncError() => const _NotCachedView(),
         _ => const Center(child: CircularProgressIndicator()),
       },
+      bottomNavigationBar: switch (box) {
+        AsyncData(value: final item?) when item.box.sealedAt == null =>
+          _SealBar(offline: offline, sealing: _sealing, onSeal: _seal),
+        _ => null,
+      },
     );
   }
+}
+
+class _SealBar extends StatelessWidget {
+  const _SealBar({
+    required this.offline,
+    required this.sealing,
+    required this.onSeal,
+  });
+
+  final bool offline;
+  final bool sealing;
+  final VoidCallback onSeal;
+
+  @override
+  Widget build(BuildContext context) => SafeArea(
+    child: Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (offline)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Text(
+                'Sellar necesita conexión: otra persona puede estar moviendo '
+                'esta caja ahora mismo, y decidirlo a ciegas dejaría dos '
+                'versiones de la misma caja.',
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            ),
+          FilledButton.icon(
+            onPressed: offline || sealing ? null : onSeal,
+            icon: const Icon(Icons.lock_outline),
+            label: const Text('Sellar caja'),
+          ),
+        ],
+      ),
+    ),
+  );
 }
 
 class _BoxFields extends StatelessWidget {

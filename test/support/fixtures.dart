@@ -27,6 +27,7 @@ BoxRow boxRow({
   String unit = 'unidad',
   String status = 'open',
   DateTime? createdAt,
+  DateTime? sealedAt,
 }) => BoxRow(
   id: id,
   code: code,
@@ -35,6 +36,7 @@ BoxRow boxRow({
   quantity: quantity,
   unit: unit,
   status: status,
+  sealedAt: sealedAt,
   createdAt: createdAt ?? testNow,
 );
 

@@ -30,7 +30,8 @@ void main() {
 
     await repositoryOn(adapter).submit(draft);
 
-    expect(adapter.requests.single.data['capture_id'], 'capture-1');
+    final body = adapter.requests.single.data as Map<String, dynamic>;
+    expect(body['capture_id'], 'capture-1');
   });
 
   test('being asked to identify the donor is its own outcome', () async {

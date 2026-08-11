@@ -5,6 +5,7 @@ import '../../../core/api/generated/models/donation_out.dart';
 import '../../../core/api/generated/models/pallet_public_out.dart';
 import '../../../core/ui/record_field.dart';
 import '../../boxes/ui/box_status_label.dart';
+import '../../intake/ui/intake_form_view.dart';
 import '../data/scan_resolution.dart';
 
 /// Lo que se ve después de escanear, salvo cuando la caja estaba cacheada: en
@@ -117,10 +118,6 @@ class _DonationFields extends StatelessWidget {
   Widget build(BuildContext context) => ListView(
     padding: const EdgeInsets.symmetric(vertical: 8),
     children: [
-      const _Notice(
-        'Registrar la recepción de esta donación llega con la captura, en una '
-        'fase siguiente. Por ahora se consulta.',
-      ),
       RecordField(label: 'Estado', value: donation.status),
       RecordField(
         label: 'Registrada',
@@ -132,6 +129,22 @@ class _DonationFields extends StatelessWidget {
           label: item.freeText ?? 'Artículo',
           value: '${item.quantity} ${item.unit}',
         ),
+      const SizedBox(height: 16),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: FilledButton.icon(
+          onPressed: () => Navigator.of(
+            context,
+          ).push(IntakeFormView.route(donationId: donation.id)),
+          icon: const Icon(Icons.inventory_2_outlined),
+          label: const Text('Capturar esta donación'),
+        ),
+      ),
+      const SizedBox(height: 8),
+      const _Notice(
+        'Lo que se registra es lo que llegó. Los artículos de arriba son lo '
+        'que declaró quien donó, y no se convierten en cajas solos.',
+      ),
     ],
   );
 }

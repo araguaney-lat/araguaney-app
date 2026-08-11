@@ -1,0 +1,62 @@
+import 'package:flutter/material.dart';
+
+import '../../../core/api/generated/models/intake_out.dart';
+import '../../boxes/ui/box_label_view.dart';
+
+/// Lo que se ve cuando el servidor aceptó la captura.
+///
+/// Su trabajo es que las cajas se etiqueten antes de moverse: los códigos que
+/// asignó el servidor están aquí, cada uno a un toque de su QR.
+class IntakeSubmittedView extends StatelessWidget {
+  const IntakeSubmittedView({super.key, required this.intake});
+
+  final IntakeOut intake;
+
+  static Route<void> route(IntakeOut intake) => MaterialPageRoute<void>(
+    builder: (_) => IntakeSubmittedView(intake: intake),
+  );
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+    appBar: AppBar(title: const Text('Captura registrada')),
+    body: ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        Row(
+          children: [
+            const Icon(Icons.check_circle_outline, size: 32),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                '${intake.boxes.length} '
+                '${intake.boxes.length == 1 ? 'caja registrada' : 'cajas registradas'}',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        Text(
+          'Etiqueta cada caja con su código antes de moverla.',
+          style: Theme.of(context).textTheme.bodySmall,
+        ),
+        const SizedBox(height: 16),
+        for (final box in intake.boxes)
+          Card(
+            child: ListTile(
+              title: Text(box.code),
+              subtitle: Text('${box.quantity} ${box.unit}'),
+              trailing: const Icon(Icons.qr_code_2),
+              onTap: () =>
+                  Navigator.of(context).push(BoxLabelView.route(box.code)),
+            ),
+          ),
+        const SizedBox(height: 24),
+        FilledButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Terminar'),
+        ),
+      ],
+    ),
+  );
+}
