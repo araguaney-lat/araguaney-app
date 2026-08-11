@@ -61,6 +61,68 @@ Map<String, Object?> productTypeJson({
   'unspsc_code': null,
 };
 
+Map<String, Object?> publicBoxJson({
+  String code = 'BX-0001',
+  String status = 'sealed',
+  String displayName = 'Paracetamol 500 mg',
+}) => {
+  'code': code,
+  'status': status,
+  'category': 'medicamento',
+  'display_name': displayName,
+  'quantity': 10,
+  'unit': 'unidad',
+  'expiry_date': null,
+  'sealed_at': testNow.toIso8601String(),
+  'delivered': false,
+  'delivered_at': null,
+};
+
+Map<String, Object?> publicPalletJson({
+  String code = 'TM-0001',
+  String status = 'open',
+  String centerName = 'Centro Caracas',
+}) => {
+  'code': code,
+  'status': status,
+  'center_name': centerName,
+  'box_count': 4,
+  'closed_at': null,
+  'delivered': false,
+  'delivered_at': null,
+};
+
+Map<String, Object?> donationJson({
+  String code = 'DN-0001',
+  String status = 'REGISTERED',
+  List<Map<String, Object?>>? items,
+}) => {
+  'id': 'donation-1',
+  'code': code,
+  'status': status,
+  'created_at': testNow.toIso8601String(),
+  'registered_at': testNow.toIso8601String(),
+  'atypical_volume': false,
+  'intended_campaign_id': null,
+  'intended_center_id': null,
+  'received_center_id': null,
+  'notes': null,
+  'photos': const [],
+  'items':
+      items ??
+      [
+        {
+          'id': 'item-1',
+          'quantity': 3,
+          'unit': 'caja',
+          'added_by': 'donor',
+          'free_text': 'Paracetamol 500 mg',
+          'product_type_id': null,
+          'reception_status': null,
+        },
+      ],
+};
+
 Map<String, Object?> boxJson({
   String id = 'box-1',
   String code = 'CJ-0001',

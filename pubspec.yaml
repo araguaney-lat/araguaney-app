@@ -47,6 +47,7 @@ dependencies:
   package_info_plus: ^10.2.1
   pub_semver: ^2.2.0
   connectivity_plus: ^7.3.1
+  mobile_scanner: ^7.4.0
 
 dev_dependencies:
   flutter_test:

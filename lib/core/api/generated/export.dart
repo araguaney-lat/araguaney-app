@@ -3,8 +3,9 @@
 // ignore_for_file: type=lint, unused_import, invalid_annotation_target, unnecessary_import
 
 // Clients
-export 'clients/auth_api.dart';
 export 'clients/boxes_api.dart';
+export 'clients/pallets_api.dart';
+export 'clients/auth_api.dart';
 export 'clients/campaigns_api.dart';
 export 'clients/catalog_api.dart';
 export 'clients/center_applications_api.dart';
@@ -18,7 +19,6 @@ export 'clients/exports_api.dart';
 export 'clients/incidents_api.dart';
 export 'clients/intakes_api.dart';
 export 'clients/messages_api.dart';
-export 'clients/pallets_api.dart';
 export 'clients/product_types_api.dart';
 export 'clients/reports_api.dart';
 export 'clients/requests_api.dart';
@@ -43,6 +43,7 @@ export 'models/body_login_v1_auth_login_post.dart';
 export 'models/box_code_block_out.dart';
 export 'models/box_code_reserve_in.dart';
 export 'models/box_draft.dart';
+export 'models/box_public_out.dart';
 export 'models/campaign_create.dart';
 export 'models/campaign_member_add.dart';
 export 'models/campaign_member_out.dart';
@@ -94,6 +95,7 @@ export 'models/pallet_close_in.dart';
 export 'models/pallet_create.dart';
 export 'models/pallet_detail_out.dart';
 export 'models/pallet_out.dart';
+export 'models/pallet_public_out.dart';
 export 'models/photo_confirm_in.dart';
 export 'models/photo_upload_url_in.dart';
 export 'models/photo_upload_url_out.dart';

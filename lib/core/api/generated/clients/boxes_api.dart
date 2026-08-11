@@ -8,6 +8,7 @@ import 'package:retrofit/retrofit.dart';
 import '../models/app_schemas_box_box_out.dart';
 import '../models/box_code_block_out.dart';
 import '../models/box_code_reserve_in.dart';
+import '../models/box_public_out.dart';
 import '../models/export_job_out.dart';
 import '../models/qr_event_out.dart';
 
@@ -16,6 +17,14 @@ part 'boxes_api.g.dart';
 @RestApi()
 abstract class BoxesApi {
   factory BoxesApi(Dio dio, {String? baseUrl}) = _BoxesApi;
+
+  /// Box Public Ficha.
+  ///
+  /// Public box ficha — called via Next.js proxy (Turnstile-gated). No edge cache.
+  @GET('/b/{code}')
+  Future<BoxPublicOut> boxPublicFichaBCodeGet({
+    @Path('code') required String code,
+  });
 
   /// List Boxes
   @GET('/v1/boxes')

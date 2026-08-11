@@ -5,6 +5,7 @@ import '../../../core/connectivity/connectivity_controller.dart';
 import '../../../core/db/app_database.dart';
 import '../../../core/db/daos/boxes_dao.dart';
 import '../../../core/sync/sync_coordinator.dart';
+import '../../../core/ui/record_field.dart';
 import '../data/boxes_providers.dart';
 import 'box_status_label.dart';
 
@@ -77,43 +78,22 @@ class _BoxFields extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.symmetric(vertical: 8),
       children: [
-        _Field(label: 'Estado', value: boxStatusLabel(status)),
-        _Field(
+        RecordField(label: 'Estado', value: boxStatusLabel(status)),
+        RecordField(
           label: 'Producto',
           value: item.productName ?? 'No descargado en este dispositivo',
         ),
-        _Field(label: 'Cantidad', value: '$quantity $unit'),
-        if (batch case final batch?) _Field(label: 'Lote', value: batch),
+        RecordField(label: 'Cantidad', value: '$quantity $unit'),
+        if (batch case final batch?) RecordField(label: 'Lote', value: batch),
         if (expiryDate case final expiry?)
-          _Field(label: 'Caducidad', value: _formatDate(expiry)),
+          RecordField(label: 'Caducidad', value: formatShortDate(expiry)),
         if (weightKg case final weight?)
-          _Field(label: 'Peso', value: '$weight kg'),
+          RecordField(label: 'Peso', value: '$weight kg'),
         if (item.box.rejectReason case final reason?)
-          _Field(label: 'Motivo del rechazo', value: reason),
+          RecordField(label: 'Motivo del rechazo', value: reason),
       ],
     );
   }
-
-  /// Fecha corta en el orden que se lee en la región. `intl` formatearía lo
-  /// mismo a cambio de arrastrar la localización a una pantalla de solo
-  /// lectura.
-  static String _formatDate(DateTime date) =>
-      '${date.day.toString().padLeft(2, '0')}/'
-      '${date.month.toString().padLeft(2, '0')}/${date.year}';
-}
-
-class _Field extends StatelessWidget {
-  const _Field({required this.label, required this.value});
-
-  final String label;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) => ListTile(
-    dense: true,
-    title: Text(label, style: Theme.of(context).textTheme.labelMedium),
-    subtitle: Text(value, style: Theme.of(context).textTheme.bodyLarge),
-  );
 }
 
 class _NotCachedView extends ConsumerWidget {
