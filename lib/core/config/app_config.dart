@@ -30,6 +30,18 @@ abstract final class AppConfig {
     defaultValue: 'http://localhost:8000',
   );
 
+  /// URL base del sitio web público.
+  ///
+  /// La necesita el QR que se dibuja en el dispositivo: su contenido tiene que
+  /// ser exactamente el que genera el backend (`{base}/b/{code}`), o una
+  /// etiqueta impresa desde el móvil llevaría a otro sitio que una impresa
+  /// desde el panel. No es la misma URL que la de la API: el QR lo escanea
+  /// quien recibe la caja, con un navegador.
+  static const String webBaseUrl = String.fromEnvironment(
+    'WEB_BASE_URL',
+    defaultValue: 'http://localhost:3000',
+  );
+
   /// Sabor activo de la compilación.
   static AppFlavor get flavor => switch (_flavorRaw) {
     'prod' => AppFlavor.prod,

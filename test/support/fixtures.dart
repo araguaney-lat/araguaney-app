@@ -61,6 +61,41 @@ Map<String, Object?> productTypeJson({
   'unspsc_code': null,
 };
 
+Map<String, Object?> intakeJson({
+  String id = 'intake-1',
+  String campaignId = 'campaign-1',
+  List<Map<String, Object?>>? boxes,
+}) => {
+  'id': id,
+  'center_id': 'center-1',
+  'campaign_id': campaignId,
+  'donante_libre': null,
+  'donor': null,
+  'notes': null,
+  'created_at': testNow.toIso8601String(),
+  'boxes': boxes ?? [intakeBoxJson()],
+};
+
+/// La caja tal como la devuelve una captura: sin `center_id` ni `pallet_id`,
+/// que a esa altura todavía no existen.
+Map<String, Object?> intakeBoxJson({
+  String id = 'box-1',
+  String code = 'BX-0001',
+  String status = 'open',
+}) => {
+  'id': id,
+  'code': code,
+  'product_type_id': 'pt-1',
+  'quantity': 10,
+  'unit': 'unidad',
+  'status': status,
+  'batch': null,
+  'created_at': testNow.toIso8601String(),
+  'expiry_date': null,
+  'reject_reason': null,
+  'weight_kg': null,
+};
+
 Map<String, Object?> publicBoxJson({
   String code = 'BX-0001',
   String status = 'sealed',
