@@ -69,6 +69,10 @@ class BoxesDao extends DatabaseAccessor<AppDatabase> with _$BoxesDaoMixin {
   Stream<BoxRow?> watchById(String id) =>
       (select(boxes)..where((t) => t.id.equals(id))).watchSingleOrNull();
 
+  /// Busca por el código impreso en la etiqueta, que es lo que trae un escaneo.
+  Future<BoxRow?> findByCode(String code) =>
+      (select(boxes)..where((t) => t.code.equals(code))).getSingleOrNull();
+
   Future<BoxRow?> findById(String id) =>
       (select(boxes)..where((t) => t.id.equals(id))).getSingleOrNull();
 
