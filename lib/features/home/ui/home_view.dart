@@ -5,6 +5,7 @@ import '../../../core/auth/auth_providers.dart';
 import '../../../core/auth/session.dart';
 import '../../../core/i18n/generated/app_localizations.dart';
 import '../../boxes/ui/boxes_list_view.dart';
+import '../../scanning/ui/scanner_view.dart';
 
 /// Pantalla principal, todavía provisional: las features operativas llegan en
 /// las fases siguientes. Hoy confirma quién inició sesión y permite cerrarla.
@@ -56,6 +57,13 @@ class HomeView extends ConsumerWidget {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 24),
+              FilledButton.icon(
+                icon: const Icon(Icons.qr_code_scanner),
+                label: const Text('Escanear código'),
+                onPressed: () =>
+                    Navigator.of(context).push(ScannerView.route()),
+              ),
+              const SizedBox(height: 12),
               FilledButton.tonalIcon(
                 icon: const Icon(Icons.inventory_2_outlined),
                 label: const Text('Cajas del centro'),

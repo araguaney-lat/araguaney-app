@@ -4,6 +4,11 @@
 <dict>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
+	<!-- Texto que iOS muestra al pedir la cámara. Va en español porque lo lee
+	     quien opera en un centro de acopio, y explica para qué sirve: un
+	     permiso sin motivo se deniega. -->
+	<key>NSCameraUsageDescription</key>
+	<string>Araguaney usa la cámara para leer los códigos QR de las cajas, las tarimas y las donaciones.</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
