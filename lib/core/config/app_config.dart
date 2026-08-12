@@ -42,6 +42,17 @@ abstract final class AppConfig {
     defaultValue: 'http://localhost:3000',
   );
 
+  /// Destino de los informes de error.
+  ///
+  /// Vacío por defecto y vacío en cualquier compilación local: sin DSN no se
+  /// inicializa Sentry y la aplicación funciona igual. Así un fork no manda sus
+  /// errores a la infraestructura de nadie más, y quien programa no ensucia el
+  /// panel del proyecto con trazas de su portátil.
+  static const String sentryDsn = String.fromEnvironment('SENTRY_DSN');
+
+  /// Si hay a dónde reportar.
+  static bool get crashReportingEnabled => sentryDsn.isNotEmpty;
+
   /// Sabor activo de la compilación.
   static AppFlavor get flavor => switch (_flavorRaw) {
     'prod' => AppFlavor.prod,
