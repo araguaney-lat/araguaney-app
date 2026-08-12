@@ -1,6 +1,7 @@
 import 'package:araguaney_app/core/api/generated/clients/intakes_api.dart';
 import 'package:araguaney_app/core/api/generated/clients/product_types_api.dart';
 import 'package:araguaney_app/core/api/generated/models/box_draft.dart';
+import 'package:araguaney_app/core/connectivity/connectivity_controller.dart';
 import 'package:araguaney_app/core/db/app_database.dart';
 import 'package:araguaney_app/features/catalog/data/catalog_providers.dart';
 import 'package:araguaney_app/features/catalog/data/catalog_repository.dart';
@@ -12,15 +13,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../support/fake_api.dart';
+import '../../support/fake_connectivity.dart';
 import '../../support/fake_http_adapter.dart';
 import '../../support/fixtures.dart';
 import '../../support/test_database.dart';
 
 void main() {
   late AppDatabase db;
+  late FakeConnectivityProbe probe;
 
   setUp(() async {
     db = openTestDatabase();
+    probe = FakeConnectivityProbe();
     await db.catalogDao.replaceAll([
       productTypeRow(id: 'pt-1', displayName: 'Paracetamol 500 mg'),
       productTypeRow(
@@ -31,7 +35,10 @@ void main() {
     ]);
   });
 
-  tearDown(() => db.close());
+  tearDown(() async {
+    await db.close();
+    await probe.dispose();
+  });
 
   Future<void> pumpForm(WidgetTester tester, FakeHttpAdapter adapter) async {
     final dio = fakeDio(adapter);
@@ -45,6 +52,11 @@ void main() {
           CatalogRepository(api: ProductTypesApi(dio), database: db),
         ),
         myCampaignsProvider.overrideWith((ref) async => []),
+        // Estas pruebas son las de la fase anterior y siguen midiendo lo
+        // mismo: con conexión la captura viaja en el momento. Sin sesión no
+        // hay cola posible, que es exactamente lo que se quiere aquí.
+        currentUserIdProvider.overrideWithValue(null),
+        connectivityProbeProvider.overrideWithValue(probe),
       ],
     );
     addTearDown(container.dispose);

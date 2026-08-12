@@ -11,9 +11,21 @@ void main() {
   setUp(() => db = openTestDatabase());
   tearDown(() => db.close());
 
-  test('opens at schema version 1', () {
-    expect(db.schemaVersion, 1);
+  test('opens at schema version 2', () {
+    expect(db.schemaVersion, 2);
   });
+
+  test(
+    'the offline queue and the reserved codes are usable from the start',
+    () async {
+      // Llegaron en la versión 2 del esquema; que existan aquí comprueba que la
+      // creación desde cero las incluye, no solo la migración.
+      await db.boxCodesDao.store(['BX-A'], userId: 'user-1', at: testNow);
+
+      expect(await db.boxCodesDao.available('user-1'), 1);
+      expect(await db.captureQueueDao.pending('user-1'), isEmpty);
+    },
+  );
 
   test('clearReadModel empties every cached table', () async {
     await db.catalogDao.replaceAll([productTypeRow()]);

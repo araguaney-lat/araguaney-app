@@ -5,7 +5,9 @@ import '../../../core/auth/auth_providers.dart';
 import '../../../core/auth/session.dart';
 import '../../../core/i18n/generated/app_localizations.dart';
 import '../../boxes/ui/boxes_list_view.dart';
+import '../../intake/data/intake_providers.dart';
 import '../../intake/ui/intake_list_view.dart';
+import '../../intake/ui/pending_captures_view.dart';
 import '../../scanning/ui/scanner_view.dart';
 
 /// Pantalla principal, todavía provisional: las features operativas llegan en
@@ -65,6 +67,8 @@ class HomeView extends ConsumerWidget {
                     Navigator.of(context).push(ScannerView.route()),
               ),
               const SizedBox(height: 12),
+              _PendingCapturesButton(),
+              const SizedBox(height: 12),
               FilledButton.tonalIcon(
                 icon: const Icon(Icons.add_box_outlined),
                 label: const Text('Capturas'),
@@ -82,6 +86,32 @@ class HomeView extends ConsumerWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+/// Acceso a la cola, con el contador siempre a la vista.
+///
+/// El contador es permanente y no un aviso que se cierra: una captura que
+/// espera señal tiene que seguir molestando hasta que salga, porque nadie
+/// recuerda por sí solo que dejó tres donaciones sin enviar.
+class _PendingCapturesButton extends ConsumerWidget {
+  const _PendingCapturesButton();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final pending = ref.watch(pendingCaptureCountProvider).valueOrNull ?? 0;
+    if (pending == 0) return const SizedBox.shrink();
+
+    return FilledButton.tonalIcon(
+      icon: Badge(
+        label: Text('$pending'),
+        child: const Icon(Icons.cloud_upload_outlined),
+      ),
+      label: Text(
+        pending == 1 ? '1 captura sin enviar' : '$pending capturas sin enviar',
+      ),
+      onPressed: () => Navigator.of(context).push(PendingCapturesView.route()),
     );
   }
 }

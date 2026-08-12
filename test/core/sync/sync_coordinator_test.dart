@@ -1,4 +1,5 @@
 import 'package:araguaney_app/core/api/generated/clients/boxes_api.dart';
+import 'package:araguaney_app/core/api/generated/clients/intakes_api.dart';
 import 'package:araguaney_app/core/api/generated/clients/product_types_api.dart';
 import 'package:araguaney_app/core/connectivity/connectivity_controller.dart';
 import 'package:araguaney_app/core/db/app_database.dart';
@@ -7,6 +8,11 @@ import 'package:araguaney_app/features/boxes/data/boxes_providers.dart';
 import 'package:araguaney_app/features/boxes/data/boxes_repository.dart';
 import 'package:araguaney_app/features/catalog/data/catalog_providers.dart';
 import 'package:araguaney_app/features/catalog/data/catalog_repository.dart';
+import 'package:araguaney_app/features/intake/data/capture_queue_repository.dart';
+import 'package:araguaney_app/features/intake/data/capture_queue_sync.dart';
+import 'package:araguaney_app/features/intake/data/intake_providers.dart';
+import 'package:araguaney_app/features/intake/domain/box_draft_input.dart';
+import 'package:araguaney_app/features/intake/domain/intake_draft.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -30,10 +36,20 @@ void main() {
     await probe.dispose();
   });
 
-  ProviderContainer containerWith(FakeHttpAdapter adapter) {
+  ProviderContainer containerWith(FakeHttpAdapter adapter, {String? userId}) {
     final container = ProviderContainer(
       overrides: [
         connectivityProbeProvider.overrideWithValue(probe),
+        // Sin sesión no hay cola que vaciar, que es el caso de la mayoría de
+        // estas pruebas: lo que se está midiendo es el refresco.
+        currentUserIdProvider.overrideWithValue(userId),
+        captureQueueSyncProvider.overrideWithValue(
+          CaptureQueueSync(
+            api: IntakesApi(fakeDio(adapter)),
+            database: db,
+            now: () => testNow,
+          ),
+        ),
         catalogRepositoryProvider.overrideWithValue(
           CatalogRepository(
             api: ProductTypesApi(fakeDio(adapter)),
@@ -131,5 +147,28 @@ void main() {
     await Future.wait([coordinator.refreshAll(), coordinator.refreshAll()]);
 
     expect(adapter.requests, hasLength(2));
+  });
+
+  test('a session with pending captures empties its queue too', () async {
+    await CaptureQueueRepository(database: db, now: () => testNow).enqueue(
+      draft: const IntakeDraft(captureId: 'capture-1').addBox(
+        BoxDraftInput(
+          productType: productTypeRow(),
+          quantity: 1,
+          unit: 'unidad',
+        ),
+      ),
+      userId: 'user-1',
+    );
+    final adapter = FakeHttpAdapter(
+      (options) => options.path.contains('intakes')
+          ? FakeResponse(201, intakeJson())
+          : FakeResponse(200, const []),
+    );
+    final container = containerWith(adapter, userId: 'user-1');
+
+    await container.read(syncCoordinatorProvider).refreshAll();
+
+    expect(await db.captureQueueDao.pending('user-1'), isEmpty);
   });
 }

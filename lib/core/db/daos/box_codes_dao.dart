@@ -37,29 +37,38 @@ class BoxCodesDao extends DatabaseAccessor<AppDatabase>
 
   Future<int> available(String userId) => watchAvailable(userId).first;
 
-  /// Toma [count] códigos y los marca gastados, en una transacción.
+  /// Toma [count] códigos y los marca gastados **en una sola sentencia**.
   ///
-  /// La transacción es lo que impide que dos cajas de la misma captura reciban
-  /// el mismo número: leer y marcar por separado tiene una carrera justo aquí.
-  /// Devuelve menos de [count] si el bloque se agotó; quedarse sin códigos no
+  /// Reclamar y marcar tienen que ser un solo acto: leer los libres y después
+  /// escribirlos deja una carrera justo en medio, y el premio de esa carrera
+  /// son dos cajas con la misma etiqueta —dos bultos que el manifiesto declara
+  /// como uno—. `UPDATE ... RETURNING` no tiene ese hueco: lo que devuelve es
+  /// exactamente lo que marcó.
+  ///
+  /// Devuelve menos de [count] si el bloque se agotó. Quedarse sin códigos no
   /// puede impedir capturar, solo etiquetar.
   Future<List<String>> take(
     int count, {
     required String userId,
     required DateTime at,
-  }) => transaction(() async {
-    final rows =
-        await (select(boxCodeReservations)
-              ..where((t) => t.userId.equals(userId) & t.spentAt.isNull())
-              ..orderBy([(t) => OrderingTerm(expression: t.reservedAt)])
-              ..limit(count))
-            .get();
+  }) async {
+    if (count < 1) return const [];
 
-    for (final row in rows) {
-      await (update(boxCodeReservations)..where((t) => t.code.equals(row.code)))
-          .write(BoxCodeReservationsCompanion(spentAt: Value(at)));
-    }
+    final rows = await customSelect(
+      'UPDATE box_code_reservations SET spent_at = ? '
+      'WHERE code IN ('
+      '  SELECT code FROM box_code_reservations '
+      '  WHERE user_id = ? AND spent_at IS NULL '
+      '  ORDER BY reserved_at LIMIT ?'
+      ') RETURNING code',
+      variables: [
+        Variable<DateTime>(at),
+        Variable<String>(userId),
+        Variable<int>(count),
+      ],
+      readsFrom: {boxCodeReservations},
+    ).get();
 
-    return rows.map((row) => row.code).toList(growable: false);
-  });
+    return rows.map((row) => row.read<String>('code')).toList(growable: false);
+  }
 }

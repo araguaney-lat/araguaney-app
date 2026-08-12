@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../features/boxes/data/boxes_providers.dart';
 import '../../features/catalog/data/catalog_providers.dart';
+import '../../features/intake/data/intake_providers.dart';
 import '../connectivity/connectivity_controller.dart';
 import 'sync_outcome.dart';
 
@@ -36,9 +37,22 @@ class SyncCoordinator {
         _ref.read(boxesRepositoryProvider).refresh(),
       ]);
       report(outcomes);
+      await _flushQueue();
     } finally {
       _running = false;
     }
+  }
+
+  /// Vacía la cola de capturas de quien tenga la sesión abierta.
+  ///
+  /// Va después de refrescar y no antes: si no hay servidor, el refresco ya lo
+  /// descubrió y el vaciado se detiene en su primera petición sin gastar más.
+  /// Sin sesión no se vacía nada: la cola es de una persona concreta y sin
+  /// saber cuál no hay nada que enviar.
+  Future<void> _flushQueue() async {
+    final userId = _ref.read(currentUserIdProvider);
+    if (userId == null || _disposed) return;
+    await _ref.read(captureQueueSyncProvider).flush(userId);
   }
 
   /// Traduce lo que pasó en las peticiones a estado de conexión.
