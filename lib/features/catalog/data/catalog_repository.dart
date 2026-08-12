@@ -23,8 +23,12 @@ class CatalogRepository {
   final AppDatabase _db;
   final DateTime Function() _now;
 
-  Stream<List<ProductTypeRow>> watchProductTypes({String? category}) =>
-      _db.catalogDao.watchAll(category: category);
+  Stream<List<ProductTypeRow>> watchProductTypes({
+    String? category,
+    String? search,
+  }) => _db.catalogDao.watchAll(category: category, search: search);
+
+  Future<List<String>> categories() => _db.catalogDao.categories();
 
   Stream<SyncMarkerRow?> watchSyncMarker() =>
       _db.syncMarkersDao.watch(SyncResource.productTypes);

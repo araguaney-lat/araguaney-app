@@ -18,3 +18,20 @@ final productTypesProvider =
           .watch(catalogRepositoryProvider)
           .watchProductTypes(category: category),
     );
+
+/// Filtro del catálogo local: categoría, texto, o ambos.
+typedef CatalogQuery = ({String? category, String? search});
+
+/// Búsqueda en el catálogo cacheado. Es local, así que responde igual sin
+/// señal y sin gastar una petición por tecla.
+final catalogSearchProvider =
+    StreamProvider.family<List<ProductTypeRow>, CatalogQuery>(
+      (ref, query) => ref
+          .watch(catalogRepositoryProvider)
+          .watchProductTypes(category: query.category, search: query.search),
+    );
+
+/// Categorías presentes en el catálogo local, para navegarlo sin teclear.
+final catalogCategoriesProvider = FutureProvider<List<String>>(
+  (ref) => ref.watch(catalogRepositoryProvider).categories(),
+);

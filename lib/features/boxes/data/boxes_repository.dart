@@ -71,6 +71,22 @@ class BoxesRepository {
     }
   }
 
+  /// Sella una caja.
+  ///
+  /// Exige conexión y no se encola: sellar decide sobre estado compartido que
+  /// puede estar cambiando en otro dispositivo, y resolverlo a ciegas
+  /// produciría dos verdades sobre la misma caja. El estado que devuelve el
+  /// servidor entra al cache, para que la lista lo refleje de inmediato.
+  Future<SyncOutcome> seal(String boxId) async {
+    try {
+      final box = await _boxesApi.sealBoxV1BoxesBoxIdSealPost(boxId: boxId);
+      await _db.boxesDao.upsert(toBoxRow(box));
+      return SyncSucceeded(at: _now(), itemCount: 1);
+    } on Object catch (error) {
+      return _recordFailure(error);
+    }
+  }
+
   Future<List<BoxRow>> _fetchWindow() async {
     final collected = <BoxRow>[];
     var offset = 0;

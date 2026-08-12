@@ -26,7 +26,7 @@
 |---|------|-------------|------------|--------|
 | 1 | Google Play developer account | Registration, identity verification, payment. External prerequisite. | 🟠 Medium | ⬜ Pending |
 | 2 | Upload keystore and signing config | Keystore generated and stored outside the repo; `key.properties` template documented; Play App Signing enabled. | 🟠 Medium | ⬜ Pending |
-| 3 | Release build configuration | Shrinking/obfuscation settings, plugin keep rules, release `AppConfig` values via `--dart-define`. | 🟠 Medium | ⬜ Pending |
+| 3 | Release build configuration | Shrinking/obfuscation settings, plugin keep rules, release `AppConfig` values via `--dart-define` (`API_BASE_URL`, `WEB_BASE_URL`, `APP_FLAVOR`). | 🟠 Medium | ⬜ Pending |
 | 4 | CI release workflow | Tag → build signed AAB with pinned Flutter version → artifact; secrets via GitHub Actions. | 🔴 High | ⬜ Pending |
 | 5 | Play internal testing | App created in the console, internal track configured, first AAB uploaded and installable. | 🟠 Medium | ⬜ Pending |
 | 6 | Version strategy | `versionCode`/`versionName` discipline documented and aligned with `GET /v1/client/version`. | 🟠 Medium | ⬜ Pending |

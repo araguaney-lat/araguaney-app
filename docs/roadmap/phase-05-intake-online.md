@@ -27,16 +27,32 @@
 
 | # | Task | Description | Complexity | Status |
 |---|------|-------------|------------|--------|
-| 1 | Intake form | Campaign, optional donor identity, free-text legacy donor field; mirrors the web flow's semantics. | 🔴 High | ⬜ Pending |
-| 2 | Product selection | From the local catalog with campaign visibility; search and category browsing. | 🟠 Medium | ⬜ Pending |
-| 3 | Box composition | One product type + one batch + one expiry per box; the UI makes mixing impossible, the schema remains the guarantee. | 🔴 High | ⬜ Pending |
-| 4 | Backend validation surface | Rejections (shelf life, controlled, required medicine fields) shown with the server's reason; nothing softened client-side. | 🟠 Medium | ⬜ Pending |
-| 5 | Donation prefill | Scanning a `DN-` code prefills the intake from the pre-registered donation. | 🟠 Medium | ⬜ Pending |
-| 6 | Box sealing | Online-only action with its reason stated in the UI; state change reflected in the local cache. | 🟠 Medium | ⬜ Pending |
-| 7 | Client-rendered QR label | Display a box's QR for immediate labeling; batch PDF stays server-side. | 🟠 Medium | ⬜ Pending |
-| 8 | Intake list and detail | The center's intakes with their outcome. | 🟠 Medium | ⬜ Pending |
-| 9 | Tests | Widget tests for form/box invariant UI; flow tests with mocked API. | 🔴 High | ⬜ Pending |
-| 10 | Roadmap update | Mark tasks and update totals. | 🟢 Low | ⬜ Pending |
+| 1 | Intake form | One screen: campaign, optional donor identity, free-text donor field, notes, and the boxes as a list. The capture key is generated on open and never regenerated. | 🔴 High | ✅ Done |
+| 2 | Product selection | From the local catalog with the campaign visibility the server served; search by name, brand or active ingredient, and category chips. Runs against Drift, so it works with no signal. | 🟠 Medium | ✅ Done |
+| 3 | Box composition | One product type + one batch + one expiry per box; the UI makes mixing impossible, the schema remains the guarantee. | 🔴 High | ✅ Done |
+| 4 | Backend validation surface | Rejections shown with the server's reason, nothing softened client-side. The escalation that asks to identify a donor is its own outcome: the client holds no threshold and only reacts to the response, resubmitting with the same capture key. | 🟠 Medium | ✅ Done |
+| 5 | Donation prefill | Scanning a `DN-` code opens the donation and starts a capture bound to it. Only `donation_id` is set: what the donor declared does not become boxes, because what is registered is what arrived. | 🟠 Medium | ✅ Done |
+| 6 | Box sealing | Online-only action with its reason stated in the UI; state change reflected in the local cache. | 🟠 Medium | ✅ Done |
+| 7 | Client-rendered QR label | Drawn on the device with the same payload the backend prints, so a box can be labelled the moment it is sealed even without signal. Adds `WEB_BASE_URL` as a build-time value. Batch PDF stays server-side. | 🟠 Medium | ✅ Done |
+| 8 | Intake list and detail | The center's intakes with their boxes, consulted online; each box opens its label. | 🟠 Medium | ✅ Done |
+| 9 | Tests | Draft, repository outcomes, form flow including the donor escalation and the resubmission with the same key, catalog search, sealing against real SQLite, and the label payload. | 🔴 High | ✅ Done |
+| 10 | Roadmap update | Mark tasks and update totals. | 🟢 Low | ✅ Done |
+
+---
+
+## Where the rules live
+
+`IntakeCreate` requires one field, `boxes`. The homogeneous-box invariant is
+the shape of `BoxDraft` itself — one product type, one batch, one expiry — so
+the interface cannot mix two products in a box because there is nowhere to
+write the second one. No client-side check enforces it.
+
+`POST /v1/intakes` is idempotent on `capture_id`, which is why retrying is the
+normal case rather than a hazard, and why the key is generated before the first
+attempt and never regenerated.
+
+The volume escalation and the donation terms are backend controls. The client
+carries neither threshold nor condition: it submits and reacts to the answer.
 
 ---
 

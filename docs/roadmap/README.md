@@ -11,8 +11,8 @@ it contains.
 
 ```mermaid
 pie title Tasks completed (94 tasks)
-    "Done" : 41
-    "Pending" : 52
+    "Done" : 51
+    "Pending" : 42
     "Blocked" : 1
 ```
 
@@ -23,13 +23,13 @@ pie title Tasks completed (94 tasks)
 | 2 | [Authentication and session](phase-02-auth-session.md) | 9 | 0 | ✅ 100% |
 | 3 | [Local cache and read operations](phase-03-local-cache-read.md) | 8 | 1 | 🟨 89% (1 blocked) |
 | 4 | [QR scanning](phase-04-qr-scanning.md) | 6 | 0 | ✅ 100% |
-| 5 | [Online intake and box operations](phase-05-intake-online.md) | 0 | 10 | ⬜ 0% |
+| 5 | [Online intake and box operations](phase-05-intake-online.md) | 10 | 0 | ✅ 100% |
 | 6 | [Offline capture queue](phase-06-offline-queue.md) | 0 | 10 | ⬜ 0% |
 | 7 | [Push notifications](phase-07-push-notifications.md) | 0 | 9 | ⬜ 0% |
 | 8 | [Android release and distribution](phase-08-android-release.md) | 0 | 9 | ⬜ 0% |
 | 9 | [iOS enablement](phase-09-ios-enablement.md) | 0 | 6 | ⬜ 0% |
 | 10 | [Operational parity backlog](phase-10-operational-parity.md) | 0 | 8 | ⬜ 0% |
-| **Total** | | **41** | **53** | **🟡 44%** |
+| **Total** | | **51** | **43** | **🟢 54%** |
 
 ## Blocked work
 

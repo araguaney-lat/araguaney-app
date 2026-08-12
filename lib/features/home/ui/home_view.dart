@@ -5,6 +5,7 @@ import '../../../core/auth/auth_providers.dart';
 import '../../../core/auth/session.dart';
 import '../../../core/i18n/generated/app_localizations.dart';
 import '../../boxes/ui/boxes_list_view.dart';
+import '../../intake/ui/intake_list_view.dart';
 import '../../scanning/ui/scanner_view.dart';
 
 /// Pantalla principal, todavía provisional: las features operativas llegan en
@@ -62,6 +63,13 @@ class HomeView extends ConsumerWidget {
                 label: const Text('Escanear código'),
                 onPressed: () =>
                     Navigator.of(context).push(ScannerView.route()),
+              ),
+              const SizedBox(height: 12),
+              FilledButton.tonalIcon(
+                icon: const Icon(Icons.add_box_outlined),
+                label: const Text('Capturas'),
+                onPressed: () =>
+                    Navigator.of(context).push(IntakeListView.route()),
               ),
               const SizedBox(height: 12),
               FilledButton.tonalIcon(
