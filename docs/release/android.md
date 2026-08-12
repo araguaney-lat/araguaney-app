@@ -65,6 +65,29 @@ without asking anyone for a key. What they cannot do is upload it.
   matched to the symbols from the same build. With no `SENTRY_DSN` the
   application starts normally and reports nowhere.
 
+## What the first real release build taught us
+
+Written down because none of it was visible until the bundle was actually
+assembled.
+
+- **`sentry_flutter` is pinned to `^9.0.0`.** The 8.x line still declares Kotlin
+  language version 1.6, which the current toolchain refuses to compile. Anything
+  that pulls it back below 9 breaks the release build while leaving debug builds
+  perfectly happy.
+- **R8 needs `-dontwarn com.google.android.play.core.**`.** Flutter's embedding
+  references Play Core's deferred-components API; this application ships no
+  deferred components, so those classes are not on the classpath and R8 stops
+  with a list of missing classes that are not actually missing.
+- **The bundle is around 72 MB.** Most of it is the ML Kit barcode model that
+  comes with `mobile_scanner`, plus one copy of the native libraries per
+  architecture. Play splits it per device, so what an operator downloads is a
+  fraction of that — but the number in the console will look alarming until you
+  know why.
+- **Two plugins still apply the Kotlin Gradle Plugin themselves**
+  (`mobile_scanner`, `sentry_flutter`). Flutter warns that future versions will
+  refuse to build in that case. It is a warning today and a broken release build
+  eventually; the fix is upstream, and the toolchain pin is what buys time.
+
 ## Distribution
 
 Play internal testing is the standing channel during development. Production

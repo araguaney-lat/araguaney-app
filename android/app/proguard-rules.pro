@@ -10,6 +10,13 @@
 -keep class io.flutter.plugin.** { *; }
 -keep class io.flutter.embedding.** { *; }
 
+# El embedding referencia la API de componentes diferidos de Play Core. Esta
+# aplicación no publica ningún componente diferido, así que esas clases no están
+# en el classpath y R8 solo necesita que se le diga que no las espere. Sin esta
+# línea el build de release falla con una lista de clases ausentes que no falta
+# ninguna.
+-dontwarn com.google.android.play.core.**
+
 # --- sqlite3 (Drift) ----------------------------------------------------------
 # La biblioteca nativa se resuelve por JNI; renombrarla deja la base local sin
 # abrir, que en esta aplicación significa quedarse sin catálogo y sin cola.

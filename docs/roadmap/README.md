@@ -11,9 +11,10 @@ it contains.
 
 ```mermaid
 pie title Tasks completed (94 tasks)
-    "Done" : 61
-    "Pending" : 32
-    "Blocked" : 1
+    "Done" : 65
+    "Pending" : 23
+    "Partial" : 2
+    "Blocked or external" : 4
 ```
 
 | Phase | Name | Done | Pending | Progress |
@@ -26,13 +27,18 @@ pie title Tasks completed (94 tasks)
 | 5 | [Online intake and box operations](phase-05-intake-online.md) | 10 | 0 | ✅ 100% |
 | 6 | [Offline capture queue](phase-06-offline-queue.md) | 10 | 0 | ✅ 100% |
 | 7 | [Push notifications](phase-07-push-notifications.md) | 0 | 9 | ⬜ 0% |
-| 8 | [Android release and distribution](phase-08-android-release.md) | 0 | 9 | ⬜ 0% |
+| 8 | [Android release and distribution](phase-08-android-release.md) | 4 | 5 | 🟨 44% (2 partial, 3 external) |
 | 9 | [iOS enablement](phase-09-ios-enablement.md) | 0 | 6 | ⬜ 0% |
 | 10 | [Operational parity backlog](phase-10-operational-parity.md) | 0 | 8 | ⬜ 0% |
-| **Total** | | **61** | **33** | **🟢 65%** |
+| **Total** | | **65** | **29** | **🟢 69%** |
 
 ## Blocked work
 
+- **Phase 08, tasks 1, 5 and 8** need a Google Play developer account, the app
+  created in its console, and listing assets. No code unblocks them. The upload
+  keystore (task 2) and the Sentry DSN (task 7) are key material that does not
+  belong in a repository; both are documented and the build reads them from
+  outside.
 - **Phase 03, task 5 (center stock screen)** needs a session-scoped backend
   endpoint returning stock by category for the caller's center. The `/v1`
   contract only aggregates stock nationally, and computing it on the device
@@ -59,5 +65,6 @@ The first internal-testing release worth handing to a real center is
 offline, distributed through Play internal testing. Push (07), iOS (09), and
 parity blocks (10) follow.
 
-Phases 01–06 are done. What stands between the current state and that release
-is Phase 08 alone.
+Phases 01–06 are done, and Phase 08's code half with them. What stands between
+the current state and that release is the material only a person can provide: a
+Play account and an upload keystore.
