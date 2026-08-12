@@ -11,8 +11,8 @@ it contains.
 
 ```mermaid
 pie title Tasks completed (94 tasks)
-    "Done" : 51
-    "Pending" : 42
+    "Done" : 61
+    "Pending" : 32
     "Blocked" : 1
 ```
 
@@ -24,12 +24,12 @@ pie title Tasks completed (94 tasks)
 | 3 | [Local cache and read operations](phase-03-local-cache-read.md) | 8 | 1 | 🟨 89% (1 blocked) |
 | 4 | [QR scanning](phase-04-qr-scanning.md) | 6 | 0 | ✅ 100% |
 | 5 | [Online intake and box operations](phase-05-intake-online.md) | 10 | 0 | ✅ 100% |
-| 6 | [Offline capture queue](phase-06-offline-queue.md) | 0 | 10 | ⬜ 0% |
+| 6 | [Offline capture queue](phase-06-offline-queue.md) | 10 | 0 | ✅ 100% |
 | 7 | [Push notifications](phase-07-push-notifications.md) | 0 | 9 | ⬜ 0% |
 | 8 | [Android release and distribution](phase-08-android-release.md) | 0 | 9 | ⬜ 0% |
 | 9 | [iOS enablement](phase-09-ios-enablement.md) | 0 | 6 | ⬜ 0% |
 | 10 | [Operational parity backlog](phase-10-operational-parity.md) | 0 | 8 | ⬜ 0% |
-| **Total** | | **51** | **43** | **🟢 54%** |
+| **Total** | | **61** | **33** | **🟢 65%** |
 
 ## Blocked work
 
@@ -58,3 +58,6 @@ The first internal-testing release worth handing to a real center is
 **Phases 01–06 + 08**: login, consult offline, scan, capture online and
 offline, distributed through Play internal testing. Push (07), iOS (09), and
 parity blocks (10) follow.
+
+Phases 01–06 are done. What stands between the current state and that release
+is Phase 08 alone.

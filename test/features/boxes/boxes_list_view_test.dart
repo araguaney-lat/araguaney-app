@@ -8,6 +8,7 @@ import 'package:araguaney_app/features/boxes/data/boxes_repository.dart';
 import 'package:araguaney_app/features/boxes/ui/boxes_list_view.dart';
 import 'package:araguaney_app/features/catalog/data/catalog_providers.dart';
 import 'package:araguaney_app/features/catalog/data/catalog_repository.dart';
+import 'package:araguaney_app/features/intake/data/intake_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -40,6 +41,10 @@ void main() {
     final container = ProviderContainer(
       overrides: [
         connectivityProbeProvider.overrideWithValue(probe),
+        // La pantalla dispara el coordinador al abrirse, y este vacía la cola
+        // de quien tenga sesión. Aquí no hay sesión: lo que se prueba es la
+        // lista.
+        currentUserIdProvider.overrideWithValue(null),
         catalogRepositoryProvider.overrideWithValue(
           CatalogRepository(
             api: ProductTypesApi(fakeDio(http)),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/api/generated/models/campaign_out.dart';
+import '../../../core/connectivity/connectivity_controller.dart';
 import '../../../core/ui/record_field.dart';
 import '../data/intake_providers.dart';
 import '../data/intake_repository.dart';
@@ -10,6 +11,7 @@ import '../domain/intake_draft.dart';
 import 'anonymous_exception_dialog.dart';
 import 'box_draft_sheet.dart';
 import 'donor_sheet.dart';
+import 'intake_queued_view.dart';
 import 'intake_submitted_view.dart';
 
 /// Captura de una donación, en una sola pantalla.
@@ -89,6 +91,18 @@ class _IntakeFormViewState extends ConsumerState<IntakeFormView> {
       ..setNotes(_notes.text)
       ..setDonanteLibre(_donanteLibre.text);
 
+    final userId = ref.read(currentUserIdProvider);
+    final offline =
+        ref.read(connectivityControllerProvider) == ConnectivityStatus.offline;
+
+    // Sin señal no se intenta y se falla: se encola. Es la única escritura que
+    // depende solo de lo que la persona tiene enfrente, y por eso es la única
+    // que puede esperar en el dispositivo.
+    if (offline && userId != null) {
+      await _enqueue(userId);
+      return;
+    }
+
     var result = await _send();
 
     // El servidor puede pedir identificar a quien dona. No es un error de
@@ -111,9 +125,38 @@ class _IntakeFormViewState extends ConsumerState<IntakeFormView> {
       // también es una respuesta que quien captura tiene que leer.
       case IntakeNeedsDonor(:final failure):
         _showFailure(failure.operatorMessage);
+      // La red se cayó a mitad del envío. Perder lo capturado sería el peor
+      // resultado posible, así que la captura pasa a la cola con su misma
+      // llave: cuando salga la señal se enviará una vez, no dos.
+      case IntakeRejected(:final failure)
+          when failure.isRetryable && userId != null:
+        await _enqueue(userId);
       case IntakeRejected(:final failure):
         _showFailure(failure.operatorMessage);
     }
+  }
+
+  /// Guarda la captura para enviarla al recuperar la señal, asignándole antes
+  /// los códigos reservados que hagan falta para poder etiquetar ahora.
+  Future<void> _enqueue(String userId) async {
+    setState(() => _submitting = true);
+
+    final draft = ref.read(intakeDraftControllerProvider);
+    final withoutCode = draft.boxes.where((box) => box.code == null).length;
+    if (withoutCode > 0) {
+      final codes = await ref
+          .read(boxCodeRepositoryProvider)
+          .take(withoutCode, userId: userId);
+      _controller.assignCodes(codes);
+    }
+
+    await _controller.enqueue(userId);
+    if (!mounted) return;
+
+    setState(() => _submitting = false);
+    await Navigator.of(context).pushReplacement(
+      IntakeQueuedView.route(ref.read(intakeDraftControllerProvider)),
+    );
   }
 
   /// Envía y marca la pantalla como ocupada solo mientras la petición está en
