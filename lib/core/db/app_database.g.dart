@@ -2039,17 +2039,1044 @@ class SyncMarkersCompanion extends UpdateCompanion<SyncMarkerRow> {
   }
 }
 
+class $QueuedCapturesTable extends QueuedCaptures
+    with TableInfo<$QueuedCapturesTable, QueuedCaptureRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $QueuedCapturesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _captureIdMeta = const VerificationMeta(
+    'captureId',
+  );
+  @override
+  late final GeneratedColumn<String> captureId = GeneratedColumn<String>(
+    'capture_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _userIdMeta = const VerificationMeta('userId');
+  @override
+  late final GeneratedColumn<String> userId = GeneratedColumn<String>(
+    'user_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _payloadMeta = const VerificationMeta(
+    'payload',
+  );
+  @override
+  late final GeneratedColumn<String> payload = GeneratedColumn<String>(
+    'payload',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _summaryMeta = const VerificationMeta(
+    'summary',
+  );
+  @override
+  late final GeneratedColumn<String> summary = GeneratedColumn<String>(
+    'summary',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _boxCountMeta = const VerificationMeta(
+    'boxCount',
+  );
+  @override
+  late final GeneratedColumn<int> boxCount = GeneratedColumn<int>(
+    'box_count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<QueuedCaptureStatus, String>
+  status = GeneratedColumn<String>(
+    'status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  ).withConverter<QueuedCaptureStatus>($QueuedCapturesTable.$converterstatus);
+  static const VerificationMeta _attemptsMeta = const VerificationMeta(
+    'attempts',
+  );
+  @override
+  late final GeneratedColumn<int> attempts = GeneratedColumn<int>(
+    'attempts',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _lastFailureCodeMeta = const VerificationMeta(
+    'lastFailureCode',
+  );
+  @override
+  late final GeneratedColumn<String> lastFailureCode = GeneratedColumn<String>(
+    'last_failure_code',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _lastFailureMessageMeta =
+      const VerificationMeta('lastFailureMessage');
+  @override
+  late final GeneratedColumn<String> lastFailureMessage =
+      GeneratedColumn<String>(
+        'last_failure_message',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _lastAttemptAtMeta = const VerificationMeta(
+    'lastAttemptAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> lastAttemptAt =
+      GeneratedColumn<DateTime>(
+        'last_attempt_at',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      );
+  @override
+  List<GeneratedColumn> get $columns => [
+    captureId,
+    userId,
+    payload,
+    summary,
+    boxCount,
+    status,
+    attempts,
+    lastFailureCode,
+    lastFailureMessage,
+    createdAt,
+    lastAttemptAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'queued_captures';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<QueuedCaptureRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('capture_id')) {
+      context.handle(
+        _captureIdMeta,
+        captureId.isAcceptableOrUnknown(data['capture_id']!, _captureIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_captureIdMeta);
+    }
+    if (data.containsKey('user_id')) {
+      context.handle(
+        _userIdMeta,
+        userId.isAcceptableOrUnknown(data['user_id']!, _userIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_userIdMeta);
+    }
+    if (data.containsKey('payload')) {
+      context.handle(
+        _payloadMeta,
+        payload.isAcceptableOrUnknown(data['payload']!, _payloadMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_payloadMeta);
+    }
+    if (data.containsKey('summary')) {
+      context.handle(
+        _summaryMeta,
+        summary.isAcceptableOrUnknown(data['summary']!, _summaryMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_summaryMeta);
+    }
+    if (data.containsKey('box_count')) {
+      context.handle(
+        _boxCountMeta,
+        boxCount.isAcceptableOrUnknown(data['box_count']!, _boxCountMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_boxCountMeta);
+    }
+    if (data.containsKey('attempts')) {
+      context.handle(
+        _attemptsMeta,
+        attempts.isAcceptableOrUnknown(data['attempts']!, _attemptsMeta),
+      );
+    }
+    if (data.containsKey('last_failure_code')) {
+      context.handle(
+        _lastFailureCodeMeta,
+        lastFailureCode.isAcceptableOrUnknown(
+          data['last_failure_code']!,
+          _lastFailureCodeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('last_failure_message')) {
+      context.handle(
+        _lastFailureMessageMeta,
+        lastFailureMessage.isAcceptableOrUnknown(
+          data['last_failure_message']!,
+          _lastFailureMessageMeta,
+        ),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('last_attempt_at')) {
+      context.handle(
+        _lastAttemptAtMeta,
+        lastAttemptAt.isAcceptableOrUnknown(
+          data['last_attempt_at']!,
+          _lastAttemptAtMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {captureId};
+  @override
+  QueuedCaptureRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return QueuedCaptureRow(
+      captureId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}capture_id'],
+      )!,
+      userId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}user_id'],
+      )!,
+      payload: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}payload'],
+      )!,
+      summary: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}summary'],
+      )!,
+      boxCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}box_count'],
+      )!,
+      status: $QueuedCapturesTable.$converterstatus.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}status'],
+        )!,
+      ),
+      attempts: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}attempts'],
+      )!,
+      lastFailureCode: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}last_failure_code'],
+      ),
+      lastFailureMessage: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}last_failure_message'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      lastAttemptAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_attempt_at'],
+      ),
+    );
+  }
+
+  @override
+  $QueuedCapturesTable createAlias(String alias) {
+    return $QueuedCapturesTable(attachedDatabase, alias);
+  }
+
+  static JsonTypeConverter2<QueuedCaptureStatus, String, String>
+  $converterstatus = const EnumNameConverter<QueuedCaptureStatus>(
+    QueuedCaptureStatus.values,
+  );
+}
+
+class QueuedCaptureRow extends DataClass
+    implements Insertable<QueuedCaptureRow> {
+  final String captureId;
+  final String userId;
+
+  /// Cuerpo de `POST /v1/intakes` serializado.
+  final String payload;
+
+  /// Resumen legible para la pantalla de pendientes, calculado al encolar: no
+  /// hace falta volver a interpretar el payload para decir qué hay dentro.
+  final String summary;
+  final int boxCount;
+  final QueuedCaptureStatus status;
+  final int attempts;
+
+  /// Código y mensaje del último rechazo, para que la pantalla muestre el
+  /// motivo del servidor tal cual.
+  final String? lastFailureCode;
+  final String? lastFailureMessage;
+  final DateTime createdAt;
+  final DateTime? lastAttemptAt;
+  const QueuedCaptureRow({
+    required this.captureId,
+    required this.userId,
+    required this.payload,
+    required this.summary,
+    required this.boxCount,
+    required this.status,
+    required this.attempts,
+    this.lastFailureCode,
+    this.lastFailureMessage,
+    required this.createdAt,
+    this.lastAttemptAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['capture_id'] = Variable<String>(captureId);
+    map['user_id'] = Variable<String>(userId);
+    map['payload'] = Variable<String>(payload);
+    map['summary'] = Variable<String>(summary);
+    map['box_count'] = Variable<int>(boxCount);
+    {
+      map['status'] = Variable<String>(
+        $QueuedCapturesTable.$converterstatus.toSql(status),
+      );
+    }
+    map['attempts'] = Variable<int>(attempts);
+    if (!nullToAbsent || lastFailureCode != null) {
+      map['last_failure_code'] = Variable<String>(lastFailureCode);
+    }
+    if (!nullToAbsent || lastFailureMessage != null) {
+      map['last_failure_message'] = Variable<String>(lastFailureMessage);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    if (!nullToAbsent || lastAttemptAt != null) {
+      map['last_attempt_at'] = Variable<DateTime>(lastAttemptAt);
+    }
+    return map;
+  }
+
+  QueuedCapturesCompanion toCompanion(bool nullToAbsent) {
+    return QueuedCapturesCompanion(
+      captureId: Value(captureId),
+      userId: Value(userId),
+      payload: Value(payload),
+      summary: Value(summary),
+      boxCount: Value(boxCount),
+      status: Value(status),
+      attempts: Value(attempts),
+      lastFailureCode: lastFailureCode == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastFailureCode),
+      lastFailureMessage: lastFailureMessage == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastFailureMessage),
+      createdAt: Value(createdAt),
+      lastAttemptAt: lastAttemptAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastAttemptAt),
+    );
+  }
+
+  factory QueuedCaptureRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return QueuedCaptureRow(
+      captureId: serializer.fromJson<String>(json['captureId']),
+      userId: serializer.fromJson<String>(json['userId']),
+      payload: serializer.fromJson<String>(json['payload']),
+      summary: serializer.fromJson<String>(json['summary']),
+      boxCount: serializer.fromJson<int>(json['boxCount']),
+      status: $QueuedCapturesTable.$converterstatus.fromJson(
+        serializer.fromJson<String>(json['status']),
+      ),
+      attempts: serializer.fromJson<int>(json['attempts']),
+      lastFailureCode: serializer.fromJson<String?>(json['lastFailureCode']),
+      lastFailureMessage: serializer.fromJson<String?>(
+        json['lastFailureMessage'],
+      ),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      lastAttemptAt: serializer.fromJson<DateTime?>(json['lastAttemptAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'captureId': serializer.toJson<String>(captureId),
+      'userId': serializer.toJson<String>(userId),
+      'payload': serializer.toJson<String>(payload),
+      'summary': serializer.toJson<String>(summary),
+      'boxCount': serializer.toJson<int>(boxCount),
+      'status': serializer.toJson<String>(
+        $QueuedCapturesTable.$converterstatus.toJson(status),
+      ),
+      'attempts': serializer.toJson<int>(attempts),
+      'lastFailureCode': serializer.toJson<String?>(lastFailureCode),
+      'lastFailureMessage': serializer.toJson<String?>(lastFailureMessage),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'lastAttemptAt': serializer.toJson<DateTime?>(lastAttemptAt),
+    };
+  }
+
+  QueuedCaptureRow copyWith({
+    String? captureId,
+    String? userId,
+    String? payload,
+    String? summary,
+    int? boxCount,
+    QueuedCaptureStatus? status,
+    int? attempts,
+    Value<String?> lastFailureCode = const Value.absent(),
+    Value<String?> lastFailureMessage = const Value.absent(),
+    DateTime? createdAt,
+    Value<DateTime?> lastAttemptAt = const Value.absent(),
+  }) => QueuedCaptureRow(
+    captureId: captureId ?? this.captureId,
+    userId: userId ?? this.userId,
+    payload: payload ?? this.payload,
+    summary: summary ?? this.summary,
+    boxCount: boxCount ?? this.boxCount,
+    status: status ?? this.status,
+    attempts: attempts ?? this.attempts,
+    lastFailureCode: lastFailureCode.present
+        ? lastFailureCode.value
+        : this.lastFailureCode,
+    lastFailureMessage: lastFailureMessage.present
+        ? lastFailureMessage.value
+        : this.lastFailureMessage,
+    createdAt: createdAt ?? this.createdAt,
+    lastAttemptAt: lastAttemptAt.present
+        ? lastAttemptAt.value
+        : this.lastAttemptAt,
+  );
+  QueuedCaptureRow copyWithCompanion(QueuedCapturesCompanion data) {
+    return QueuedCaptureRow(
+      captureId: data.captureId.present ? data.captureId.value : this.captureId,
+      userId: data.userId.present ? data.userId.value : this.userId,
+      payload: data.payload.present ? data.payload.value : this.payload,
+      summary: data.summary.present ? data.summary.value : this.summary,
+      boxCount: data.boxCount.present ? data.boxCount.value : this.boxCount,
+      status: data.status.present ? data.status.value : this.status,
+      attempts: data.attempts.present ? data.attempts.value : this.attempts,
+      lastFailureCode: data.lastFailureCode.present
+          ? data.lastFailureCode.value
+          : this.lastFailureCode,
+      lastFailureMessage: data.lastFailureMessage.present
+          ? data.lastFailureMessage.value
+          : this.lastFailureMessage,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      lastAttemptAt: data.lastAttemptAt.present
+          ? data.lastAttemptAt.value
+          : this.lastAttemptAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('QueuedCaptureRow(')
+          ..write('captureId: $captureId, ')
+          ..write('userId: $userId, ')
+          ..write('payload: $payload, ')
+          ..write('summary: $summary, ')
+          ..write('boxCount: $boxCount, ')
+          ..write('status: $status, ')
+          ..write('attempts: $attempts, ')
+          ..write('lastFailureCode: $lastFailureCode, ')
+          ..write('lastFailureMessage: $lastFailureMessage, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('lastAttemptAt: $lastAttemptAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    captureId,
+    userId,
+    payload,
+    summary,
+    boxCount,
+    status,
+    attempts,
+    lastFailureCode,
+    lastFailureMessage,
+    createdAt,
+    lastAttemptAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is QueuedCaptureRow &&
+          other.captureId == this.captureId &&
+          other.userId == this.userId &&
+          other.payload == this.payload &&
+          other.summary == this.summary &&
+          other.boxCount == this.boxCount &&
+          other.status == this.status &&
+          other.attempts == this.attempts &&
+          other.lastFailureCode == this.lastFailureCode &&
+          other.lastFailureMessage == this.lastFailureMessage &&
+          other.createdAt == this.createdAt &&
+          other.lastAttemptAt == this.lastAttemptAt);
+}
+
+class QueuedCapturesCompanion extends UpdateCompanion<QueuedCaptureRow> {
+  final Value<String> captureId;
+  final Value<String> userId;
+  final Value<String> payload;
+  final Value<String> summary;
+  final Value<int> boxCount;
+  final Value<QueuedCaptureStatus> status;
+  final Value<int> attempts;
+  final Value<String?> lastFailureCode;
+  final Value<String?> lastFailureMessage;
+  final Value<DateTime> createdAt;
+  final Value<DateTime?> lastAttemptAt;
+  final Value<int> rowid;
+  const QueuedCapturesCompanion({
+    this.captureId = const Value.absent(),
+    this.userId = const Value.absent(),
+    this.payload = const Value.absent(),
+    this.summary = const Value.absent(),
+    this.boxCount = const Value.absent(),
+    this.status = const Value.absent(),
+    this.attempts = const Value.absent(),
+    this.lastFailureCode = const Value.absent(),
+    this.lastFailureMessage = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.lastAttemptAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  QueuedCapturesCompanion.insert({
+    required String captureId,
+    required String userId,
+    required String payload,
+    required String summary,
+    required int boxCount,
+    required QueuedCaptureStatus status,
+    this.attempts = const Value.absent(),
+    this.lastFailureCode = const Value.absent(),
+    this.lastFailureMessage = const Value.absent(),
+    required DateTime createdAt,
+    this.lastAttemptAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : captureId = Value(captureId),
+       userId = Value(userId),
+       payload = Value(payload),
+       summary = Value(summary),
+       boxCount = Value(boxCount),
+       status = Value(status),
+       createdAt = Value(createdAt);
+  static Insertable<QueuedCaptureRow> custom({
+    Expression<String>? captureId,
+    Expression<String>? userId,
+    Expression<String>? payload,
+    Expression<String>? summary,
+    Expression<int>? boxCount,
+    Expression<String>? status,
+    Expression<int>? attempts,
+    Expression<String>? lastFailureCode,
+    Expression<String>? lastFailureMessage,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? lastAttemptAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (captureId != null) 'capture_id': captureId,
+      if (userId != null) 'user_id': userId,
+      if (payload != null) 'payload': payload,
+      if (summary != null) 'summary': summary,
+      if (boxCount != null) 'box_count': boxCount,
+      if (status != null) 'status': status,
+      if (attempts != null) 'attempts': attempts,
+      if (lastFailureCode != null) 'last_failure_code': lastFailureCode,
+      if (lastFailureMessage != null)
+        'last_failure_message': lastFailureMessage,
+      if (createdAt != null) 'created_at': createdAt,
+      if (lastAttemptAt != null) 'last_attempt_at': lastAttemptAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  QueuedCapturesCompanion copyWith({
+    Value<String>? captureId,
+    Value<String>? userId,
+    Value<String>? payload,
+    Value<String>? summary,
+    Value<int>? boxCount,
+    Value<QueuedCaptureStatus>? status,
+    Value<int>? attempts,
+    Value<String?>? lastFailureCode,
+    Value<String?>? lastFailureMessage,
+    Value<DateTime>? createdAt,
+    Value<DateTime?>? lastAttemptAt,
+    Value<int>? rowid,
+  }) {
+    return QueuedCapturesCompanion(
+      captureId: captureId ?? this.captureId,
+      userId: userId ?? this.userId,
+      payload: payload ?? this.payload,
+      summary: summary ?? this.summary,
+      boxCount: boxCount ?? this.boxCount,
+      status: status ?? this.status,
+      attempts: attempts ?? this.attempts,
+      lastFailureCode: lastFailureCode ?? this.lastFailureCode,
+      lastFailureMessage: lastFailureMessage ?? this.lastFailureMessage,
+      createdAt: createdAt ?? this.createdAt,
+      lastAttemptAt: lastAttemptAt ?? this.lastAttemptAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (captureId.present) {
+      map['capture_id'] = Variable<String>(captureId.value);
+    }
+    if (userId.present) {
+      map['user_id'] = Variable<String>(userId.value);
+    }
+    if (payload.present) {
+      map['payload'] = Variable<String>(payload.value);
+    }
+    if (summary.present) {
+      map['summary'] = Variable<String>(summary.value);
+    }
+    if (boxCount.present) {
+      map['box_count'] = Variable<int>(boxCount.value);
+    }
+    if (status.present) {
+      map['status'] = Variable<String>(
+        $QueuedCapturesTable.$converterstatus.toSql(status.value),
+      );
+    }
+    if (attempts.present) {
+      map['attempts'] = Variable<int>(attempts.value);
+    }
+    if (lastFailureCode.present) {
+      map['last_failure_code'] = Variable<String>(lastFailureCode.value);
+    }
+    if (lastFailureMessage.present) {
+      map['last_failure_message'] = Variable<String>(lastFailureMessage.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (lastAttemptAt.present) {
+      map['last_attempt_at'] = Variable<DateTime>(lastAttemptAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('QueuedCapturesCompanion(')
+          ..write('captureId: $captureId, ')
+          ..write('userId: $userId, ')
+          ..write('payload: $payload, ')
+          ..write('summary: $summary, ')
+          ..write('boxCount: $boxCount, ')
+          ..write('status: $status, ')
+          ..write('attempts: $attempts, ')
+          ..write('lastFailureCode: $lastFailureCode, ')
+          ..write('lastFailureMessage: $lastFailureMessage, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('lastAttemptAt: $lastAttemptAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $BoxCodeReservationsTable extends BoxCodeReservations
+    with TableInfo<$BoxCodeReservationsTable, BoxCodeReservationRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $BoxCodeReservationsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _codeMeta = const VerificationMeta('code');
+  @override
+  late final GeneratedColumn<String> code = GeneratedColumn<String>(
+    'code',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _userIdMeta = const VerificationMeta('userId');
+  @override
+  late final GeneratedColumn<String> userId = GeneratedColumn<String>(
+    'user_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _reservedAtMeta = const VerificationMeta(
+    'reservedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> reservedAt = GeneratedColumn<DateTime>(
+    'reserved_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _spentAtMeta = const VerificationMeta(
+    'spentAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> spentAt = GeneratedColumn<DateTime>(
+    'spent_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [code, userId, reservedAt, spentAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'box_code_reservations';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<BoxCodeReservationRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('code')) {
+      context.handle(
+        _codeMeta,
+        code.isAcceptableOrUnknown(data['code']!, _codeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_codeMeta);
+    }
+    if (data.containsKey('user_id')) {
+      context.handle(
+        _userIdMeta,
+        userId.isAcceptableOrUnknown(data['user_id']!, _userIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_userIdMeta);
+    }
+    if (data.containsKey('reserved_at')) {
+      context.handle(
+        _reservedAtMeta,
+        reservedAt.isAcceptableOrUnknown(data['reserved_at']!, _reservedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_reservedAtMeta);
+    }
+    if (data.containsKey('spent_at')) {
+      context.handle(
+        _spentAtMeta,
+        spentAt.isAcceptableOrUnknown(data['spent_at']!, _spentAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {code};
+  @override
+  BoxCodeReservationRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return BoxCodeReservationRow(
+      code: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}code'],
+      )!,
+      userId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}user_id'],
+      )!,
+      reservedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}reserved_at'],
+      )!,
+      spentAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}spent_at'],
+      ),
+    );
+  }
+
+  @override
+  $BoxCodeReservationsTable createAlias(String alias) {
+    return $BoxCodeReservationsTable(attachedDatabase, alias);
+  }
+}
+
+class BoxCodeReservationRow extends DataClass
+    implements Insertable<BoxCodeReservationRow> {
+  final String code;
+
+  /// Quién lo reservó. La cola es por persona y los códigos también: en un
+  /// dispositivo compartido, dos turnos no pueden repartirse el mismo bloque.
+  final String userId;
+  final DateTime reservedAt;
+  final DateTime? spentAt;
+  const BoxCodeReservationRow({
+    required this.code,
+    required this.userId,
+    required this.reservedAt,
+    this.spentAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['code'] = Variable<String>(code);
+    map['user_id'] = Variable<String>(userId);
+    map['reserved_at'] = Variable<DateTime>(reservedAt);
+    if (!nullToAbsent || spentAt != null) {
+      map['spent_at'] = Variable<DateTime>(spentAt);
+    }
+    return map;
+  }
+
+  BoxCodeReservationsCompanion toCompanion(bool nullToAbsent) {
+    return BoxCodeReservationsCompanion(
+      code: Value(code),
+      userId: Value(userId),
+      reservedAt: Value(reservedAt),
+      spentAt: spentAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(spentAt),
+    );
+  }
+
+  factory BoxCodeReservationRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return BoxCodeReservationRow(
+      code: serializer.fromJson<String>(json['code']),
+      userId: serializer.fromJson<String>(json['userId']),
+      reservedAt: serializer.fromJson<DateTime>(json['reservedAt']),
+      spentAt: serializer.fromJson<DateTime?>(json['spentAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'code': serializer.toJson<String>(code),
+      'userId': serializer.toJson<String>(userId),
+      'reservedAt': serializer.toJson<DateTime>(reservedAt),
+      'spentAt': serializer.toJson<DateTime?>(spentAt),
+    };
+  }
+
+  BoxCodeReservationRow copyWith({
+    String? code,
+    String? userId,
+    DateTime? reservedAt,
+    Value<DateTime?> spentAt = const Value.absent(),
+  }) => BoxCodeReservationRow(
+    code: code ?? this.code,
+    userId: userId ?? this.userId,
+    reservedAt: reservedAt ?? this.reservedAt,
+    spentAt: spentAt.present ? spentAt.value : this.spentAt,
+  );
+  BoxCodeReservationRow copyWithCompanion(BoxCodeReservationsCompanion data) {
+    return BoxCodeReservationRow(
+      code: data.code.present ? data.code.value : this.code,
+      userId: data.userId.present ? data.userId.value : this.userId,
+      reservedAt: data.reservedAt.present
+          ? data.reservedAt.value
+          : this.reservedAt,
+      spentAt: data.spentAt.present ? data.spentAt.value : this.spentAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BoxCodeReservationRow(')
+          ..write('code: $code, ')
+          ..write('userId: $userId, ')
+          ..write('reservedAt: $reservedAt, ')
+          ..write('spentAt: $spentAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(code, userId, reservedAt, spentAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is BoxCodeReservationRow &&
+          other.code == this.code &&
+          other.userId == this.userId &&
+          other.reservedAt == this.reservedAt &&
+          other.spentAt == this.spentAt);
+}
+
+class BoxCodeReservationsCompanion
+    extends UpdateCompanion<BoxCodeReservationRow> {
+  final Value<String> code;
+  final Value<String> userId;
+  final Value<DateTime> reservedAt;
+  final Value<DateTime?> spentAt;
+  final Value<int> rowid;
+  const BoxCodeReservationsCompanion({
+    this.code = const Value.absent(),
+    this.userId = const Value.absent(),
+    this.reservedAt = const Value.absent(),
+    this.spentAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  BoxCodeReservationsCompanion.insert({
+    required String code,
+    required String userId,
+    required DateTime reservedAt,
+    this.spentAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : code = Value(code),
+       userId = Value(userId),
+       reservedAt = Value(reservedAt);
+  static Insertable<BoxCodeReservationRow> custom({
+    Expression<String>? code,
+    Expression<String>? userId,
+    Expression<DateTime>? reservedAt,
+    Expression<DateTime>? spentAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (code != null) 'code': code,
+      if (userId != null) 'user_id': userId,
+      if (reservedAt != null) 'reserved_at': reservedAt,
+      if (spentAt != null) 'spent_at': spentAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  BoxCodeReservationsCompanion copyWith({
+    Value<String>? code,
+    Value<String>? userId,
+    Value<DateTime>? reservedAt,
+    Value<DateTime?>? spentAt,
+    Value<int>? rowid,
+  }) {
+    return BoxCodeReservationsCompanion(
+      code: code ?? this.code,
+      userId: userId ?? this.userId,
+      reservedAt: reservedAt ?? this.reservedAt,
+      spentAt: spentAt ?? this.spentAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (code.present) {
+      map['code'] = Variable<String>(code.value);
+    }
+    if (userId.present) {
+      map['user_id'] = Variable<String>(userId.value);
+    }
+    if (reservedAt.present) {
+      map['reserved_at'] = Variable<DateTime>(reservedAt.value);
+    }
+    if (spentAt.present) {
+      map['spent_at'] = Variable<DateTime>(spentAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BoxCodeReservationsCompanion(')
+          ..write('code: $code, ')
+          ..write('userId: $userId, ')
+          ..write('reservedAt: $reservedAt, ')
+          ..write('spentAt: $spentAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $ProductTypesTable productTypes = $ProductTypesTable(this);
   late final $BoxesTable boxes = $BoxesTable(this);
   late final $SyncMarkersTable syncMarkers = $SyncMarkersTable(this);
+  late final $QueuedCapturesTable queuedCaptures = $QueuedCapturesTable(this);
+  late final $BoxCodeReservationsTable boxCodeReservations =
+      $BoxCodeReservationsTable(this);
   late final CatalogDao catalogDao = CatalogDao(this as AppDatabase);
   late final BoxesDao boxesDao = BoxesDao(this as AppDatabase);
   late final SyncMarkersDao syncMarkersDao = SyncMarkersDao(
     this as AppDatabase,
   );
+  late final CaptureQueueDao captureQueueDao = CaptureQueueDao(
+    this as AppDatabase,
+  );
+  late final BoxCodesDao boxCodesDao = BoxCodesDao(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -2058,6 +3085,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     productTypes,
     boxes,
     syncMarkers,
+    queuedCaptures,
+    boxCodeReservations,
   ];
 }
 
@@ -3020,6 +4049,536 @@ typedef $$SyncMarkersTableProcessedTableManager =
       SyncMarkerRow,
       PrefetchHooks Function()
     >;
+typedef $$QueuedCapturesTableCreateCompanionBuilder =
+    QueuedCapturesCompanion Function({
+      required String captureId,
+      required String userId,
+      required String payload,
+      required String summary,
+      required int boxCount,
+      required QueuedCaptureStatus status,
+      Value<int> attempts,
+      Value<String?> lastFailureCode,
+      Value<String?> lastFailureMessage,
+      required DateTime createdAt,
+      Value<DateTime?> lastAttemptAt,
+      Value<int> rowid,
+    });
+typedef $$QueuedCapturesTableUpdateCompanionBuilder =
+    QueuedCapturesCompanion Function({
+      Value<String> captureId,
+      Value<String> userId,
+      Value<String> payload,
+      Value<String> summary,
+      Value<int> boxCount,
+      Value<QueuedCaptureStatus> status,
+      Value<int> attempts,
+      Value<String?> lastFailureCode,
+      Value<String?> lastFailureMessage,
+      Value<DateTime> createdAt,
+      Value<DateTime?> lastAttemptAt,
+      Value<int> rowid,
+    });
+
+class $$QueuedCapturesTableFilterComposer
+    extends Composer<_$AppDatabase, $QueuedCapturesTable> {
+  $$QueuedCapturesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get captureId => $composableBuilder(
+    column: $table.captureId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get userId => $composableBuilder(
+    column: $table.userId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get payload => $composableBuilder(
+    column: $table.payload,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get summary => $composableBuilder(
+    column: $table.summary,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get boxCount => $composableBuilder(
+    column: $table.boxCount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<
+    QueuedCaptureStatus,
+    QueuedCaptureStatus,
+    String
+  >
+  get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
+
+  ColumnFilters<int> get attempts => $composableBuilder(
+    column: $table.attempts,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get lastFailureCode => $composableBuilder(
+    column: $table.lastFailureCode,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get lastFailureMessage => $composableBuilder(
+    column: $table.lastFailureMessage,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get lastAttemptAt => $composableBuilder(
+    column: $table.lastAttemptAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$QueuedCapturesTableOrderingComposer
+    extends Composer<_$AppDatabase, $QueuedCapturesTable> {
+  $$QueuedCapturesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get captureId => $composableBuilder(
+    column: $table.captureId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get userId => $composableBuilder(
+    column: $table.userId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get payload => $composableBuilder(
+    column: $table.payload,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get summary => $composableBuilder(
+    column: $table.summary,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get boxCount => $composableBuilder(
+    column: $table.boxCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get attempts => $composableBuilder(
+    column: $table.attempts,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get lastFailureCode => $composableBuilder(
+    column: $table.lastFailureCode,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get lastFailureMessage => $composableBuilder(
+    column: $table.lastFailureMessage,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get lastAttemptAt => $composableBuilder(
+    column: $table.lastAttemptAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$QueuedCapturesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $QueuedCapturesTable> {
+  $$QueuedCapturesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get captureId =>
+      $composableBuilder(column: $table.captureId, builder: (column) => column);
+
+  GeneratedColumn<String> get userId =>
+      $composableBuilder(column: $table.userId, builder: (column) => column);
+
+  GeneratedColumn<String> get payload =>
+      $composableBuilder(column: $table.payload, builder: (column) => column);
+
+  GeneratedColumn<String> get summary =>
+      $composableBuilder(column: $table.summary, builder: (column) => column);
+
+  GeneratedColumn<int> get boxCount =>
+      $composableBuilder(column: $table.boxCount, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<QueuedCaptureStatus, String> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => column);
+
+  GeneratedColumn<int> get attempts =>
+      $composableBuilder(column: $table.attempts, builder: (column) => column);
+
+  GeneratedColumn<String> get lastFailureCode => $composableBuilder(
+    column: $table.lastFailureCode,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get lastFailureMessage => $composableBuilder(
+    column: $table.lastFailureMessage,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get lastAttemptAt => $composableBuilder(
+    column: $table.lastAttemptAt,
+    builder: (column) => column,
+  );
+}
+
+class $$QueuedCapturesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $QueuedCapturesTable,
+          QueuedCaptureRow,
+          $$QueuedCapturesTableFilterComposer,
+          $$QueuedCapturesTableOrderingComposer,
+          $$QueuedCapturesTableAnnotationComposer,
+          $$QueuedCapturesTableCreateCompanionBuilder,
+          $$QueuedCapturesTableUpdateCompanionBuilder,
+          (
+            QueuedCaptureRow,
+            BaseReferences<
+              _$AppDatabase,
+              $QueuedCapturesTable,
+              QueuedCaptureRow
+            >,
+          ),
+          QueuedCaptureRow,
+          PrefetchHooks Function()
+        > {
+  $$QueuedCapturesTableTableManager(
+    _$AppDatabase db,
+    $QueuedCapturesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$QueuedCapturesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$QueuedCapturesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$QueuedCapturesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> captureId = const Value.absent(),
+                Value<String> userId = const Value.absent(),
+                Value<String> payload = const Value.absent(),
+                Value<String> summary = const Value.absent(),
+                Value<int> boxCount = const Value.absent(),
+                Value<QueuedCaptureStatus> status = const Value.absent(),
+                Value<int> attempts = const Value.absent(),
+                Value<String?> lastFailureCode = const Value.absent(),
+                Value<String?> lastFailureMessage = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime?> lastAttemptAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => QueuedCapturesCompanion(
+                captureId: captureId,
+                userId: userId,
+                payload: payload,
+                summary: summary,
+                boxCount: boxCount,
+                status: status,
+                attempts: attempts,
+                lastFailureCode: lastFailureCode,
+                lastFailureMessage: lastFailureMessage,
+                createdAt: createdAt,
+                lastAttemptAt: lastAttemptAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String captureId,
+                required String userId,
+                required String payload,
+                required String summary,
+                required int boxCount,
+                required QueuedCaptureStatus status,
+                Value<int> attempts = const Value.absent(),
+                Value<String?> lastFailureCode = const Value.absent(),
+                Value<String?> lastFailureMessage = const Value.absent(),
+                required DateTime createdAt,
+                Value<DateTime?> lastAttemptAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => QueuedCapturesCompanion.insert(
+                captureId: captureId,
+                userId: userId,
+                payload: payload,
+                summary: summary,
+                boxCount: boxCount,
+                status: status,
+                attempts: attempts,
+                lastFailureCode: lastFailureCode,
+                lastFailureMessage: lastFailureMessage,
+                createdAt: createdAt,
+                lastAttemptAt: lastAttemptAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$QueuedCapturesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $QueuedCapturesTable,
+      QueuedCaptureRow,
+      $$QueuedCapturesTableFilterComposer,
+      $$QueuedCapturesTableOrderingComposer,
+      $$QueuedCapturesTableAnnotationComposer,
+      $$QueuedCapturesTableCreateCompanionBuilder,
+      $$QueuedCapturesTableUpdateCompanionBuilder,
+      (
+        QueuedCaptureRow,
+        BaseReferences<_$AppDatabase, $QueuedCapturesTable, QueuedCaptureRow>,
+      ),
+      QueuedCaptureRow,
+      PrefetchHooks Function()
+    >;
+typedef $$BoxCodeReservationsTableCreateCompanionBuilder =
+    BoxCodeReservationsCompanion Function({
+      required String code,
+      required String userId,
+      required DateTime reservedAt,
+      Value<DateTime?> spentAt,
+      Value<int> rowid,
+    });
+typedef $$BoxCodeReservationsTableUpdateCompanionBuilder =
+    BoxCodeReservationsCompanion Function({
+      Value<String> code,
+      Value<String> userId,
+      Value<DateTime> reservedAt,
+      Value<DateTime?> spentAt,
+      Value<int> rowid,
+    });
+
+class $$BoxCodeReservationsTableFilterComposer
+    extends Composer<_$AppDatabase, $BoxCodeReservationsTable> {
+  $$BoxCodeReservationsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get code => $composableBuilder(
+    column: $table.code,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get userId => $composableBuilder(
+    column: $table.userId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get reservedAt => $composableBuilder(
+    column: $table.reservedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get spentAt => $composableBuilder(
+    column: $table.spentAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$BoxCodeReservationsTableOrderingComposer
+    extends Composer<_$AppDatabase, $BoxCodeReservationsTable> {
+  $$BoxCodeReservationsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get code => $composableBuilder(
+    column: $table.code,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get userId => $composableBuilder(
+    column: $table.userId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get reservedAt => $composableBuilder(
+    column: $table.reservedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get spentAt => $composableBuilder(
+    column: $table.spentAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$BoxCodeReservationsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $BoxCodeReservationsTable> {
+  $$BoxCodeReservationsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get code =>
+      $composableBuilder(column: $table.code, builder: (column) => column);
+
+  GeneratedColumn<String> get userId =>
+      $composableBuilder(column: $table.userId, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get reservedAt => $composableBuilder(
+    column: $table.reservedAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get spentAt =>
+      $composableBuilder(column: $table.spentAt, builder: (column) => column);
+}
+
+class $$BoxCodeReservationsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $BoxCodeReservationsTable,
+          BoxCodeReservationRow,
+          $$BoxCodeReservationsTableFilterComposer,
+          $$BoxCodeReservationsTableOrderingComposer,
+          $$BoxCodeReservationsTableAnnotationComposer,
+          $$BoxCodeReservationsTableCreateCompanionBuilder,
+          $$BoxCodeReservationsTableUpdateCompanionBuilder,
+          (
+            BoxCodeReservationRow,
+            BaseReferences<
+              _$AppDatabase,
+              $BoxCodeReservationsTable,
+              BoxCodeReservationRow
+            >,
+          ),
+          BoxCodeReservationRow,
+          PrefetchHooks Function()
+        > {
+  $$BoxCodeReservationsTableTableManager(
+    _$AppDatabase db,
+    $BoxCodeReservationsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$BoxCodeReservationsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$BoxCodeReservationsTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$BoxCodeReservationsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> code = const Value.absent(),
+                Value<String> userId = const Value.absent(),
+                Value<DateTime> reservedAt = const Value.absent(),
+                Value<DateTime?> spentAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => BoxCodeReservationsCompanion(
+                code: code,
+                userId: userId,
+                reservedAt: reservedAt,
+                spentAt: spentAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String code,
+                required String userId,
+                required DateTime reservedAt,
+                Value<DateTime?> spentAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => BoxCodeReservationsCompanion.insert(
+                code: code,
+                userId: userId,
+                reservedAt: reservedAt,
+                spentAt: spentAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$BoxCodeReservationsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $BoxCodeReservationsTable,
+      BoxCodeReservationRow,
+      $$BoxCodeReservationsTableFilterComposer,
+      $$BoxCodeReservationsTableOrderingComposer,
+      $$BoxCodeReservationsTableAnnotationComposer,
+      $$BoxCodeReservationsTableCreateCompanionBuilder,
+      $$BoxCodeReservationsTableUpdateCompanionBuilder,
+      (
+        BoxCodeReservationRow,
+        BaseReferences<
+          _$AppDatabase,
+          $BoxCodeReservationsTable,
+          BoxCodeReservationRow
+        >,
+      ),
+      BoxCodeReservationRow,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -3030,4 +4589,8 @@ class $AppDatabaseManager {
       $$BoxesTableTableManager(_db, _db.boxes);
   $$SyncMarkersTableTableManager get syncMarkers =>
       $$SyncMarkersTableTableManager(_db, _db.syncMarkers);
+  $$QueuedCapturesTableTableManager get queuedCaptures =>
+      $$QueuedCapturesTableTableManager(_db, _db.queuedCaptures);
+  $$BoxCodeReservationsTableTableManager get boxCodeReservations =>
+      $$BoxCodeReservationsTableTableManager(_db, _db.boxCodeReservations);
 }
