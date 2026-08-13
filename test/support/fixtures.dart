@@ -257,3 +257,44 @@ Map<String, Object?> palletDetailJson({
   'boxes_weight_kg': null,
   'weight_discrepancy_kg': null,
 };
+
+Map<String, Object?> incidentJson({
+  String id = 'incident-1',
+  String type = 'DAMAGE',
+  String description = 'Tarima mojada',
+  String status = 'open',
+  DateTime? resolvedAt,
+}) => {
+  'id': id,
+  'shipment_id': 'shipment-1',
+  'pallet_id': null,
+  'box_id': null,
+  'type': type,
+  'description': description,
+  'status': status,
+  'resolution_note': null,
+  'resolved_at': resolvedAt?.toIso8601String(),
+  'created_at': testNow.toIso8601String(),
+};
+
+Map<String, Object?> receptionJson({
+  int received = 10,
+  int totalBoxes = 10,
+  String? consigneeName = 'Ana Pérez',
+}) => {
+  'id': 'reception-1',
+  'shipment_id': 'shipment-1',
+  'received_at': testNow.toIso8601String(),
+  'consignee_name': consigneeName,
+  'notes': null,
+  'lines': const [],
+  'pallet_weights': const [],
+  'shrinkage': {
+    'total_boxes': totalBoxes,
+    'received': received,
+    'not_received': totalBoxes - received,
+    'shrinkage_pct': totalBoxes == 0
+        ? 0
+        : ((totalBoxes - received) / totalBoxes * 100).round(),
+  },
+};

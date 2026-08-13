@@ -12,8 +12,8 @@ it contains.
 ```mermaid
 pie title Tasks completed (94 tasks)
     "Done" : 74
-    "Pending" : 11
-    "Partial" : 5
+    "Pending" : 10
+    "Partial" : 6
     "Blocked or external" : 4
 ```
 
@@ -29,7 +29,7 @@ pie title Tasks completed (94 tasks)
 | 7 | [Push notifications](phase-07-push-notifications.md) | 8 | 1 | 🟨 89% (1 partial) |
 | 8 | [Android release and distribution](phase-08-android-release.md) | 4 | 5 | 🟨 44% (2 partial, 3 external) |
 | 9 | [iOS enablement](phase-09-ios-enablement.md) | 0 | 6 | ⬜ 0% |
-| 10 | [Operational parity backlog](phase-10-operational-parity.md) | 1 | 7 | 🟨 13% |
+| 10 | [Operational parity backlog](phase-10-operational-parity.md) | 1 | 7 | 🟨 13% (1 partial) |
 | **Total** | | **74** | **20** | **🟢 79%** |
 
 ## Blocked work
