@@ -82,8 +82,25 @@ class SessionController extends Notifier<SessionState> {
           state = SessionAwaitingTotp(partialToken: partialToken);
       }
     } on Object catch (error) {
-      state = SessionAbsent(failureMessage: _messageFor(error));
+      state = SessionAbsent(failureMessage: _loginMessageFor(error));
     }
+  }
+
+  /// Qué se le dice a quien no pudo entrar.
+  ///
+  /// El límite de intentos del inicio de sesión no se cuenta por persona —no
+  /// hay sesión todavía—, así que en el arranque de un turno lo puede agotar el
+  /// centro entero y a la siguiente persona le toca el rechazo con la
+  /// contraseña correcta. Decirle «credenciales inválidas» la mandaría a
+  /// teclear de nuevo, a gastar el siguiente intento y a dudar de algo que no
+  /// era el problema.
+  String _loginMessageFor(Object error) {
+    final failure = _failureFor(error);
+    if (failure is RateLimitFailure) {
+      return 'Demasiados intentos seguidos. Espera unos minutos y vuelve a '
+          'entrar: no es tu contraseña.';
+    }
+    return failure.operatorMessage;
   }
 
   Future<void> submitTotpCode(String code) async {
@@ -215,6 +232,4 @@ class SessionController extends Notifier<SessionState> {
   }
 
   ApiFailure _failureFor(Object error) => ApiErrorMapper.fromAny(error);
-
-  String _messageFor(Object error) => _failureFor(error).operatorMessage;
 }
