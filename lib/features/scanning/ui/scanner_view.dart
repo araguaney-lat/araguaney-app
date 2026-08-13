@@ -9,6 +9,7 @@ import '../data/scanning_providers.dart';
 import '../domain/scan_throttle.dart';
 import '../domain/scanned_code.dart';
 import 'scan_result_view.dart';
+import 'scanner_camera.dart';
 
 /// Cámara en modo continuo: la etiqueta que se lee abre su ficha, y al volver
 /// la cámara sigue abierta para la siguiente caja.
@@ -23,13 +24,7 @@ class ScannerView extends ConsumerStatefulWidget {
 }
 
 class _ScannerViewState extends ConsumerState<ScannerView> {
-  // Solo QR: restringir los formatos le ahorra trabajo al decodificador y
-  // evita que un código de barras de producto se cuele como si fuera una
-  // etiqueta de la plataforma.
-  final _controller = MobileScannerController(
-    formats: const [BarcodeFormat.qrCode],
-    detectionSpeed: DetectionSpeed.noDuplicates,
-  );
+  final _controller = ScannerCamera.buildController();
   final _throttle = ScanThrottle();
 
   /// Mientras una lectura se resuelve, las demás se ignoran: la cámara sigue
@@ -90,80 +85,13 @@ class _ScannerViewState extends ConsumerState<ScannerView> {
           ),
         ],
       ),
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
-          MobileScanner(
-            controller: _controller,
-            onDetect: _onDetect,
-            errorBuilder: (context, error) =>
-                _ScannerError(error: error, onRetry: _controller.start),
-          ),
-          const _ScanHint(),
-        ],
+      body: ScannerCamera(
+        controller: _controller,
+        onDetect: _onDetect,
+        overlay: const ScannerHint(
+          'Apunta al código QR de una caja, una tarima o una donación.',
+        ),
       ),
     );
   }
-}
-
-class _ScanHint extends StatelessWidget {
-  const _ScanHint();
-
-  @override
-  Widget build(BuildContext context) => Align(
-    alignment: Alignment.bottomCenter,
-    child: Container(
-      width: double.infinity,
-      color: Colors.black54,
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-      child: const Text(
-        'Apunta al código QR de una caja, una tarima o una donación.',
-        textAlign: TextAlign.center,
-        style: TextStyle(color: Colors.white),
-      ),
-    ),
-  );
-}
-
-/// Sin cámara no hay pantalla que valga: en vez de un rectángulo negro, se
-/// dice qué falta y se ofrece reintentar.
-class _ScannerError extends StatelessWidget {
-  const _ScannerError({required this.error, required this.onRetry});
-
-  final MobileScannerException error;
-  final Future<void> Function() onRetry;
-
-  @override
-  Widget build(BuildContext context) => Center(
-    child: Padding(
-      padding: const EdgeInsets.all(32),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Icon(Icons.no_photography_outlined, size: 48),
-          const SizedBox(height: 16),
-          Text(
-            _message,
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),
-          const SizedBox(height: 16),
-          FilledButton(
-            onPressed: () => onRetry(),
-            child: const Text('Reintentar'),
-          ),
-        ],
-      ),
-    ),
-  );
-
-  String get _message => switch (error.errorCode) {
-    MobileScannerErrorCode.permissionDenied =>
-      'Araguaney necesita la cámara para leer los códigos QR de las cajas. '
-          'Concede el permiso desde los ajustes del sistema y vuelve a '
-          'intentarlo.',
-    MobileScannerErrorCode.unsupported =>
-      'Este dispositivo no puede escanear códigos.',
-    _ => 'No se pudo abrir la cámara. Inténtalo de nuevo.',
-  };
 }
