@@ -78,9 +78,9 @@ assembled.
   references Play Core's deferred-components API; this application ships no
   deferred components, so those classes are not on the classpath and R8 stops
   with a list of missing classes that are not actually missing.
-- **The bundle is around 72 MB.** Most of it is the ML Kit barcode model that
-  comes with `mobile_scanner`, plus one copy of the native libraries per
-  architecture. Play splits it per device, so what an operator downloads is a
+- **The bundle is around 77 MB.** Most of it is the ML Kit barcode model that
+  comes with `mobile_scanner`, plus Firebase Messaging and one copy of the
+  native libraries per architecture. Play splits it per device, so what an operator downloads is a
   fraction of that — but the number in the console will look alarming until you
   know why.
 - **Two plugins still apply the Kotlin Gradle Plugin themselves**

@@ -4,19 +4,20 @@ import '../api/api_providers.dart';
 import '../auth/auth_providers.dart';
 import '../config/app_config.dart';
 import 'device_registrar.dart';
+import 'fcm_push_service.dart';
 import 'push_service.dart';
 import 'push_session_binder.dart';
 
 /// El servicio de avisos activo.
 ///
-/// Hoy siempre es el que no hace nada, y por dos razones distintas: el sabor
-/// `foss` no lleva Firebase nunca, y el resto todavía no puede obtener un token
-/// porque la aplicación no está registrada en el proyecto de Firebase. Cuando
-/// exista ese registro, la implementación sobre FCM entra por aquí y no hay que
-/// tocar nada más.
+/// Esta línea y el archivo `fcm_push_service.dart` son todo lo que el sabor
+/// `foss` tiene que quitar: su rama devuelve siempre [NoopPushService]. La
+/// comprobación de [AppConfig.pushEnabled] se queda igualmente, porque un
+/// binario compilado con `APP_FLAVOR=foss` desde esta rama tampoco debe
+/// inicializar Firebase.
 final pushServiceProvider = Provider<PushService>((ref) {
   if (!AppConfig.pushEnabled) return const NoopPushService();
-  return const NoopPushService();
+  return FcmPushService();
 });
 
 final deviceRegistrarProvider = Provider<DeviceRegistrar>(

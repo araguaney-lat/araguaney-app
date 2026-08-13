@@ -7,6 +7,16 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
+// El complemento de Google Services solo se aplica si existe la configuración
+// del proyecto de Firebase, que no se versiona. Sin ella el build sigue
+// funcionando y la aplicación arranca sin avisos: es lo que permite que
+// cualquiera clone y compile, y también lo que hace que la rama del sabor
+// `foss` no tenga que tocar Gradle.
+val firebaseConfig = file("google-services.json")
+if (firebaseConfig.exists()) {
+    apply(plugin = "com.google.gms.google-services")
+}
+
 // Configuración de firma. Vive fuera del repositorio: `key.properties` está en
 // .gitignore y `key.properties.example` documenta su forma. Si el archivo no
 // existe —que es el caso de cualquiera que clone y compile— el build de release
