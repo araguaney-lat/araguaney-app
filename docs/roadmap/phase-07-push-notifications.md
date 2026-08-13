@@ -84,7 +84,8 @@ offer a direct route to either subject:
   So the destination is `GET /v1/risk-reviews`, the center's open reviews, with
   the one whose intake matches marked. That screen also happens to be the only
   place where the **reason** can be read — which the notice withholds on
-  purpose, because it is read on a lock screen.
+  purpose, because it is read on a lock screen. Landing on the capture itself
+  would need request 2 in [`docs/backend-requests.md`](../backend-requests.md).
 - **`shipment_delivered` carries `shipment_id`**, and `GET /v1/shipments/{id}`
   exists, so the destination is a read-only shipment record.
 
