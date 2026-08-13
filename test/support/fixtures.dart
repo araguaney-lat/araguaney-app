@@ -226,3 +226,34 @@ Map<String, Object?> shipmentJson({
   'reconciled_at': null,
   'shipped_at': null,
 };
+
+Map<String, Object?> palletJson({
+  String id = 'pallet-1',
+  String code = 'TM-0001',
+  String status = 'open',
+  DateTime? closedAt,
+}) => {
+  'id': id,
+  'code': code,
+  'center_id': 'center-1',
+  'shipment_id': null,
+  'status': status,
+  'notes': null,
+  'tare_weight_kg': null,
+  'gross_weight_kg': null,
+  'height_cm': null,
+  'closed_at': closedAt?.toIso8601String(),
+  'created_at': testNow.toIso8601String(),
+};
+
+Map<String, Object?> palletDetailJson({
+  String id = 'pallet-1',
+  String code = 'TM-0001',
+  String status = 'open',
+  List<Map<String, Object?>>? boxes,
+}) => {
+  ...palletJson(id: id, code: code, status: status),
+  'boxes': boxes ?? [boxJson()],
+  'boxes_weight_kg': null,
+  'weight_discrepancy_kg': null,
+};

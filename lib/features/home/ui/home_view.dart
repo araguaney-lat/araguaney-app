@@ -8,6 +8,7 @@ import '../../boxes/ui/boxes_list_view.dart';
 import '../../intake/data/intake_providers.dart';
 import '../../intake/ui/intake_list_view.dart';
 import '../../intake/ui/pending_captures_view.dart';
+import '../../pallets/ui/pallets_list_view.dart';
 import '../../scanning/ui/scanner_view.dart';
 import 'push_permission_card.dart';
 
@@ -80,6 +81,13 @@ class HomeView extends ConsumerWidget {
                 label: const Text('Capturas'),
                 onPressed: () =>
                     Navigator.of(context).push(IntakeListView.route()),
+              ),
+              const SizedBox(height: 12),
+              FilledButton.tonalIcon(
+                icon: const Icon(Icons.pallet),
+                label: const Text('Tarimas'),
+                onPressed: () =>
+                    Navigator.of(context).push(PalletsListView.route()),
               ),
               const SizedBox(height: 12),
               FilledButton.tonalIcon(
