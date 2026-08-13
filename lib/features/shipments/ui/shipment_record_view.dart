@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/api/api_error_mapper.dart';
 import '../../../core/api/api_providers.dart';
 import '../../../core/api/generated/models/incident_out.dart';
+import '../../../core/api/generated/models/qr_event_out.dart';
 import '../../../core/api/generated/models/reception_out.dart';
 import '../../../core/api/generated/models/shipment_detail_out.dart';
 import '../../../core/auth/auth_providers.dart';
@@ -11,6 +12,8 @@ import '../../../core/ui/record_field.dart';
 import '../../incidents/data/incidents_providers.dart';
 import '../../incidents/data/incidents_repository.dart';
 import '../../incidents/ui/report_incident_sheet.dart';
+import '../data/shipments_providers.dart';
+import '../data/shipments_repository.dart';
 
 /// Ficha de un envío, de solo lectura, con lo que llegó y lo que no.
 ///
@@ -57,13 +60,64 @@ class ShipmentRecordView extends ConsumerWidget {
     }
   }
 
+  /// Pide el manifiesto y lo abre.
+  ///
+  /// El servidor no devuelve el PDF: devuelve un trabajo, y el documento llega
+  /// cuando termina de armarse. Si tarda más de lo que este sondeo espera, se
+  /// dice — el trabajo sigue vivo allá y volver a pedirlo lo recoge.
+  Future<void> _manifest(BuildContext context, WidgetRef ref) async {
+    final messenger = ScaffoldMessenger.of(
+      context,
+    )..showSnackBar(const SnackBar(content: Text('Preparando el manifiesto…')));
+
+    final outcome = await ref
+        .read(shipmentsRepositoryProvider)
+        .manifest(shipmentId);
+    if (!context.mounted) return;
+
+    // El aviso de espera se retira antes de decir cómo terminó: si no, la
+    // respuesta se encola detrás de él y llega cuando ya nadie mira.
+    messenger.hideCurrentSnackBar();
+
+    switch (outcome) {
+      case ManifestReady(:final downloadUrl):
+        final opened = await ref.read(openLinkProvider)(downloadUrl);
+        if (!opened) {
+          messenger.showSnackBar(
+            const SnackBar(
+              content: Text('No se pudo abrir el manifiesto en este teléfono.'),
+            ),
+          );
+        }
+      case ManifestStillWorking():
+        messenger.showSnackBar(
+          const SnackBar(
+            content: Text(
+              'El manifiesto sigue armándose. Vuelve a pedirlo en un momento.',
+            ),
+          ),
+        );
+      case ManifestFailed(:final message):
+        messenger.showSnackBar(SnackBar(content: Text(message)));
+    }
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final shipment = ref.watch(shipmentProvider(shipmentId));
     final canReport = ref.watch(isCenterCoordinatorProvider);
 
     return Scaffold(
-      appBar: AppBar(title: Text(shipment.valueOrNull?.reference ?? 'Envío')),
+      appBar: AppBar(
+        title: Text(shipment.valueOrNull?.reference ?? 'Envío'),
+        actions: [
+          IconButton(
+            tooltip: 'Manifiesto',
+            icon: const Icon(Icons.description_outlined),
+            onPressed: () => _manifest(context, ref),
+          ),
+        ],
+      ),
       floatingActionButton: canReport
           ? FloatingActionButton.extended(
               onPressed: () => _report(context, ref),
@@ -77,6 +131,7 @@ class ShipmentRecordView extends ConsumerWidget {
             ref
               ..invalidate(shipmentProvider(shipmentId))
               ..invalidate(shipmentReceptionProvider(shipmentId))
+              ..invalidate(shipmentEventsProvider(shipmentId))
               ..invalidate(shipmentIncidentsProvider(shipmentId));
           },
           child: _Body(shipment: value, shipmentId: shipmentId),
@@ -107,6 +162,7 @@ class _Body extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final reception = ref.watch(shipmentReceptionProvider(shipmentId));
     final incidents = ref.watch(shipmentIncidentsProvider(shipmentId));
+    final events = ref.watch(shipmentEventsProvider(shipmentId));
 
     return ListView(
       padding: const EdgeInsets.symmetric(vertical: 8),
@@ -130,6 +186,18 @@ class _Body extends ConsumerWidget {
             'Todavía no se registró la recepción de este envío.',
           ),
           AsyncError() => const _Note('No se pudo consultar la recepción.'),
+          _ => const _Note('Consultando…'),
+        },
+        const Divider(),
+        _SectionTitle('Recorrido'),
+        switch (events) {
+          AsyncData(:final value) when value.isEmpty => const _Note(
+            'Todavía no hay hitos anotados para este envío.',
+          ),
+          AsyncData(:final value) => Column(
+            children: [for (final event in value) _Event(event: event)],
+          ),
+          AsyncError() => const _Note('No se pudo consultar el recorrido.'),
           _ => const _Note('Consultando…'),
         },
         const Divider(),
@@ -214,6 +282,31 @@ class _Incident extends StatelessWidget {
     ),
     isThreeLine: true,
   );
+}
+
+/// Un paso del recorrido. Los hitos se leen con su nombre; los cambios de
+/// estado, como la transición que fueron. Anotar hitos exige administración
+/// nacional, así que aquí solo se leen.
+class _Event extends StatelessWidget {
+  const _Event({required this.event});
+
+  final QrEventOut event;
+
+  @override
+  Widget build(BuildContext context) {
+    final described = describeShipmentEvent(event);
+
+    return ListTile(
+      dense: true,
+      leading: Icon(
+        event.milestone != null ? Icons.flag_outlined : Icons.arrow_forward,
+      ),
+      title: Text(described.title),
+      subtitle: Text(
+        [formatShortDate(described.at), ?described.note].join(' · '),
+      ),
+    );
+  }
 }
 
 class _SectionTitle extends StatelessWidget {

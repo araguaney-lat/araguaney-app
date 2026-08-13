@@ -25,13 +25,13 @@
 | # | Block | Description | Complexity | Status |
 |---|-------|-------------|------------|--------|
 | 1 | Pallet operations | Create and close pallets, add and remove sealed boxes by scan without leaving the camera, tare and gross weights. Online only, and coordination only — the server enforces both. | 🔴 High | ✅ Done |
-| 2 | Shipment views and milestones | Milestones timeline and manifest access. The read-only shipment record itself arrives earlier, in Phase 07: a `shipment_delivered` notice needs somewhere to land. | 🟠 Medium | ⬜ Pending |
+| 2 | Shipment views and milestones | Reading the journey — state changes and logistics milestones in one timeline — and asking for the manifest, which the server generates as a job. **Annotating a milestone requires national administration** and stays out; see below. | 🟠 Medium | 🟨 Partial |
 | 3 | Transfers | Participating in a transfer: reading it, approving, rejecting with a reason, dispatching and receiving, each offered only where the server's machine allows it. **Creating one is not here** — see below. | 🟠 Medium | 🟨 Partial |
 | 4 | Reception and incidents | Reading a reception with its shrinkage, and raising and listing incidents on a shipment — everything a center can do. **Reconciling is closed to national administration** and stays out; see below. | 🔴 High | 🟨 Partial |
 | 5 | Coordinator views | **Resolving a risk review is done**: approve or reject with an optional note, offered only to coordination. Campaign membership and volunteer management scoped to the center are still pending. | 🔴 High | 🟨 Partial |
 | 6 | National dashboard | Aggregated read-only views for national administrators. Reopening `/v1/dashboard/**` in the generated client means solving the `anyOf` response the generator cannot express today — request 5 in `docs/backend-requests.md`. | 🟠 Medium | ⬜ Pending |
 | 7 | Messaging / notification center | Threads, replies, marking read on open, and the unread counter on the home screen. Opening a campaign thread is included; **private threads and attachments are not** — see below. | 🟠 Medium | 🟨 Partial |
-| 8 | Riverpod 3.x + codegen migration | When `riverpod`/`riverpod_generator` realign with stable Flutter's `flutter_test` pins; mechanical by design. | 🟠 Medium | ⬜ Pending |
+| 8 | Riverpod 3.x + codegen migration | Still blocked, and now verified rather than assumed — see below. | 🟠 Medium | 🚫 Blocked |
 
 ---
 
@@ -73,6 +73,29 @@ here: **only exceptions travel** — whatever is not marked counts as received,
 because shrinkage is the minority — and each exception opens its incident **on
 the server**. The weight tolerance that decides whether a difference becomes an
 incident lives there too, and the client must not learn it.
+
+---
+
+## What block 2 reads, and what it does not write
+
+**Annotating a milestone is closed to national administration.**
+`POST /v1/shipments/{id}/milestones` requires `national_admin`, the same shape
+of limit reconciliation hit in block 4. What a center coordinator can do is
+**read** the journey and **ask for the manifest**, and that is what shipped: a
+timeline that puts state changes and logistics milestones in the same column,
+because the question someone asks a shipment record is "where is it", not "which
+of these two kinds of event moved it".
+
+A milestone this build does not recognize is shown by its own code instead of
+being dropped. The backend's vocabulary can grow — the contract is
+additive — and an old binary must not make a shipment lose a step of its journey.
+
+**The manifest is a job, not a file.** The endpoint answers with an export job
+and the document is assembled elsewhere, so the client polls. Polling has a
+bound: when it runs out the screen says the manifest is still being assembled
+and to ask again, because the job stays alive on the server and a spinner with
+no end is worse than a sentence. The bound is a client-side courtesy, not a
+server limit, and it carries no information about the server's own timings.
 
 ---
 
@@ -130,6 +153,22 @@ failures show the server's words, technical ones stay generic — but here the
 generic costs something concrete: the server's sentence tells the person what to
 ask for, and the generic one does not. Whether `ForbiddenFailure` should carry
 the server's message is a decision about that policy, not about messaging.
+
+---
+
+## Block 8 is blocked, and it was checked
+
+The pin on Riverpod 2.6 was recorded as an assumption. It was resolved against
+the actual solver: `riverpod >=3.0.0-dev` cannot coexist with `drift_dev`
+and the `flutter_test` pins of the Flutter version this repository builds with —
+a three-way conflict, not a matter of raising one bound. Nothing in the
+application's own code stands in the way; the providers are already written by
+hand and the migration is mechanical when the constraint clears.
+
+Recording it here so the next person does not spend the same afternoon
+discovering it: the check to repeat is bumping `riverpod` in `pubspec.yaml` and
+reading what `flutter pub get` says. Until that resolves, the block is not
+pending work — it is waiting on the ecosystem.
 
 ---
 

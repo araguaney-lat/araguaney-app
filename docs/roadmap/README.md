@@ -16,9 +16,9 @@ sum of those rows and nothing else.
 ```mermaid
 pie title Tasks completed (94 tasks)
     "Done" : 74
-    "Pending" : 9
-    "Partial" : 7
-    "Blocked or external" : 4
+    "Pending" : 7
+    "Partial" : 8
+    "Blocked or external" : 5
 ```
 
 | Phase | Name | Done | Pending | Progress |
@@ -33,7 +33,7 @@ pie title Tasks completed (94 tasks)
 | 7 | [Push notifications](phase-07-push-notifications.md) | 8 | 1 | 🟨 89% (1 partial) |
 | 8 | [Android release and distribution](phase-08-android-release.md) | 4 | 5 | 🟨 44% (2 partial, 3 external) |
 | 9 | [iOS enablement](phase-09-ios-enablement.md) | 0 | 6 | ⬜ 0% |
-| 10 | [Operational parity backlog](phase-10-operational-parity.md) | 1 | 7 | 🟨 13% (4 partial) |
+| 10 | [Operational parity backlog](phase-10-operational-parity.md) | 1 | 7 | 🟨 13% (5 partial, 1 blocked) |
 | **Total** | | **74** | **20** | **🟢 79%** |
 
 ## Blocked work
@@ -50,6 +50,10 @@ the ones that block roadmap tasks.
   outside.
 - **Phase 03, task 5 (center stock screen)** needs a session-scoped backend
   endpoint returning stock by category for the caller's center — request 1.
+- **Phase 10, block 8 (Riverpod 3.x)** is blocked on the package ecosystem, not
+  on this repository: `riverpod >=3.0.0-dev` cannot resolve alongside
+  `drift_dev` and stable Flutter's `flutter_test` pins. Verified against the
+  solver, not assumed.
 
 ## Dependencies worth naming
 
