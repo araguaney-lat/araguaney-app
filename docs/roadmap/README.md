@@ -11,10 +11,10 @@ it contains.
 
 ```mermaid
 pie title Tasks completed (94 tasks)
-    "Done" : 68
-    "Pending" : 17
-    "Partial" : 4
-    "Blocked or external" : 5
+    "Done" : 73
+    "Pending" : 12
+    "Partial" : 5
+    "Blocked or external" : 4
 ```
 
 | Phase | Name | Done | Pending | Progress |
@@ -26,18 +26,13 @@ pie title Tasks completed (94 tasks)
 | 4 | [QR scanning](phase-04-qr-scanning.md) | 6 | 0 | ✅ 100% |
 | 5 | [Online intake and box operations](phase-05-intake-online.md) | 10 | 0 | ✅ 100% |
 | 6 | [Offline capture queue](phase-06-offline-queue.md) | 10 | 0 | ✅ 100% |
-| 7 | [Push notifications](phase-07-push-notifications.md) | 3 | 6 | 🟨 33% (2 partial, 1 external) |
+| 7 | [Push notifications](phase-07-push-notifications.md) | 8 | 1 | 🟨 89% (1 partial) |
 | 8 | [Android release and distribution](phase-08-android-release.md) | 4 | 5 | 🟨 44% (2 partial, 3 external) |
 | 9 | [iOS enablement](phase-09-ios-enablement.md) | 0 | 6 | ⬜ 0% |
 | 10 | [Operational parity backlog](phase-10-operational-parity.md) | 0 | 8 | ⬜ 0% |
-| **Total** | | **68** | **26** | **🟢 72%** |
+| **Total** | | **73** | **21** | **🟢 78%** |
 
 ## Blocked work
-
-- **Phase 07, task 1** needs the Android application registered in the Firebase
-  project that already exists. Without it there is no `google-services.json` and
-  the client cannot obtain a token, so nothing downstream can be proven end to
-  end. The backend is waiting on exactly that first real token.
 
 - **Phase 08, tasks 1, 5 and 8** need a Google Play developer account, the app
   created in its console, and listing assets. No code unblocks them. The upload
@@ -58,10 +53,10 @@ pie title Tasks completed (94 tasks)
   per-user queue, and token registration.
 - **05 → 06.** The offline queue reuses the online capture flow unchanged; it
   is a submission strategy, not a second form.
-- **07's backend gate is lifted.** The device endpoints are live and dispatch is
-  on in production; what gates the phase now is registering the Android
-  application in the existing Firebase project, which only produces a
-  `google-services.json`. **09 still waits on the Apple Developer Program.**
+- **07 is unblocked and all but done.** The endpoints are live, the application
+  is registered in Firebase, and everything from the token to the tap is wired.
+  What remains is the `foss` packaging, which is a release concern.
+  **09 still waits on the Apple Developer Program.**
 - **08 task 1 (Google Play account) is external** and can proceed in parallel
   with any phase.
 

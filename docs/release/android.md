@@ -12,7 +12,8 @@ These are external prerequisites; the repository cannot supply them.
 | Google Play developer account | Registered, identity verified, paid |
 | Upload keystore | Generated on the publisher's machine, stored outside the repository |
 | Play App Signing | Enabled when the app is created in the console |
-| Repository secrets | `ANDROID_KEYSTORE_BASE64`, `ANDROID_STORE_PASSWORD`, `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD`, `SENTRY_DSN` |
+| Android app registered in Firebase | Package `lat.araguaney.araguaney_app`; produces `google-services.json` |
+| Repository secrets | `ANDROID_KEYSTORE_BASE64`, `ANDROID_STORE_PASSWORD`, `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD`, `GOOGLE_SERVICES_JSON`, `SENTRY_DSN` |
 | Repository variables | `API_BASE_URL`, `WEB_BASE_URL` |
 
 ## Generating the upload keystore
@@ -35,6 +36,11 @@ base64 -w0 ~/araguaney-upload.jks           # Linux
 
 Paste it into `ANDROID_KEYSTORE_BASE64`. The workflow decodes it, writes
 `android/key.properties`, builds, and deletes both afterwards.
+
+`google-services.json` travels the same way, in `GOOGLE_SERVICES_JSON`. The
+workflow **fails without it** rather than building quietly: a release that
+installs without notifications and says nothing is worse than one that does not
+build.
 
 ## Building locally
 

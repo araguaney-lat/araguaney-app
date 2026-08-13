@@ -9,6 +9,7 @@ import '../../intake/data/intake_providers.dart';
 import '../../intake/ui/intake_list_view.dart';
 import '../../intake/ui/pending_captures_view.dart';
 import '../../scanning/ui/scanner_view.dart';
+import 'push_permission_card.dart';
 
 /// Pantalla principal, todavía provisional: las features operativas llegan en
 /// las fases siguientes. Hoy confirma quién inició sesión y permite cerrarla.
@@ -39,12 +40,16 @@ class HomeView extends ConsumerWidget {
           ),
         ],
       ),
-      body: Center(
+      // Desplazable, no centrada: con la tarjeta del permiso y los accesos, el
+      // contenido ya no cabe en una pantalla pequeña, y un `Column` centrado
+      // desborda en vez de dejar bajar.
+      body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              const SizedBox(height: 24),
               const Icon(Icons.inventory_2_outlined, size: 48),
               const SizedBox(height: 16),
               if (session?.centerRole case final role?)
@@ -54,12 +59,13 @@ class HomeView extends ConsumerWidget {
                 ),
               const SizedBox(height: 8),
               Text(
-                'Sesión iniciada. Las operaciones del centro llegan en las '
-                'siguientes fases.',
+                'Sesión iniciada.',
                 style: Theme.of(context).textTheme.bodyMedium,
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 24),
+              const PushPermissionCard(),
+              const SizedBox(height: 12),
               FilledButton.icon(
                 icon: const Icon(Icons.qr_code_scanner),
                 label: const Text('Escanear código'),

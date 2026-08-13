@@ -12,9 +12,19 @@ class FakePushService implements PushService {
   String? token;
 
   int startCount = 0;
+  int permissionRequests = 0;
+
+  /// Lo que responde el sistema. La prueba lo cambia para recorrer los caminos.
+  PushPermission permissionStatus = PushPermission.notDetermined;
+
+  /// Lo que la persona decide cuando se le pregunta.
+  PushPermission answerWhenAsked = PushPermission.granted;
 
   final _rotations = StreamController<String>.broadcast();
   final _opened = StreamController<PushDestination>.broadcast();
+
+  /// Simula que alguien tocó un aviso.
+  void open(PushDestination destination) => _opened.add(destination);
 
   /// Simula que FCM rotó el token.
   void rotate(String newToken) {
@@ -33,6 +43,15 @@ class FakePushService implements PushService {
 
   @override
   Stream<PushDestination> get onOpened => _opened.stream;
+
+  @override
+  Future<PushPermission> permission() async => permissionStatus;
+
+  @override
+  Future<PushPermission> requestPermission() async {
+    permissionRequests++;
+    return permissionStatus = answerWhenAsked;
+  }
 
   Future<void> dispose() async {
     await _rotations.close();

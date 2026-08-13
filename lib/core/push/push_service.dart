@@ -1,5 +1,22 @@
 import 'push_destination.dart';
 
+/// Qué ha decidido quien usa el teléfono sobre recibir avisos.
+enum PushPermission {
+  /// Concedido: los avisos se muestran.
+  granted,
+
+  /// Denegado. No se vuelve a preguntar desde la aplicación; se cambia en los
+  /// ajustes del sistema.
+  denied,
+
+  /// Todavía no se ha preguntado.
+  notDetermined,
+
+  /// No hay a quién preguntar: esta compilación no entrega avisos. Es el caso
+  /// del sabor `foss`.
+  unavailable,
+}
+
 /// El único punto por donde entra Firebase.
 ///
 /// Todo lo que la aplicación necesita de los avisos cabe en estos cuatro
@@ -21,6 +38,12 @@ abstract interface class PushService {
 
   /// Avisos que alguien tocó, ya interpretados.
   Stream<PushDestination> get onOpened;
+
+  /// Qué se decidió ya, sin preguntar nada.
+  Future<PushPermission> permission();
+
+  /// Pide el permiso al sistema. Devuelve lo que se decidió.
+  Future<PushPermission> requestPermission();
 }
 
 /// Implementación que no hace nada.
@@ -42,4 +65,13 @@ class NoopPushService implements PushService {
 
   @override
   Stream<PushDestination> get onOpened => const Stream.empty();
+
+  /// No hay permiso que pedir porque no hay avisos que entregar. Decir
+  /// «denegado» sugeriría que alguien lo denegó.
+  @override
+  Future<PushPermission> permission() async => PushPermission.unavailable;
+
+  @override
+  Future<PushPermission> requestPermission() async =>
+      PushPermission.unavailable;
 }

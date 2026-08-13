@@ -7,6 +7,7 @@ import '../../features/session/ui/login_view.dart';
 import '../../features/session/ui/totp_challenge_view.dart';
 import '../auth/auth_providers.dart';
 import '../auth/session.dart';
+import 'push_router.dart';
 
 /// Decide qué se ve según el estado de la sesión.
 ///
@@ -28,7 +29,10 @@ class SessionGate extends ConsumerWidget {
       // servidor lo exige y saltarlo dejaría viva una clave temporal.
       SessionActive(:final session) when session.mustChangePassword =>
         const ChangePasswordView(),
-      SessionActive() => const HomeView(),
+      // El enrutado de avisos envuelve solo esta rama: navegar exige sesión,
+      // y ni el inicio de sesión ni el cambio obligatorio de contraseña se
+      // pueden saltar porque alguien tocara una notificación.
+      SessionActive() => const PushRouter(child: HomeView()),
     };
   }
 }
