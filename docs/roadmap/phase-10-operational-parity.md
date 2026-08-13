@@ -28,7 +28,7 @@
 | 2 | Shipment views and milestones | Reading the journey — state changes and logistics milestones in one timeline — and asking for the manifest, which the server generates as a job. **Annotating a milestone requires national administration** and stays out; see below. | 🟠 Medium | 🟨 Partial |
 | 3 | Transfers | Participating in a transfer: reading it, approving, rejecting with a reason, dispatching and receiving, each offered only where the server's machine allows it. **Creating one is not here** — see below. | 🟠 Medium | 🟨 Partial |
 | 4 | Reception and incidents | Reading a reception with its shrinkage, and raising and listing incidents on a shipment — everything a center can do. **Reconciling is closed to national administration** and stays out; see below. | 🔴 High | 🟨 Partial |
-| 5 | Coordinator views | **Resolving a risk review is done**: approve or reject with an optional note, offered only to coordination. Campaign membership and volunteer management scoped to the center are still pending. | 🔴 High | 🟨 Partial |
+| 5 | Coordinator views | Resolving a risk review, the center's team directory, adding somebody to the center, resending an access, and moving people in and out of a campaign — everything scoped to the caller's own center, which the server enforces. **Reading the directory is open to the whole center**; managing it is not. | 🔴 High | ✅ Done |
 | 6 | National dashboard | Aggregated read-only views for national administrators. Reopening `/v1/dashboard/**` in the generated client means solving the `anyOf` response the generator cannot express today — request 5 in `docs/backend-requests.md`. | 🟠 Medium | ⬜ Pending |
 | 7 | Messaging / notification center | Threads, replies, marking read on open, and the unread counter on the home screen. Opening a campaign thread is included; **private threads and attachments are not** — see below. | 🟠 Medium | 🟨 Partial |
 | 8 | Riverpod 3.x + codegen migration | Still blocked, and now verified rather than assumed — see below. | 🟠 Medium | 🚫 Blocked |
@@ -118,6 +118,41 @@ Also worth recording: the client mirrors the server's state machine to decide
 which buttons to offer, and a test pins that table. It is duplication, chosen
 knowingly over offering three buttons where two fail; the server still decides,
 and its rejection is what the screen shows.
+
+---
+
+## What block 5 closed, and where it drew its lines
+
+The block finished in two passes. Resolving a risk review came first, for the
+reason below; the team surface came after, and it is what a coordinator
+actually needs from a phone: someone shows up to help, and they have to exist
+in the system and be in the campaign before they can capture anything.
+
+**Reading the team is not a privilege.** `GET /v1/centers/{id}/users` is open to
+anyone with a center role, so the directory is too: knowing who you work with
+is not coordination. Adding somebody, resending an access and moving people in
+and out of a campaign are coordination, and the server checks it on every call.
+
+**The center is never chosen.** It is the one on the session. A national
+administration belongs to no center, so the directory says so instead of asking
+which center to look at — picking one is desk work, and this screen is for the
+center you are standing in.
+
+**Two refusals are shown before they happen**, on the same principle the
+transfer buttons follow: the general campaign offers no way out of it, because
+it is where everything without a campaign lands and the server answers 422; and
+a disabled account offers no resend, because the server refuses that too.
+Both still fail on the server if reached another way — the check here only
+avoids promising something that cannot be delivered.
+
+**One thing this block does that no other does: it writes its own copy for five
+refusals.** The server answers `EMAIL_TAKEN`, `USERNAME_TAKEN`, `INVALID_ROLE`,
+`ACCOUNT_DISABLED` and `PROTECTED_CAMPAIGN` in English, and the people who
+operate read Spanish. Only business-rule refusals are rewritten, only for codes
+listed by name, and anything else still shows what the server said. It is
+presentation copy for a known code, not a second copy of a rule — but it is a
+line worth watching: if that map grows past a handful of entries, the right fix
+is Spanish messages from the backend, not a bigger dictionary here.
 
 ---
 

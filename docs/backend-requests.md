@@ -115,6 +115,28 @@ exclusion can stay forever and this request can be closed.
 
 ---
 
+## 6. Operator-facing messages in Spanish for team errors
+
+**Blocks:** nothing today. It removes copy the client should not be holding.
+
+The team surface hits five refusals whose message reaches an operator directly:
+`EMAIL_TAKEN`, `USERNAME_TAKEN`, `INVALID_ROLE`, `ACCOUNT_DISABLED` and
+`PROTECTED_CAMPAIGN`. The server phrases them in English; the people who use
+this application read Spanish.
+
+**What the application does today:** rewrites those five, and only those five,
+by code — business-rule refusals only, with the server's own message shown for
+anything not on the list. It is presentation copy, not a duplicated rule, and
+the roadmap records it as a line worth watching.
+
+**Shape that would work:** those messages in Spanish, as the campaign endpoints
+already answer («No eres miembro de esta campaña»). The client would then drop
+its map and go back to showing the server's words for every business refusal.
+Whether the backend answers in one language or negotiates it is a decision for
+that side; either way the client stops holding copy.
+
+---
+
 ## Not requests
 
 Recorded here so they are not mistaken for gaps:

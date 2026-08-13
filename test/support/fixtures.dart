@@ -1,3 +1,4 @@
+import 'package:araguaney_app/core/api/generated/models/campaign_out.dart';
 import 'package:araguaney_app/core/db/app_database.dart';
 
 /// Momento fijo para que las pruebas no dependan del reloj de quien las corre.
@@ -384,4 +385,64 @@ Map<String, Object?> qrEventJson({
   'milestone': milestone,
   'note': note,
   'ts': (ts ?? testNow).toIso8601String(),
+};
+
+CampaignOut campaign({
+  String id = 'campaign-1',
+  String name = 'Campaña de invierno',
+  bool isGeneral = false,
+}) => CampaignOut(
+  id: id,
+  name: name,
+  slug: null,
+  originCountry: null,
+  destinationCountry: null,
+  description: null,
+  startDate: null,
+  endDate: null,
+  isActive: true,
+  isGeneral: isGeneral,
+  weightGoalKg: null,
+  createdAt: testNow,
+);
+
+Map<String, Object?> userJson({
+  String id = 'user-1',
+  String email = 'ana@centro.test',
+  String username = 'ana',
+  String? fullName = 'Ana Pérez',
+  String? centerRole = 'volunteer',
+  String centerId = 'center-1',
+  bool isActive = true,
+}) => {
+  'id': id,
+  'email': email,
+  'username': username,
+  'full_name': fullName,
+  'avatar_url': null,
+  'role': 'user',
+  'center_role': centerRole,
+  'center_id': centerId,
+  'country_code': null,
+  'is_active': isActive,
+  'totp_enabled': false,
+  'must_accept_terms': false,
+};
+
+Map<String, Object?> campaignMemberJson({
+  String id = 'user-1',
+  String email = 'ana@centro.test',
+  String username = 'ana',
+  String? fullName = 'Ana Pérez',
+  String? centerRole = 'volunteer',
+  String centerId = 'center-1',
+  bool isActive = true,
+}) => {
+  'id': id,
+  'email': email,
+  'username': username,
+  'full_name': fullName,
+  'center_role': centerRole,
+  'center_id': centerId,
+  'is_active': isActive,
 };

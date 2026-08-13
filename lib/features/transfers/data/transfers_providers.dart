@@ -19,13 +19,6 @@ final transferDetailProvider = FutureProvider.family<TransferDetailOut, String>(
   (ref, id) => ref.watch(transfersRepositoryProvider).detail(id),
 );
 
-/// El centro de quien tiene la sesión. Decide si una transferencia sale o
-/// llega, que es lo que gobierna qué se puede hacer con ella.
-final myCenterIdProvider = Provider<String?>((ref) {
-  final state = ref.watch(sessionControllerProvider);
-  return state is SessionActive ? state.session.centerId : null;
-});
-
 final isNationalAdminProvider = Provider<bool>((ref) {
   final state = ref.watch(sessionControllerProvider);
   return state is SessionActive && state.session.centerRole == 'national_admin';

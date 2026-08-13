@@ -1,0 +1,267 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../../core/api/api_error_mapper.dart';
+import '../../../core/api/generated/models/campaign_member_out.dart';
+import '../../../core/api/generated/models/campaign_out.dart';
+import '../../../core/api/generated/models/user_out.dart';
+import '../../../core/auth/auth_providers.dart';
+import '../../intake/data/intake_providers.dart';
+import '../data/team_providers.dart';
+import '../data/team_repository.dart';
+import 'pick_person_sheet.dart';
+
+/// Quién participa en cada campaña.
+///
+/// La lista que devuelve el servidor ya viene recortada al propio centro
+/// cuando quien pregunta coordina uno: esta pantalla no filtra nada, muestra
+/// lo que le dieron.
+class CampaignMembersView extends ConsumerStatefulWidget {
+  const CampaignMembersView({super.key});
+
+  static Route<void> route() =>
+      MaterialPageRoute<void>(builder: (_) => const CampaignMembersView());
+
+  @override
+  ConsumerState<CampaignMembersView> createState() =>
+      _CampaignMembersViewState();
+}
+
+class _CampaignMembersViewState extends ConsumerState<CampaignMembersView> {
+  String? _campaignId;
+
+  CampaignOut? _selected(List<CampaignOut> campaigns) {
+    for (final campaign in campaigns) {
+      if (campaign.id == _campaignId) return campaign;
+    }
+    return null;
+  }
+
+  Future<void> _add(String campaignId) async {
+    final members =
+        ref.read(campaignMembersProvider(campaignId)).valueOrNull ??
+        const <CampaignMemberOut>[];
+    // Se pide aquí y no en `build`: el directorio solo hace falta cuando
+    // alguien va a sumar, y traerlo antes es una petición que casi nunca se
+    // usa. Si no llega, se dice; abrir una hoja vacía haría creer que el
+    // centro no tiene a nadie más.
+    final List<UserOut> people;
+    try {
+      people = await ref.read(centerUsersProvider.future);
+    } on Object catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(ApiErrorMapper.fromAny(error).operatorMessage)),
+      );
+      return;
+    }
+    if (!mounted) return;
+    final already = {for (final member in members) member.id};
+
+    final chosen = await PickPersonSheet.show(
+      context,
+      people: [
+        for (final person in people)
+          if (person.isActive && !already.contains(person.id)) person,
+      ],
+    );
+    if (chosen == null || !mounted) return;
+
+    final outcome = await ref
+        .read(teamRepositoryProvider)
+        .addMember(campaignId: campaignId, userId: chosen.id);
+    if (!mounted) return;
+
+    _report(campaignId, outcome);
+  }
+
+  Future<void> _remove(String campaignId, CampaignMemberOut member) async {
+    final name = member.fullName ?? member.username;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Sacar de la campaña'),
+        content: Text(
+          '$name dejará de participar en esta campaña. Sigue en el centro y '
+          'se le puede volver a sumar.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Cancelar'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text('Sacar'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+
+    final outcome = await ref
+        .read(teamRepositoryProvider)
+        .removeMember(campaignId: campaignId, userId: member.id);
+    if (!mounted) return;
+
+    _report(campaignId, outcome);
+  }
+
+  void _report(String campaignId, TeamOutcome outcome) {
+    switch (outcome) {
+      case TeamChanged():
+        ref.invalidate(campaignMembersProvider(campaignId));
+      case TeamRefused(:final message):
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(message)));
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final campaigns = ref.watch(myCampaignsProvider).valueOrNull ?? const [];
+    final canManage = ref.watch(isCenterCoordinatorProvider);
+    final campaign = _selected(campaigns);
+
+    return Scaffold(
+      appBar: AppBar(title: const Text('Campañas')),
+      floatingActionButton: canManage && campaign != null
+          ? FloatingActionButton.extended(
+              onPressed: () => _add(campaign.id),
+              icon: const Icon(Icons.person_add_alt),
+              label: const Text('Sumar'),
+            )
+          : null,
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+            child: DropdownButtonFormField<String>(
+              initialValue: _campaignId,
+              decoration: const InputDecoration(labelText: 'Campaña'),
+              items: [
+                for (final option in campaigns)
+                  DropdownMenuItem(value: option.id, child: Text(option.name)),
+              ],
+              onChanged: (value) => setState(() => _campaignId = value),
+            ),
+          ),
+          if (campaign == null)
+            const Expanded(
+              child: _Message('Elige una campaña para ver quién participa.'),
+            )
+          else
+            Expanded(
+              child: _Members(campaign: campaign, onRemove: _remove),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class _Members extends ConsumerWidget {
+  const _Members({required this.campaign, required this.onRemove});
+
+  final CampaignOut campaign;
+  final void Function(String campaignId, CampaignMemberOut member) onRemove;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final members = ref.watch(campaignMembersProvider(campaign.id));
+    final canManage = ref.watch(isCenterCoordinatorProvider);
+
+    return RefreshIndicator(
+      onRefresh: () async =>
+          ref.invalidate(campaignMembersProvider(campaign.id)),
+      child: switch (members) {
+        AsyncData(:final value) when value.isEmpty => const _Message(
+          'Todavía no participa nadie de tu centro en esta campaña.',
+        ),
+        AsyncData(:final value) => ListView.separated(
+          itemCount: value.length + 1,
+          separatorBuilder: (_, _) => const Divider(height: 1),
+          itemBuilder: (context, index) {
+            // La campaña general recoge lo que no pertenece a otra: de ahí no
+            // se saca a nadie, y el servidor responde 422 si se intenta.
+            if (index == 0) {
+              return campaign.isGeneral
+                  ? const _Note(
+                      'Es la campaña general: recoge lo que no pertenece a '
+                      'ninguna otra, y de ella no se saca a nadie.',
+                    )
+                  : const SizedBox.shrink();
+            }
+            final member = value[index - 1];
+            return _Member(
+              member: member,
+              onRemove: canManage && !campaign.isGeneral
+                  ? () => onRemove(campaign.id, member)
+                  : null,
+            );
+          },
+        ),
+        AsyncError(:final error) => _Message(
+          ApiErrorMapper.fromAny(error).operatorMessage,
+        ),
+        _ => const Center(child: CircularProgressIndicator()),
+      },
+    );
+  }
+}
+
+class _Member extends StatelessWidget {
+  const _Member({required this.member, this.onRemove});
+
+  final CampaignMemberOut member;
+  final VoidCallback? onRemove;
+
+  @override
+  Widget build(BuildContext context) => ListTile(
+    leading: const Icon(Icons.person_outline),
+    title: Text(member.fullName ?? member.username),
+    subtitle: Text(
+      '${centerRoleLabel(member.centerRole)} · ${member.username}',
+    ),
+    trailing: onRemove == null
+        ? null
+        : IconButton(
+            tooltip: 'Sacar de la campaña',
+            icon: const Icon(Icons.person_remove_outlined),
+            onPressed: onRemove,
+          ),
+  );
+}
+
+class _Note extends StatelessWidget {
+  const _Note(this.text);
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+    child: Text(text, style: Theme.of(context).textTheme.bodySmall),
+  );
+}
+
+class _Message extends StatelessWidget {
+  const _Message(this.text);
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) => ListView(
+    children: [
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 64),
+        child: Text(
+          text,
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.bodyMedium,
+        ),
+      ),
+    ],
+  );
+}

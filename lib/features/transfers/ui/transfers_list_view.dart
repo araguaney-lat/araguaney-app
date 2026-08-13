@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/api/api_error_mapper.dart';
 import '../../../core/api/generated/models/transfer_out.dart';
+import '../../../core/auth/auth_providers.dart';
 import '../../../core/ui/record_field.dart';
 import '../data/transfers_providers.dart';
 import '../domain/transfer_actions.dart';
