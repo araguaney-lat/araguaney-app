@@ -3,8 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/api/api_error_mapper.dart';
 import '../../../core/api/generated/models/risk_review_out.dart';
+import '../../../core/auth/auth_providers.dart';
 import '../../../core/ui/record_field.dart';
 import '../data/risk_reviews_providers.dart';
+import '../data/risk_reviews_repository.dart';
+import 'resolve_review_sheet.dart';
 
 /// Revisiones de riesgo del centro.
 ///
@@ -23,9 +26,43 @@ class RiskReviewsView extends ConsumerWidget {
         builder: (_) => RiskReviewsView(highlightIntakeId: highlightIntakeId),
       );
 
+  /// Cierra una revisión con lo que decida quien coordina.
+  ///
+  /// Que otra persona la haya resuelto desde el panel mientras esta pantalla
+  /// estaba abierta es normal: el servidor lo dice y ese texto se muestra tal
+  /// cual, en vez de un error genérico que no explica nada.
+  Future<void> _resolve(
+    BuildContext context,
+    WidgetRef ref,
+    RiskReviewOut review,
+  ) async {
+    final decision = await ResolveReviewSheet.show(
+      context,
+      reason: review.reason ?? review.kind,
+    );
+    if (decision == null || !context.mounted) return;
+
+    final outcome = await ref
+        .read(riskReviewsRepositoryProvider)
+        .resolve(
+          reviewId: review.id,
+          resolution: decision.resolution,
+          note: decision.note,
+        );
+    if (!context.mounted) return;
+
+    ref.invalidate(riskReviewsProvider);
+    if (outcome case ResolveRefused(:final failure)) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(failure.operatorMessage)));
+    }
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final reviews = ref.watch(riskReviewsProvider);
+    final canResolve = ref.watch(isCenterCoordinatorProvider);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Revisiones de riesgo')),
@@ -43,6 +80,9 @@ class RiskReviewsView extends ConsumerWidget {
               highlighted:
                   highlightIntakeId != null &&
                   value[index].intakeId == highlightIntakeId,
+              onResolve: canResolve
+                  ? () => _resolve(context, ref, value[index])
+                  : null,
             ),
           ),
           AsyncError(:final error) => _Message(
@@ -56,10 +96,17 @@ class RiskReviewsView extends ConsumerWidget {
 }
 
 class _ReviewTile extends StatelessWidget {
-  const _ReviewTile({required this.review, required this.highlighted});
+  const _ReviewTile({
+    required this.review,
+    required this.highlighted,
+    this.onResolve,
+  });
 
   final RiskReviewOut review;
   final bool highlighted;
+
+  /// Nulo para quien no coordina: el servidor exige ese rol para resolver.
+  final VoidCallback? onResolve;
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +135,19 @@ class _ReviewTile extends StatelessWidget {
             RecordField(label: 'Cajas', value: boxes),
           if (review.reviewNote case final note?)
             RecordField(label: 'Nota de la revisión', value: note),
-          const SizedBox(height: 8),
+          if (onResolve case final onResolve?)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: FilledButton.tonal(
+                  onPressed: onResolve,
+                  child: const Text('Resolver'),
+                ),
+              ),
+            )
+          else
+            const SizedBox(height: 8),
         ],
       ),
     );
