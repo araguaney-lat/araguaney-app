@@ -8,6 +8,8 @@ import '../../boxes/ui/boxes_list_view.dart';
 import '../../intake/data/intake_providers.dart';
 import '../../intake/ui/intake_list_view.dart';
 import '../../intake/ui/pending_captures_view.dart';
+import '../../messaging/data/messaging_providers.dart';
+import '../../messaging/ui/threads_list_view.dart';
 import '../../pallets/ui/pallets_list_view.dart';
 import '../../scanning/ui/scanner_view.dart';
 import '../../transfers/ui/transfers_list_view.dart';
@@ -91,6 +93,8 @@ class HomeView extends ConsumerWidget {
                     Navigator.of(context).push(PalletsListView.route()),
               ),
               const SizedBox(height: 12),
+              const _MessagesButton(),
+              const SizedBox(height: 12),
               FilledButton.tonalIcon(
                 icon: const Icon(Icons.swap_horiz),
                 label: const Text('Transferencias'),
@@ -134,6 +138,31 @@ class _PendingCapturesButton extends ConsumerWidget {
         pending == 1 ? '1 captura sin enviar' : '$pending capturas sin enviar',
       ),
       onPressed: () => Navigator.of(context).push(PendingCapturesView.route()),
+    );
+  }
+}
+
+/// Acceso a los mensajes, con los privados sin leer a la vista.
+///
+/// El contador cuenta solo los privados, que es lo que el servidor devuelve:
+/// un hilo de campaña lo lee quien quiera cuando quiera, y contarlo como
+/// pendiente convertiría el número en ruido.
+class _MessagesButton extends ConsumerWidget {
+  const _MessagesButton();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final unread = ref.watch(unreadMessagesProvider).valueOrNull ?? 0;
+
+    return FilledButton.tonalIcon(
+      icon: unread == 0
+          ? const Icon(Icons.forum_outlined)
+          : Badge(
+              label: Text('$unread'),
+              child: const Icon(Icons.forum_outlined),
+            ),
+      label: Text(unread == 0 ? 'Mensajes' : 'Mensajes · $unread sin leer'),
+      onPressed: () => Navigator.of(context).push(ThreadsListView.route()),
     );
   }
 }
