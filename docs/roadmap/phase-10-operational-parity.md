@@ -30,7 +30,7 @@
 | 4 | Reception and incidents | Reading a reception with its shrinkage, and raising and listing incidents on a shipment — everything a center can do. **Reconciling is closed to national administration** and stays out; see below. | 🔴 High | 🟨 Partial |
 | 5 | Coordinator views | **Resolving a risk review is done**: approve or reject with an optional note, offered only to coordination. Campaign membership and volunteer management scoped to the center are still pending. | 🔴 High | 🟨 Partial |
 | 6 | National dashboard | Aggregated read-only views for national administrators. Reopening `/v1/dashboard/**` in the generated client means solving the `anyOf` response the generator cannot express today — request 5 in `docs/backend-requests.md`. | 🟠 Medium | ⬜ Pending |
-| 7 | Messaging / notification center | In-app messaging surface complementing push. | 🟠 Medium | ⬜ Pending |
+| 7 | Messaging / notification center | Threads, replies, marking read on open, and the unread counter on the home screen. Opening a campaign thread is included; **private threads and attachments are not** — see below. | 🟠 Medium | 🟨 Partial |
 | 8 | Riverpod 3.x + codegen migration | When `riverpod`/`riverpod_generator` realign with stable Flutter's `flutter_test` pins; mechanical by design. | 🟠 Medium | ⬜ Pending |
 
 ---
@@ -108,6 +108,28 @@ The sheet shows the reason while the decision is being made, and offers reject
 with the same visual weight as approve. Hiding the harder option behind an extra
 step would make the difficult decision the uncomfortable one, and coordination
 needs to be able to take it as fast as the easy one.
+
+---
+
+## What messaging left out, and one thing it revealed
+
+**Private threads are not created from the phone.** Doing so means picking
+recipients from among a campaign's members — a selection that belongs on a desk.
+Reading and replying to a private thread works: what is missing is starting one.
+
+**Attachments are not here either.** Uploading one needs a presigned URL, a file
+picker and storage configured. The text arrives, which is what gets read and
+answered from a phone; a thread that has attachments says so and points at the
+web panel.
+
+**And one thing worth deciding, not fixing quietly:** the server answers a
+non-member trying to open a campaign thread with «No eres miembro de esta
+campaña», and the application shows «No tienes permiso para hacer esta
+operación». That is the Phase 02 policy working as designed — only business-rule
+failures show the server's words, technical ones stay generic — but here the
+generic costs something concrete: the server's sentence tells the person what to
+ask for, and the generic one does not. Whether `ForbiddenFailure` should carry
+the server's message is a decision about that policy, not about messaging.
 
 ---
 

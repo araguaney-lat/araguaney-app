@@ -318,3 +318,42 @@ Map<String, Object?> transferJson({
   'boxes': boxes ?? [boxJson()],
   'events': events ?? const [],
 };
+
+Map<String, Object?> threadJson({
+  String id = 'thread-1',
+  String title = 'Faltan cajas',
+  String body = 'Nos quedamos sin cajas medianas',
+  String threadType = 'PUBLIC',
+}) => {
+  'id': id,
+  'title': title,
+  'body': body,
+  'sender_id': 'user-1',
+  'campaign_id': 'campaign-1',
+  'thread_type': threadType,
+  'created_at': testNow.toIso8601String(),
+  'updated_at': testNow.toIso8601String(),
+};
+
+Map<String, Object?> replyJson({
+  String id = 'reply-1',
+  String body = 'Salgo con veinte',
+}) => {
+  'id': id,
+  'thread_id': 'thread-1',
+  'sender_id': 'user-2',
+  'body': body,
+  'created_at': testNow.toIso8601String(),
+  'attachments': const [],
+};
+
+Map<String, Object?> threadDetailJson({
+  String body = 'Nos quedamos sin cajas medianas',
+  List<Map<String, Object?>>? replies,
+  List<Map<String, Object?>>? attachments,
+}) => {
+  ...threadJson(body: body),
+  'replies': replies ?? const [],
+  'attachments': attachments ?? const [],
+  'participant_ids': const [],
+};
