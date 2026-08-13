@@ -1,3 +1,5 @@
+import 'refusal_copy.dart';
+
 /// Fallo de una llamada a la API, ya interpretado.
 ///
 /// El backend responde los errores con un sobre estable
@@ -15,7 +17,8 @@
 /// - [operatorMessage] decide qué se le enseña a quien opera. El mensaje del
 ///   servidor se muestra cuando describe una regla de negocio que esa persona
 ///   puede entender y corregir; un fallo técnico se muestra genérico y su
-///   detalle queda para diagnóstico.
+///   detalle queda para diagnóstico. Antes que ambos manda la copia propia de
+///   los rechazos que el backend nombra con un código: ver [refusalCopyFor].
 sealed class ApiFailure implements Exception {
   const ApiFailure({
     required this.code,
@@ -76,6 +79,19 @@ final class UnauthorizedFailure extends ApiFailure {
 }
 
 /// La sesión es válida pero no alcanza para esta operación (403).
+///
+/// Un 403 puede ser dos cosas distintas y solo el código las separa. Con
+/// `FORBIDDEN` —el genérico del backend— significa «esto no te toca», y no hay
+/// nada que la persona pueda hacer salvo pedírselo a quien sí puede; el mensaje
+/// del servidor ahí describe la comprobación, no el remedio, y a veces está en
+/// inglés. Con un código propio —`SELF_REVIEW`, `NOT_CAMPAIGN_MEMBER`— el
+/// servidor nombró una regla concreta, y callarla convierte una explicación en
+/// un muro.
+///
+/// Por eso habla cuando hay copia propia para el código y calla cuando no:
+/// un código nombrado que esta versión no conozca se muestra genérico, porque
+/// el contrato es aditivo y un binario viejo no puede adivinar si lo que
+/// llegó es apto para leerse.
 final class ForbiddenFailure extends ApiFailure {
   const ForbiddenFailure({
     required super.code,
@@ -88,7 +104,8 @@ final class ForbiddenFailure extends ApiFailure {
   bool get isRetryable => false;
 
   @override
-  String get operatorMessage => 'No tienes permiso para hacer esta operación.';
+  String get operatorMessage =>
+      refusalCopyFor(code) ?? 'No tienes permiso para hacer esta operación.';
 }
 
 /// El recurso no existe o no es visible para este centro (404).
@@ -109,10 +126,14 @@ final class NotFoundFailure extends ApiFailure {
 
 /// El servidor rechazó la petición por una regla de negocio o de validación.
 ///
-/// Es el único caso donde el mensaje del servidor se muestra tal cual: describe
-/// algo que quien captura puede entender y corregir, como una caducidad corta o
-/// un campo que falta. Traducirlo aquí sería mantener dos versiones de la misma
-/// regla, y la del servidor es la que manda.
+/// El mensaje del servidor se muestra tal cual: describe algo que quien captura
+/// puede entender y corregir, como una caducidad corta o un campo que falta.
+/// Traducirlo aquí sería mantener dos versiones de la misma regla, y la del
+/// servidor es la que manda.
+///
+/// La única excepción son los códigos con copia propia, que el backend contesta
+/// en inglés: ahí no se traduce una regla, se escribe en el idioma en que se
+/// opera. Ver [refusalCopyFor].
 final class BusinessRuleFailure extends ApiFailure {
   const BusinessRuleFailure({
     required super.code,
@@ -125,7 +146,7 @@ final class BusinessRuleFailure extends ApiFailure {
   bool get isRetryable => false;
 
   @override
-  String get operatorMessage => message;
+  String get operatorMessage => refusalCopyFor(code) ?? message;
 }
 
 /// Se superó el límite de peticiones (429).

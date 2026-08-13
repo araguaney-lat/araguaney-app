@@ -182,12 +182,47 @@ web panel.
 
 **And one thing worth deciding, not fixing quietly:** the server answers a
 non-member trying to open a campaign thread with «No eres miembro de esta
-campaña», and the application shows «No tienes permiso para hacer esta
-operación». That is the Phase 02 policy working as designed — only business-rule
-failures show the server's words, technical ones stay generic — but here the
-generic costs something concrete: the server's sentence tells the person what to
-ask for, and the generic one does not. Whether `ForbiddenFailure` should carry
-the server's message is a decision about that policy, not about messaging.
+campaña», and the application showed «No tienes permiso para hacer esta
+operación» — the generic. Whether `ForbiddenFailure` should carry the server's
+message is a decision about the Phase 02 policy, not about messaging.
+
+**It was decided; see the section on refusals that name a rule below.** The
+short version: the answer is not «echo the server's 403», and this particular
+case still reads generic — because it is answered with the catch-all code.
+
+---
+
+## Refusals that name a rule
+
+Reviewing every 403 the backend can answer turned the messaging question into a
+different one. The message is not what separates a refusal worth reading from
+one that is not: **the code is**.
+
+The backend answers `FORBIDDEN` for a permission check — «this is not yours to
+do» — and a code of its own when a specific rule refused: `SELF_REVIEW`,
+`NOT_CAMPAIGN_MEMBER`, `ACCOUNT_DISABLED`, `EMAIL_NOT_VERIFIED`. The first kind
+leaves nothing for the person to do but ask someone who can. The second names
+something they can act on, and swallowing it turns an explanation into a wall.
+
+So `ForbiddenFailure` now speaks when the code is one this build knows, with
+copy this repository owns, and stays generic otherwise — including for a named
+code it does not recognize, because the contract is additive and an old binary
+cannot tell whether what arrived is fit to read. It never echoes the server's
+403 text: those messages describe the check («This export job belongs to another
+user»), sometimes in English, and are written for whoever reads a log.
+
+Two refusals stopped being walls as a result, both in features already shipped:
+resolving a review you opened yourself now says to escalate, and an offline
+capture parked for a campaign you do not belong to now says to ask to be added —
+which, since the previous block, is something a coordinator can do from the
+phone.
+
+The five business-rule refusals block 5 was rewriting in its own repository moved
+into the same table, so there is one place that owns operator copy for named
+codes instead of one per feature. It should stay small: request 6 in
+[`docs/backend-requests.md`](../backend-requests.md) asks for those messages in
+Spanish, and now also for the thread case to carry a code of its own instead of
+the catch-all — the client cannot fix that one from here.
 
 ---
 

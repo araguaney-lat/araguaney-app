@@ -115,25 +115,42 @@ exclusion can stay forever and this request can be closed.
 
 ---
 
-## 6. Operator-facing messages in Spanish for team errors
+## 6. Named codes and Spanish messages for refusals an operator reads
 
-**Blocks:** nothing today. It removes copy the client should not be holding.
+**Blocks:** nothing today. It removes copy the client should not be holding, and
+unblocks one refusal the client cannot improve on its own.
 
-The team surface hits five refusals whose message reaches an operator directly:
-`EMAIL_TAKEN`, `USERNAME_TAKEN`, `INVALID_ROLE`, `ACCOUNT_DISABLED` and
-`PROTECTED_CAMPAIGN`. The server phrases them in English; the people who use
+Two halves of the same request.
+
+**(a) A code of its own where the refusal is actionable.** The application shows
+the reason for a 403 only when the backend names the rule with a specific code —
+`SELF_REVIEW`, `NOT_CAMPAIGN_MEMBER` — and stays generic for the catch-all
+`FORBIDDEN`, whose message describes the check («This export job belongs to
+another user») rather than the remedy. Some refusals that *are* actionable use
+the catch-all anyway, and the clearest is opening a campaign thread as a
+non-member: «No eres miembro de esta campaña» tells the person exactly what to
+ask for, and the application cannot show it, because from the outside it is
+indistinguishable from every other `FORBIDDEN`. A code —
+`NOT_CAMPAIGN_MEMBER` already exists for the same idea in intake — would be
+enough. Same for `NOT_THREAD_PARTICIPANT`.
+
+**(b) Those messages in Spanish.** Nine codes reach an operator directly today:
+`EMAIL_TAKEN`, `USERNAME_TAKEN`, `INVALID_ROLE`, `PROTECTED_CAMPAIGN`,
+`ACCOUNT_DISABLED`, `EMAIL_NOT_VERIFIED`, `NOT_CAMPAIGN_MEMBER`, `SELF_REVIEW`
+and the thread case above. Several are phrased in English; the people who use
 this application read Spanish.
 
-**What the application does today:** rewrites those five, and only those five,
-by code — business-rule refusals only, with the server's own message shown for
-anything not on the list. It is presentation copy, not a duplicated rule, and
-the roadmap records it as a line worth watching.
+**What the application does today:** owns Spanish copy for the named codes it
+knows, in one table in `lib/core/api/refusal_copy.dart`, and shows the server's
+own message for every other business refusal. A named code it does not
+recognize stays generic — safer than echoing something that may be English or
+written for a log.
 
-**Shape that would work:** those messages in Spanish, as the campaign endpoints
-already answer («No eres miembro de esta campaña»). The client would then drop
-its map and go back to showing the server's words for every business refusal.
-Whether the backend answers in one language or negotiates it is a decision for
-that side; either way the client stops holding copy.
+**Shape that would work:** actionable refusals carrying their own code, and
+those messages answered in Spanish, as the campaign endpoints already do. The
+client would drop the table and go back to showing the server's words. Whether
+the backend answers in one language or negotiates it is a decision for that
+side; either way the client stops holding copy.
 
 ---
 

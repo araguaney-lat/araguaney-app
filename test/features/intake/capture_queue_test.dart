@@ -177,6 +177,27 @@ void main() {
       },
     );
 
+    test('a capture refused by campaign says how to unblock it', () async {
+      // El servidor nombra esa regla (`NOT_CAMPAIGN_MEMBER`), y quien capturó
+      // puede resolverla pidiendo que la sumen. Un «no tienes permiso» genérico
+      // dejaría la captura parada sin decir qué hacer con ella.
+      await queue.enqueue(draft: draftWith(), userId: 'user-1');
+      final adapter = FakeHttpAdapter(
+        (_) => FakeResponse(403, {
+          'error': {
+            'code': 'NOT_CAMPAIGN_MEMBER',
+            'message': 'User is not assigned to this campaign',
+          },
+        }),
+      );
+
+      final report = await syncOn(adapter).flush('user-1');
+
+      expect(report.parked, 1);
+      final row = await db.captureQueueDao.findById('capture-1');
+      expect(row?.lastFailureMessage, contains('Pide que te sumen'));
+    });
+
     test('a parked capture is not retried again', () async {
       await queue.enqueue(draft: draftWith(), userId: 'user-1');
       final adapter = FakeHttpAdapter(
