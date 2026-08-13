@@ -34,16 +34,18 @@ pie title Tasks completed (94 tasks)
 
 ## Blocked work
 
+What this application needs from the backend is collected in
+[`docs/backend-requests.md`](../backend-requests.md), with what each request
+unblocks and what the application does instead meanwhile. The entries below are
+the ones that block roadmap tasks.
+
 - **Phase 08, tasks 1, 5 and 8** need a Google Play developer account, the app
   created in its console, and listing assets. No code unblocks them. The upload
   keystore (task 2) and the Sentry DSN (task 7) are key material that does not
   belong in a repository; both are documented and the build reads them from
   outside.
 - **Phase 03, task 5 (center stock screen)** needs a session-scoped backend
-  endpoint returning stock by category for the caller's center. The `/v1`
-  contract only aggregates stock nationally, and computing it on the device
-  would require the client to decide which box statuses count as stock — a rule
-  that belongs to the backend.
+  endpoint returning stock by category for the caller's center — request 1.
 
 ## Dependencies worth naming
 

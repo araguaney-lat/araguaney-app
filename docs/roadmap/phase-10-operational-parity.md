@@ -29,7 +29,7 @@
 | 3 | Transfers | Participating in a transfer: reading it, approving, rejecting with a reason, dispatching and receiving, each offered only where the server's machine allows it. **Creating one is not here** — see below. | 🟠 Medium | 🟨 Partial |
 | 4 | Reception and incidents | Reading a reception with its shrinkage, and raising and listing incidents on a shipment — everything a center can do. **Reconciling is closed to national administration** and stays out; see below. | 🔴 High | 🟨 Partial |
 | 5 | Coordinator views | Campaign membership and volunteer management scoped to the center. Resolving a risk review lives here; the read-only list of them arrives earlier, in Phase 07, for the same reason as the shipment record. | 🔴 High | ⬜ Pending |
-| 6 | National dashboard | Aggregated read-only views for national administrators. Reopening `/v1/dashboard/**` in the generated client means solving the `anyOf` response the generator cannot express today — see `swagger_parser.yaml`. | 🟠 Medium | ⬜ Pending |
+| 6 | National dashboard | Aggregated read-only views for national administrators. Reopening `/v1/dashboard/**` in the generated client means solving the `anyOf` response the generator cannot express today — request 5 in `docs/backend-requests.md`. | 🟠 Medium | ⬜ Pending |
 | 7 | Messaging / notification center | In-app messaging surface complementing push. | 🟠 Medium | ⬜ Pending |
 | 8 | Riverpod 3.x + codegen migration | When `riverpod`/`riverpod_generator` realign with stable Flutter's `flutter_test` pins; mechanical by design. | 🟠 Medium | ⬜ Pending |
 
@@ -88,8 +88,8 @@ what shipped.
 shown by direction — incoming or outgoing, which is the distinction a
 coordinator actually works from — and the other center stays unnamed. Fixing it
 properly means `TransferOut` carrying `from_center_name` and `to_center_name`,
-which is a backend change and belongs in its roadmap rather than in a client
-workaround.
+which is a backend change — request 3 in
+[`docs/backend-requests.md`](../backend-requests.md).
 
 Also worth recording: the client mirrors the server's state machine to decide
 which buttons to offer, and a test pins that table. It is duplication, chosen

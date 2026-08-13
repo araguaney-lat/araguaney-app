@@ -49,7 +49,8 @@ Deriving the figure on the device would mean summing `quantity` over cached
 boxes grouped by category — which requires the client to decide which box
 statuses count as stock. That rule lives in the backend and would fork silently
 the day it changed there. The screen ships once the backend publishes an
-endpoint for it.
+endpoint for it — request 1 in
+[`docs/backend-requests.md`](../backend-requests.md).
 
 ---
 
