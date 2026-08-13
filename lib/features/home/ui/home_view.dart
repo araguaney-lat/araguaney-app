@@ -12,6 +12,7 @@ import '../../messaging/data/messaging_providers.dart';
 import '../../messaging/ui/threads_list_view.dart';
 import '../../pallets/ui/pallets_list_view.dart';
 import '../../scanning/ui/scanner_view.dart';
+import '../../team/ui/team_directory_view.dart';
 import '../../transfers/ui/transfers_list_view.dart';
 import 'push_permission_card.dart';
 
@@ -107,6 +108,13 @@ class HomeView extends ConsumerWidget {
                 label: const Text('Cajas del centro'),
                 onPressed: () =>
                     Navigator.of(context).push(BoxesListView.route()),
+              ),
+              const SizedBox(height: 12),
+              FilledButton.tonalIcon(
+                icon: const Icon(Icons.people_outline),
+                label: const Text('Equipo'),
+                onPressed: () =>
+                    Navigator.of(context).push(TeamDirectoryView.route()),
               ),
             ],
           ),

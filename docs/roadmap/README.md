@@ -15,9 +15,9 @@ sum of those rows and nothing else.
 
 ```mermaid
 pie title Tasks completed (94 tasks)
-    "Done" : 74
+    "Done" : 75
     "Pending" : 7
-    "Partial" : 8
+    "Partial" : 7
     "Blocked or external" : 5
 ```
 
@@ -33,8 +33,8 @@ pie title Tasks completed (94 tasks)
 | 7 | [Push notifications](phase-07-push-notifications.md) | 8 | 1 | 🟨 89% (1 partial) |
 | 8 | [Android release and distribution](phase-08-android-release.md) | 4 | 5 | 🟨 44% (2 partial, 3 external) |
 | 9 | [iOS enablement](phase-09-ios-enablement.md) | 0 | 6 | ⬜ 0% |
-| 10 | [Operational parity backlog](phase-10-operational-parity.md) | 1 | 7 | 🟨 13% (5 partial, 1 blocked) |
-| **Total** | | **74** | **20** | **🟢 79%** |
+| 10 | [Operational parity backlog](phase-10-operational-parity.md) | 2 | 6 | 🟨 25% (4 partial, 1 blocked) |
+| **Total** | | **75** | **19** | **🟢 80%** |
 
 ## Blocked work
 

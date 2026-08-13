@@ -48,6 +48,16 @@ final isCenterCoordinatorProvider = Provider<bool>((ref) {
   }.contains(state.session.centerRole);
 });
 
+/// El centro de quien tiene la sesión.
+///
+/// Decide si una transferencia sale o llega y de qué directorio se habla, así
+/// que ya son dos features las que lo preguntan. Es nulo en una administración
+/// nacional, que no pertenece a ningún centro.
+final myCenterIdProvider = Provider<String?>((ref) {
+  final state = ref.watch(sessionControllerProvider);
+  return state is SessionActive ? state.session.centerId : null;
+});
+
 final sessionControllerProvider =
     NotifierProvider<SessionController, SessionState>(SessionController.new);
 
