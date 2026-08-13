@@ -64,13 +64,13 @@ standing next to you; the reason lives inside the review.
 | # | Task | Description | Complexity | Status |
 |---|------|-------------|------------|--------|
 | 1 | Register the Android app in Firebase | The project and the server credential exist and are verified; the Android application is not registered in it yet, so no `google-services.json` exists and the client cannot obtain a token. External prerequisite. | 🟠 Medium | ⛔ External |
-| 2 | `PushService` interface | Register/unregister, token rotation, tap routing; no-op implementation for `foss`. The seam is what keeps `firebase_messaging` out of the `foss` build. | 🟠 Medium | ⬜ Pending |
+| 2 | `PushService` interface | Four members, none mentioning FCM: start, current token, rotations, opened notices. `NoopPushService` is the implementation today and the `foss` one forever. | 🟠 Medium | ✅ Done |
 | 3 | FCM implementation | `firebase_messaging` wired only in non-`foss` flavors; `google-services.json` templated and documented, never versioned. | 🔴 High | ⬜ Pending |
-| 4 | `foss` flavor verification | CI job proving the `foss` build compiles with zero Firebase dependencies. | 🟠 Medium | ⬜ Pending |
-| 5 | Token lifecycle | Register on login and on every rotation; **unregister on logout before the session is cleared**, because the call needs the session it is giving up. A 200 for a foreign token is a success. | 🟠 Medium | ⬜ Pending |
+| 4 | `foss` flavor verification | CI job proving the `foss` build carries no Firebase. See the open question below: the seam is necessary but not sufficient. | 🟠 Medium | ⬜ Pending |
+| 5 | Token lifecycle | Register on login and on every rotation; unregister on logout **before** the session is cleared. Nothing about notices can block entering or leaving: both hooks swallow their failures. An expired session cannot unregister and does not pretend to. | 🟠 Medium | ✅ Done |
 | 6 | Tap-through routing | `risk_review` → the center's risk reviews; `shipment_delivered` → the shipment. See the gap below: neither destination exists in the application yet. | 🟠 Medium | ⬜ Pending |
 | 7 | Permission UX | Spanish rationale before the system prompt; graceful degradation when denied — a denied permission never blocks capture. | 🟢 Low | ⬜ Pending |
-| 8 | Tests | Interface contract, token lifecycle against a fake, logout unregistering before clearing, routing from a `data` payload. | 🟠 Medium | ⬜ Pending |
+| 8 | Tests | Lifecycle against a fake service, logout unregistering while the session is still alive, and payload routing including the incomplete and unknown cases. The FCM implementation and the tap destinations remain uncovered because they do not exist yet. | 🟠 Medium | 🟨 Partial |
 | 9 | Roadmap update | Mark tasks and update totals. | 🟢 Low | ⬜ Pending |
 
 ---
@@ -94,6 +94,32 @@ routing, that this phase brings the minimum destination each notice needs: a
 read-only risk review list and a read-only shipment record. Both are Phase 10
 material arriving early because a notification without a destination is worse
 than no notification.
+
+---
+
+## The open question task 3 and 4 have to answer together
+
+The seam keeps Firebase out of the *code paths* of a `foss` build, and that is
+real: `NoopPushService` is what a `foss` build uses, and nothing else in the
+application knows the difference. But a Dart dependency cannot be excluded by a
+`--dart-define`. The day `firebase_messaging` enters `pubspec.yaml`, its native
+libraries ship in every build unless something at the packaging level removes
+them.
+
+So "the `foss` flavor compiles without any proprietary dependency" needs a
+mechanism, not just an interface, and choosing it belongs to task 3 rather than
+to whoever discovers it later. The candidates, none of them free:
+
+- a Gradle product flavor that drops the Firebase plugin, which fights the
+  generated plugin registrant;
+- a separate entrypoint and a build that excludes the package, which means two
+  dependency sets to keep honest;
+- publishing `foss` from a branch with the dependency removed, which is simple
+  and admits that the two builds are not the same artifact.
+
+Until that is decided, the CI job of task 4 can only prove what is true today —
+that nothing imports Firebase — which is worth having and is not the whole
+promise.
 
 ---
 

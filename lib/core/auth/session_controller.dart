@@ -4,6 +4,7 @@ import '../api/api_error_mapper.dart';
 import '../api/api_failure.dart';
 import '../api/generated/models/token.dart';
 import '../db/db_providers.dart';
+import '../push/push_providers.dart';
 import 'auth_providers.dart';
 import 'auth_repository.dart';
 import 'session.dart';
@@ -171,12 +172,30 @@ class SessionController extends Notifier<SessionState> {
       SessionActive(:final session) => session.refreshToken,
       _ => null,
     };
+
+    // Primero la baja del destino de avisos, que necesita la sesión que se está
+    // entregando. En un teléfono de centro esto no es limpieza: sin esta
+    // llamada, la siguiente persona que entre recibiría los avisos de la
+    // anterior.
+    // Por la misma razón simétrica: no poder dar de baja el destino no puede
+    // dejar a nadie atrapado dentro de una sesión que quiere cerrar.
+    try {
+      await ref.read(onSessionEndingProvider)();
+    } on Object {
+      // La ventana que esto abre se cierra sola: sin sesión nadie mira avisos,
+      // y la siguiente entrada reasigna el token a quien entre.
+    }
+
     await _repository.logout(refreshToken);
     await _clear();
   }
 
-  /// Deja el dispositivo sin sesión. La llama el interceptor cuando la
-  /// renovación fracasa.
+  /// Deja el dispositivo sin sesión cuando la renovación fracasa.
+  ///
+  /// No da de baja el destino de avisos, y no puede: la llamada exige una
+  /// sesión válida y justo eso es lo que se acaba de perder. El token queda
+  /// registrado hasta que alguien entre, y entrar lo reasigna.
+
   Future<void> expire() =>
       _clear(message: 'Tu sesión expiró. Inicia sesión de nuevo.');
 
@@ -197,6 +216,23 @@ class SessionController extends Notifier<SessionState> {
         : await _storage.readUserId();
 
     state = SessionActive(Session.fromToken(token, userId: userId));
+
+    // El registro del destino de avisos va **después** de exponer la sesión:
+    // el endpoint la exige, y el cliente con sesión saca su token de este
+    // estado. Solo en las entradas de verdad —no al restaurar ni al renovar—,
+    // porque el registro ya es idempotente y quien vuelve a abrir la
+    // aplicación sigue siendo el destino que registró al entrar.
+    if (identifyUser) {
+      // Envuelto porque **nada de los avisos puede impedir entrar**. El
+      // registrador ya se traga sus propios fallos de red; esto cubre el resto
+      // —que el servicio no arranque, que no haya servicios de Google— y deja
+      // la sesión abierta igual. Sin avisos se trabaja; sin sesión no.
+      try {
+        await ref.read(onSessionStartedProvider)();
+      } on Object {
+        // Se reintenta en la sesión siguiente, y registrar es idempotente.
+      }
+    }
   }
 
   /// Resuelve quién inició sesión y decide si el cache del turno anterior
