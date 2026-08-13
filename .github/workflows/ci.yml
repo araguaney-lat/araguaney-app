@@ -39,6 +39,17 @@ jobs:
       - name: Run tests
         run: flutter test
 
+      # El sabor `foss` no puede inicializar Firebase aunque esta rama lo lleve
+      # dentro. Que tampoco esté presente lo demuestra la rama `foss`, que quita
+      # la dependencia; esto comprueba la mitad que sí se puede comprobar desde
+      # aquí. Ver docs/release/foss.md.
+      #
+      # Se acota a esa prueba a propósito: el resto de la suite incluye las que
+      # fijan los valores por defecto de `AppConfig`, y correrlas con un define
+      # puesto las haría fallar por decir la verdad.
+      - name: Check the foss flavor picks no push service
+        run: flutter test --dart-define=APP_FLAVOR=foss test/core/push/push_flavor_test.dart
+
   api-client:
     name: Generated client matches the contract snapshot
     runs-on: ubuntu-latest
