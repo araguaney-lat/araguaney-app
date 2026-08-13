@@ -1,0 +1,21 @@
+# Plantilla de la configuración de firma. Copiar a `android/key.properties`,
+# que está en .gitignore y nunca se versiona.
+#
+# El keystore se genera en la máquina de quien publica y se guarda fuera del
+# repositorio. Un ejemplo de cómo crearlo:
+#
+#   keytool -genkey -v -keystore ~/araguaney-upload.jks \
+#     -keyalg RSA -keysize 2048 -validity 10000 -alias upload
+#
+# Perder este archivo y el keystore a la vez significa no poder volver a firmar
+# una actualización de la aplicación publicada. Con Play App Signing activado,
+# Google conserva la clave de firma de la aplicación y esta es solo la clave de
+# subida, que sí se puede rotar pidiéndoselo a Google.
+#
+# En CI no se usa este archivo: los mismos cuatro valores llegan como secretos
+# del repositorio y el workflow lo escribe antes de compilar.
+
+storeFile=/ruta/absoluta/a/araguaney-upload.jks
+storePassword=
+keyAlias=upload
+keyPassword=

@@ -18,6 +18,9 @@ jobs:
 
       - uses: subosito/flutter-action@v2
         with:
+          # Misma versión que la fábrica de release: un fallo que solo aparece
+          # al publicar es un fallo que la integración tenía que haber visto.
+          flutter-version: 3.44.9
           channel: stable
           cache: true
 
@@ -44,6 +47,9 @@ jobs:
 
       - uses: subosito/flutter-action@v2
         with:
+          # Misma versión que la fábrica de release: un fallo que solo aparece
+          # al publicar es un fallo que la integración tenía que haber visto.
+          flutter-version: 3.44.9
           channel: stable
           cache: true
 

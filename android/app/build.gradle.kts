@@ -1,7 +1,22 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
+}
+
+// Configuración de firma. Vive fuera del repositorio: `key.properties` está en
+// .gitignore y `key.properties.example` documenta su forma. Si el archivo no
+// existe —que es el caso de cualquiera que clone y compile— el build de release
+// sigue funcionando sin firmar con la clave de subida, en vez de fallar con un
+// error que no dice nada.
+val keystoreProperties = Properties()
+val keystorePropertiesFile = rootProject.file("key.properties")
+val hasSigningConfig = keystorePropertiesFile.exists()
+if (hasSigningConfig) {
+    FileInputStream(keystorePropertiesFile).use { keystoreProperties.load(it) }
 }
 
 android {
@@ -17,19 +32,45 @@ android {
 
     defaultConfig {
         applicationId = "lat.araguaney.araguaney_app"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
+        // Los dos salen de `version:` en pubspec.yaml: el número antes del `+`
+        // es el nombre y el de después es el código. Ver docs/release/versioning.md.
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
 
+    signingConfigs {
+        if (hasSigningConfig) {
+            create("upload") {
+                storeFile = file(keystoreProperties["storeFile"] as String)
+                storePassword = keystoreProperties["storePassword"] as String
+                keyAlias = keystoreProperties["keyAlias"] as String
+                keyPassword = keystoreProperties["keyPassword"] as String
+            }
+        }
+    }
+
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.getByName("debug")
+            // Sin material de firma se compila igual, sin firmar. Es lo que
+            // permite que un fork haga `flutter build appbundle` para revisar
+            // el resultado sin pedirle a nadie una clave.
+            signingConfig = if (hasSigningConfig) {
+                signingConfigs.getByName("upload")
+            } else {
+                null
+            }
+
+            // El shrinker de código y el de recursos van juntos: quitar clases
+            // sin quitar los recursos que solo ellas usaban deja peso muerto en
+            // el bundle.
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro",
+            )
         }
     }
 }
