@@ -14,7 +14,7 @@ import 'clients/centers_api.dart';
 import 'clients/users_api.dart';
 import 'clients/client_api.dart';
 import 'clients/donations_api.dart';
-import 'clients/dashboard_api.dart';
+import 'clients/devices_api.dart';
 import 'clients/email_failures_api.dart';
 import 'clients/exports_api.dart';
 import 'clients/incidents_api.dart';
@@ -47,7 +47,7 @@ class RestClient {
   UsersApi? _users;
   ClientApi? _client;
   DonationsApi? _donations;
-  DashboardApi? _dashboard;
+  DevicesApi? _devices;
   EmailFailuresApi? _emailFailures;
   ExportsApi? _exports;
   IncidentsApi? _incidents;
@@ -84,8 +84,7 @@ class RestClient {
   DonationsApi get donations =>
       _donations ??= DonationsApi(_dio, baseUrl: _baseUrl);
 
-  DashboardApi get dashboard =>
-      _dashboard ??= DashboardApi(_dio, baseUrl: _baseUrl);
+  DevicesApi get devices => _devices ??= DevicesApi(_dio, baseUrl: _baseUrl);
 
   EmailFailuresApi get emailFailures =>
       _emailFailures ??= EmailFailuresApi(_dio, baseUrl: _baseUrl);

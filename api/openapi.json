@@ -148,6 +148,26 @@
         "title": "AIUsageReportOut",
         "type": "object"
       },
+      "AcceptTermsOut": {
+        "additionalProperties": false,
+        "description": "Resultado de aceptar los términos: qué versión quedó registrada.",
+        "properties": {
+          "accepted_terms_version": {
+            "title": "Accepted Terms Version",
+            "type": "string"
+          },
+          "must_accept_terms": {
+            "title": "Must Accept Terms",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "accepted_terms_version",
+          "must_accept_terms"
+        ],
+        "title": "AcceptTermsOut",
+        "type": "object"
+      },
       "AcceptTermsRequest": {
         "additionalProperties": false,
         "properties": {
@@ -2179,6 +2199,56 @@
         "title": "DeliveredIn",
         "type": "object"
       },
+      "DeviceTokenRegister": {
+        "additionalProperties": false,
+        "description": "Alta de un destino de aviso.\n\nNo lleva `user_id`: el dueño sale de la sesión. Aceptarlo del cuerpo dejaría\nque cualquiera con sesión registrara un token a nombre de otra persona y\nrecibiera sus avisos.",
+        "properties": {
+          "app_version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "App Version"
+          },
+          "platform": {
+            "enum": [
+              "android",
+              "ios"
+            ],
+            "title": "Platform",
+            "type": "string"
+          },
+          "token": {
+            "title": "Token",
+            "type": "string"
+          }
+        },
+        "required": [
+          "token",
+          "platform"
+        ],
+        "title": "DeviceTokenRegister",
+        "type": "object"
+      },
+      "DeviceTokenUnregister": {
+        "additionalProperties": false,
+        "description": "Baja de un destino.\n\nLa aplicación la llama al cerrar sesión. En un centro el teléfono se\ncomparte, así que sin esta llamada quien use el aparato después recibiría\nlos avisos de la persona anterior.",
+        "properties": {
+          "token": {
+            "title": "Token",
+            "type": "string"
+          }
+        },
+        "required": [
+          "token"
+        ],
+        "title": "DeviceTokenUnregister",
+        "type": "object"
+      },
       "DonationCreate": {
         "additionalProperties": false,
         "properties": {
@@ -3292,6 +3362,21 @@
         "title": "LogoutRequest",
         "type": "object"
       },
+      "MessageOut": {
+        "additionalProperties": false,
+        "description": "Confirmación de una acción que no devuelve datos.\n\nSiete endpoints responden así: verificar correo, reenviar verificación,\nrecuperar y restablecer contraseña, desactivar el segundo factor y los dos\nreenvíos de invitación. Ninguno de sus consumidores lee esta clave; miran el\nestado HTTP y siguen.\n\nQue el cuerpo no aporte nada sugiere que la respuesta honesta sería un `204`\nsin cuerpo. No se hace aquí porque cambiar `200` con cuerpo por `204` es un\ncambio incompatible de contrato, y dentro de `/v1` los cambios son solo\naditivos: un cliente instalado que espere un cuerpo se rompería. Queda\nanotado para una `/v2`.",
+        "properties": {
+          "message": {
+            "title": "Message",
+            "type": "string"
+          }
+        },
+        "required": [
+          "message"
+        ],
+        "title": "MessageOut",
+        "type": "object"
+      },
       "MilestoneIn": {
         "additionalProperties": false,
         "description": "Hito logístico. `occurred_at` es opcional porque el reporte del\nconsignatario suele llegar tarde y describir algo de ayer.",
@@ -3365,6 +3450,21 @@
           "by_inn"
         ],
         "title": "NationalDashboardOut",
+        "type": "object"
+      },
+      "OkOut": {
+        "additionalProperties": false,
+        "description": "Acuse de una operación que no devuelve nada que leer.\n\nLo usan el alta de una persona en una campaña y las dos escrituras públicas\nde donación. Vale aquí la misma nota que en [MessageOut]: quien las llama\ndescarta el cuerpo, así que la respuesta honesta sería un `204`, y cambiarlo\ndentro de `/v1` rompería a un cliente instalado. Material para una `/v2`.",
+        "properties": {
+          "ok": {
+            "title": "Ok",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "ok"
+        ],
+        "title": "OkOut",
         "type": "object"
       },
       "PalletCloseIn": {
@@ -4458,6 +4558,186 @@
         "title": "PublicNeedsOut",
         "type": "object"
       },
+      "QrBoxFicha": {
+        "additionalProperties": false,
+        "properties": {
+          "batch": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Batch"
+          },
+          "campaign_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Campaign Name"
+          },
+          "category": {
+            "title": "Category",
+            "type": "string"
+          },
+          "center_name": {
+            "title": "Center Name",
+            "type": "string"
+          },
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "delivered": {
+            "default": false,
+            "title": "Delivered",
+            "type": "boolean"
+          },
+          "delivered_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Delivered At"
+          },
+          "display_name": {
+            "title": "Display Name",
+            "type": "string"
+          },
+          "events": {
+            "items": {
+              "$ref": "#/components/schemas/QrEventOut"
+            },
+            "title": "Events",
+            "type": "array"
+          },
+          "expiry_date": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expiry Date"
+          },
+          "form": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Form"
+          },
+          "inn_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Inn Name"
+          },
+          "kind": {
+            "const": "box",
+            "default": "box",
+            "title": "Kind",
+            "type": "string"
+          },
+          "quantity": {
+            "title": "Quantity",
+            "type": "integer"
+          },
+          "sealed_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sealed At"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "strength": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Strength"
+          },
+          "unit": {
+            "title": "Unit",
+            "type": "string"
+          },
+          "weight_kg": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Weight Kg"
+          }
+        },
+        "required": [
+          "code",
+          "status",
+          "display_name",
+          "category",
+          "inn_name",
+          "strength",
+          "form",
+          "batch",
+          "expiry_date",
+          "quantity",
+          "unit",
+          "weight_kg",
+          "center_name",
+          "campaign_name",
+          "sealed_at",
+          "created_at",
+          "events"
+        ],
+        "title": "QrBoxFicha",
+        "type": "object"
+      },
       "QrEventOut": {
         "additionalProperties": false,
         "properties": {
@@ -4511,6 +4791,148 @@
           "ts"
         ],
         "title": "QrEventOut",
+        "type": "object"
+      },
+      "QrPalletBoxRow": {
+        "additionalProperties": false,
+        "properties": {
+          "category": {
+            "title": "Category",
+            "type": "string"
+          },
+          "display_name": {
+            "title": "Display Name",
+            "type": "string"
+          },
+          "quantity": {
+            "title": "Quantity",
+            "type": "integer"
+          },
+          "unit": {
+            "title": "Unit",
+            "type": "string"
+          },
+          "weight_kg": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Weight Kg"
+          }
+        },
+        "required": [
+          "display_name",
+          "category",
+          "quantity",
+          "unit",
+          "weight_kg"
+        ],
+        "title": "QrPalletBoxRow",
+        "type": "object"
+      },
+      "QrPalletFicha": {
+        "additionalProperties": false,
+        "properties": {
+          "box_count": {
+            "title": "Box Count",
+            "type": "integer"
+          },
+          "boxes": {
+            "items": {
+              "$ref": "#/components/schemas/QrPalletBoxRow"
+            },
+            "title": "Boxes",
+            "type": "array"
+          },
+          "center_name": {
+            "title": "Center Name",
+            "type": "string"
+          },
+          "closed_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Closed At"
+          },
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "delivered": {
+            "default": false,
+            "title": "Delivered",
+            "type": "boolean"
+          },
+          "delivered_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Delivered At"
+          },
+          "events": {
+            "items": {
+              "$ref": "#/components/schemas/QrEventOut"
+            },
+            "title": "Events",
+            "type": "array"
+          },
+          "kind": {
+            "const": "pallet",
+            "default": "pallet",
+            "title": "Kind",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "total_weight_kg": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Total Weight Kg"
+          }
+        },
+        "required": [
+          "code",
+          "status",
+          "center_name",
+          "box_count",
+          "total_weight_kg",
+          "closed_at",
+          "created_at",
+          "boxes",
+          "events"
+        ],
+        "title": "QrPalletFicha",
         "type": "object"
       },
       "ReceiveIn": {
@@ -4793,6 +5215,32 @@
           "refresh_token"
         ],
         "title": "RefreshRequest",
+        "type": "object"
+      },
+      "RegistrationOut": {
+        "additionalProperties": false,
+        "description": "Resultado de darse de alta.\n\nTiene dos formas según la configuración de verificación por correo: con\nsesión inmediata, o solo el aviso de que hay un correo en camino. Por eso el\ntoken es opcional, y no porque a veces falte por descuido.",
+        "properties": {
+          "access_token": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Access Token"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          }
+        },
+        "required": [
+          "message"
+        ],
+        "title": "RegistrationOut",
         "type": "object"
       },
       "ReplyCreate": {
@@ -5686,6 +6134,21 @@
         "title": "ShrinkageSummary",
         "type": "object"
       },
+      "SignedUrlOut": {
+        "additionalProperties": false,
+        "description": "URL temporal para descargar un archivo privado.\n\nEs de un solo uso conceptual: caduca, no se cachea y no se guarda. Por eso\nlos endpoints que la entregan responden con `Cache-Control` de no\nalmacenamiento.",
+        "properties": {
+          "url": {
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "title": "SignedUrlOut",
+        "type": "object"
+      },
       "StudioUserCreate": {
         "additionalProperties": false,
         "properties": {
@@ -6252,6 +6715,26 @@
         "title": "TokenIn",
         "type": "object"
       },
+      "TotpPending": {
+        "additionalProperties": false,
+        "description": "Respuesta del inicio de sesión cuando la cuenta tiene segundo factor.\n\nEl inicio de sesión tiene dos desenlaces y esta es la mitad que faltaba\ndescribir: credenciales correctas, sesión todavía no. El `partial_token`\ncaduca en minutos y solo sirve para `POST /v1/auth/totp/challenge`; no abre\nningún otro endpoint.\n\nSe declara para que el contrato publicado no mienta sobre lo que devuelve el\nendpoint. Aun así, un cliente tipado no puede expresar \"200 → Token u 202 →\nesto\" en un solo método, así que seguirá tratando el inicio de sesión aparte\n(Fase 26, task 3).",
+        "properties": {
+          "partial_token": {
+            "title": "Partial Token",
+            "type": "string"
+          },
+          "requires_totp": {
+            "default": true,
+            "title": "Requires Totp",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "partial_token"
+        ],
+        "title": "TotpPending",
+        "type": "object"
+      },
       "TransferCreate": {
         "additionalProperties": false,
         "properties": {
@@ -6546,6 +7029,21 @@
           }
         },
         "title": "TransferReject",
+        "type": "object"
+      },
+      "UnreadCountOut": {
+        "additionalProperties": false,
+        "description": "Mensajes privados sin leer de quien consulta. Lo pinta el badge del menú.",
+        "properties": {
+          "unread": {
+            "title": "Unread",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "unread"
+        ],
+        "title": "UnreadCountOut",
         "type": "object"
       },
       "UploadUrlOut": {
@@ -7274,11 +7772,14 @@
         "responses": {
           "200": {
             "content": {
-              "application/json": {
-                "schema": {}
+              "image/png": {
+                "schema": {
+                  "format": "binary",
+                  "type": "string"
+                }
               }
             },
-            "description": "Successful Response"
+            "description": "QR de la caja, listo para imprimir."
           },
           "422": {
             "content": {
@@ -7316,7 +7817,7 @@
     "/health/jobs": {
       "get": {
         "description": "Estado del trabajo de fondo, para vigilancia externa.\n\nExiste por una limitación estructural: el vigilante interno es un cron, así\nque si el worker entero deja de arrancar, muere con los demás y no avisa\nnada. Un vigilante no puede detectar su propia muerte. Esta pregunta se hace\ndesde fuera del proceso que podría estar muerto.\n\nResponde **503 cuando algo se quedó atrás** porque un servicio de uptime\ngratuito solo entiende códigos de estado; un 200 con un cuerpo triste no lo\nnotaría nadie.\n\nEs público y sin sesión, así que dice *que* algo va atrasado y no *qué*:\npublicar qué cron, desde cuándo y cada cuánto corre sería detalle interno sin\nninguna necesidad.",
-        "operationId": "health_jobs_health_jobs_get",
+        "operationId": "health_jobs",
         "responses": {
           "200": {
             "content": {
@@ -7331,7 +7832,7 @@
       },
       "head": {
         "description": "Estado del trabajo de fondo, para vigilancia externa.\n\nExiste por una limitación estructural: el vigilante interno es un cron, así\nque si el worker entero deja de arrancar, muere con los demás y no avisa\nnada. Un vigilante no puede detectar su propia muerte. Esta pregunta se hace\ndesde fuera del proceso que podría estar muerto.\n\nResponde **503 cuando algo se quedó atrás** porque un servicio de uptime\ngratuito solo entiende códigos de estado; un 200 con un cuerpo triste no lo\nnotaría nadie.\n\nEs público y sin sesión, así que dice *que* algo va atrasado y no *qué*:\npublicar qué cron, desde cuándo y cada cuánto corre sería detalle interno sin\nninguna necesidad.",
-        "operationId": "health_jobs_health_jobs_get",
+        "operationId": "health_jobs_head",
         "responses": {
           "200": {
             "content": {
@@ -7404,11 +7905,14 @@
         "responses": {
           "200": {
             "content": {
-              "application/json": {
-                "schema": {}
+              "image/png": {
+                "schema": {
+                  "format": "binary",
+                  "type": "string"
+                }
               }
             },
-            "description": "Successful Response"
+            "description": "QR de la tarima, listo para imprimir."
           },
           "422": {
             "content": {
@@ -7444,7 +7948,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/MessageOut"
+                }
               }
             },
             "description": "Successful Response"
@@ -7468,6 +7974,7 @@
     },
     "/v1/auth/login": {
       "post": {
+        "description": "Abre sesión. Dos desenlaces: sesión completa (200) o 2FA pendiente (202).\n\nEl `response_model=Token` describe el primero. El segundo se devuelve como\n`JSONResponse`, y FastAPI no le aplica el modelo de respuesta a un `Response`\nya construido, así que sale intacto; queda declarado en `responses` para que\nel contrato publicado lo describa (Fase 26, tasks 2 y 3).",
         "operationId": "login_v1_auth_login_post",
         "requestBody": {
           "content": {
@@ -7483,10 +7990,22 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/Token"
+                }
               }
             },
             "description": "Successful Response"
+          },
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TotpPending"
+                }
+              }
+            },
+            "description": "Credenciales correctas; falta el segundo factor."
           },
           "422": {
             "content": {
@@ -7676,7 +8195,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/AcceptTermsOut"
+                }
               }
             },
             "description": "Successful Response"
@@ -7880,7 +8401,9 @@
           "201": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/RegistrationOut"
+                }
               }
             },
             "description": "Successful Response"
@@ -7919,7 +8442,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/MessageOut"
+                }
               }
             },
             "description": "Successful Response"
@@ -7958,7 +8483,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/MessageOut"
+                }
               }
             },
             "description": "Successful Response"
@@ -8087,7 +8614,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/MessageOut"
+                }
               }
             },
             "description": "Successful Response"
@@ -8159,7 +8688,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/MessageOut"
+                }
               }
             },
             "description": "Successful Response"
@@ -8504,11 +9035,14 @@
         "responses": {
           "200": {
             "content": {
-              "application/json": {
-                "schema": {}
+              "image/png": {
+                "schema": {
+                  "format": "binary",
+                  "type": "string"
+                }
               }
             },
-            "description": "Successful Response"
+            "description": "QR de la caja, para previsualizar la etiqueta."
           },
           "422": {
             "content": {
@@ -8890,7 +9424,9 @@
           "201": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/OkOut"
+                }
               }
             },
             "description": "Successful Response"
@@ -9643,7 +10179,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/MessageOut"
+                }
               }
             },
             "description": "Successful Response"
@@ -9751,11 +10289,14 @@
         "responses": {
           "200": {
             "content": {
-              "application/json": {
-                "schema": {}
+              "image/png": {
+                "schema": {
+                  "format": "binary",
+                  "type": "string"
+                }
               }
             },
-            "description": "Successful Response"
+            "description": "QR de la donación pre-registrada."
           },
           "422": {
             "content": {
@@ -9900,6 +10441,100 @@
         "summary": "Weight Dashboard",
         "tags": [
           "dashboard"
+        ]
+      }
+    },
+    "/v1/devices": {
+      "post": {
+        "description": "Registra dónde entregar los avisos de quien tiene la sesión.",
+        "operationId": "register_device_v1_devices_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeviceTokenRegister"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "summary": "Register Device",
+        "tags": [
+          "devices"
+        ]
+      }
+    },
+    "/v1/devices/unregister": {
+      "post": {
+        "description": "Da de baja un destino. La aplicación la llama al cerrar sesión.\n\nResponde igual exista el token o no. Decir \"ese token no era tuyo\" le\ncontaría a quien pregunta si un token ajeno está registrado, y no le sirve\nde nada a un cliente que solo quiere dejar de recibir avisos.",
+        "operationId": "unregister_device_v1_devices_unregister_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeviceTokenUnregister"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "summary": "Unregister Device",
+        "tags": [
+          "devices"
         ]
       }
     },
@@ -10093,7 +10728,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/SignedUrlOut"
+                }
               }
             },
             "description": "Successful Response"
@@ -10926,7 +11563,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/SignedUrlOut"
+                }
               }
             },
             "description": "Successful Response"
@@ -10960,7 +11599,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/UnreadCountOut"
+                }
               }
             },
             "description": "Successful Response"
@@ -11702,7 +12343,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/BarcodeResult"
+                }
               }
             },
             "description": "Successful Response"
@@ -12249,7 +12892,9 @@
           "202": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/OkOut"
+                }
               }
             },
             "description": "Successful Response"
@@ -12627,7 +13272,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/SignedUrlOut"
+                }
               }
             },
             "description": "Successful Response"
@@ -12667,7 +13314,9 @@
           "202": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/OkOut"
+                }
               }
             },
             "description": "Successful Response"
@@ -12730,10 +13379,20 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/QrBoxFicha"
+                    },
+                    {
+                      "$ref": "#/components/schemas/QrPalletFicha"
+                    }
+                  ],
+                  "title": "Response 200 Qr Ficha V1 Public Qr  Code  Get"
+                }
               }
             },
-            "description": "Successful Response"
+            "description": "Ficha pública de la caja o de la tarima del código."
           },
           "422": {
             "content": {
@@ -15146,7 +15805,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/MessageOut"
+                }
               }
             },
             "description": "Successful Response"

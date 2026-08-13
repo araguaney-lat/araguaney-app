@@ -7,6 +7,7 @@ import 'package:retrofit/retrofit.dart';
 
 import '../models/ai_usage_report_out.dart';
 import '../models/audit_list_out.dart';
+import '../models/message_out.dart';
 import '../models/product_type_out.dart';
 import '../models/studio_user_create.dart';
 import '../models/studio_user_patch.dart';
@@ -74,7 +75,7 @@ abstract class StudioApi {
 
   /// Reinvite User
   @POST('/v1/studio/users/{user_id}/reinvite')
-  Future<void> reinviteUserV1StudioUsersUserIdReinvitePost({
+  Future<MessageOut> reinviteUserV1StudioUsersUserIdReinvitePost({
     @Path('user_id') required String userId,
   });
 }

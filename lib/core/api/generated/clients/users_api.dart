@@ -5,6 +5,7 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 
+import '../models/message_out.dart';
 import '../models/user_invite.dart';
 import '../models/user_out.dart';
 
@@ -29,7 +30,8 @@ abstract class UsersApi {
 
   /// Reinvite Center User
   @POST('/v1/centers/{center_id}/users/{user_id}/reinvite')
-  Future<void> reinviteCenterUserV1CentersCenterIdUsersUserIdReinvitePost({
+  Future<MessageOut>
+  reinviteCenterUserV1CentersCenterIdUsersUserIdReinvitePost({
     @Path('center_id') required String centerId,
     @Path('user_id') required String userId,
   });

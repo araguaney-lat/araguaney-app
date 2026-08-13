@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'users_api.dart';
+part of 'devices_api.dart';
 
 // dart format off
 
@@ -10,8 +10,8 @@ part of 'users_api.dart';
 
 // ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers,unused_element,unnecessary_string_interpolations,unused_element_parameter,avoid_unused_constructor_parameters,unreachable_from_main,avoid_redundant_argument_values
 
-class _UsersApi implements UsersApi {
-  _UsersApi(this._dio, {this.baseUrl, this.errorLogger});
+class _DevicesApi implements DevicesApi {
+  _DevicesApi(this._dio, {this.baseUrl, this.errorLogger});
 
   final Dio _dio;
 
@@ -20,60 +20,28 @@ class _UsersApi implements UsersApi {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<List<UserOut>> listCenterUsersV1CentersCenterIdUsersGet({
-    required String centerId,
-  }) async {
-    final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{};
-    const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<List<UserOut>>(
-      Options(method: 'GET', headers: _headers, extra: _extra)
-          .compose(
-            _dio.options,
-            '/v1/centers/${centerId}/users',
-            queryParameters: queryParameters,
-            data: _data,
-          )
-          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
-    );
-    final _result = await _dio.fetch<List<dynamic>>(_options);
-    late List<UserOut> _value;
-    try {
-      _value = _result.data!
-          .map((dynamic i) => UserOut.fromJson(i as Map<String, dynamic>))
-          .toList();
-    } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options, response: _result);
-      rethrow;
-    }
-    return _value;
-  }
-
-  @override
-  Future<UserOut> inviteUserV1CentersCenterIdUsersPost({
-    required String centerId,
-    required UserInvite body,
+  Future<OkOut> registerDeviceV1DevicesPost({
+    required DeviceTokenRegister body,
   }) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(body.toJson());
-    final _options = _setStreamType<UserOut>(
+    final _options = _setStreamType<OkOut>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/v1/centers/${centerId}/users',
+            '/v1/devices',
             queryParameters: queryParameters,
             data: _data,
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, Object?>>(_options);
-    late UserOut _value;
+    late OkOut _value;
     try {
-      _value = UserOut.fromJson(_result.data!);
+      _value = OkOut.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
@@ -82,29 +50,28 @@ class _UsersApi implements UsersApi {
   }
 
   @override
-  Future<MessageOut>
-  reinviteCenterUserV1CentersCenterIdUsersUserIdReinvitePost({
-    required String centerId,
-    required String userId,
+  Future<OkOut> unregisterDeviceV1DevicesUnregisterPost({
+    required DeviceTokenUnregister body,
   }) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
-    const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<MessageOut>(
+    final _data = <String, dynamic>{};
+    _data.addAll(body.toJson());
+    final _options = _setStreamType<OkOut>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/v1/centers/${centerId}/users/${userId}/reinvite',
+            '/v1/devices/unregister',
             queryParameters: queryParameters,
             data: _data,
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, Object?>>(_options);
-    late MessageOut _value;
+    late OkOut _value;
     try {
-      _value = MessageOut.fromJson(_result.data!);
+      _value = OkOut.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
