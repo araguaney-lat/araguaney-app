@@ -4,6 +4,7 @@ import 'package:araguaney_app/core/auth/auth_repository.dart';
 import 'package:araguaney_app/core/auth/session.dart';
 import 'package:araguaney_app/core/auth/session_controller.dart';
 import 'package:araguaney_app/core/db/db_providers.dart';
+import 'package:araguaney_app/core/push/push_providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -13,11 +14,17 @@ import '../../support/fake_auth.dart';
   required FakeAuthRepository repository,
   required FakeTokenStorage storage,
   FakeReadModelReset? readModelReset,
+  SessionPushHook? onStarted,
+  SessionPushHook? onEnding,
 }) {
   final container = ProviderContainer(
     overrides: [
       authRepositoryProvider.overrideWithValue(repository),
       tokenStorageProvider.overrideWithValue(storage),
+      // El registro del destino de avisos sale por aquí. Sin sobrescribirlo,
+      // abrir sesión intentaría hablar con el servidor de dispositivos.
+      onSessionStartedProvider.overrideWithValue(onStarted ?? () async {}),
+      onSessionEndingProvider.overrideWithValue(onEnding ?? () async {}),
       // Sin esto, iniciar sesión abriría la base de verdad y con ella un canal
       // de plataforma que en una prueba unitaria no existe.
       readModelResetProvider.overrideWithValue(
@@ -180,6 +187,85 @@ void main() {
         expect(state, isA<SessionAwaitingTotp>());
         expect((state as SessionAwaitingTotp).partialToken, 'partial-abc');
         expect(storage.written, isEmpty);
+      },
+    );
+  });
+
+  group('the device as a destination for notices', () {
+    test('opening a session registers it', () async {
+      var registered = 0;
+      final built = _build(
+        repository: FakeAuthRepository(
+          loginResult: LoginSucceeded(buildToken()),
+        ),
+        storage: FakeTokenStorage(),
+        onStarted: () async => registered++,
+      );
+      await built.controller.restoration;
+
+      await built.controller.logIn(username: 'p', password: 'x');
+
+      expect(registered, 1);
+    });
+
+    test('restoring a session does not register again', () async {
+      // Registrar es idempotente, así que repetirlo en cada arranque sería una
+      // petición de más: quien vuelve a abrir la aplicación sigue siendo el
+      // destino que registró al entrar.
+      var registered = 0;
+      final built = _build(
+        repository: FakeAuthRepository(refreshToken: buildToken()),
+        storage: FakeTokenStorage(stored: 'refresh-stored'),
+        onStarted: () async => registered++,
+      );
+
+      await built.controller.restoration;
+
+      expect(registered, 0);
+    });
+
+    test('closing a session drops it **before** the session is gone', () async {
+      // El endpoint de baja exige justo la sesión que se está entregando: si el
+      // borrado ocurriera antes, la llamada saldría sin credenciales y el
+      // teléfono seguiría recibiendo los avisos de quien acaba de salir.
+      final storage = FakeTokenStorage(stored: 'refresh-1');
+      late ProviderContainer container;
+      SessionState? stateWhenDropped;
+      int? clearsWhenDropped;
+
+      final built = _build(
+        repository: FakeAuthRepository(refreshToken: buildToken()),
+        storage: storage,
+        onEnding: () async {
+          stateWhenDropped = container.read(sessionControllerProvider);
+          clearsWhenDropped = storage.clearCount;
+        },
+      );
+      container = built.container;
+      await built.controller.restoration;
+
+      await built.controller.logOut();
+
+      expect(stateWhenDropped, isA<SessionActive>());
+      expect(clearsWhenDropped, 0);
+      expect(storage.clearCount, 1);
+    });
+
+    test(
+      'an expired session cannot drop it, and does not pretend to',
+      () async {
+        // La llamada exige una sesión válida y eso es justo lo que se perdió.
+        var dropped = 0;
+        final built = _build(
+          repository: FakeAuthRepository(),
+          storage: FakeTokenStorage(stored: 'refresh-1'),
+          onEnding: () async => dropped++,
+        );
+        await built.controller.restoration;
+
+        await built.controller.expire();
+
+        expect(dropped, 0);
       },
     );
   });

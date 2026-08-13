@@ -3,6 +3,7 @@ import 'package:araguaney_app/core/auth/auth_repository.dart';
 import 'package:araguaney_app/core/auth/session.dart';
 import 'package:araguaney_app/core/auth/session_controller.dart';
 import 'package:araguaney_app/core/db/db_providers.dart';
+import 'package:araguaney_app/core/push/push_providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -26,6 +27,8 @@ _build({
       authRepositoryProvider.overrideWithValue(repository),
       tokenStorageProvider.overrideWithValue(storage),
       readModelResetProvider.overrideWithValue(reset.call),
+      onSessionStartedProvider.overrideWithValue(() async {}),
+      onSessionEndingProvider.overrideWithValue(() async {}),
     ],
   );
   addTearDown(container.dispose);
