@@ -11,10 +11,10 @@ it contains.
 
 ```mermaid
 pie title Tasks completed (94 tasks)
-    "Done" : 65
-    "Pending" : 23
-    "Partial" : 2
-    "Blocked or external" : 4
+    "Done" : 67
+    "Pending" : 19
+    "Partial" : 3
+    "Blocked or external" : 5
 ```
 
 | Phase | Name | Done | Pending | Progress |
@@ -26,11 +26,11 @@ pie title Tasks completed (94 tasks)
 | 4 | [QR scanning](phase-04-qr-scanning.md) | 6 | 0 | ✅ 100% |
 | 5 | [Online intake and box operations](phase-05-intake-online.md) | 10 | 0 | ✅ 100% |
 | 6 | [Offline capture queue](phase-06-offline-queue.md) | 10 | 0 | ✅ 100% |
-| 7 | [Push notifications](phase-07-push-notifications.md) | 0 | 9 | ⬜ 0% (1 external) |
+| 7 | [Push notifications](phase-07-push-notifications.md) | 2 | 7 | 🟨 22% (1 partial, 1 external) |
 | 8 | [Android release and distribution](phase-08-android-release.md) | 4 | 5 | 🟨 44% (2 partial, 3 external) |
 | 9 | [iOS enablement](phase-09-ios-enablement.md) | 0 | 6 | ⬜ 0% |
 | 10 | [Operational parity backlog](phase-10-operational-parity.md) | 0 | 8 | ⬜ 0% |
-| **Total** | | **65** | **29** | **🟢 69%** |
+| **Total** | | **67** | **27** | **🟢 71%** |
 
 ## Blocked work
 
