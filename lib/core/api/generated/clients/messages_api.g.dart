@@ -146,14 +146,14 @@ class _MessagesApi implements MessagesApi {
   }
 
   @override
-  Future<void> getDownloadUrlV1MessagesAttachmentsAttachmentIdUrlGet({
+  Future<SignedUrlOut> getDownloadUrlV1MessagesAttachmentsAttachmentIdUrlGet({
     required String attachmentId,
   }) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<void>(
+    final _options = _setStreamType<SignedUrlOut>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -163,16 +163,24 @@ class _MessagesApi implements MessagesApi {
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
-    await _dio.fetch<void>(_options);
+    final _result = await _dio.fetch<Map<String, Object?>>(_options);
+    late SignedUrlOut _value;
+    try {
+      _value = SignedUrlOut.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
   }
 
   @override
-  Future<void> getUnreadCountV1MessagesUnreadCountGet() async {
+  Future<UnreadCountOut> getUnreadCountV1MessagesUnreadCountGet() async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<void>(
+    final _options = _setStreamType<UnreadCountOut>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -182,7 +190,15 @@ class _MessagesApi implements MessagesApi {
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
-    await _dio.fetch<void>(_options);
+    final _result = await _dio.fetch<Map<String, Object?>>(_options);
+    late UnreadCountOut _value;
+    try {
+      _value = UnreadCountOut.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
   }
 
   @override

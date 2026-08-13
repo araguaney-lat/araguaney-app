@@ -184,6 +184,52 @@ void main() {
     );
   });
 
+  group('rate limiting at the door', () {
+    test('too many attempts is never reported as a bad password', () async {
+      // El límite del inicio de sesión no se cuenta por persona: en el arranque
+      // de un turno lo puede agotar el centro entero, y quien reciba el rechazo
+      // tiene la contraseña correcta.
+      final repository = FakeAuthRepository(
+        loginError: const RateLimitFailure(
+          code: 'RATE_LIMIT_EXCEEDED',
+          message: 'Too many requests',
+        ),
+      );
+      final built = _build(repository: repository, storage: FakeTokenStorage());
+      await built.controller.restoration;
+
+      await built.controller.logIn(username: 'persona', password: 'correcta');
+
+      final state =
+          built.container.read(sessionControllerProvider) as SessionAbsent;
+      expect(state.failureMessage, contains('no es tu contraseña'));
+      expect(state.failureMessage, isNot(contains('Credenciales')));
+    });
+
+    test(
+      'a real credentials rejection still says what the server said',
+      () async {
+        final repository = FakeAuthRepository(
+          loginError: const BusinessRuleFailure(
+            code: 'INVALID_CREDENTIALS',
+            message: 'Usuario o contraseña incorrectos',
+          ),
+        );
+        final built = _build(
+          repository: repository,
+          storage: FakeTokenStorage(),
+        );
+        await built.controller.restoration;
+
+        await built.controller.logIn(username: 'persona', password: 'mala');
+
+        final state =
+            built.container.read(sessionControllerProvider) as SessionAbsent;
+        expect(state.failureMessage, 'Usuario o contraseña incorrectos');
+      },
+    );
+  });
+
   group('second factor', () {
     test('a valid code opens the session', () async {
       final repository = FakeAuthRepository(

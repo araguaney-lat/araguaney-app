@@ -6,6 +6,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 
+import '../models/accept_terms_out.dart';
 import '../models/accept_terms_request.dart';
 import '../models/avatar_out.dart';
 import '../models/body_login_v1_auth_login_post.dart';
@@ -13,7 +14,9 @@ import '../models/change_password_request.dart';
 import '../models/delete_account_request.dart';
 import '../models/forgot_password_request.dart';
 import '../models/logout_request.dart';
+import '../models/message_out.dart';
 import '../models/refresh_request.dart';
+import '../models/registration_out.dart';
 import '../models/resend_request.dart';
 import '../models/reset_password_request.dart';
 import '../models/token.dart';
@@ -34,14 +37,21 @@ abstract class AuthApi {
 
   /// Forgot Password
   @POST('/v1/auth/forgot-password')
-  Future<void> forgotPasswordV1AuthForgotPasswordPost({
+  Future<MessageOut> forgotPasswordV1AuthForgotPasswordPost({
     @Body() required ForgotPasswordRequest body,
   });
 
-  /// Login
+  /// Login.
+  ///
+  /// Abre sesión. Dos desenlaces: sesión completa (200) o 2FA pendiente (202).
+  ///
+  /// El `response_model=Token` describe el primero. El segundo se devuelve como.
+  /// `JSONResponse`, y FastAPI no le aplica el modelo de respuesta a un `Response`.
+  /// ya construido, así que sale intacto; queda declarado en `responses` para que.
+  /// el contrato publicado lo describa (Fase 26, tasks 2 y 3).
   @FormUrlEncoded()
   @POST('/v1/auth/login')
-  Future<void> loginV1AuthLoginPost({
+  Future<Token> loginV1AuthLoginPost({
     @Body() required BodyLoginV1AuthLoginPost body,
   });
 
@@ -71,7 +81,7 @@ abstract class AuthApi {
 
   /// Accept Terms
   @POST('/v1/auth/me/accept-terms')
-  Future<void> acceptTermsV1AuthMeAcceptTermsPost({
+  Future<AcceptTermsOut> acceptTermsV1AuthMeAcceptTermsPost({
     @Body() required AcceptTermsRequest body,
   });
 
@@ -105,17 +115,19 @@ abstract class AuthApi {
 
   /// Register
   @POST('/v1/auth/register')
-  Future<void> registerV1AuthRegisterPost({@Body() required UserCreate body});
+  Future<RegistrationOut> registerV1AuthRegisterPost({
+    @Body() required UserCreate body,
+  });
 
   /// Resend Verification
   @POST('/v1/auth/resend-verification')
-  Future<void> resendVerificationV1AuthResendVerificationPost({
+  Future<MessageOut> resendVerificationV1AuthResendVerificationPost({
     @Body() required ResendRequest body,
   });
 
   /// Reset Password
   @POST('/v1/auth/reset-password')
-  Future<void> resetPasswordV1AuthResetPasswordPost({
+  Future<MessageOut> resetPasswordV1AuthResetPasswordPost({
     @Body() required ResetPasswordRequest body,
   });
 
@@ -139,7 +151,7 @@ abstract class AuthApi {
   ///
   /// Disable 2FA using a valid TOTP code or backup code.
   @POST('/v1/auth/totp/disable')
-  Future<void> totpDisableV1AuthTotpDisablePost({
+  Future<MessageOut> totpDisableV1AuthTotpDisablePost({
     @Body() required TotpConfirmIn body,
   });
 
@@ -151,7 +163,7 @@ abstract class AuthApi {
 
   /// Verify Email
   @GET('/v1/auth/verify-email')
-  Future<void> verifyEmailV1AuthVerifyEmailGet({
+  Future<MessageOut> verifyEmailV1AuthVerifyEmailGet({
     @Query('token') required String token,
   });
 }

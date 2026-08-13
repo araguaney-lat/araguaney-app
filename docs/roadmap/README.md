@@ -26,13 +26,18 @@ pie title Tasks completed (94 tasks)
 | 4 | [QR scanning](phase-04-qr-scanning.md) | 6 | 0 | ✅ 100% |
 | 5 | [Online intake and box operations](phase-05-intake-online.md) | 10 | 0 | ✅ 100% |
 | 6 | [Offline capture queue](phase-06-offline-queue.md) | 10 | 0 | ✅ 100% |
-| 7 | [Push notifications](phase-07-push-notifications.md) | 0 | 9 | ⬜ 0% |
+| 7 | [Push notifications](phase-07-push-notifications.md) | 0 | 9 | ⬜ 0% (1 external) |
 | 8 | [Android release and distribution](phase-08-android-release.md) | 4 | 5 | 🟨 44% (2 partial, 3 external) |
 | 9 | [iOS enablement](phase-09-ios-enablement.md) | 0 | 6 | ⬜ 0% |
 | 10 | [Operational parity backlog](phase-10-operational-parity.md) | 0 | 8 | ⬜ 0% |
 | **Total** | | **65** | **29** | **🟢 69%** |
 
 ## Blocked work
+
+- **Phase 07, task 1** needs the Android application registered in the Firebase
+  project that already exists. Without it there is no `google-services.json` and
+  the client cannot obtain a token, so nothing downstream can be proven end to
+  end. The backend is waiting on exactly that first real token.
 
 - **Phase 08, tasks 1, 5 and 8** need a Google Play developer account, the app
   created in its console, and listing assets. No code unblocks them. The upload
@@ -53,8 +58,10 @@ pie title Tasks completed (94 tasks)
   per-user queue, and token registration.
 - **05 → 06.** The offline queue reuses the online capture flow unchanged; it
   is a submission strategy, not a second form.
-- **07 and 09 have external gates**: the backend push phase (backend
-  repository's roadmap) and the Apple Developer Program, respectively.
+- **07's backend gate is lifted.** The device endpoints are live and dispatch is
+  on in production; what gates the phase now is registering the Android
+  application in the existing Firebase project, which only produces a
+  `google-services.json`. **09 still waits on the Apple Developer Program.**
 - **08 task 1 (Google Play account) is external** and can proceed in parallel
   with any phase.
 

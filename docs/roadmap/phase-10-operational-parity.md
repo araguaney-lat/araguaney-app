@@ -25,11 +25,11 @@
 | # | Block | Description | Complexity | Status |
 |---|-------|-------------|------------|--------|
 | 1 | Pallet operations | Create/close pallets, add sealed boxes by scan (reusing continuous scan mode), pallet weighing. | 🔴 High | ⬜ Pending |
-| 2 | Shipment views and milestones | Shipment detail, logistics milestones timeline, manifest access. | 🟠 Medium | ⬜ Pending |
+| 2 | Shipment views and milestones | Milestones timeline and manifest access. The read-only shipment record itself arrives earlier, in Phase 07: a `shipment_delivered` notice needs somewhere to land. | 🟠 Medium | ⬜ Pending |
 | 3 | Transfers | Between-center transfer participation. | 🟠 Medium | ⬜ Pending |
 | 4 | Reception and incidents | Register what actually arrived (reconciliation) and incident capture. | 🔴 High | ⬜ Pending |
-| 5 | Coordinator views | Risk reviews, campaign membership, volunteer management scoped to the center. | 🔴 High | ⬜ Pending |
-| 6 | National dashboard | Aggregated read-only views for national administrators. | 🟠 Medium | ⬜ Pending |
+| 5 | Coordinator views | Campaign membership and volunteer management scoped to the center. Resolving a risk review lives here; the read-only list of them arrives earlier, in Phase 07, for the same reason as the shipment record. | 🔴 High | ⬜ Pending |
+| 6 | National dashboard | Aggregated read-only views for national administrators. Reopening `/v1/dashboard/**` in the generated client means solving the `anyOf` response the generator cannot express today — see `swagger_parser.yaml`. | 🟠 Medium | ⬜ Pending |
 | 7 | Messaging / notification center | In-app messaging surface complementing push. | 🟠 Medium | ⬜ Pending |
 | 8 | Riverpod 3.x + codegen migration | When `riverpod`/`riverpod_generator` realign with stable Flutter's `flutter_test` pins; mechanical by design. | 🟠 Medium | ⬜ Pending |
 

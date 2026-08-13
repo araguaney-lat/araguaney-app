@@ -8,10 +8,12 @@ import 'package:retrofit/retrofit.dart';
 import '../models/attachment_out.dart';
 import '../models/confirm_attachment_request.dart';
 import '../models/reply_create.dart';
+import '../models/signed_url_out.dart';
 import '../models/thread_create.dart';
 import '../models/thread_detail_out.dart';
 import '../models/thread_out.dart';
 import '../models/thread_reply_out.dart';
+import '../models/unread_count_out.dart';
 import '../models/upload_url_out.dart';
 import '../models/upload_url_request.dart';
 
@@ -48,13 +50,13 @@ abstract class MessagesApi {
 
   /// Get Download Url
   @GET('/v1/messages/attachments/{attachment_id}/url')
-  Future<void> getDownloadUrlV1MessagesAttachmentsAttachmentIdUrlGet({
+  Future<SignedUrlOut> getDownloadUrlV1MessagesAttachmentsAttachmentIdUrlGet({
     @Path('attachment_id') required String attachmentId,
   });
 
   /// Get Unread Count
   @GET('/v1/messages/unread-count')
-  Future<void> getUnreadCountV1MessagesUnreadCountGet();
+  Future<UnreadCountOut> getUnreadCountV1MessagesUnreadCountGet();
 
   /// Get Thread
   @GET('/v1/messages/{thread_id}')

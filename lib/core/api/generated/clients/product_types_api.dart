@@ -5,6 +5,7 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 
+import '../models/barcode_result.dart';
 import '../models/product_gtin_out.dart';
 import '../models/product_type_create.dart';
 import '../models/product_type_out.dart';
@@ -32,7 +33,7 @@ abstract class ProductTypesApi {
   ///
   /// Check local DB first, then fall back to Open Food Facts.
   @GET('/v1/product-types/barcode/{gtin}')
-  Future<void> lookupByBarcodeV1ProductTypesBarcodeGtinGet({
+  Future<BarcodeResult> lookupByBarcodeV1ProductTypesBarcodeGtinGet({
     @Path('gtin') required String gtin,
   });
 

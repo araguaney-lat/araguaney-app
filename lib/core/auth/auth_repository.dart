@@ -26,13 +26,14 @@ class LoginNeedsTotp extends LoginResult {
 
 /// Acceso a los endpoints de sesión del backend.
 ///
-/// Casi todo pasa por el cliente generado. El inicio de sesión no puede: el
-/// backend no declara `response_model` en `POST /v1/auth/login`, así que el
-/// contrato publica una respuesta sin tipo y el método generado devuelve
-/// `void`, descartando el token. Mientras eso se corrige aguas arriba, la
-/// petición se hace aquí a mano, pero **el cuerpo se lee con el modelo
-/// generado `Token`**: la forma sigue viniendo del contrato y no de una copia
-/// escrita a mano que se desincronizaría. Ver `api/README.md`.
+/// Casi todo pasa por el cliente generado. El inicio de sesión no puede, y la
+/// razón cambió: el backend ya declara sus dos desenlaces —`Token` en 200 y
+/// `TotpPending` en 202—, pero un método tipado no puede devolver dos tipos
+/// según el estado HTTP. El generador elige uno y descarta el otro.
+///
+/// Así que la petición se hace aquí a mano y **el cuerpo se lee con los modelos
+/// generados**: la forma sigue viniendo del contrato y no de una copia escrita
+/// a mano que se desincronizaría. Ver `api/README.md`.
 class AuthRepository {
   AuthRepository(this._dio);
 

@@ -235,15 +235,20 @@ class _BoxesApi implements BoxesApi {
   }
 
   @override
-  Future<void> boxQrAuthenticatedV1BoxesBoxIdQrPngGet({
+  Stream<String> boxQrAuthenticatedV1BoxesBoxIdQrPngGet({
     required String boxId,
-  }) async {
+  }) async* {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<void>(
-      Options(method: 'GET', headers: _headers, extra: _extra)
+    final _options = _setStreamType<String>(
+      Options(
+            method: 'GET',
+            headers: _headers,
+            extra: _extra,
+            responseType: ResponseType.stream,
+          )
           .compose(
             _dio.options,
             '/v1/boxes/${boxId}/qr.png',
@@ -252,7 +257,11 @@ class _BoxesApi implements BoxesApi {
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
-    await _dio.fetch<void>(_options);
+    final _result = _dio.fetch<ResponseBody>(_options);
+    final _value = _result.asStream().asyncExpand(
+      (response) => response.data!.stream.map(utf8.decode),
+    );
+    yield* _value;
   }
 
   @override

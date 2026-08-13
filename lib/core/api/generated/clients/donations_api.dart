@@ -2,6 +2,8 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, unused_import, invalid_annotation_target, unnecessary_import
 
+import 'dart:convert';
+import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 
@@ -11,12 +13,14 @@ import '../models/donation_photo_out.dart';
 import '../models/donation_public_out.dart';
 import '../models/email_in.dart';
 import '../models/items_in.dart';
+import '../models/ok_out.dart';
 import '../models/photo_confirm_in.dart';
 import '../models/photo_upload_url_in.dart';
 import '../models/photo_upload_url_out.dart';
 import '../models/product_type_out.dart';
 import '../models/public_center_out.dart';
 import '../models/receive_in.dart';
+import '../models/signed_url_out.dart';
 import '../models/token_in.dart';
 
 part 'donations_api.g.dart';
@@ -35,7 +39,8 @@ abstract class DonationsApi {
 
   /// Public Donation Qr
   @GET('/v1/d/{code}/qr.png')
-  Future<void> publicDonationQrV1DCodeQrPngGet({
+  @DioResponseType(ResponseType.stream)
+  Stream<String> publicDonationQrV1DCodeQrPngGet({
     @Path('code') required String code,
   });
 
@@ -77,7 +82,7 @@ abstract class DonationsApi {
   ///
   /// El centro ve las fotos al preparar el doble check.
   @GET('/v1/donations/{code}/photos/{photo_id}/url')
-  Future<void> centerPhotoUrlV1DonationsCodePhotosPhotoIdUrlGet({
+  Future<SignedUrlOut> centerPhotoUrlV1DonationsCodePhotosPhotoIdUrlGet({
     @Path('code') required String code,
     @Path('photo_id') required String photoId,
   });
@@ -117,7 +122,7 @@ abstract class DonationsApi {
   /// la donación viaja por correo, nunca en esta respuesta, para que probar.
   /// direcciones ajenas no diga nada de quién está donando.
   @POST('/v1/public/donations')
-  Future<void> submitDonationV1PublicDonationsPost({
+  Future<OkOut> submitDonationV1PublicDonationsPost({
     @Body() required DonationCreate body,
   });
 
@@ -175,7 +180,8 @@ abstract class DonationsApi {
 
   /// Donor Photo Url
   @GET('/v1/public/donations/manage/{token}/photos/{photo_id}/url')
-  Future<void> donorPhotoUrlV1PublicDonationsManageTokenPhotosPhotoIdUrlGet({
+  Future<SignedUrlOut>
+  donorPhotoUrlV1PublicDonationsManageTokenPhotosPhotoIdUrlGet({
     @Path('token') required String token,
     @Path('photo_id') required String photoId,
   });
@@ -187,7 +193,7 @@ abstract class DonationsApi {
   /// Responde 202 siempre, exista o no una donación con ese correo: distinguir.
   /// convertiría al endpoint en un verificador de direcciones.
   @POST('/v1/public/donations/resend')
-  Future<void> resendDonationConfirmationV1PublicDonationsResendPost({
+  Future<OkOut> resendDonationConfirmationV1PublicDonationsResendPost({
     @Body() required EmailIn body,
   });
 }

@@ -2,6 +2,8 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, unused_import, invalid_annotation_target, unnecessary_import
 
+import 'dart:convert';
+import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 
@@ -76,7 +78,8 @@ abstract class BoxesApi {
   ///
   /// QR PNG accessible with auth (for label preview before seal).
   @GET('/v1/boxes/{box_id}/qr.png')
-  Future<void> boxQrAuthenticatedV1BoxesBoxIdQrPngGet({
+  @DioResponseType(ResponseType.stream)
+  Stream<String> boxQrAuthenticatedV1BoxesBoxIdQrPngGet({
     @Path('box_id') required String boxId,
   });
 

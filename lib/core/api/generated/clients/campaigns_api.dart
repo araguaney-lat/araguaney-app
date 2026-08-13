@@ -10,6 +10,7 @@ import '../models/campaign_member_add.dart';
 import '../models/campaign_member_out.dart';
 import '../models/campaign_out.dart';
 import '../models/campaign_update.dart';
+import '../models/ok_out.dart';
 
 part 'campaigns_api.g.dart';
 
@@ -56,7 +57,7 @@ abstract class CampaignsApi {
 
   /// Add Member
   @POST('/v1/campaigns/{campaign_id}/members')
-  Future<void> addMemberV1CampaignsCampaignIdMembersPost({
+  Future<OkOut> addMemberV1CampaignsCampaignIdMembersPost({
     @Path('campaign_id') required String campaignId,
     @Body() required CampaignMemberAdd body,
   });

@@ -20,7 +20,7 @@ class _AuthApi implements AuthApi {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<void> forgotPasswordV1AuthForgotPasswordPost({
+  Future<MessageOut> forgotPasswordV1AuthForgotPasswordPost({
     required ForgotPasswordRequest body,
   }) async {
     final _extra = <String, dynamic>{};
@@ -28,7 +28,7 @@ class _AuthApi implements AuthApi {
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(body.toJson());
-    final _options = _setStreamType<void>(
+    final _options = _setStreamType<MessageOut>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -38,11 +38,19 @@ class _AuthApi implements AuthApi {
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
-    await _dio.fetch<void>(_options);
+    final _result = await _dio.fetch<Map<String, Object?>>(_options);
+    late MessageOut _value;
+    try {
+      _value = MessageOut.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
   }
 
   @override
-  Future<void> loginV1AuthLoginPost({
+  Future<Token> loginV1AuthLoginPost({
     required BodyLoginV1AuthLoginPost body,
   }) async {
     final _extra = <String, dynamic>{};
@@ -50,7 +58,7 @@ class _AuthApi implements AuthApi {
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(body.toJson());
-    final _options = _setStreamType<void>(
+    final _options = _setStreamType<Token>(
       Options(
             method: 'POST',
             headers: _headers,
@@ -65,7 +73,15 @@ class _AuthApi implements AuthApi {
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
-    await _dio.fetch<void>(_options);
+    final _result = await _dio.fetch<Map<String, Object?>>(_options);
+    late Token _value;
+    try {
+      _value = Token.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
   }
 
   @override
@@ -167,7 +183,7 @@ class _AuthApi implements AuthApi {
   }
 
   @override
-  Future<void> acceptTermsV1AuthMeAcceptTermsPost({
+  Future<AcceptTermsOut> acceptTermsV1AuthMeAcceptTermsPost({
     required AcceptTermsRequest body,
   }) async {
     final _extra = <String, dynamic>{};
@@ -175,7 +191,7 @@ class _AuthApi implements AuthApi {
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(body.toJson());
-    final _options = _setStreamType<void>(
+    final _options = _setStreamType<AcceptTermsOut>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -185,7 +201,15 @@ class _AuthApi implements AuthApi {
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
-    await _dio.fetch<void>(_options);
+    final _result = await _dio.fetch<Map<String, Object?>>(_options);
+    late AcceptTermsOut _value;
+    try {
+      _value = AcceptTermsOut.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
   }
 
   @override
@@ -309,13 +333,15 @@ class _AuthApi implements AuthApi {
   }
 
   @override
-  Future<void> registerV1AuthRegisterPost({required UserCreate body}) async {
+  Future<RegistrationOut> registerV1AuthRegisterPost({
+    required UserCreate body,
+  }) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(body.toJson());
-    final _options = _setStreamType<void>(
+    final _options = _setStreamType<RegistrationOut>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -325,11 +351,19 @@ class _AuthApi implements AuthApi {
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
-    await _dio.fetch<void>(_options);
+    final _result = await _dio.fetch<Map<String, Object?>>(_options);
+    late RegistrationOut _value;
+    try {
+      _value = RegistrationOut.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
   }
 
   @override
-  Future<void> resendVerificationV1AuthResendVerificationPost({
+  Future<MessageOut> resendVerificationV1AuthResendVerificationPost({
     required ResendRequest body,
   }) async {
     final _extra = <String, dynamic>{};
@@ -337,7 +371,7 @@ class _AuthApi implements AuthApi {
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(body.toJson());
-    final _options = _setStreamType<void>(
+    final _options = _setStreamType<MessageOut>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -347,11 +381,19 @@ class _AuthApi implements AuthApi {
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
-    await _dio.fetch<void>(_options);
+    final _result = await _dio.fetch<Map<String, Object?>>(_options);
+    late MessageOut _value;
+    try {
+      _value = MessageOut.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
   }
 
   @override
-  Future<void> resetPasswordV1AuthResetPasswordPost({
+  Future<MessageOut> resetPasswordV1AuthResetPasswordPost({
     required ResetPasswordRequest body,
   }) async {
     final _extra = <String, dynamic>{};
@@ -359,7 +401,7 @@ class _AuthApi implements AuthApi {
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(body.toJson());
-    final _options = _setStreamType<void>(
+    final _options = _setStreamType<MessageOut>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -369,7 +411,15 @@ class _AuthApi implements AuthApi {
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
-    await _dio.fetch<void>(_options);
+    final _result = await _dio.fetch<Map<String, Object?>>(_options);
+    late MessageOut _value;
+    try {
+      _value = MessageOut.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
   }
 
   @override
@@ -433,7 +483,7 @@ class _AuthApi implements AuthApi {
   }
 
   @override
-  Future<void> totpDisableV1AuthTotpDisablePost({
+  Future<MessageOut> totpDisableV1AuthTotpDisablePost({
     required TotpConfirmIn body,
   }) async {
     final _extra = <String, dynamic>{};
@@ -441,7 +491,7 @@ class _AuthApi implements AuthApi {
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(body.toJson());
-    final _options = _setStreamType<void>(
+    final _options = _setStreamType<MessageOut>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -451,7 +501,15 @@ class _AuthApi implements AuthApi {
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
-    await _dio.fetch<void>(_options);
+    final _result = await _dio.fetch<Map<String, Object?>>(_options);
+    late MessageOut _value;
+    try {
+      _value = MessageOut.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
   }
 
   @override
@@ -482,12 +540,14 @@ class _AuthApi implements AuthApi {
   }
 
   @override
-  Future<void> verifyEmailV1AuthVerifyEmailGet({required String token}) async {
+  Future<MessageOut> verifyEmailV1AuthVerifyEmailGet({
+    required String token,
+  }) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{r'token': token};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<void>(
+    final _options = _setStreamType<MessageOut>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -497,7 +557,15 @@ class _AuthApi implements AuthApi {
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
-    await _dio.fetch<void>(_options);
+    final _result = await _dio.fetch<Map<String, Object?>>(_options);
+    late MessageOut _value;
+    try {
+      _value = MessageOut.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
   }
 
   RequestOptions _setStreamType<T>(RequestOptions requestOptions) {

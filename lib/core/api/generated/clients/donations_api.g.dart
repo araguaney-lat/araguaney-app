@@ -49,13 +49,20 @@ class _DonationsApi implements DonationsApi {
   }
 
   @override
-  Future<void> publicDonationQrV1DCodeQrPngGet({required String code}) async {
+  Stream<String> publicDonationQrV1DCodeQrPngGet({
+    required String code,
+  }) async* {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<void>(
-      Options(method: 'GET', headers: _headers, extra: _extra)
+    final _options = _setStreamType<String>(
+      Options(
+            method: 'GET',
+            headers: _headers,
+            extra: _extra,
+            responseType: ResponseType.stream,
+          )
           .compose(
             _dio.options,
             '/v1/d/${code}/qr.png',
@@ -64,7 +71,11 @@ class _DonationsApi implements DonationsApi {
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
-    await _dio.fetch<void>(_options);
+    final _result = _dio.fetch<ResponseBody>(_options);
+    final _value = _result.asStream().asyncExpand(
+      (response) => response.data!.stream.map(utf8.decode),
+    );
+    yield* _value;
   }
 
   @override
@@ -153,7 +164,7 @@ class _DonationsApi implements DonationsApi {
   }
 
   @override
-  Future<void> centerPhotoUrlV1DonationsCodePhotosPhotoIdUrlGet({
+  Future<SignedUrlOut> centerPhotoUrlV1DonationsCodePhotosPhotoIdUrlGet({
     required String code,
     required String photoId,
   }) async {
@@ -161,7 +172,7 @@ class _DonationsApi implements DonationsApi {
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<void>(
+    final _options = _setStreamType<SignedUrlOut>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -171,7 +182,15 @@ class _DonationsApi implements DonationsApi {
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
-    await _dio.fetch<void>(_options);
+    final _result = await _dio.fetch<Map<String, Object?>>(_options);
+    late SignedUrlOut _value;
+    try {
+      _value = SignedUrlOut.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
   }
 
   @override
@@ -272,7 +291,7 @@ class _DonationsApi implements DonationsApi {
   }
 
   @override
-  Future<void> submitDonationV1PublicDonationsPost({
+  Future<OkOut> submitDonationV1PublicDonationsPost({
     required DonationCreate body,
   }) async {
     final _extra = <String, dynamic>{};
@@ -280,7 +299,7 @@ class _DonationsApi implements DonationsApi {
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(body.toJson());
-    final _options = _setStreamType<void>(
+    final _options = _setStreamType<OkOut>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -290,7 +309,15 @@ class _DonationsApi implements DonationsApi {
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
-    await _dio.fetch<void>(_options);
+    final _result = await _dio.fetch<Map<String, Object?>>(_options);
+    late OkOut _value;
+    try {
+      _value = OkOut.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
   }
 
   @override
@@ -499,7 +526,8 @@ class _DonationsApi implements DonationsApi {
   }
 
   @override
-  Future<void> donorPhotoUrlV1PublicDonationsManageTokenPhotosPhotoIdUrlGet({
+  Future<SignedUrlOut>
+  donorPhotoUrlV1PublicDonationsManageTokenPhotosPhotoIdUrlGet({
     required String token,
     required String photoId,
   }) async {
@@ -507,7 +535,7 @@ class _DonationsApi implements DonationsApi {
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<void>(
+    final _options = _setStreamType<SignedUrlOut>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -517,11 +545,19 @@ class _DonationsApi implements DonationsApi {
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
-    await _dio.fetch<void>(_options);
+    final _result = await _dio.fetch<Map<String, Object?>>(_options);
+    late SignedUrlOut _value;
+    try {
+      _value = SignedUrlOut.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
   }
 
   @override
-  Future<void> resendDonationConfirmationV1PublicDonationsResendPost({
+  Future<OkOut> resendDonationConfirmationV1PublicDonationsResendPost({
     required EmailIn body,
   }) async {
     final _extra = <String, dynamic>{};
@@ -529,7 +565,7 @@ class _DonationsApi implements DonationsApi {
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(body.toJson());
-    final _options = _setStreamType<void>(
+    final _options = _setStreamType<OkOut>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -539,7 +575,15 @@ class _DonationsApi implements DonationsApi {
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
-    await _dio.fetch<void>(_options);
+    final _result = await _dio.fetch<Map<String, Object?>>(_options);
+    late OkOut _value;
+    try {
+      _value = OkOut.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
   }
 
   RequestOptions _setStreamType<T>(RequestOptions requestOptions) {
