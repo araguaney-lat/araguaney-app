@@ -357,3 +357,31 @@ Map<String, Object?> threadDetailJson({
   'attachments': attachments ?? const [],
   'participant_ids': const [],
 };
+
+Map<String, Object?> exportJobJson({
+  String id = 'job-1',
+  String kind = 'manifest',
+  String status = 'PENDING',
+  String? downloadUrl,
+  String? error,
+}) => {
+  'id': id,
+  'kind': kind,
+  'status': status,
+  'download_url': downloadUrl,
+  'error': error,
+};
+
+Map<String, Object?> qrEventJson({
+  String? fromStatus,
+  String toStatus = 'IN_TRANSIT',
+  String? milestone,
+  String? note,
+  DateTime? ts,
+}) => {
+  'from_status': fromStatus,
+  'to_status': toStatus,
+  'milestone': milestone,
+  'note': note,
+  'ts': (ts ?? testNow).toIso8601String(),
+};
