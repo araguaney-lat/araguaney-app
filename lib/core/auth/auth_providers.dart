@@ -32,6 +32,22 @@ final authRepositoryProvider = Provider<AuthRepository>(
   (ref) => AuthRepository(ref.watch(authDioProvider)),
 );
 
+/// Si quien tiene la sesión coordina un centro.
+///
+/// El backend exige ese rol en las escrituras que tocan estado compartido
+/// —tarimas, incidencias— y **sigue siendo quien decide**: esto solo evita
+/// ofrecer un botón que va a responder 403. Vive en `core` porque ya son dos
+/// features las que lo preguntan, y dos copias de la misma condición terminan
+/// divergiendo.
+final isCenterCoordinatorProvider = Provider<bool>((ref) {
+  final state = ref.watch(sessionControllerProvider);
+  if (state is! SessionActive) return false;
+  return const {
+    'coordinator',
+    'national_admin',
+  }.contains(state.session.centerRole);
+});
+
 final sessionControllerProvider =
     NotifierProvider<SessionController, SessionState>(SessionController.new);
 

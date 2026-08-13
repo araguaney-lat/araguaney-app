@@ -27,7 +27,7 @@
 | 1 | Pallet operations | Create and close pallets, add and remove sealed boxes by scan without leaving the camera, tare and gross weights. Online only, and coordination only — the server enforces both. | 🔴 High | ✅ Done |
 | 2 | Shipment views and milestones | Milestones timeline and manifest access. The read-only shipment record itself arrives earlier, in Phase 07: a `shipment_delivered` notice needs somewhere to land. | 🟠 Medium | ⬜ Pending |
 | 3 | Transfers | Between-center transfer participation. | 🟠 Medium | ⬜ Pending |
-| 4 | Reception and incidents | Register what actually arrived (reconciliation) and incident capture. | 🔴 High | ⬜ Pending |
+| 4 | Reception and incidents | Reading a reception with its shrinkage, and raising and listing incidents on a shipment — everything a center can do. **Reconciling is closed to national administration** and stays out; see below. | 🔴 High | 🟨 Partial |
 | 5 | Coordinator views | Campaign membership and volunteer management scoped to the center. Resolving a risk review lives here; the read-only list of them arrives earlier, in Phase 07, for the same reason as the shipment record. | 🔴 High | ⬜ Pending |
 | 6 | National dashboard | Aggregated read-only views for national administrators. Reopening `/v1/dashboard/**` in the generated client means solving the `anyOf` response the generator cannot express today — see `swagger_parser.yaml`. | 🟠 Medium | ⬜ Pending |
 | 7 | Messaging / notification center | In-app messaging surface complementing push. | 🟠 Medium | ⬜ Pending |
@@ -51,6 +51,28 @@ Two pieces were built to be reused, not just to serve pallets:
 Also worth carrying forward: the weight discrepancy is computed and published by
 the server, and shown here without adjectives. How much a difference matters is
 a judgement that belongs to coordination, not to a colour in a mobile screen.
+
+---
+
+## What block 4 could not include, and why
+
+The roadmap assumed the destination center registers what arrived. The backend
+does not allow it: `POST /v1/shipments/{id}/reception` requires
+`national_admin`. What a center coordinator can do is **read** the reception —
+"le importa qué llegó de lo suyo", says the router — and **raise** incidents,
+because the sending center is who notices something is missing.
+
+So this block shipped what the application's actual audience can do, and
+reconciliation is left as work for whoever builds a national administration
+surface. It is not a small omission and it is not an oversight: a reconciliation
+form on a phone, for a role that works from a desk, would have been screens
+nobody opens.
+
+Two properties of the backend model worth keeping if that form is ever built
+here: **only exceptions travel** — whatever is not marked counts as received,
+because shrinkage is the minority — and each exception opens its incident **on
+the server**. The weight tolerance that decides whether a difference becomes an
+incident lives there too, and the client must not learn it.
 
 ---
 

@@ -1,5 +1,6 @@
 import 'package:araguaney_app/core/api/api_providers.dart';
 import 'package:araguaney_app/core/api/generated/rest_client.dart';
+import 'package:araguaney_app/core/auth/auth_providers.dart';
 import 'package:araguaney_app/core/push/push_destination.dart';
 import 'package:araguaney_app/core/push/push_providers.dart';
 import 'package:araguaney_app/core/routing/push_router.dart';
@@ -23,6 +24,9 @@ void main() {
       overrides: [
         pushServiceProvider.overrideWithValue(push),
         restClientProvider.overrideWithValue(RestClient(fakeDio(adapter))),
+        // La ficha de envío pregunta el rol para decidir si ofrece levantar
+        // una incidencia; sin sesión, preguntarlo levanta el árbol entero.
+        isCenterCoordinatorProvider.overrideWithValue(false),
       ],
     );
     addTearDown(container.dispose);
@@ -63,9 +67,16 @@ void main() {
   });
 
   testWidgets('a delivered shipment opens its record', (tester) async {
-    final adapter = FakeHttpAdapter(
-      (_) => FakeResponse(200, shipmentJson(reference: 'ENV-77')),
-    );
+    // La ficha pide tres cosas: el envío, su recepción y sus incidencias.
+    final adapter = FakeHttpAdapter((options) {
+      if (options.path.endsWith('/reception')) {
+        return FakeResponse(200, receptionJson());
+      }
+      if (options.path.endsWith('/incidents')) {
+        return FakeResponse(200, const []);
+      }
+      return FakeResponse(200, shipmentJson(reference: 'ENV-77'));
+    });
     await pumpRouter(tester, adapter);
 
     push.open(const ShipmentDeliveredDestination('shipment-4'));
@@ -73,7 +84,10 @@ void main() {
 
     expect(find.text('ENV-77'), findsOneWidget);
     expect(find.text('Caracas'), findsOneWidget);
-    expect(adapter.requests.single.path, '/v1/shipments/shipment-4');
+    expect(
+      adapter.requests.map((r) => r.path),
+      contains('/v1/shipments/shipment-4'),
+    );
   });
 
   testWidgets('an unknown notice navigates nowhere', (tester) async {
