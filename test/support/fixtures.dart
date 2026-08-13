@@ -298,3 +298,23 @@ Map<String, Object?> receptionJson({
         : ((totalBoxes - received) / totalBoxes * 100).round(),
   },
 };
+
+Map<String, Object?> transferJson({
+  String id = 'transfer-1',
+  String status = 'REQUESTED',
+  String fromCenterId = 'origin',
+  String toCenterId = 'dest',
+  List<Map<String, Object?>>? boxes,
+  List<Map<String, Object?>>? events,
+}) => {
+  'id': id,
+  'from_center_id': fromCenterId,
+  'to_center_id': toCenterId,
+  'status': status,
+  'initiated_by': 'user-1',
+  'notes': null,
+  'created_at': testNow.toIso8601String(),
+  'updated_at': testNow.toIso8601String(),
+  'boxes': boxes ?? [boxJson()],
+  'events': events ?? const [],
+};

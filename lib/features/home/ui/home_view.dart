@@ -10,6 +10,7 @@ import '../../intake/ui/intake_list_view.dart';
 import '../../intake/ui/pending_captures_view.dart';
 import '../../pallets/ui/pallets_list_view.dart';
 import '../../scanning/ui/scanner_view.dart';
+import '../../transfers/ui/transfers_list_view.dart';
 import 'push_permission_card.dart';
 
 /// Pantalla principal, todavía provisional: las features operativas llegan en
@@ -88,6 +89,13 @@ class HomeView extends ConsumerWidget {
                 label: const Text('Tarimas'),
                 onPressed: () =>
                     Navigator.of(context).push(PalletsListView.route()),
+              ),
+              const SizedBox(height: 12),
+              FilledButton.tonalIcon(
+                icon: const Icon(Icons.swap_horiz),
+                label: const Text('Transferencias'),
+                onPressed: () =>
+                    Navigator.of(context).push(TransfersListView.route()),
               ),
               const SizedBox(height: 12),
               FilledButton.tonalIcon(
