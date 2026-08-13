@@ -28,7 +28,7 @@
 | 2 | Shipment views and milestones | Milestones timeline and manifest access. The read-only shipment record itself arrives earlier, in Phase 07: a `shipment_delivered` notice needs somewhere to land. | 🟠 Medium | ⬜ Pending |
 | 3 | Transfers | Participating in a transfer: reading it, approving, rejecting with a reason, dispatching and receiving, each offered only where the server's machine allows it. **Creating one is not here** — see below. | 🟠 Medium | 🟨 Partial |
 | 4 | Reception and incidents | Reading a reception with its shrinkage, and raising and listing incidents on a shipment — everything a center can do. **Reconciling is closed to national administration** and stays out; see below. | 🔴 High | 🟨 Partial |
-| 5 | Coordinator views | Campaign membership and volunteer management scoped to the center. Resolving a risk review lives here; the read-only list of them arrives earlier, in Phase 07, for the same reason as the shipment record. | 🔴 High | ⬜ Pending |
+| 5 | Coordinator views | **Resolving a risk review is done**: approve or reject with an optional note, offered only to coordination. Campaign membership and volunteer management scoped to the center are still pending. | 🔴 High | 🟨 Partial |
 | 6 | National dashboard | Aggregated read-only views for national administrators. Reopening `/v1/dashboard/**` in the generated client means solving the `anyOf` response the generator cannot express today — request 5 in `docs/backend-requests.md`. | 🟠 Medium | ⬜ Pending |
 | 7 | Messaging / notification center | In-app messaging surface complementing push. | 🟠 Medium | ⬜ Pending |
 | 8 | Riverpod 3.x + codegen migration | When `riverpod`/`riverpod_generator` realign with stable Flutter's `flutter_test` pins; mechanical by design. | 🟠 Medium | ⬜ Pending |
@@ -95,6 +95,19 @@ Also worth recording: the client mirrors the server's state machine to decide
 which buttons to offer, and a test pins that table. It is duplication, chosen
 knowingly over offering three buttons where two fail; the server still decides,
 and its rejection is what the screen shows.
+
+---
+
+## Why resolving came before the rest of block 5
+
+Phase 07 wired a notification that opens a risk review and lets someone read why
+it was raised — and then stops. We built that dead end ourselves, and closing it
+costs one endpoint.
+
+The sheet shows the reason while the decision is being made, and offers reject
+with the same visual weight as approve. Hiding the harder option behind an extra
+step would make the difficult decision the uncomfortable one, and coordination
+needs to be able to take it as fast as the easy one.
 
 ---
 
