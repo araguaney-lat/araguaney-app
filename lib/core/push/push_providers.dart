@@ -20,6 +20,11 @@ final pushServiceProvider = Provider<PushService>((ref) {
   return FcmPushService();
 });
 
+/// Lo que ya se decidió sobre recibir avisos. Se invalida después de preguntar.
+final pushPermissionProvider = FutureProvider<PushPermission>(
+  (ref) => ref.watch(pushServiceProvider).permission(),
+);
+
 final deviceRegistrarProvider = Provider<DeviceRegistrar>(
   (ref) => DeviceRegistrar(
     api: ref.watch(restClientProvider).devices,

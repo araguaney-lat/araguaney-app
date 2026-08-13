@@ -1,11 +1,13 @@
 import 'package:araguaney_app/app.dart';
 import 'package:araguaney_app/core/auth/auth_providers.dart';
 import 'package:araguaney_app/core/auth/auth_repository.dart';
+import 'package:araguaney_app/core/push/push_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../support/fake_auth.dart';
+import '../../support/fake_push.dart';
 
 Widget _appWith({
   required FakeAuthRepository repository,
@@ -13,6 +15,9 @@ Widget _appWith({
 }) => ProviderScope(
   overrides: [
     appVersionProvider.overrideWithValue('1.0.0-test'),
+    // Con sesión, la puerta construye el enrutador de avisos y la tarjeta del
+    // permiso. Sin doble, las dos irían a buscar Firebase.
+    pushServiceProvider.overrideWithValue(FakePushService()),
     authRepositoryProvider.overrideWithValue(repository),
     tokenStorageProvider.overrideWithValue(storage),
   ],

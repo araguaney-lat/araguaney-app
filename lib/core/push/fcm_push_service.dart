@@ -66,6 +66,30 @@ class FcmPushService implements PushService {
     });
   }
 
+  @override
+  Future<PushPermission> permission() async =>
+      _translate(await _fcm.getNotificationSettings());
+
+  /// Pide el permiso del sistema.
+  ///
+  /// Quien llama ya explicó para qué sirve; aquí solo se pregunta. En Android
+  /// esto abre el diálogo de notificaciones a partir de la versión 13, y en las
+  /// anteriores devuelve concedido sin preguntar nada, que es como se
+  /// comportaba el sistema entonces.
+  @override
+  Future<PushPermission> requestPermission() async =>
+      _translate(await _fcm.requestPermission());
+
+  static PushPermission _translate(NotificationSettings settings) =>
+      switch (settings.authorizationStatus) {
+        AuthorizationStatus.authorized => PushPermission.granted,
+        // Provisional es el permiso silencioso de iOS: los avisos llegan, sin
+        // sonido y sin pantalla de bloqueo. Llegan, que es lo que importa aquí.
+        AuthorizationStatus.provisional => PushPermission.granted,
+        AuthorizationStatus.denied => PushPermission.denied,
+        AuthorizationStatus.notDetermined => PushPermission.notDetermined,
+      };
+
   static PushDestination _destinationOf(RemoteMessage message) =>
       parsePushDestination(
         message.data.map((key, value) => MapEntry(key, '$value')),

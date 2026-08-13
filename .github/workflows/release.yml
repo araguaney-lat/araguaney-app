@@ -61,6 +61,19 @@ jobs:
           keyPassword=$KEY_PASSWORD
           EOF
 
+      # Sin este archivo el bundle compila igual y sale sin avisos, en
+      # silencio. Es el mismo material sensible que el keystore: no se versiona
+      # y llega por secreto.
+      - name: Restore the Firebase configuration
+        env:
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+        run: |
+          if [ -z "$GOOGLE_SERVICES_JSON" ]; then
+            echo "::error::Falta GOOGLE_SERVICES_JSON. Un release sin ella se instala sin avisos y nadie se entera."
+            exit 1
+          fi
+          echo "$GOOGLE_SERVICES_JSON" | base64 --decode > android/app/google-services.json
+
       - name: Build App Bundle
         env:
           API_BASE_URL: ${{ vars.API_BASE_URL }}
@@ -94,4 +107,4 @@ jobs:
 
       - name: Clean up signing material
         if: always()
-        run: rm -f android/key.properties "$RUNNER_TEMP/upload.jks"
+        run: rm -f android/key.properties android/app/google-services.json "$RUNNER_TEMP/upload.jks"

@@ -63,37 +63,34 @@ standing next to you; the reason lives inside the review.
 
 | # | Task | Description | Complexity | Status |
 |---|------|-------------|------------|--------|
-| 1 | Register the Android app in Firebase | Package `lat.araguaney.araguaney_app`; SHA-1 not needed for FCM. The file goes to `android/app/google-services.json`, git-ignored. Everything around it is wired: without the file the build works and the application starts without notices. External prerequisite. | 🟠 Medium | ⛔ External |
+| 1 | Register the Android app in Firebase | Package `lat.araguaney.araguaney_app`; SHA-1 not needed for FCM. The file goes to `android/app/google-services.json`, git-ignored. Everything around it is wired: without the file the build works and the application starts without notices. External prerequisite. | 🟠 Medium | ✅ Done |
 | 2 | `PushService` interface | Four members, none mentioning FCM: start, current token, rotations, opened notices. `NoopPushService` is the implementation today and the `foss` one forever. | 🟠 Medium | ✅ Done |
 | 3 | FCM implementation | `FcmPushService` is the only file in the project that imports Firebase: init, token, rotations, and taps from both sources — background and cold start. The Google Services Gradle plugin applies only when the configuration file exists. | 🔴 High | ✅ Done |
 | 4 | `foss` flavor verification | CI proves the `foss` flavor picks no push service. That it carries no Firebase is proven on the `foss` branch, which removes the dependency — the decision is taken and documented in `docs/release/foss.md`. | 🟠 Medium | 🟨 Partial |
 | 5 | Token lifecycle | Register on login and on every rotation; unregister on logout **before** the session is cleared. Nothing about notices can block entering or leaving: both hooks swallow their failures. An expired session cannot unregister and does not pretend to. | 🟠 Medium | ✅ Done |
-| 6 | Tap-through routing | `risk_review` → the center's risk reviews; `shipment_delivered` → the shipment. See the gap below: neither destination exists in the application yet. | 🟠 Medium | ⬜ Pending |
-| 7 | Permission UX | Spanish rationale before the system prompt; graceful degradation when denied — a denied permission never blocks capture. | 🟢 Low | ⬜ Pending |
-| 8 | Tests | Lifecycle against a fake service, logout unregistering while the session is still alive, and payload routing including the incomplete and unknown cases. The FCM implementation and the tap destinations remain uncovered because they do not exist yet. | 🟠 Medium | 🟨 Partial |
-| 9 | Roadmap update | Mark tasks and update totals. | 🟢 Low | ⬜ Pending |
+| 6 | Tap-through routing | `risk_review` opens the center's reviews with the one from the notice marked; `shipment_delivered` opens the shipment record. Both screens arrive with this task. The router wraps only the authenticated branch. | 🟠 Medium | ✅ Done |
+| 7 | Permission UX | A card on the home screen says which notices arrive, and only then opens the system prompt. It disappears on any decision: denying leaves nothing insisting. A build with no notifications shows nothing at all. | 🟢 Low | ✅ Done |
+| 8 | Tests | Lifecycle, logout ordering, payload parsing, tap routing to both destinations and to none, and the permission card in its four states. What stays uncovered is `FcmPushService` itself, which needs a device. | 🟠 Medium | ✅ Done |
+| 9 | Roadmap update | Mark tasks and update totals. | 🟢 Low | ✅ Done |
 
 ---
 
-## The gap task 6 has to close
+## Where the taps land, and why there
 
-A notification is only useful if the tap lands somewhere. Neither destination
-exists today, and the contract does not offer a direct route to either:
+A notice is only useful if the tap goes somewhere, and the contract does not
+offer a direct route to either subject:
 
 - **`risk_review` carries `intake_id`**, but there is no `GET /v1/intakes/{id}`.
-  What exists is `GET /v1/risk-reviews` (the center's open reviews) and
-  `POST /v1/risk-reviews/{review_id}/resolve`. The honest destination is a risk
-  review screen that lists them and highlights the one whose intake matches;
-  routing to the intake itself would need a new backend endpoint.
+  So the destination is `GET /v1/risk-reviews`, the center's open reviews, with
+  the one whose intake matches marked. That screen also happens to be the only
+  place where the **reason** can be read — which the notice withholds on
+  purpose, because it is read on a lock screen.
 - **`shipment_delivered` carries `shipment_id`**, and `GET /v1/shipments/{id}`
-  exists, but the application has no shipment screen at all — shipments are
-  Phase 10.
+  exists, so the destination is a read-only shipment record.
 
-Neither is a reason to delay push. It is a reason to decide, before writing the
-routing, that this phase brings the minimum destination each notice needs: a
-read-only risk review list and a read-only shipment record. Both are Phase 10
-material arriving early because a notification without a destination is worse
-than no notification.
+Both screens are Phase 10 material arriving early, kept to the minimum each
+notice needs: no milestones, no manifest, no resolving a review. A notification
+without a destination is worse than no notification.
 
 ---
 

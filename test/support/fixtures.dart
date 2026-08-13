@@ -183,3 +183,46 @@ Map<String, Object?> boxJson({
   'sealed_at': null,
   'weight_kg': null,
 };
+
+Map<String, Object?> riskReviewJson({
+  String id = 'rr-1',
+  String? intakeId = 'intake-1',
+  String kind = 'ATYPICAL_VOLUME',
+  String? reason,
+  String status = 'open',
+}) => {
+  'id': id,
+  'center_id': 'center-1',
+  'intake_id': intakeId,
+  'kind': kind,
+  'reason': reason,
+  'status': status,
+  'boxes': null,
+  'review_note': null,
+  'reviewed_at': null,
+  'created_at': testNow.toIso8601String(),
+};
+
+Map<String, Object?> shipmentJson({
+  String id = 'shipment-1',
+  String reference = 'ENV-01',
+  String destination = 'Caracas',
+  String status = 'delivered',
+}) => {
+  'id': id,
+  'reference': reference,
+  'destination': destination,
+  'status': status,
+  'center_id': 'center-1',
+  'campaign_id': null,
+  'carrier': null,
+  'closed_at': null,
+  'created_at': testNow.toIso8601String(),
+  'delivered_at': testNow.toIso8601String(),
+  'height_profile': null,
+  'height_warnings': const [],
+  'notes': null,
+  'pallets': const [],
+  'reconciled_at': null,
+  'shipped_at': null,
+};
