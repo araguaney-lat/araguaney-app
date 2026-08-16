@@ -42,6 +42,13 @@ workflow **fails without it** rather than building quietly: a release that
 installs without notifications and says nothing is worse than one that does not
 build.
 
+`API_BASE_URL` and `WEB_BASE_URL` are checked for the same reason, and it is
+worth knowing why they need a check of their own. `String.fromEnvironment` falls
+back to its default only when the key is **absent**; `--dart-define=API_BASE_URL=`
+defines it as an empty string, which wins. So a release built without those
+variables would not quietly point at `localhost` — it would point nowhere, and
+sign and upload all the same. The workflow stops instead.
+
 ## Building locally
 
 Copy `android/key.properties.example` to `android/key.properties` and fill it
