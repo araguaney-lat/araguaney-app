@@ -40,6 +40,25 @@ jobs:
       - name: Generate localizations
         run: flutter gen-l10n
 
+      # `String.fromEnvironment` solo usa su valor por defecto cuando la clave
+      # no existe. `--dart-define=API_BASE_URL=` la define vacía, así que un
+      # release sin estas variables no cae a localhost: apunta a ninguna parte,
+      # compila, se firma y se sube sin que nada se queje. Se comprueban antes
+      # de construir, como el keystore y la configuración de Firebase.
+      - name: Check the build configuration
+        env:
+          API_BASE_URL: ${{ vars.API_BASE_URL }}
+          WEB_BASE_URL: ${{ vars.WEB_BASE_URL }}
+        run: |
+          if [ -z "$API_BASE_URL" ]; then
+            echo "::error::Falta la variable API_BASE_URL. Sin ella el bundle sale apuntando a ninguna parte."
+            exit 1
+          fi
+          if [ -z "$WEB_BASE_URL" ]; then
+            echo "::error::Falta la variable WEB_BASE_URL. Los códigos QR que dibuje la aplicación no llevarían a ningún sitio."
+            exit 1
+          fi
+
       # La firma llega por secretos y se escribe justo antes de compilar. El
       # keystore viaja en base64 porque un secreto de GitHub es texto.
       - name: Restore signing material
