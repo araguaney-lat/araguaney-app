@@ -30,16 +30,11 @@ final class TeamChanged extends TeamOutcome {
 }
 
 final class TeamRefused extends TeamOutcome {
-  const TeamRefused(this.failure, {this.ownCopy});
+  const TeamRefused(this.failure);
 
   final ApiFailure failure;
 
-  /// Copia propia para un rechazo conocido, cuando la hay.
-  final String? ownCopy;
-
-  /// Lo que se le enseña a quien opera: la copia propia cuando el rechazo es
-  /// uno de los conocidos, y si no, lo que decidió [ApiFailure].
-  String get message => ownCopy ?? failure.operatorMessage;
+  String get message => failure.operatorMessage;
 }
 
 /// El equipo del centro y quién participa en cada campaña.
@@ -51,20 +46,6 @@ class TeamRepository {
   TeamRepository({required CampaignsApi campaigns, required UsersApi users})
     : _campaignsApi = campaigns,
       _usersApi = users;
-
-  /// El servidor responde estos casos en inglés, y quien opera lee en español.
-  ///
-  /// Es copia de presentación para códigos conocidos, no una regla duplicada:
-  /// si el código no está aquí, se muestra lo que dijo el servidor.
-  static const _knownRefusals = {
-    'EMAIL_TAKEN': 'Ese correo ya tiene una cuenta.',
-    'USERNAME_TAKEN': 'Ese nombre de usuario ya está tomado.',
-    'INVALID_ROLE': 'El rol tiene que ser coordinación o voluntariado.',
-    'ACCOUNT_DISABLED': 'Esa cuenta está desactivada.',
-    'PROTECTED_CAMPAIGN':
-        'De la campaña general no se puede sacar a nadie: es donde entra todo '
-        'lo que no pertenece a otra campaña.',
-  };
 
   final CampaignsApi _campaignsApi;
   final UsersApi _usersApi;
@@ -138,13 +119,7 @@ class TeamRepository {
       await call();
       return TeamChanged(notice: notice);
     } on Object catch (error) {
-      final failure = ApiErrorMapper.fromAny(error);
-      // Solo se reescriben rechazos de negocio: un fallo técnico sigue siendo
-      // genérico, que es la política de la fase 02 y no se toca desde aquí.
-      final known = failure is BusinessRuleFailure
-          ? _knownRefusals[failure.code]
-          : null;
-      return TeamRefused(failure, ownCopy: known);
+      return TeamRefused(ApiErrorMapper.fromAny(error));
     }
   }
 }
