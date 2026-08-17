@@ -6,11 +6,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../support/fake_push.dart';
+import '../../support/fake_push_prompt_memory.dart';
 
 void main() {
   late FakePushService push;
+  late FakePushPromptMemory memory;
 
-  setUp(() => push = FakePushService(token: 'fcm-1'));
+  setUp(() {
+    push = FakePushService(token: 'fcm-1');
+    memory = FakePushPromptMemory();
+  });
   tearDown(() => push.dispose());
 
   Future<int> pumpCard(WidgetTester tester) async {
@@ -18,6 +23,7 @@ void main() {
     final container = ProviderContainer(
       overrides: [
         pushServiceProvider.overrideWithValue(push),
+        pushPromptMemoryProvider.overrideWithValue(memory),
         onSessionStartedProvider.overrideWithValue(() async => registered++),
       ],
     );
@@ -53,6 +59,7 @@ void main() {
     final container = ProviderContainer(
       overrides: [
         pushServiceProvider.overrideWithValue(push),
+        pushPromptMemoryProvider.overrideWithValue(memory),
         onSessionStartedProvider.overrideWithValue(() async => registered++),
       ],
     );
@@ -93,5 +100,40 @@ void main() {
     await pumpCard(tester);
 
     expect(find.text('Avisos del centro'), findsNothing);
+  });
+
+  testWidgets('Android offers it even though the system says denied', (
+    tester,
+  ) async {
+    // El caso que dejaba la tarjeta muerta: `firebase_messaging` en Android
+    // nunca contesta `notDetermined`, así que sin memoria propia la invitación
+    // no aparecía jamás y nadie llegaba a ver el diálogo del sistema.
+    push.permissionStatus = PushPermission.denied;
+
+    await pumpCard(tester);
+
+    expect(find.text('Avisos del centro'), findsOneWidget);
+  });
+
+  testWidgets('what was already offered is not offered again', (tester) async {
+    push.permissionStatus = PushPermission.denied;
+    memory = FakePushPromptMemory(offered: true);
+
+    await pumpCard(tester);
+
+    expect(find.text('Avisos del centro'), findsNothing);
+  });
+
+  testWidgets('offering is remembered before the system dialog opens', (
+    tester,
+  ) async {
+    // Si el diálogo del sistema se lleva la aplicación por delante, la persona
+    // ya vio la invitación; volver a ponerla delante sería insistir.
+    await pumpCard(tester);
+
+    await tester.tap(find.text('Activar avisos'));
+    await tester.pumpAndSettle();
+
+    expect(memory.offered, isTrue);
   });
 }

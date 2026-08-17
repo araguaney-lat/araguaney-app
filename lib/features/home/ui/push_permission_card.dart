@@ -13,6 +13,11 @@ import '../../../core/push/push_service.dart';
 ///
 /// Desaparece en cuanto hay una decisión, sea cual sea. Denegar no deja una
 /// tarjeta insistiendo: quien no los quiere ya lo dijo.
+///
+/// «Hay una decisión» lo decide [shouldOfferPushProvider] y no el estado que
+/// reporta el sistema. En Android ese estado no distingue a quien denegó de
+/// quien nunca fue preguntado, y esta tarjeta —que solo se pintaba en el estado
+/// `notDetermined`— no llegaba a mostrarse nunca.
 class PushPermissionCard extends ConsumerStatefulWidget {
   const PushPermissionCard({super.key});
 
@@ -25,6 +30,11 @@ class _PushPermissionCardState extends ConsumerState<PushPermissionCard> {
 
   Future<void> _ask() async {
     setState(() => _asking = true);
+    // Se anota antes de preguntar, no después: si el diálogo del sistema mata
+    // la aplicación por lo que sea, la persona ya vio la invitación y volver a
+    // ponerla delante sería insistir.
+    await ref.read(pushPromptMemoryProvider).markOffered();
+
     final granted =
         await ref.read(pushServiceProvider).requestPermission() ==
         PushPermission.granted;
@@ -36,15 +46,15 @@ class _PushPermissionCardState extends ConsumerState<PushPermissionCard> {
 
     if (!mounted) return;
     setState(() => _asking = false);
-    ref.invalidate(pushPermissionProvider);
+    ref
+      ..invalidate(pushPermissionProvider)
+      ..invalidate(shouldOfferPushProvider);
   }
 
   @override
   Widget build(BuildContext context) {
-    final permission = ref.watch(pushPermissionProvider).valueOrNull;
-    if (permission != PushPermission.notDetermined) {
-      return const SizedBox.shrink();
-    }
+    final offer = ref.watch(shouldOfferPushProvider).valueOrNull ?? false;
+    if (!offer) return const SizedBox.shrink();
 
     return Card(
       child: Padding(

@@ -5,6 +5,7 @@ import '../auth/auth_providers.dart';
 import '../config/app_config.dart';
 import 'device_registrar.dart';
 import 'fcm_push_service.dart';
+import 'push_prompt_memory.dart';
 import 'push_service.dart';
 import 'push_session_binder.dart';
 
@@ -24,6 +25,28 @@ final pushServiceProvider = Provider<PushService>((ref) {
 final pushPermissionProvider = FutureProvider<PushPermission>(
   (ref) => ref.watch(pushServiceProvider).permission(),
 );
+
+final pushPromptMemoryProvider = Provider<PushPromptMemory>(
+  (ref) => const PrefsPushPromptMemory(),
+);
+
+/// Si hay que ofrecer activar los avisos.
+///
+/// Se ofrece cuando todavía no llegan y **nunca se ofreció antes**. Lo segundo
+/// es lo que hace falta en Android, donde el sistema no distingue a quien no ha
+/// decidido de quien dijo que no: sin esa memoria, la invitación no aparecía
+/// jamás, y nadie llegaba a ver el diálogo del sistema.
+///
+/// Un `foss` sin servicio de avisos responde `unavailable` y tampoco ofrece
+/// nada, que es lo correcto: ahí no hay nada que activar.
+final shouldOfferPushProvider = FutureProvider<bool>((ref) async {
+  final permission = await ref.watch(pushPermissionProvider.future);
+  if (permission != PushPermission.denied &&
+      permission != PushPermission.notDetermined) {
+    return false;
+  }
+  return !await ref.watch(pushPromptMemoryProvider).alreadyOffered();
+});
 
 final deviceRegistrarProvider = Provider<DeviceRegistrar>(
   (ref) => DeviceRegistrar(
