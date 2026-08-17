@@ -69,11 +69,11 @@ standing next to you; the reason lives inside the review.
 | 4 | `foss` flavor verification | CI proves the `foss` flavor picks no push service. That it carries no Firebase is proven on the `foss` branch, which removes the dependency — the decision is taken and documented in `docs/release/foss.md`. | 🟠 Medium | 🟨 Partial |
 | 5 | Token lifecycle | Register on login and on every rotation; unregister on logout **before** the session is cleared. Nothing about notices can block entering or leaving: both hooks swallow their failures. An expired session cannot unregister and does not pretend to. | 🟠 Medium | ✅ Done |
 | 6 | Tap-through routing | `risk_review` opens the center's reviews with the one from the notice marked; `shipment_delivered` opens the shipment record. Both screens arrive with this task. The router wraps only the authenticated branch. | 🟠 Medium | ✅ Done |
-| 7 | Permission UX | A card on the home screen says which notices arrive, and only then opens the system prompt. It disappears on any decision: denying leaves nothing insisting. **On Android the card never appears** — see below. | 🟢 Low | 🟨 Partial |
+| 7 | Permission UX | A card on the home screen says which notices arrive, and only then opens the system prompt. It disappears on any decision: denying leaves nothing insisting. Whether it has been offered is state the application keeps, because Android does not. | 🟢 Low | ✅ Done |
 | 8 | Tests | Lifecycle, logout ordering, payload parsing, tap routing to both destinations and to none, and the permission card in its four states. What stays uncovered is `FcmPushService` itself, which needs a device. | 🟠 Medium | ✅ Done |
 | 9 | Roadmap update | Mark tasks and update totals. | 🟢 Low | ✅ Done |
-| 10 | Default notification channel and icon | Android puts every notice in Firebase's fallback channel at default importance, so an operational alert never shows as a banner and cannot be configured on its own. The status-bar icon is still Flutter's logo. Needs a channel declared in the manifest, created natively, and a monochrome icon. | 🟠 Medium | ⬜ Pending |
-| 11 | Permission card on Android | `firebase_messaging` never reports `notDetermined` on Android, so the card — which only shows in that state — is dead code there and nobody is ever invited to enable notices. Distinguishing "never asked" from "denied" needs state the application keeps itself. | 🟠 Medium | ⬜ Pending |
+| 10 | Default notification channel and icon | An own channel at high importance, declared in the manifest and created at start-up, so an operational notice arrives as a banner and can be silenced on its own without silencing the application. Monochrome status-bar icon and brand accent colour. | 🟠 Medium | ✅ Done |
+| 11 | Permission card on Android | Whether the invitation was already offered is remembered by the application, because Android reports "not granted" and never "not asked". The card no longer depends on a state that platform never produces. | 🟠 Medium | ✅ Done |
 
 ---
 
@@ -100,11 +100,31 @@ Firebase — the class the roadmap already recorded as "needs a device". The
 verification that matters is the run: the notice arrives, the tap opens the
 reviews screen, and the log shows `GET /v1/risk-reviews`.
 
-**Two more gaps, now tasks 10 and 11.** Notices land in Firebase's fallback
-channel, so they never appear as a banner — they wait, silent, in the shade —
-and the status-bar icon is still Flutter's logo. And on Android the permission
-card can never show: `firebase_messaging` maps "not granted" to `denied`, never
-to `notDetermined`, which is the only state the card renders in.
+**The same shape of defect had two more victims, both fixed here.** Every entry
+point of `FcmPushService` touched Firebase without guaranteeing it was
+initialised, so whoever arrived first paid: the router lost tap navigation, and
+`permission()` threw inside a `FutureProvider`, where the error became an
+`AsyncValue` nobody read and the permission card silently never rendered. Each
+method now awaits the idempotent `start()`. Documenting a required call order
+would have been cheaper to write and impossible to enforce.
+
+**And the card had a second, independent reason not to appear.** It only
+rendered on `notDetermined`, a state `firebase_messaging` never reports on
+Android — there, "not granted" is always `denied`. So nobody was ever invited to
+turn notices on, on the platform that ships first. The application now remembers
+whether it already offered, which is the piece the system does not provide, and
+the card no longer depends on a distinction that platform does not make.
+
+**Notices also landed in Firebase's fallback channel**, at default importance:
+silent, waiting in the shade, wearing Flutter's logo. There is now an own
+channel at high importance, created at start-up and declared in the manifest,
+with a monochrome icon and the brand accent. That also gives whoever receives
+them a switch of their own in the system settings: these notices can be silenced
+without silencing the application.
+
+Verified the same way as the rest — on the emulator, against production: the
+card appears on a fresh install, opens the system prompt, and the notice then
+arrives as a banner on `channel=araguaney_operaciones` with `importance=4`.
 
 ---
 
