@@ -54,6 +54,17 @@ class FcmPushService implements PushService {
     final tapped = FirebaseMessaging.onMessageOpenedApp.map(_destinationOf);
 
     return Stream.multi((controller) async {
+      // Firebase antes que nada, y aquí y no en quien escucha.
+      //
+      // Quien se suscribe es la pantalla, que se monta en cuanto hay sesión; y
+      // quien inicializaba Firebase era el atado de la sesión, por otro camino.
+      // Cuando la pantalla ganaba esa carrera, `getInitialMessage()` lanzaba
+      // `[core/no-app]`, la excepción mataba la suscripción, y tocar un aviso
+      // dejaba de navegar durante toda la sesión — sin decir nada. Que la clase
+      // garantice su propia inicialización quita la carrera de raíz; `start()`
+      // es idempotente y no cuesta nada llamarlo de más.
+      await start();
+
       final initial = await _fcm.getInitialMessage();
       if (initial != null) controller.add(_destinationOf(initial));
 
