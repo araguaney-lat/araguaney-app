@@ -97,6 +97,19 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
+  # Empaquetadas y no descargadas en tiempo de ejecución: la aplicación tiene
+  # que abrir y verse bien en el sótano de un centro de acopio, y una tipografía
+  # que se busca en la red es una pantalla en blanco justo ahí. Ambas son
+  # variables: un solo archivo cubre todos los pesos, y en el caso de la
+  # grotesca pesa menos que dos estáticas.
+  fonts:
+    - family: SourceSerif4
+      fonts:
+        - asset: assets/fonts/SourceSerif4-Variable.ttf
+    - family: HankenGrotesk
+      fonts:
+        - asset: assets/fonts/HankenGrotesk-Variable.ttf
+
   # fonts:
   #   - family: Schyler
   #     fonts:
