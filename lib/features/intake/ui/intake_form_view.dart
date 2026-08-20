@@ -3,13 +3,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/api/generated/models/campaign_out.dart';
 import '../../../core/connectivity/connectivity_controller.dart';
+import '../../../core/ui/confirm_button.dart';
 import '../../../core/ui/record_field.dart';
+import '../../../core/ui/theme/app_theme.dart';
 import '../data/intake_providers.dart';
 import '../data/intake_repository.dart';
 import '../domain/box_draft_input.dart';
 import '../domain/intake_draft.dart';
 import 'anonymous_exception_dialog.dart';
 import 'box_draft_sheet.dart';
+import 'campaign_sheet.dart';
 import 'donor_sheet.dart';
 import 'intake_queued_view.dart';
 import 'intake_submitted_view.dart';
@@ -66,6 +69,15 @@ class _IntakeFormViewState extends ConsumerState<IntakeFormView> {
   Future<void> _addBox() async {
     final box = await BoxDraftSheet.show(context);
     if (box != null) _controller.addBox(box);
+  }
+
+  Future<void> _pickCampaign(List<CampaignOut> campaigns) async {
+    final chosen = await CampaignSheet.show(
+      context,
+      campaigns: campaigns,
+      selected: ref.read(intakeDraftControllerProvider).campaignId,
+    );
+    if (chosen != null) _controller.setCampaign(chosen.id);
   }
 
   Future<void> _editBox(int index, BoxDraftInput current) async {
@@ -193,52 +205,136 @@ class _IntakeFormViewState extends ConsumerState<IntakeFormView> {
   @override
   Widget build(BuildContext context) {
     final draft = ref.watch(intakeDraftControllerProvider);
-    final campaigns = ref.watch(myCampaignsProvider).valueOrNull ?? [];
+    final campaigns = ref.watch(myCampaignsProvider);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Nueva captura'),
-        actions: [
-          TextButton(
-            onPressed: draft.isSubmittable && !_submitting ? _submit : null,
-            child: const Text('Enviar'),
-          ),
-        ],
+        title: _CampaignHeader(
+          label: _campaignLabel(campaigns.valueOrNull, draft.campaignId),
+          onTap: () => _pickCampaign(campaigns.valueOrNull ?? const []),
+        ),
       ),
       body: AbsorbPointer(
         absorbing: _submitting,
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
+            if (_submitting) const LinearProgressIndicator(),
             if (draft.donationId != null) const _DonationNotice(),
-            _CampaignField(
-              campaigns: campaigns,
-              selected: draft.campaignId,
-              onChanged: _controller.setCampaign,
-            ),
-            const SizedBox(height: 16),
             _DonorSection(
               draft: draft,
               onIdentify: _identifyDonor,
               onClear: _controller.clearDonor,
               donanteLibre: _donanteLibre,
             ),
-            const SizedBox(height: 24),
-            _BoxesSection(
+            const SizedBox(height: 16),
+            _BoxesCard(
               boxes: draft.boxes,
-              onAdd: _addBox,
               onEdit: _editBox,
               onRemove: _controller.removeBox,
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
             TextField(
               controller: _notes,
               maxLines: 3,
               decoration: const InputDecoration(labelText: 'Notas (opcional)'),
             ),
-            const SizedBox(height: 24),
-            if (_submitting) const LinearProgressIndicator(),
           ],
+        ),
+      ),
+      // Las dos acciones viven abajo y no se van con el desplazamiento: añadir
+      // caja es lo que más se repite, y registrar es lo que cierra. Buscarlas
+      // hacia arriba, con una caja en las manos, era el peor sitio para ambas.
+      bottomNavigationBar: _ActionBar(
+        onAdd: _submitting ? null : _addBox,
+        onSubmit: draft.isSubmittable && !_submitting ? _submit : null,
+      ),
+    );
+  }
+
+  /// Nombre de la campaña activa. Mientras la lista no llega no se puede
+  /// resolver un identificador a un nombre, y decir «general» sin saberlo sería
+  /// afirmar algo falso justo en la línea que da el contexto.
+  static String _campaignLabel(List<CampaignOut>? campaigns, String? id) {
+    if (id == null) return 'Campaña general';
+    if (campaigns == null) return 'Campaña…';
+    for (final campaign in campaigns) {
+      if (campaign.id == id) return campaign.name;
+    }
+    return 'Campaña general';
+  }
+}
+
+/// Título de la pantalla con la campaña debajo, tocable para cambiarla.
+class _CampaignHeader extends StatelessWidget {
+  const _CampaignHeader({required this.label, required this.onTap});
+
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const Text('Registrar entrada'),
+        InkWell(
+          onTap: onTap,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(label, style: theme.textTheme.bodySmall),
+              const Icon(Icons.expand_more, size: 16),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// Barra fija con las dos acciones: azul lleva a otra pantalla, dorado cierra.
+class _ActionBar extends StatelessWidget {
+  const _ActionBar({required this.onAdd, required this.onSubmit});
+
+  final VoidCallback? onAdd;
+  final VoidCallback? onSubmit;
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AppPalette.of(context);
+    return Container(
+      decoration: BoxDecoration(
+        color: palette.bar,
+        border: Border(top: BorderSide(color: palette.barBorder)),
+      ),
+      child: SafeArea(
+        top: false,
+        child: Padding(
+          // Una barra inferior no sube con el teclado por sí sola, y aquí se
+          // escribe con el pulgar mientras se sostiene una caja.
+          padding: EdgeInsets.fromLTRB(
+            16,
+            12,
+            16,
+            12 + MediaQuery.viewInsetsOf(context).bottom,
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: FilledButton(
+                  onPressed: onAdd,
+                  child: const Text('Añadir caja'),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: ConfirmButton(label: 'Registrar', onPressed: onSubmit),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -258,33 +354,6 @@ class _DonationNotice extends StatelessWidget {
         style: Theme.of(context).textTheme.bodySmall,
       ),
     ),
-  );
-}
-
-class _CampaignField extends StatelessWidget {
-  const _CampaignField({
-    required this.campaigns,
-    required this.selected,
-    required this.onChanged,
-  });
-
-  final List<CampaignOut> campaigns;
-  final String? selected;
-  final ValueChanged<String?> onChanged;
-
-  @override
-  Widget build(BuildContext context) => DropdownButtonFormField<String>(
-    initialValue: selected,
-    decoration: const InputDecoration(
-      labelText: 'Campaña',
-      helperText: 'Sin campaña la donación queda en la general',
-    ),
-    items: [
-      const DropdownMenuItem(child: Text('Sin campaña')),
-      for (final campaign in campaigns)
-        DropdownMenuItem(value: campaign.id, child: Text(campaign.name)),
-    ],
-    onChanged: onChanged,
   );
 }
 
@@ -346,56 +415,89 @@ class _DonorSection extends StatelessWidget {
   }
 }
 
-class _BoxesSection extends StatelessWidget {
-  const _BoxesSection({
+/// Lo que lleva la entrada hasta ahora, con su recuento.
+///
+/// El número va en el encabezado porque es lo que se comprueba antes de
+/// registrar: quien recibió seis bultos cuenta seis líneas, y una tarjeta que
+/// solo las enumera obliga a contarlas a ojo.
+class _BoxesCard extends StatelessWidget {
+  const _BoxesCard({
     required this.boxes,
-    required this.onAdd,
     required this.onEdit,
     required this.onRemove,
   });
 
   final List<BoxDraftInput> boxes;
-  final VoidCallback onAdd;
   final void Function(int index, BoxDraftInput box) onEdit;
   final void Function(int index) onRemove;
 
   @override
-  Widget build(BuildContext context) => Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text('Cajas', style: Theme.of(context).textTheme.titleMedium),
-      const SizedBox(height: 8),
-      if (boxes.isEmpty)
-        Text(
-          'Todavía no agregaste ninguna caja. Sin cajas no hay captura.',
-          style: Theme.of(context).textTheme.bodySmall,
-        ),
-      for (final (index, box) in boxes.indexed)
-        Card(
-          child: ListTile(
-            title: Text(box.productType.displayName),
-            subtitle: Text(
-              [
-                '${box.quantity} ${box.unit}',
-                if (box.batch case final batch?) 'lote $batch',
-                if (box.expiryDate case final expiry?)
-                  'vence ${formatShortDate(expiry)}',
-              ].join(' · '),
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 12, 8, 8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Cajas en la entrada · ${boxes.length}',
+              style: theme.textTheme.titleMedium,
             ),
-            onTap: () => onEdit(index, box),
-            trailing: IconButton(
-              icon: const Icon(Icons.delete_outline),
-              tooltip: 'Quitar caja',
-              onPressed: () => onRemove(index),
-            ),
-          ),
+            if (boxes.isEmpty)
+              Padding(
+                padding: const EdgeInsets.only(top: 8, bottom: 8, right: 8),
+                child: Text(
+                  'Todavía no agregaste ninguna caja. Sin cajas no hay '
+                  'captura.',
+                  style: theme.textTheme.bodySmall,
+                ),
+              ),
+            for (final (index, box) in boxes.indexed)
+              _BoxRow(
+                box: box,
+                onEdit: () => onEdit(index, box),
+                onRemove: () => onRemove(index),
+              ),
+          ],
         ),
-      const SizedBox(height: 8),
-      FilledButton.tonalIcon(
-        onPressed: onAdd,
-        icon: const Icon(Icons.add),
-        label: const Text('Agregar caja'),
       ),
-    ],
+    );
+  }
+}
+
+class _BoxRow extends StatelessWidget {
+  const _BoxRow({
+    required this.box,
+    required this.onEdit,
+    required this.onRemove,
+  });
+
+  final BoxDraftInput box;
+  final VoidCallback onEdit;
+  final VoidCallback onRemove;
+
+  @override
+  Widget build(BuildContext context) => ListTile(
+    contentPadding: EdgeInsets.zero,
+    title: Text(box.productType.displayName),
+    subtitle: Text(
+      [
+        // El código solo existe cuando se reservó para etiquetar sin señal. Es
+        // lo primero de la línea porque es lo que está escrito en el cartón
+        // que la persona tiene delante.
+        ?box.code,
+        '${box.quantity} ${box.unit}',
+        if (box.batch case final batch?) 'lote $batch',
+        if (box.expiryDate case final expiry?)
+          'vence ${formatShortDate(expiry)}',
+      ].join(' · '),
+    ),
+    onTap: onEdit,
+    trailing: IconButton(
+      icon: const Icon(Icons.delete_outline),
+      tooltip: 'Quitar caja',
+      onPressed: onRemove,
+    ),
   );
 }

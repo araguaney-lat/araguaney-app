@@ -2,6 +2,7 @@ import 'package:araguaney_app/core/api/api_providers.dart';
 import 'package:araguaney_app/core/api/generated/clients/dashboard_api.dart';
 import 'package:araguaney_app/core/api/generated/rest_client.dart';
 import 'package:araguaney_app/core/auth/auth_providers.dart';
+import 'package:araguaney_app/core/ui/category_label.dart';
 import 'package:araguaney_app/features/dashboard/data/center_dashboard_repository.dart';
 import 'package:araguaney_app/features/dashboard/ui/stock_by_category_view.dart';
 import 'package:flutter/material.dart';

@@ -1,6 +1,7 @@
 import 'package:araguaney_app/core/api/generated/clients/intakes_api.dart';
 import 'package:araguaney_app/core/api/generated/clients/product_types_api.dart';
 import 'package:araguaney_app/core/api/generated/models/box_draft.dart';
+import 'package:araguaney_app/core/api/generated/models/campaign_out.dart';
 import 'package:araguaney_app/core/connectivity/connectivity_controller.dart';
 import 'package:araguaney_app/core/db/app_database.dart';
 import 'package:araguaney_app/features/catalog/data/catalog_providers.dart';
@@ -30,7 +31,7 @@ void main() {
       productTypeRow(
         id: 'pt-2',
         displayName: 'Alcohol isopropílico',
-        category: 'insumo',
+        category: 'MEDICAL_SUPPLY',
       ),
     ]);
   });
@@ -40,7 +41,11 @@ void main() {
     await probe.dispose();
   });
 
-  Future<void> pumpForm(WidgetTester tester, FakeHttpAdapter adapter) async {
+  Future<void> pumpForm(
+    WidgetTester tester,
+    FakeHttpAdapter adapter, {
+    List<CampaignOut> campaigns = const [],
+  }) async {
     final dio = fakeDio(adapter);
     final container = ProviderContainer(
       overrides: [
@@ -51,7 +56,7 @@ void main() {
         catalogRepositoryProvider.overrideWithValue(
           CatalogRepository(api: ProductTypesApi(dio), database: db),
         ),
-        myCampaignsProvider.overrideWith((ref) async => []),
+        myCampaignsProvider.overrideWith((ref) async => campaigns),
         // Estas pruebas son las de la fase anterior y siguen midiendo lo
         // mismo: con conexión la captura viaja en el momento. Sin sesión no
         // hay cola posible, que es exactamente lo que se quiere aquí.
@@ -76,7 +81,7 @@ void main() {
     WidgetTester tester, {
     String product = 'Paracetamol 500 mg',
   }) async {
-    await tester.tap(find.text('Agregar caja'));
+    await tester.tap(find.text('Añadir caja'));
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('Elegir producto'));
@@ -103,8 +108,8 @@ void main() {
       FakeHttpAdapter((_) => FakeResponse(201, intakeJson())),
     );
 
-    final send = tester.widget<TextButton>(
-      find.widgetWithText(TextButton, 'Enviar'),
+    final send = tester.widget<FilledButton>(
+      find.widgetWithText(FilledButton, 'Registrar'),
     );
     expect(send.onPressed, isNull);
   });
@@ -119,8 +124,8 @@ void main() {
 
     expect(find.text('Paracetamol 500 mg'), findsOneWidget);
     expect(find.textContaining('12 caja'), findsOneWidget);
-    final send = tester.widget<TextButton>(
-      find.widgetWithText(TextButton, 'Enviar'),
+    final send = tester.widget<FilledButton>(
+      find.widgetWithText(FilledButton, 'Registrar'),
     );
     expect(send.onPressed, isNotNull);
     // El catálogo se buscó en el cache: la única petición posible sería la de
@@ -133,7 +138,7 @@ void main() {
     await pumpForm(tester, adapter);
     await addBox(tester);
 
-    await tester.tap(find.text('Enviar'));
+    await tester.tap(find.text('Registrar'));
     await tester.pumpAndSettle();
 
     final body = adapter.requests.single.data as Map<String, dynamic>;
@@ -162,7 +167,7 @@ void main() {
     );
     await addBox(tester);
 
-    await tester.tap(find.text('Enviar'));
+    await tester.tap(find.text('Registrar'));
     await tester.pumpAndSettle();
 
     expect(
@@ -190,7 +195,7 @@ void main() {
     await pumpForm(tester, adapter);
     await addBox(tester);
 
-    await tester.tap(find.text('Enviar'));
+    await tester.tap(find.text('Registrar'));
     await tester.pumpAndSettle();
 
     // El servidor pregunta; la persona registra el motivo en vez de detenerse.
@@ -210,13 +215,71 @@ void main() {
     expect(find.text('Captura registrada'), findsOneWidget);
   });
 
+  testWidgets('the campaign is chosen from the header and travels', (
+    tester,
+  ) async {
+    final adapter = FakeHttpAdapter((_) => FakeResponse(201, intakeJson()));
+    await pumpForm(
+      tester,
+      adapter,
+      campaigns: [campaign(id: 'campaign-1', name: 'Campaña de invierno')],
+    );
+
+    expect(find.text('Registrar entrada'), findsOneWidget);
+    expect(find.text('Campaña general'), findsOneWidget);
+
+    await tester.tap(find.text('Campaña general'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Campaña de invierno'));
+    await tester.pumpAndSettle();
+
+    // Cambiar la cabecera cambia la captura, no solo lo que se lee en ella.
+    expect(find.text('Campaña de invierno'), findsOneWidget);
+    await addBox(tester);
+    await tester.tap(find.text('Registrar'));
+    await tester.pumpAndSettle();
+
+    final body = adapter.requests.single.data as Map<String, dynamic>;
+    expect(body['campaign_id'], 'campaign-1');
+  });
+
+  testWidgets('the boxes card counts what the entry carries', (tester) async {
+    await pumpForm(
+      tester,
+      FakeHttpAdapter((_) => FakeResponse(201, intakeJson())),
+    );
+
+    expect(find.text('Cajas en la entrada · 0'), findsOneWidget);
+
+    await addBox(tester);
+
+    expect(find.text('Cajas en la entrada · 1'), findsOneWidget);
+  });
+
+  testWidgets('the product picker names categories in Spanish', (tester) async {
+    await pumpForm(
+      tester,
+      FakeHttpAdapter((_) => FakeResponse(201, intakeJson())),
+    );
+
+    await tester.tap(find.text('Añadir caja'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Elegir producto'));
+    await tester.pumpAndSettle();
+
+    // La clave del servidor no se enseña: se traduce, y con la misma tabla que
+    // usa el stock por categoría.
+    expect(find.text('Insumo médico'), findsWidgets);
+    expect(find.text('MEDICAL_SUPPLY'), findsNothing);
+  });
+
   testWidgets('the product search filters the local catalog', (tester) async {
     await pumpForm(
       tester,
       FakeHttpAdapter((_) => FakeResponse(201, intakeJson())),
     );
 
-    await tester.tap(find.text('Agregar caja'));
+    await tester.tap(find.text('Añadir caja'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Elegir producto'));
     await tester.pumpAndSettle();

@@ -32,6 +32,18 @@ class IntakeDetailView extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
           child: Text('Cajas', style: Theme.of(context).textTheme.titleMedium),
         ),
+        // Una captura recién registrada sí trae sus cajas, porque las devuelve
+        // el `POST`. Una abierta desde el historial no: el listado del servidor
+        // no las rellena, y por eso aquí se dice en vez de enseñar una sección
+        // vacía, que se leería como «esta captura no tuvo cajas».
+        if (intake.boxes.isEmpty)
+          const Padding(
+            padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
+            child: Text(
+              'El historial no trae las cajas de esta captura. Búscalas por su '
+              'código en Cajas.',
+            ),
+          ),
         for (final box in intake.boxes)
           ListTile(
             title: Text(box.code),

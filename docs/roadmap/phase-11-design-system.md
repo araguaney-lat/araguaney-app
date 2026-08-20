@@ -92,7 +92,7 @@ phase of its own, because it is the same phase seen from the other side.
 | # | Screen | Design | Status |
 |---|--------|--------|--------|
 | 8 | Cajas | 08 — count, scrollable status filters, sealing from the row | ✅ Done |
-| 9 | Capturar caja | 06 | ⬜ Pending |
+| 9 | Registrar entrada | 06 — campaign in the header, box count, two fixed actions | ✅ Done |
 | 10 | Pendientes de envío | 07 | ⬜ Pending |
 | 11 | Escanear código | 04 | ⬜ Pending |
 | 12 | Tarimas y tarima abierta | 09, 10 | ⬜ Pending |
@@ -116,3 +116,45 @@ Worth generalising, because this is the third time: **a value that the client
 invents and the server never sends fails silently when there is a fallback.**
 Category labels, box statuses — both found by looking at the screen against
 production, neither by reading code or running tests.
+
+### What redesigning the second screen turned up
+
+Four more, and every one of them the same shape.
+
+**The category labels were only half fixed.** `categoryLabel` lived inside
+`stock_by_category_view.dart`, so the one screen that imported it read
+«Medicamentos» and the product picker — the screen somebody actually uses to
+find a product — still read `MEDICAL_SUPPLY`. A translation table that only one
+screen imports leaves the others showing the server's key. It now lives in
+`core/ui/`, which is the point: it is not a property of one screen.
+
+**The fixtures were carrying invented categories too** — `medicamento`,
+`insumo`, lowercase Spanish that no server sends. Exactly what hid the status
+bug, in the same file, still there after that fix. Corrected to the real keys.
+
+**The capture list was stating a fact it had not been told.**
+`IntakeRepository.find_all` does not load the boxes and `IntakeOut.boxes`
+defaults to an empty list, so `GET /v1/intakes` always answers `boxes: []`. The
+list counted that and printed «0 cajas» on every row; the capture record drew a
+«Cajas» heading over nothing. Neither is a missing value — both are false ones,
+produced by a schema default rather than by an invented constant. The list now
+omits the count and the record says the history does not carry the boxes. See
+request 2 in `backend-requests.md`.
+
+**The box record offered sealing on a rejected box.** It decided from `sealedAt`
+alone, which is null for a box that was rejected before it ever got sealed — the
+same good instinct that saved it from the label bug, one condition short. The
+list had already been given both halves; the record now matches.
+
+So the generalisation holds and widens: **the client must not fill a silence.**
+An invented constant and a schema default are the same failure wearing different
+clothes, and neither shows up in a test whose fixtures agree with the code.
+
+### One thing the redesign did not import from the design
+
+Design 06 draws a «Cumple WHO (≥ 365 días)» badge under the expiry field. That
+is a campaign rule the server owns and enforces, and its threshold is exactly
+the kind of value this repository does not publish. The client would have to
+invent a number to draw the badge — the very mistake the section above is about.
+The rejection message the server sends already says it, in words, at the moment
+it matters.

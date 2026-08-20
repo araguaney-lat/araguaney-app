@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/db/app_database.dart';
+import '../../../core/ui/category_label.dart';
 import '../../catalog/data/catalog_providers.dart';
 
 /// Selección de tipo de producto desde el catálogo **local**.
@@ -64,7 +65,7 @@ class _ProductPickerSheetState extends ConsumerState<ProductPickerSheet> {
                     Padding(
                       padding: const EdgeInsets.only(right: 8),
                       child: FilterChip(
-                        label: Text(category),
+                        label: Text(categoryLabel(category)),
                         selected: _category == category,
                         onSelected: (selected) => setState(
                           () => _category = selected ? category : null,
@@ -100,8 +101,11 @@ class _ProductPickerSheetState extends ConsumerState<ProductPickerSheet> {
     );
   }
 
-  static String _describe(ProductTypeRow product) =>
-      [product.category, ?product.brand, ?product.strength].join(' · ');
+  static String _describe(ProductTypeRow product) => [
+    categoryLabel(product.category),
+    ?product.brand,
+    ?product.strength,
+  ].join(' · ');
 }
 
 class _NoMatches extends StatelessWidget {
