@@ -1,54 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// Colores de la barra inferior, tomados del diseño.
-///
-/// Viven aquí y no en el `ColorScheme` porque son los del sistema de diseño y
-/// no derivan de la semilla de Material: la pastilla activa, el dorado del
-/// botón central y el anillo que lo separa de la barra son valores elegidos,
-/// no calculados.
-class BottomBarPalette {
-  const BottomBarPalette({
-    required this.surface,
-    required this.border,
-    required this.activePill,
-    required this.activeInk,
-    required this.inactiveInk,
-    required this.centerFill,
-    required this.centerInk,
-  });
-
-  /// La barra clara: crema dorada sobre el fondo de la aplicación.
-  static const light = BottomBarPalette(
-    surface: Color(0xFFFBEFC9),
-    border: Color(0xFFEAD9B0),
-    activePill: Color(0xFFF5DA8A),
-    activeInk: Color(0xFF3B2A00),
-    inactiveInk: Color(0xFF8A6A16),
-    centerFill: Color(0xFFD69A00),
-    centerInk: Color(0xFF3B2A00),
-  );
-
-  static const dark = BottomBarPalette(
-    surface: Color(0xFF191A1E),
-    border: Color(0xFF2A2B31),
-    activePill: Color(0x24F3C033),
-    activeInk: Color(0xFFF3C033),
-    inactiveInk: Color(0xFF9A968C),
-    centerFill: Color(0xFFF3C033),
-    centerInk: Color(0xFF3B2A00),
-  );
-
-  final Color surface;
-  final Color border;
-  final Color activePill;
-  final Color activeInk;
-  final Color inactiveInk;
-  final Color centerFill;
-  final Color centerInk;
-
-  static BottomBarPalette of(BuildContext context) =>
-      Theme.of(context).brightness == Brightness.dark ? dark : light;
-}
+import 'theme/app_theme.dart';
 
 /// Un destino de la barra.
 class BottomBarItem {
@@ -103,13 +55,13 @@ class AppBottomBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     assert(items.length == 4, 'La barra lleva cuatro destinos y un botón');
-    final palette = BottomBarPalette.of(context);
+    final palette = AppPalette.of(context);
     final bottomInset = MediaQuery.viewPaddingOf(context).bottom;
 
     return Container(
       decoration: BoxDecoration(
-        color: palette.surface,
-        border: Border(top: BorderSide(color: palette.border)),
+        color: palette.bar,
+        border: Border(top: BorderSide(color: palette.barBorder)),
       ),
       padding: EdgeInsets.only(bottom: bottomInset > 0 ? bottomInset : 12),
       // El círculo se sale por arriba: sin esto queda recortado.
@@ -169,7 +121,7 @@ class AppBottomBar extends StatelessWidget {
                           shape: BoxShape.circle,
                           // El anillo es del color de la barra: es lo que hace
                           // que el círculo se lea encima y no pegado.
-                          border: Border.all(color: palette.surface, width: 4),
+                          border: Border.all(color: palette.bar, width: 4),
                           boxShadow: [
                             BoxShadow(
                               color: palette.centerFill.withValues(alpha: 0.55),
@@ -207,7 +159,7 @@ class _Destination extends StatelessWidget {
 
   final BottomBarItem item;
   final bool selected;
-  final BottomBarPalette palette;
+  final AppPalette palette;
   final VoidCallback onTap;
 
   @override
@@ -235,7 +187,7 @@ class _Destination extends StatelessWidget {
                   icon: item.icon,
                   color: ink,
                   badge: item.badge,
-                  ringColor: palette.surface,
+                  ringColor: palette.bar,
                 ),
               ),
               const SizedBox(height: 4),
@@ -286,7 +238,7 @@ class _IconWithBadge extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 3),
             alignment: Alignment.center,
             decoration: BoxDecoration(
-              color: const Color(0xFFE05252),
+              color: AppPalette.of(context).danger,
               borderRadius: BorderRadius.circular(8),
               border: Border.all(color: ringColor, width: 1.5),
             ),
