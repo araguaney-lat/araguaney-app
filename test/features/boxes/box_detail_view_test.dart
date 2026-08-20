@@ -61,7 +61,7 @@ void main() {
 
   testWidgets('a cached box reads without any network', (tester) async {
     await db.catalogDao.replaceAll([productTypeRow()]);
-    await db.boxesDao.replaceAll([boxRow(status: 'sealed', quantity: 24)]);
+    await db.boxesDao.replaceAll([boxRow(status: 'SEALED', quantity: 24)]);
 
     await pumpDetail(tester);
 

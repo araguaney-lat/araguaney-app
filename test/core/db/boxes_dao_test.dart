@@ -48,11 +48,11 @@ void main() {
   });
 
   test('upsert overwrites the cached copy of the same box', () async {
-    await db.boxesDao.replaceAll([boxRow(status: 'open')]);
+    await db.boxesDao.replaceAll([boxRow(status: 'DRAFT')]);
 
-    await db.boxesDao.upsert(boxRow(status: 'sealed'));
+    await db.boxesDao.upsert(boxRow(status: 'SEALED'));
 
     expect(await db.boxesDao.count(), 1);
-    expect((await db.boxesDao.findById('box-1'))?.status, 'sealed');
+    expect((await db.boxesDao.findById('box-1'))?.status, 'SEALED');
   });
 }

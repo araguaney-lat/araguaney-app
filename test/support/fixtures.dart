@@ -26,7 +26,9 @@ BoxRow boxRow({
   String productTypeId = 'pt-1',
   int quantity = 10,
   String unit = 'unidad',
-  String status = 'open',
+
+  /// Los de `BOX_STATUSES` en el backend: DRAFT, SEALED, SHIPPED, REJECTED.
+  String status = 'DRAFT',
   DateTime? createdAt,
   DateTime? sealedAt,
 }) => BoxRow(
@@ -84,7 +86,7 @@ Map<String, Object?> intakeJson({
 Map<String, Object?> intakeBoxJson({
   String id = 'box-1',
   String code = 'BX-0001',
-  String status = 'open',
+  String status = 'DRAFT',
 }) => {
   'id': id,
   'code': code,
@@ -101,7 +103,7 @@ Map<String, Object?> intakeBoxJson({
 
 Map<String, Object?> publicBoxJson({
   String code = 'BX-0001',
-  String status = 'sealed',
+  String status = 'SEALED',
   String displayName = 'Paracetamol 500 mg',
 }) => {
   'code': code,
@@ -118,7 +120,7 @@ Map<String, Object?> publicBoxJson({
 
 Map<String, Object?> publicPalletJson({
   String code = 'TM-0001',
-  String status = 'open',
+  String status = 'DRAFT',
   String centerName = 'Centro Caracas',
 }) => {
   'code': code,
@@ -165,7 +167,7 @@ Map<String, Object?> boxJson({
   String id = 'box-1',
   String code = 'CJ-0001',
   String productTypeId = 'pt-1',
-  String status = 'open',
+  String status = 'DRAFT',
   int quantity = 10,
 }) => {
   'id': id,
@@ -233,7 +235,7 @@ Map<String, Object?> shipmentJson({
 Map<String, Object?> palletJson({
   String id = 'pallet-1',
   String code = 'TM-0001',
-  String status = 'open',
+  String status = 'DRAFT',
   DateTime? closedAt,
 }) => {
   'id': id,
@@ -252,7 +254,7 @@ Map<String, Object?> palletJson({
 Map<String, Object?> palletDetailJson({
   String id = 'pallet-1',
   String code = 'TM-0001',
-  String status = 'open',
+  String status = 'DRAFT',
   List<Map<String, Object?>>? boxes,
 }) => {
   ...palletJson(id: id, code: code, status: status),
@@ -265,7 +267,7 @@ Map<String, Object?> incidentJson({
   String id = 'incident-1',
   String type = 'DAMAGE',
   String description = 'Tarima mojada',
-  String status = 'open',
+  String status = 'DRAFT',
   DateTime? resolvedAt,
 }) => {
   'id': id,
