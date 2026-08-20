@@ -190,7 +190,9 @@ Map<String, Object?> riskReviewJson({
   String? intakeId = 'intake-1',
   String kind = 'ATYPICAL_VOLUME',
   String? reason,
-  String status = 'open',
+
+  /// El backend usa `PENDING`; el resto de estados llegan de resolver.
+  String status = 'PENDING',
 }) => {
   'id': id,
   'center_id': 'center-1',
