@@ -15,9 +15,9 @@ sum of those rows and nothing else.
 
 ```mermaid
 pie title Tasks completed (102 tasks)
-    "Done" : 77
-    "Pending" : 13
-    "Partial" : 7
+    "Done" : 78
+    "Pending" : 11
+    "Partial" : 8
     "Blocked or external" : 5
 ```
 
@@ -26,15 +26,15 @@ pie title Tasks completed (102 tasks)
 | 0 | [Repository bootstrap and application scaffold](phase-00-bootstrap.md) | 10 | 0 | ✅ 100% |
 | 1 | [API contract and generated client](phase-01-api-contract-client.md) | 8 | 0 | ✅ 100% |
 | 2 | [Authentication and session](phase-02-auth-session.md) | 9 | 0 | ✅ 100% |
-| 3 | [Local cache and read operations](phase-03-local-cache-read.md) | 8 | 1 | 🟨 89% (1 pending) |
+| 3 | [Local cache and read operations](phase-03-local-cache-read.md) | 9 | 0 | ✅ 100% |
 | 4 | [QR scanning](phase-04-qr-scanning.md) | 6 | 0 | ✅ 100% |
 | 5 | [Online intake and box operations](phase-05-intake-online.md) | 10 | 0 | ✅ 100% |
 | 6 | [Offline capture queue](phase-06-offline-queue.md) | 10 | 0 | ✅ 100% |
 | 7 | [Push notifications](phase-07-push-notifications.md) | 10 | 1 | 🟨 91% (1 partial) |
 | 8 | [Android release and distribution](phase-08-android-release.md) | 4 | 5 | 🟨 44% (2 partial, 3 external) |
 | 9 | [iOS enablement](phase-09-ios-enablement.md) | 0 | 6 | ⬜ 0% |
-| 10 | [Operational parity backlog](phase-10-operational-parity.md) | 2 | 12 | 🟨 14% (4 partial, 2 blocked) |
-| **Total** | | **77** | **25** | **🟢 75%** |
+| 10 | [Operational parity backlog](phase-10-operational-parity.md) | 2 | 12 | 🟨 14% (5 partial, 2 blocked) |
+| **Total** | | **78** | **24** | **🟢 76%** |
 
 ## Blocked work
 
@@ -48,12 +48,9 @@ the ones that block roadmap tasks.
   keystore (task 2) and the Sentry DSN (task 7) are key material that does not
   belong in a repository; both are documented and the build reads them from
   outside.
-- **Phase 03, task 5 is no longer blocked.** Reading the backend rather than the
-  vendored snapshot showed that
-  `GET /v1/reports/campaign/{campaign_id}/by-category` already scopes itself to
-  the caller's center. What is still missing is narrower — that endpoint counts
-  capture, not stock — so request 1 was rewritten to ask only for that, and the
-  screen moved to pending.
+- **Phase 03 is complete.** Its last task was recorded as blocked on a missing
+  endpoint; the endpoint existed. The screen ships as «Capturado por categoría»,
+  which is what the number means. Reading it as stock needs request 1.
 - **Phase 10, block 6 (home-screen aggregates)** is blocked by client
   generation, not by the backend. `GET /v1/dashboard/national` and
   `GET /v1/dashboard/weight` need only a center role and scope themselves to the
