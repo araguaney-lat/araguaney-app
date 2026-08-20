@@ -14,11 +14,11 @@ A row is done, partial, blocked/external, or pending; the totals below are the
 sum of those rows and nothing else.
 
 ```mermaid
-pie title Tasks completed (96 tasks)
+pie title Tasks completed (102 tasks)
     "Done" : 77
-    "Pending" : 8
+    "Pending" : 13
     "Partial" : 7
-    "Blocked or external" : 4
+    "Blocked or external" : 5
 ```
 
 | Phase | Name | Done | Pending | Progress |
@@ -33,8 +33,8 @@ pie title Tasks completed (96 tasks)
 | 7 | [Push notifications](phase-07-push-notifications.md) | 10 | 1 | 🟨 91% (1 partial) |
 | 8 | [Android release and distribution](phase-08-android-release.md) | 4 | 5 | 🟨 44% (2 partial, 3 external) |
 | 9 | [iOS enablement](phase-09-ios-enablement.md) | 0 | 6 | ⬜ 0% |
-| 10 | [Operational parity backlog](phase-10-operational-parity.md) | 2 | 6 | 🟨 25% (4 partial, 1 blocked) |
-| **Total** | | **77** | **19** | **🟢 80%** |
+| 10 | [Operational parity backlog](phase-10-operational-parity.md) | 2 | 12 | 🟨 14% (4 partial, 2 blocked) |
+| **Total** | | **77** | **25** | **🟢 75%** |
 
 ## Blocked work
 
@@ -54,6 +54,12 @@ the ones that block roadmap tasks.
   the caller's center. What is still missing is narrower — that endpoint counts
   capture, not stock — so request 1 was rewritten to ask only for that, and the
   screen moved to pending.
+- **Phase 10, block 6 (home-screen aggregates)** is blocked by client
+  generation, not by the backend. `GET /v1/dashboard/national` and
+  `GET /v1/dashboard/weight` need only a center role and scope themselves to the
+  caller's center, but the whole `dashboard` tag is excluded from the generated
+  client because one unrelated public route in it cannot be typed — request 5,
+  which is one line away from being fixed.
 - **Phase 10, block 8 (Riverpod 3.x)** is blocked on the package ecosystem, not
   on this repository: `riverpod >=3.0.0-dev` cannot resolve alongside
   `drift_dev` and stable Flutter's `flutter_test` pins. Verified against the

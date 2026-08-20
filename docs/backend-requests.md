@@ -97,28 +97,38 @@ would then carry the key, and the hand-written map and its test could go.
 
 ---
 
-## 5. A single response schema for `GET /v1/public/qr/{code}`
+## 5. A response schema for `GET /v1/public/qr/{code}`
 
-**Blocks:** generating a client for the `dashboard` tag, which in turn blocks
-Phase 10's national dashboard block.
+**Blocks:** the home screen of every role. This request is worth more than it
+looks, and the previous version of this note undersold it.
 
-That endpoint declares an `anyOf` response — box ficha or pallet ficha,
-depending on the code. `swagger_parser` cannot express it: it emits a reference
-to a sealed type it never generates, and the client stops compiling.
+`GET /v1/public/qr/{code}` declares its responses through `responses` rather
+than `response_model`, on purpose and with a comment in the backend explaining
+why: the route answers a box or a pallet depending on the code, and a
+`response_model` would pretend to validate something it does not. The generator
+cannot express that, so `api/openapi.json` is consumed with the whole
+`dashboard` tag excluded.
 
-**What the application does today:** excludes the whole `dashboard` tag from
-generation. Nothing under it is used — a scanned code resolves through the typed
-box and pallet fichas — so the cost is deferred, not paid.
+**What that exclusion actually costs**, checked route by route on 2026-08-20 —
+the tag carries seven routes, and two of them are neither public nor national:
 
-**Shape that would work:** one wrapper schema with a discriminator and both
-shapes as optional members, instead of `anyOf` at the top level. The same
-information, expressible by a code generator.
+| Route | Who can call it | What it answers |
+|---|---|---|
+| `GET /v1/dashboard/national` | any center role | scoped by `tenant_scope`: **the caller's own center** for a coordinator, everything for national administration |
+| `GET /v1/dashboard/weight` | any center role | kilograms per campaign, session-scoped |
 
-**Worth weighing:** this only matters when the mobile client needs
-`/v1/dashboard/**`. If the national dashboard is never a mobile surface, the
-exclusion can stay forever and this request can be closed.
+So the aggregate a coordinator's home screen is supposed to show — the one the
+mobile design draws as cards — is not missing from the backend. It is missing
+from the generated client, because one unrelated public route in the same tag
+cannot be typed.
 
----
+**What the application does today:** nothing reads those two. The home screen
+shows what the client can reach.
+
+**Shape that would work:** either give the QR route a schema that expresses
+"box or pallet" in a way a generator can consume, or simply **move it to its own
+tag**. The second costs one line and unblocks the other six routes immediately;
+the first is the tidier answer if the union can be expressed at all.
 
 ## 6. Named codes and Spanish messages for refusals an operator reads
 
