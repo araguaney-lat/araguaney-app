@@ -43,12 +43,13 @@ swagger_parser:
   # tiene dos desenlaces.
   #
   # La única palanca que da la herramienta para esto es excluir por etiqueta, y
-  # ese endpoint está bajo `dashboard`. Se excluye entera. La aplicación no
-  # consume hoy ninguna de esas rutas: un código escaneado se resuelve por las
-  # fichas públicas de caja y tarima, que sí son tipadas.
+  # antes esa ruta compartía la etiqueta `dashboard`, así que excluirla se
+  # llevaba también `/v1/dashboard/national` y `/v1/dashboard/weight` —que no
+  # son nacionales: el servidor las acota al centro de quien llama— y con ellas
+  # los agregados de la pantalla de inicio. Seis rutas caían por una.
   #
-  # Cuando la fase 10 necesite `/v1/dashboard/**`, esto se vuelve a abrir y hay
-  # que resolver el `anyOf` —a mano, como el login, o esperando al generador—.
-  # Se reportó aguas arriba.
+  # El backend aisló la ficha en su propia etiqueta (`qr`), así que ahora se
+  # excluye solo ella. La aplicación no la necesita: un código escaneado se
+  # resuelve por las fichas públicas de caja y de tarima, que sí son tipadas.
   exclude_tags:
-    - dashboard
+    - qr
