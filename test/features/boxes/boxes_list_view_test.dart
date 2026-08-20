@@ -75,7 +75,7 @@ void main() {
 
   testWidgets('renders the cached boxes without any network', (tester) async {
     await db.catalogDao.replaceAll([productTypeRow()]);
-    await db.boxesDao.replaceAll([boxRow(code: 'CJ-0007', status: 'sealed')]);
+    await db.boxesDao.replaceAll([boxRow(code: 'CJ-0007', status: 'SEALED')]);
 
     await pumpList(tester);
 
@@ -158,5 +158,117 @@ void main() {
 
     expect(find.text('Estado'), findsOneWidget);
     expect(find.text('Cantidad'), findsOneWidget);
+  });
+
+  group('filtering by status', () {
+    Future<void> pumpWithBoxes(WidgetTester tester) async {
+      await db.boxesDao.replaceAll([
+        boxRow(id: 'b1', code: 'BX-0001'),
+        boxRow(id: 'b2', code: 'BX-0002', status: 'SEALED'),
+        boxRow(id: 'b3', code: 'BX-0003', status: 'SEALED'),
+      ]);
+      await pumpList(tester);
+    }
+
+    testWidgets('the screen says how many boxes the center has', (
+      tester,
+    ) async {
+      await pumpWithBoxes(tester);
+
+      expect(find.text('3 cajas en el centro'), findsOneWidget);
+    });
+
+    testWidgets('each status carries its own count', (tester) async {
+      // Ofrecer un filtro que deja la pantalla vacía sin avisar es peor que no
+      // ofrecerlo.
+      await pumpWithBoxes(tester);
+
+      expect(find.text('Sin sellar · 1'), findsOneWidget);
+      expect(find.text('Sellada · 2'), findsOneWidget);
+    });
+
+    testWidgets('choosing one leaves only its boxes', (tester) async {
+      await pumpWithBoxes(tester);
+
+      await tester.tap(find.text('Sellada · 2'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('BX-0002'), findsOneWidget);
+      expect(find.text('BX-0001'), findsNothing);
+    });
+
+    testWidgets('a status with nothing in it is not offered', (tester) async {
+      await pumpWithBoxes(tester);
+
+      expect(find.textContaining('Enviada'), findsNothing);
+    });
+  });
+
+  group('sealing from the list', () {
+    /// Con señal: el adaptador por defecto de estas pruebas no llega al
+    /// servidor, y el coordinador lo reporta como sin conexión — que es
+    /// precisamente cuando sellar no se ofrece.
+    FakeHttpAdapter onlineWith(List<Map<String, Object?>> boxes) =>
+        FakeHttpAdapter(
+          (options) => FakeResponse(
+            200,
+            options.path.contains('boxes') ? boxes : const [],
+          ),
+        );
+
+    testWidgets('only an open box offers it', (tester) async {
+      await pumpList(
+        tester,
+        adapter: onlineWith([
+          boxJson(id: 'b1', code: 'BX-0001'),
+          boxJson(id: 'b2', code: 'BX-0002', status: 'SEALED'),
+        ]),
+      );
+
+      expect(find.widgetWithText(TextButton, 'Sellar'), findsOneWidget);
+    });
+
+    testWidgets('offline it is not offered at all', (tester) async {
+      // Sellar decide sobre estado compartido que puede estar cambiando en otro
+      // dispositivo, así que exige conexión.
+      await db.boxesDao.replaceAll([boxRow(id: 'b1', code: 'BX-0001')]);
+      await pumpList(tester);
+
+      expect(find.widgetWithText(TextButton, 'Sellar'), findsNothing);
+      expect(find.text('Sin sellar'), findsOneWidget);
+    });
+
+    testWidgets('it asks first, and shows what is inside', (tester) async {
+      // Desde la lista no se ve el contenido, y sellar es la frontera entre
+      // «esto se corrige» y «esto ya viaja».
+      await pumpList(
+        tester,
+        adapter: onlineWith([boxJson(id: 'b1', code: 'BX-0001')]),
+      );
+
+      await tester.tap(find.widgetWithText(TextButton, 'Sellar'));
+      await tester.pumpAndSettle();
+
+      // La fila de atrás también dice el contenido; lo que importa es que el
+      // diálogo lo repita, para decidir sin volver a la lista.
+      expect(find.text('Sellar BX-0001'), findsOneWidget);
+      expect(find.textContaining('10 unidad'), findsNWidgets(2));
+      expect(find.textContaining('ya no admite cambios'), findsOneWidget);
+    });
+
+    testWidgets('cancelling seals nothing', (tester) async {
+      await pumpList(
+        tester,
+        adapter: onlineWith([boxJson(id: 'b1', code: 'BX-0001')]),
+      );
+
+      await tester.tap(find.widgetWithText(TextButton, 'Sellar'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.widgetWithText(TextButton, 'Cancelar'));
+      await tester.pumpAndSettle();
+
+      final box = await db.boxesDao.findById('b1');
+      expect(box!.status, 'DRAFT');
+    });
   });
 }

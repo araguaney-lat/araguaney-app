@@ -80,3 +80,39 @@ and still shows what it showed; the flat layout the design replaces is separate
 work, screen by screen. Fixing the foundation first means those screens will not
 each carry their own copy of the palette, which is exactly how the bottom bar
 ended up with hardcoded colours in the first place.
+
+---
+
+## Screen by screen, after the foundation
+
+The tokens are the floor, not the rooms. Each screen still has to be laid out
+the way the design draws it, and that work is tracked here rather than in a
+phase of its own, because it is the same phase seen from the other side.
+
+| # | Screen | Design | Status |
+|---|--------|--------|--------|
+| 8 | Cajas | 08 — count, scrollable status filters, sealing from the row | ✅ Done |
+| 9 | Capturar caja | 06 | ⬜ Pending |
+| 10 | Pendientes de envío | 07 | ⬜ Pending |
+| 11 | Escanear código | 04 | ⬜ Pending |
+| 12 | Tarimas y tarima abierta | 09, 10 | ⬜ Pending |
+| 13 | Transferencias | 12 | ⬜ Pending |
+| 14 | Revisiones | 13 | ⬜ Pending |
+
+### What redesigning the first screen turned up
+
+The status labels never worked. `boxStatusLabel` mapped `open`, `sealed`,
+`palletized`, `received` — lowercase, and two of them states the backend does
+not have. The real values are `DRAFT`, `SEALED`, `SHIPPED`, `REJECTED`, so the
+fallback returned the raw key and the screen showed «SEALED» to somebody reading
+Spanish. It had been that way since Phase 03 and no test caught it, because the
+fixtures used the same invented values as the code.
+
+The box record was the exception, and by accident of good judgement: it decides
+whether sealing is possible from `sealedAt`, not from the status text, so it
+kept working while the label lied. The list now does the same.
+
+Worth generalising, because this is the third time: **a value that the client
+invents and the server never sends fails silently when there is a fallback.**
+Category labels, box statuses — both found by looking at the screen against
+production, neither by reading code or running tests.

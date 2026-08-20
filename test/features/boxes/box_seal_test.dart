@@ -39,11 +39,11 @@ void main() {
     test(
       'sealing writes the state the server returned into the cache',
       () async {
-        await db.boxesDao.replaceAll([boxRow(status: 'open')]);
+        await db.boxesDao.replaceAll([boxRow(status: 'DRAFT')]);
         final sealed = DateTime.utc(2026, 8, 10, 15);
         final adapter = FakeHttpAdapter(
           (_) => FakeResponse(200, {
-            ...boxJson(status: 'sealed'),
+            ...boxJson(status: 'SEALED'),
             'sealed_at': sealed.toIso8601String(),
           }),
         );
@@ -52,13 +52,13 @@ void main() {
 
         expect(outcome, isA<SyncSucceeded>());
         final cached = await db.boxesDao.findById('box-1');
-        expect(cached?.status, 'sealed');
+        expect(cached?.status, 'SEALED');
         expect(cached?.sealedAt, sealed);
       },
     );
 
     test('a rejected seal leaves the cached box untouched', () async {
-      await db.boxesDao.replaceAll([boxRow(status: 'open')]);
+      await db.boxesDao.replaceAll([boxRow(status: 'DRAFT')]);
       final adapter = FakeHttpAdapter(
         (_) => FakeResponse(409, {
           'error': {
@@ -71,7 +71,7 @@ void main() {
       final outcome = await repositoryOn(adapter).seal('box-1');
 
       expect(outcome, isA<SyncFailed>());
-      expect((await db.boxesDao.findById('box-1'))?.status, 'open');
+      expect((await db.boxesDao.findById('box-1'))?.status, 'DRAFT');
     });
   });
 
@@ -103,7 +103,7 @@ void main() {
     testWidgets('offline, sealing is disabled and the reason is stated', (
       tester,
     ) async {
-      await db.boxesDao.replaceAll([boxRow(status: 'open')]);
+      await db.boxesDao.replaceAll([boxRow(status: 'DRAFT')]);
       final container = await pumpDetail(tester, OfflineHttpAdapter());
       container
           .read(connectivityControllerProvider.notifier)
@@ -119,14 +119,14 @@ void main() {
 
     testWidgets('a box already sealed offers no seal action', (tester) async {
       await db.boxesDao.replaceAll([
-        boxRow(status: 'sealed', sealedAt: testNow),
+        boxRow(status: 'SEALED', sealedAt: testNow),
       ]);
 
       await pumpDetail(
         tester,
         FakeHttpAdapter(
           (_) => FakeResponse(200, {
-            ...boxJson(status: 'sealed'),
+            ...boxJson(status: 'SEALED'),
             'sealed_at': testNow.toIso8601String(),
           }),
         ),
