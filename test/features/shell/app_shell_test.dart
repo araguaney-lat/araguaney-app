@@ -82,11 +82,21 @@ void main() {
     expect(find.byTooltip('Escanear'), findsNothing);
   });
 
+  /// Se mira el destino de la barra y no el texto de la pantalla: el inicio
+  /// tiene sus propios números —«Capturas hoy», que bien puede ser cero— y una
+  /// búsqueda por texto suelto confunde el contador con ellos.
+  int badgeOf(WidgetTester tester, String label) => tester
+      .widget<AppBottomBar>(find.byType(AppBottomBar))
+      .items
+      .firstWhere((item) => item.label == label)
+      .badge;
+
   testWidgets('unread messages are counted on their destination', (
     tester,
   ) async {
     await pumpShell(tester, coordinator: false, unread: 3);
 
+    expect(badgeOf(tester, 'Mensajes'), 3);
     expect(find.text('3'), findsOneWidget);
   });
 
@@ -95,7 +105,7 @@ void main() {
   ) async {
     await pumpShell(tester, coordinator: false);
 
-    expect(find.text('0'), findsNothing);
+    expect(badgeOf(tester, 'Mensajes'), 0);
   });
 
   testWidgets('the menu opens without leaving the screen behind', (

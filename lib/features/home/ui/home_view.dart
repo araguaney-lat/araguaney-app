@@ -4,17 +4,25 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/auth/auth_providers.dart';
 import '../../../core/auth/session.dart';
 import '../../../core/i18n/generated/app_localizations.dart';
+import '../../dashboard/data/center_dashboard_providers.dart';
+import '../../dashboard/ui/stock_by_category_view.dart';
 import '../../intake/data/intake_providers.dart';
+import '../../intake/ui/intake_list_view.dart';
 import '../../intake/ui/pending_captures_view.dart';
+import '../../pallets/ui/pallets_list_view.dart';
+import '../../risk_reviews/ui/risk_reviews_view.dart';
+import '../data/home_providers.dart';
 import 'push_permission_card.dart';
 
 /// El destino «Inicio» de la barra inferior.
 ///
-/// Ya no es un menú: navegar es trabajo de la barra y de su hoja de «Menú».
-/// Aquí queda lo que hay que saber al abrir la aplicación —quién es quien
-/// entró, si los avisos están activos y qué quedó a medias— y una sola acción,
-/// la de la cola, que existe porque una captura sin enviar es lo único que se
-/// puede perder.
+/// Dos pantallas, no una: quien coordina llega a decidir sobre lo que otra
+/// persona capturó, y quien es voluntariado llega a capturar. Mostrarles lo
+/// mismo obliga a las dos a buscar lo suyo entre lo ajeno.
+///
+/// Lo que ordena ambas es la misma regla: arriba va lo que espera una decisión
+/// o se puede perder, y después lo que solo se consulta. Un número que nadie
+/// va a mirar no gana un sitio por ser fácil de calcular.
 class HomeView extends ConsumerWidget {
   const HomeView({super.key});
 
@@ -29,72 +37,251 @@ class HomeView extends ConsumerWidget {
     final l10n = AppLocalizations.of(context)!;
     final state = ref.watch(sessionControllerProvider);
     final session = state is SessionActive ? state.session : null;
+    final coordinates = ref.watch(isCenterCoordinatorProvider);
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.appTitle)),
-      // Desplazable, no centrada: con la tarjeta del permiso y los accesos, el
-      // contenido ya no cabe en una pantalla pequeña, y un `Column` centrado
-      // desborda en vez de dejar bajar.
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const SizedBox(height: 24),
-              const Icon(Icons.inventory_2_outlined, size: 48),
-              const SizedBox(height: 16),
-              if (session?.centerRole case final role?)
-                Text(
+      body: RefreshIndicator(
+        onRefresh: () async {
+          ref
+            ..invalidate(centerAggregatesProvider)
+            ..invalidate(intakesProvider);
+        },
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+          children: [
+            if (session?.centerRole case final role?)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: Text(
                   _roleLabels[role] ?? role,
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
-              const SizedBox(height: 8),
-              Text(
-                'Sesión iniciada.',
-                style: Theme.of(context).textTheme.bodyMedium,
-                textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 24),
-              const PushPermissionCard(),
-              const SizedBox(height: 12),
-              _PendingCapturesButton(),
-            ],
-          ),
+            const PushPermissionCard(),
+            const _PendingCaptures(),
+            if (coordinates) const _PendingReviews(),
+            const SizedBox(height: 8),
+            if (coordinates) const _CoordinatorGrid() else const _DayGrid(),
+            const SizedBox(height: 8),
+            const _CenterWeight(),
+            const _OfflineReadiness(),
+          ],
         ),
       ),
     );
   }
 }
 
-/// Acceso a la cola, con el contador siempre a la vista.
+/// Lo único que se puede perder: capturas que no salieron.
 ///
-/// El contador es permanente y no un aviso que se cierra: una captura que
-/// espera señal tiene que seguir molestando hasta que salga, porque nadie
-/// recuerda por sí solo que dejó tres donaciones sin enviar.
-class _PendingCapturesButton extends ConsumerWidget {
-  const _PendingCapturesButton();
+/// Va primero y no se puede cerrar. Una captura en cola no es un aviso, es
+/// trabajo hecho que todavía no existe para nadie más.
+class _PendingCaptures extends ConsumerWidget {
+  const _PendingCaptures();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final pending = ref.watch(pendingCaptureCountProvider).valueOrNull ?? 0;
     if (pending == 0) return const SizedBox.shrink();
 
-    return FilledButton.tonalIcon(
-      icon: Badge(
-        label: Text('$pending'),
-        child: const Icon(Icons.cloud_upload_outlined),
+    return Card(
+      margin: const EdgeInsets.only(bottom: 8),
+      child: ListTile(
+        leading: const Icon(Icons.cloud_upload_outlined),
+        title: Text(
+          pending == 1
+              ? '1 captura pendiente de enviar'
+              : '$pending capturas pendientes de enviar',
+        ),
+        subtitle: const Text(
+          'Deja la aplicación abierta hasta que llegue a cero.',
+        ),
+        trailing: const Icon(Icons.chevron_right),
+        onTap: () => Navigator.of(context).push(PendingCapturesView.route()),
       ),
-      label: Text(
-        pending == 1 ? '1 captura sin enviar' : '$pending capturas sin enviar',
-      ),
-      onPressed: () => Navigator.of(context).push(PendingCapturesView.route()),
     );
   }
 }
 
-/// Acceso a los mensajes, con los privados sin leer a la vista.
+/// Lo que espera una decisión de coordinación.
 ///
-/// El contador cuenta solo los privados, que es lo que el servidor devuelve:
-/// un hilo de campaña lo lee quien quiera cuando quiera, y contarlo como
-/// pendiente convertiría el número en ruido.
+/// El aviso no dice por qué se levantó la revisión: eso se lee dentro, y en una
+/// pantalla de inicio que alguien puede mirar por encima del hombro no tiene
+/// nada que hacer.
+class _PendingReviews extends ConsumerWidget {
+  const _PendingReviews();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final pending = ref.watch(pendingReviewCountProvider);
+    if (pending == 0) return const SizedBox.shrink();
+
+    return Card(
+      margin: const EdgeInsets.only(bottom: 8),
+      child: ListTile(
+        leading: const Icon(Icons.flag_outlined),
+        title: Text(
+          pending == 1
+              ? '1 revisión espera tu decisión'
+              : '$pending revisiones esperan tu decisión',
+        ),
+        trailing: const Icon(Icons.chevron_right),
+        onTap: () => Navigator.of(context).push(RiskReviewsView.route()),
+      ),
+    );
+  }
+}
+
+/// La jornada de quien captura.
+class _DayGrid extends ConsumerWidget {
+  const _DayGrid();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) => _Grid(
+    children: [
+      _Tile(
+        label: 'Capturas hoy',
+        value: '${ref.watch(todaysIntakeCountProvider)}',
+        onTap: () => Navigator.of(context).push(IntakeListView.route()),
+      ),
+      _Tile(
+        label: 'Stock del centro',
+        caption: 'por categoría',
+        onTap: () => Navigator.of(context).push(StockByCategoryView.route()),
+      ),
+    ],
+  );
+}
+
+/// Lo que coordina alguien que no captura.
+class _CoordinatorGrid extends ConsumerWidget {
+  const _CoordinatorGrid();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) => _Grid(
+    children: [
+      _Tile(
+        label: 'Capturas hoy',
+        value: '${ref.watch(todaysIntakeCountProvider)}',
+        onTap: () => Navigator.of(context).push(IntakeListView.route()),
+      ),
+      _Tile(
+        label: 'Tarimas abiertas',
+        value: '${ref.watch(openPalletCountProvider)}',
+        onTap: () => Navigator.of(context).push(PalletsListView.route()),
+      ),
+      _Tile(
+        label: 'Stock del centro',
+        caption: 'por categoría',
+        onTap: () => Navigator.of(context).push(StockByCategoryView.route()),
+      ),
+    ],
+  );
+}
+
+/// El peso sellado del centro.
+///
+/// Es lo que el servidor agrega para este centro: cajas selladas. Se dice
+/// «sellado» y no «total» porque lo capturado sin sellar no pesa aquí, y quien
+/// prepare un envío con este número tiene que saberlo.
+class _CenterWeight extends ConsumerWidget {
+  const _CenterWeight();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final totals = ref.watch(centerAggregatesProvider).valueOrNull?.totals;
+    if (totals == null) return const SizedBox.shrink();
+
+    return Card(
+      margin: const EdgeInsets.only(bottom: 8),
+      child: ListTile(
+        leading: const Icon(Icons.scale_outlined),
+        title: Text('${totals.totalWeightKg} kg sellados'),
+        subtitle: Text(
+          '${totals.totalBoxesSealed} cajas · ${totals.totalUnitsSealed} '
+          'unidades',
+        ),
+      ),
+    );
+  }
+}
+
+/// Cuánto aguanta el dispositivo sin señal.
+///
+/// Las dos cifras que deciden si se puede trabajar en un sótano: catálogo
+/// descargado y códigos de caja reservados. Sin códigos no se sella nada, y eso
+/// se descubre en el peor momento si no se dice antes.
+class _OfflineReadiness extends ConsumerWidget {
+  const _OfflineReadiness();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final ready = ref.watch(offlineReadinessProvider);
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+      child: Text(
+        ready.codes == 0
+            ? 'Sin códigos de caja reservados: sin señal no vas a poder sellar. '
+                  '${ready.products} productos descargados.'
+            : 'Listo para trabajar sin señal: ${ready.products} productos y '
+                  '${ready.codes} códigos descargados.',
+        style: Theme.of(context).textTheme.bodySmall,
+      ),
+    );
+  }
+}
+
+class _Grid extends StatelessWidget {
+  const _Grid({required this.children});
+
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) => GridView.count(
+    crossAxisCount: 2,
+    shrinkWrap: true,
+    physics: const NeverScrollableScrollPhysics(),
+    childAspectRatio: 1.7,
+    mainAxisSpacing: 8,
+    crossAxisSpacing: 8,
+    children: children,
+  );
+}
+
+class _Tile extends StatelessWidget {
+  const _Tile({
+    required this.label,
+    this.value,
+    this.caption,
+    required this.onTap,
+  });
+
+  final String label;
+  final String? value;
+  final String? caption;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) => Card(
+    margin: EdgeInsets.zero,
+    child: InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.all(14),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(label, style: Theme.of(context).textTheme.bodyMedium),
+            if (value case final number?)
+              Text(number, style: Theme.of(context).textTheme.headlineSmall)
+            else if (caption case final text?)
+              Text(text, style: Theme.of(context).textTheme.bodySmall),
+          ],
+        ),
+      ),
+    ),
+  );
+}
