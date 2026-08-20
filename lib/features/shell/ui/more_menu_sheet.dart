@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/auth/auth_providers.dart';
+import '../../dashboard/ui/stock_by_category_view.dart';
 import '../../intake/data/intake_providers.dart';
 import '../../intake/ui/intake_list_view.dart';
 import '../../intake/ui/pending_captures_view.dart';
 import '../../pallets/ui/pallets_list_view.dart';
-import '../../reports/ui/category_totals_view.dart';
 import '../../risk_reviews/ui/risk_reviews_view.dart';
 import '../../team/ui/team_directory_view.dart';
 import '../../transfers/ui/transfers_list_view.dart';
@@ -55,8 +55,8 @@ class MoreMenuSheet extends ConsumerWidget {
         ),
         ListTile(
           leading: const Icon(Icons.donut_small_outlined),
-          title: const Text('Capturado por categoría'),
-          onTap: () => _go(context, CategoryTotalsView.route()),
+          title: const Text('Stock por categoría'),
+          onTap: () => _go(context, StockByCategoryView.route()),
         ),
         ListTile(
           leading: const Icon(Icons.pallet),

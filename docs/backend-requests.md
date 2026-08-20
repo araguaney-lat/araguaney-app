@@ -14,32 +14,25 @@ they become work, if they do.
 
 ---
 
-## 1. A stock reading, not a capture reading
+## 1. A stock reading, not a capture reading — **resolved, and it already existed**
 
-**Blocks:** the *stock* half of Phase 03, task 5. The screen itself is no longer
-blocked — see below.
+**Closed on 2026-08-20 without the backend adding anything.** Kept here because
+how it was missed is the useful part.
 
-**Corrected on 2026-08-20.** This request used to say the contract had no
-session-scoped endpoint for category totals. That was wrong, and it had been
-wrong for a while: `GET /v1/reports/campaign/{campaign_id}/by-category` exists,
-needs only an authenticated user with access to the campaign, and scopes itself
-to the caller's center through `tenant_scope`. It returns
-`{category, box_count, unit_count}`, and the generated client already carries
-it. The application can build a category screen today without anything new.
+The request asked for a status filter so category totals would mean stock rather
+than capture. `GET /v1/dashboard/national` already answered exactly that:
+`AggregateRepository.stock_by_category` filters `Box.status == "SEALED"` and
+`tenant_scope` narrows it to the caller's center. The client now uses it.
 
-**What is genuinely missing** is narrower. That endpoint counts boxes created
-within a date range, regardless of status: a box that was sealed, palletised and
-shipped last month still adds to the total. It answers *what this center
-captured*, which is a fine question, but it is not *what this center holds*.
+It was invisible for two compounding reasons. The route's name says *national*
+while its scope is the caller's own center — so it read as somebody else's
+screen. And it sat behind the `dashboard` tag exclusion, so it was not in the
+generated client to be discovered by accident.
 
-**Why not filter on the device:** deciding which statuses count as stock is the
-rule itself, and a copy of it here would fork silently the day it changed in the
-backend — which is exactly the failure this repository avoids everywhere else.
-
-**Shape that would work:** a status filter on the existing endpoint —
-`?status=open,sealed` or an explicit `in_stock=true` — or a sibling route with
-the same response shape. Either keeps one schema and one place where the rule
-lives.
+Two lessons worth more than the request: **a name that describes the largest
+caller misleads every smaller one**, and **an exclusion hides what it excludes,
+including the answer to a question asked later**. The route-by-route review that
+found it is now a habit recorded in Phase 01.
 
 ## 2. `GET /v1/intakes/{id}`
 

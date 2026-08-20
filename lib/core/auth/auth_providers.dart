@@ -58,6 +58,15 @@ final myCenterIdProvider = Provider<String?>((ref) {
   return state is SessionActive ? state.session.centerId : null;
 });
 
+/// Si quien tiene la sesión es administración nacional.
+///
+/// Cambia lo que significan los agregados —su centro o todos— y qué se puede
+/// escribir. Vive en `core` porque ya son dos features las que lo preguntan.
+final isNationalAdminProvider = Provider<bool>((ref) {
+  final state = ref.watch(sessionControllerProvider);
+  return state is SessionActive && state.session.centerRole == 'national_admin';
+});
+
 final sessionControllerProvider =
     NotifierProvider<SessionController, SessionState>(SessionController.new);
 
