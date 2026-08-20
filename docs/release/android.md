@@ -16,6 +16,48 @@ These are external prerequisites; the repository cannot supply them.
 | Repository secrets | `ANDROID_KEYSTORE_BASE64`, `ANDROID_STORE_PASSWORD`, `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD`, `GOOGLE_SERVICES_JSON`, `SENTRY_DSN` |
 | Repository variables | `API_BASE_URL`, `WEB_BASE_URL` |
 
+## Which Android versions this runs on
+
+`minSdk` is **24 — Android 7.0, 2016** — and it is written down in
+`android/app/build.gradle.kts` rather than inherited from
+`flutter.minSdkVersion`. Inheriting it meant nobody had chosen it and a Flutter
+upgrade could move it without anyone noticing; who can install the application
+is a decision this project makes on purpose.
+
+Two things hold that number where it is.
+
+**The dependency floor.** Three plugins already require API 24 —
+`flutter_secure_storage`, `shared_preferences_android` and
+`url_launcher_android`. Firebase and `mobile_scanner` require 23,
+`connectivity_plus` and Sentry 21. Going below 24 is not a trade-off today; it
+does not compile.
+
+**Who uses this.** Somebody capturing donations at a collection center brings
+the phone they already own. In Mexico and Venezuela, where this ships first,
+that is frequently a device from 2018–2021. Raising the minimum excludes
+precisely the people least able to do anything about it, so it is raised only
+when a dependency forces it — not for convenience.
+
+### What degrades, and where
+
+| Android | Behaviour |
+|---|---|
+| 7.0 – 12 (24–32) | Everything works. Notifications are granted at install time; the system shows no permission dialog, and the in-app invitation never appears because there is nothing to ask for. |
+| 13+ (33+) | The system asks before delivering notifications and the answer can be no. The application explains what the notices are for **before** opening that dialog, and if it is denied, nothing insists — see Phase 07. Denied means no notices arrive at all; everything else keeps working. |
+| 8.0+ (26+) | Notices land on the application's own channel (`araguaney_operaciones`, high importance), which can be silenced on its own in system settings without silencing the application. Below 26 channels do not exist and each notice carries its own importance. |
+
+Nothing in the feature set requires a newer Android than 24. Push delivery,
+QR scanning, the local database and secure storage all work at that floor; what
+changes with version is the permission model above, not the capability.
+
+### The device you test on
+
+A development phone is a different question from `minSdk`. To exercise the
+notification permission dialog — the failure most likely to reach production —
+the test device or emulator has to run **Android 13 or newer**, because below
+that the dialog does not exist. That is a requirement of the tool, not of the
+people who use the application.
+
 ## Generating the upload keystore
 
 ```bash

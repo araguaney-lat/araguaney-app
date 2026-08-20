@@ -42,7 +42,25 @@ android {
 
     defaultConfig {
         applicationId = "lat.araguaney.araguaney_app"
-        minSdk = flutter.minSdkVersion
+
+        // Explícito y no `flutter.minSdkVersion`, que hoy vale lo mismo pero lo
+        // decide la versión de Flutter y cambia sola al actualizarla. Quién
+        // puede instalar la aplicación es una decisión del proyecto, no un
+        // efecto secundario de una actualización de herramientas.
+        //
+        // 24 es Android 7 (2016). Dos motivos, y los dos importan:
+        //
+        // 1. Es el piso real de las dependencias: `flutter_secure_storage`,
+        //    `shared_preferences_android` y `url_launcher_android` ya exigen 24.
+        //    Por debajo no se compila sin quitar plugins.
+        // 2. Es lo que exige la gente para la que existe esto. Quien captura
+        //    donaciones en un centro de acopio trae el teléfono que tiene, y
+        //    subir el mínimo deja fuera a quien menos puede cambiarlo. Cada
+        //    número que se sube es voluntariado que no puede usar la
+        //    aplicación.
+        //
+        // Qué se degrada en cada versión está en docs/release/android.md.
+        minSdk = 24
         targetSdk = flutter.targetSdkVersion
         // Los dos salen de `version:` en pubspec.yaml: el número antes del `+`
         // es el nombre y el de después es el código. Ver docs/release/versioning.md.
