@@ -97,38 +97,27 @@ would then carry the key, and the hand-written map and its test could go.
 
 ---
 
-## 5. A response schema for `GET /v1/public/qr/{code}`
+## 5. A response schema for `GET /v1/public/qr/{code}` — **resolved**
 
-**Blocks:** the home screen of every role. This request is worth more than it
-looks, and the previous version of this note undersold it.
+**Delivered on 2026-08-20**, and kept here rather than deleted: what it cost
+while it was open is the useful part.
 
-`GET /v1/public/qr/{code}` declares its responses through `responses` rather
-than `response_model`, on purpose and with a comment in the backend explaining
-why: the route answers a box or a pallet depending on the code, and a
-`response_model` would pretend to validate something it does not. The generator
-cannot express that, so `api/openapi.json` is consumed with the whole
-`dashboard` tag excluded.
+The route answers a box or a pallet and declares its shapes through `responses`
+rather than a `response_model`, which the generator cannot express. The client's
+only lever is excluding a tag — and the route shared `dashboard`, so excluding it
+also removed `GET /v1/dashboard/national` and `GET /v1/dashboard/weight`, which
+need only a center role and narrow themselves to the caller's own center. Six
+routes were lost to avoid one, in a repository that showed no sign of it.
 
-**What that exclusion actually costs**, checked route by route on 2026-08-20 —
-the tag carries seven routes, and two of them are neither public nor national:
+The backend moved the route to its own tag (`qr`). Note for anyone attempting
+something similar: **FastAPI appends a route's tags to its router's tags**, so a
+`tags=` on the decorator is not enough — the route keeps the inherited one. It
+took a separate router.
 
-| Route | Who can call it | What it answers |
-|---|---|---|
-| `GET /v1/dashboard/national` | any center role | scoped by `tenant_scope`: **the caller's own center** for a coordinator, everything for national administration |
-| `GET /v1/dashboard/weight` | any center role | kilograms per campaign, session-scoped |
-
-So the aggregate a coordinator's home screen is supposed to show — the one the
-mobile design draws as cards — is not missing from the backend. It is missing
-from the generated client, because one unrelated public route in the same tag
-cannot be typed.
-
-**What the application does today:** nothing reads those two. The home screen
-shows what the client can reach.
-
-**Shape that would work:** either give the QR route a schema that expresses
-"box or pallet" in a way a generator can consume, or simply **move it to its own
-tag**. The second costs one line and unblocks the other six routes immediately;
-the first is the tidier answer if the union can be expressed at all.
+This repository now excludes `qr` instead, and `DashboardApi` is generated with
+`NationalDashboardOut` and `WeightDashboardOut` typed. `GET
+/v1/dashboard/national/summary` still generates as `dynamic`, which is harmless:
+it requires national administration and this application does not call it.
 
 ## 6. Named codes and Spanish messages for refusals an operator reads
 
