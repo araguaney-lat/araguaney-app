@@ -29,7 +29,7 @@
 | 2 | Cache-first repositories | Read from Drift, refresh from API on open and on explicit action; last-sync timestamp surfaced to the UI. | 🟠 Medium | ✅ Done |
 | 3 | Catalog synchronization | Refresh visible product types when a read screen opens and when connectivity returns; the local catalog must remain one the server will accept. | 🟠 Medium | ✅ Done |
 | 4 | Connectivity service | Online/offline state exposed as a provider; changes trigger sync hooks. | 🟠 Medium | ✅ Done |
-| 5 | Center stock screen | Category totals for the operator's center. Buildable today from `GET /v1/reports/campaign/{id}/by-category`, which is already scoped to the caller's center — **what that endpoint counts is capture, not stock**; see below. | 🟠 Medium | ⬜ Pending |
+| 5 | Category totals for the center | Built on `GET /v1/reports/campaign/{id}/by-category`, scoped to the caller's center by the server. Titled «Capturado por categoría» because that is what it counts; the stock reading needs request 1. | 🟠 Medium | ✅ Done |
 | 6 | Box list and detail | The center's boxes with status; detail mirrors the web record. | 🟠 Medium | ✅ Done |
 | 7 | Offline/empty states | Spanish copy that says what is stale and why an action needs connectivity. | 🟢 Low | ✅ Done |
 | 8 | Tests on real SQLite | Repository and transaction behavior against in-memory Drift, never mocks. | 🔴 High | ✅ Done |
