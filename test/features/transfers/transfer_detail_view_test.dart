@@ -2,7 +2,6 @@ import 'package:araguaney_app/core/api/api_providers.dart';
 import 'package:araguaney_app/core/api/generated/rest_client.dart';
 import 'package:araguaney_app/core/auth/auth_providers.dart';
 import 'package:araguaney_app/core/connectivity/connectivity_controller.dart';
-import 'package:araguaney_app/features/transfers/data/transfers_providers.dart';
 import 'package:araguaney_app/features/transfers/ui/transfer_detail_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
