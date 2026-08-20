@@ -51,6 +51,21 @@ it.
 be closed as unnecessary. The current behaviour is not a workaround anyone would
 call wrong; it is just not the capture.
 
+### The listing does not carry the boxes either
+
+`IntakeOut.boxes` is declared with an empty list as its default and
+`IntakeRepository.find_all` does not load the relation, so every intake in
+`GET /v1/intakes` arrives with `boxes: []`. The capture record screen therefore
+rendered a «Cajas» heading with nothing under it, and the list said «0 cajas» on
+every row — a fabricated fact rather than a missing one, and the same failure
+mode as the invented status and category labels: **the client filled a silence
+with a value the server never sent.**
+
+The application now says so instead of counting: the row omits the count and the
+record explains that the history does not carry the boxes. Either of two server
+changes closes it — a by-id route that loads them, or a box count on the listing
+— and the second is cheaper if the record is going to fetch by id anyway.
+
 ---
 
 ## 3. Center names on `TransferOut`

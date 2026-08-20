@@ -51,12 +51,20 @@ void main() {
 
   test('watchAll filters by category and sorts by display name', () async {
     await db.catalogDao.replaceAll([
-      productTypeRow(id: 'pt-1', displayName: 'Zinc', category: 'insumo'),
-      productTypeRow(id: 'pt-2', displayName: 'Alcohol', category: 'insumo'),
+      productTypeRow(
+        id: 'pt-1',
+        displayName: 'Zinc',
+        category: 'MEDICAL_SUPPLY',
+      ),
+      productTypeRow(
+        id: 'pt-2',
+        displayName: 'Alcohol',
+        category: 'MEDICAL_SUPPLY',
+      ),
       productTypeRow(id: 'pt-3', displayName: 'Amoxicilina'),
     ]);
 
-    final rows = await db.catalogDao.watchAll(category: 'insumo').first;
+    final rows = await db.catalogDao.watchAll(category: 'MEDICAL_SUPPLY').first;
 
     expect(rows.map((row) => row.displayName), ['Alcohol', 'Zinc']);
   });

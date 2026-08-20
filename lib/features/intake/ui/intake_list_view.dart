@@ -62,15 +62,18 @@ class _IntakeList extends StatelessWidget {
     itemBuilder: (context, index) {
       final intake = intakes[index];
       final boxes = intake.boxes.length;
+      // `GET /v1/intakes` no trae las cajas: el esquema las declara con lista
+      // vacía por defecto y el servidor no las rellena al listar. Contar esa
+      // lista daba «0 cajas» en todas las filas, que no es un dato que falte
+      // sino uno falso. Mientras no exista la petición 2 no se cuenta nada.
+      final parts = [
+        if (boxes > 0) '$boxes ${boxes == 1 ? 'caja' : 'cajas'}',
+        ?donorLabel(intake),
+      ];
 
       return ListTile(
         title: Text(formatShortDate(intake.createdAt)),
-        subtitle: Text(
-          [
-            '$boxes ${boxes == 1 ? 'caja' : 'cajas'}',
-            ?donorLabel(intake),
-          ].join(' · '),
-        ),
+        subtitle: parts.isEmpty ? null : Text(parts.join(' · ')),
         onTap: () => Navigator.of(context).push(IntakeDetailView.route(intake)),
       );
     },

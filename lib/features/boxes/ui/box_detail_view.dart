@@ -95,8 +95,13 @@ class _BoxDetailViewState extends ConsumerState<BoxDetailView> {
         AsyncError() => const _NotCachedView(),
         _ => const Center(child: CircularProgressIndicator()),
       },
+      // Sin sellar no basta: una caja rechazada tampoco lo está y no se sella,
+      // se decide qué hacer con ella. Ofrecerlo aquí mandaba al servidor una
+      // petición que solo podía volver negada, y con el motivo del rechazo
+      // escrito justo encima.
       bottomNavigationBar: switch (box) {
-        AsyncData(value: final item?) when item.box.sealedAt == null =>
+        AsyncData(value: final item?)
+            when item.box.sealedAt == null && item.box.status == 'DRAFT' =>
           _SealBar(offline: offline, sealing: _sealing, onSeal: _seal),
         _ => null,
       },

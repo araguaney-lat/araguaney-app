@@ -4,24 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/api/api_error_mapper.dart';
 import '../../../core/api/generated/models/category_stock_out.dart';
 import '../../../core/auth/auth_providers.dart';
+import '../../../core/ui/category_label.dart';
 import '../data/center_dashboard_providers.dart';
-
-/// Cómo se lee una categoría del catálogo.
-///
-/// Las ocho claves son las de `PRODUCT_CATEGORIES` en el backend. Una que esta
-/// versión no conozca se dibuja tal cual: el catálogo puede crecer y un binario
-/// viejo no puede hacer desaparecer una fila entera por no reconocer su nombre.
-String categoryLabel(String category) => switch (category) {
-  'MEDICINE' => 'Medicamentos',
-  'MEDICAL_SUPPLY' => 'Insumo médico',
-  'FOOD' => 'Alimentos',
-  'WATER' => 'Agua',
-  'HYGIENE' => 'Higiene',
-  'TOOL' => 'Herramientas',
-  'RESCUE_GEAR' => 'Equipo de rescate',
-  'OTHER' => 'Otros',
-  _ => category,
-};
 
 /// Lo que el centro tiene sellado, por categoría.
 ///

@@ -79,7 +79,7 @@ void main() {
   }
 
   Future<void> addBox(WidgetTester tester) async {
-    await tester.tap(find.text('Agregar caja'));
+    await tester.tap(find.text('Añadir caja'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Elegir producto'));
     await tester.pumpAndSettle();
@@ -95,7 +95,7 @@ void main() {
   }
 
   Future<void> submit(WidgetTester tester) async {
-    await tester.tap(find.text('Enviar'));
+    await tester.tap(find.text('Registrar'));
     await tester.pumpAndSettle();
   }
 

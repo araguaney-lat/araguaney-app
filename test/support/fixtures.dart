@@ -7,7 +7,7 @@ final testNow = DateTime.utc(2026, 8, 10, 12);
 ProductTypeRow productTypeRow({
   String id = 'pt-1',
   String displayName = 'Paracetamol 500 mg',
-  String category = 'medicamento',
+  String category = 'MEDICINE',
   String? campaignId,
   bool isControlled = false,
 }) => ProductTypeRow(
@@ -46,7 +46,7 @@ BoxRow boxRow({
 Map<String, Object?> productTypeJson({
   String id = 'pt-1',
   String displayName = 'Paracetamol 500 mg',
-  String category = 'medicamento',
+  String category = 'MEDICINE',
   String? campaignId,
 }) => {
   'id': id,
@@ -108,7 +108,7 @@ Map<String, Object?> publicBoxJson({
 }) => {
   'code': code,
   'status': status,
-  'category': 'medicamento',
+  'category': 'MEDICINE',
   'display_name': displayName,
   'quantity': 10,
   'unit': 'unidad',

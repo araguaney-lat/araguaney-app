@@ -134,5 +134,18 @@ void main() {
 
       expect(find.text('Sellar caja'), findsNothing);
     });
+
+    testWidgets('a rejected box offers no seal action either', (tester) async {
+      // No lleva `sealed_at`, como cualquier caja que no llegó a sellarse. Que
+      // esté sin sellar no la vuelve sellable: fue rechazada.
+      await db.boxesDao.replaceAll([boxRow(status: 'REJECTED')]);
+
+      await pumpDetail(
+        tester,
+        FakeHttpAdapter((_) => FakeResponse(200, boxJson(status: 'REJECTED'))),
+      );
+
+      expect(find.text('Sellar caja'), findsNothing);
+    });
   });
 }
