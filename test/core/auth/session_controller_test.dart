@@ -68,6 +68,59 @@ void main() {
       expect(repository.lastRefreshTokenUsed, 'refresh-stored');
     });
 
+    test(
+      'a restored session keeps the role the token does not carry',
+      () async {
+        // `POST /v1/auth/refresh` devuelve solo los tokens. Sin preguntar quién
+        // es, quien coordina un centro reaparecía como voluntariado en cada
+        // reinicio: sin sus acciones y sin su rol, hasta volver a entrar.
+        final repository = FakeAuthRepository(
+          refreshToken: buildToken(centerRole: null),
+        )..meCenterRole = 'coordinator';
+        final built = _build(
+          repository: repository,
+          storage: FakeTokenStorage(stored: 'refresh-stored'),
+        );
+
+        await built.controller.restoration;
+
+        final state = built.container.read(sessionControllerProvider);
+        expect((state as SessionActive).session.centerRole, 'coordinator');
+      },
+    );
+
+    test('without an answer the session opens with no role at all', () async {
+      // Ofrecer de menos es la dirección segura: el servidor sigue decidiendo
+      // en cada llamada, y una acción que no se ofrece no rompe nada.
+      final repository = FakeAuthRepository(
+        refreshToken: buildToken(centerRole: null),
+      )..meError = unauthorized;
+      final built = _build(
+        repository: repository,
+        storage: FakeTokenStorage(stored: 'refresh-stored'),
+      );
+
+      await built.controller.restoration;
+
+      final state = built.container.read(sessionControllerProvider);
+      expect(state, isA<SessionActive>());
+      expect((state as SessionActive).session.centerRole, isNull);
+    });
+
+    test('a token that carries the role is not asked about twice', () async {
+      final repository = FakeAuthRepository(
+        refreshToken: buildToken(centerRole: 'coordinator'),
+      );
+      final built = _build(
+        repository: repository,
+        storage: FakeTokenStorage(stored: 'refresh-stored'),
+      );
+
+      await built.controller.restoration;
+
+      expect(repository.meCount, 0);
+    });
+
     test('stores the rotated refresh token, replacing the old one', () async {
       // El backend rota el refresh en cada uso; guardar el anterior dejaría en
       // el dispositivo una credencial ya revocada.

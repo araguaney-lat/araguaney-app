@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../features/home/ui/home_view.dart';
 import '../../features/session/ui/change_password_view.dart';
 import '../../features/session/ui/login_view.dart';
 import '../../features/session/ui/totp_challenge_view.dart';
+import '../../features/shell/ui/app_shell.dart';
 import '../auth/auth_providers.dart';
 import '../auth/session.dart';
 import 'push_router.dart';
@@ -32,7 +32,7 @@ class SessionGate extends ConsumerWidget {
       // El enrutado de avisos envuelve solo esta rama: navegar exige sesión,
       // y ni el inicio de sesión ni el cambio obligatorio de contraseña se
       // pueden saltar porque alguien tocara una notificación.
-      SessionActive() => const PushRouter(child: HomeView()),
+      SessionActive() => const PushRouter(child: AppShell()),
     };
   }
 }

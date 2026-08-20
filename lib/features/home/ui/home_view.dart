@@ -4,20 +4,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/auth/auth_providers.dart';
 import '../../../core/auth/session.dart';
 import '../../../core/i18n/generated/app_localizations.dart';
-import '../../boxes/ui/boxes_list_view.dart';
 import '../../intake/data/intake_providers.dart';
-import '../../intake/ui/intake_list_view.dart';
 import '../../intake/ui/pending_captures_view.dart';
-import '../../messaging/data/messaging_providers.dart';
-import '../../messaging/ui/threads_list_view.dart';
-import '../../pallets/ui/pallets_list_view.dart';
-import '../../scanning/ui/scanner_view.dart';
-import '../../team/ui/team_directory_view.dart';
-import '../../transfers/ui/transfers_list_view.dart';
 import 'push_permission_card.dart';
 
-/// Pantalla principal, todavía provisional: las features operativas llegan en
-/// las fases siguientes. Hoy confirma quién inició sesión y permite cerrarla.
+/// El destino «Inicio» de la barra inferior.
+///
+/// Ya no es un menú: navegar es trabajo de la barra y de su hoja de «Menú».
+/// Aquí queda lo que hay que saber al abrir la aplicación —quién es quien
+/// entró, si los avisos están activos y qué quedó a medias— y una sola acción,
+/// la de la cola, que existe porque una captura sin enviar es lo único que se
+/// puede perder.
 class HomeView extends ConsumerWidget {
   const HomeView({super.key});
 
@@ -34,17 +31,7 @@ class HomeView extends ConsumerWidget {
     final session = state is SessionActive ? state.session : null;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.appTitle),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.logout),
-            tooltip: 'Cerrar sesión',
-            onPressed: () =>
-                ref.read(sessionControllerProvider.notifier).logOut(),
-          ),
-        ],
-      ),
+      appBar: AppBar(title: Text(l10n.appTitle)),
       // Desplazable, no centrada: con la tarjeta del permiso y los accesos, el
       // contenido ya no cabe en una pantalla pequeña, y un `Column` centrado
       // desborda en vez de dejar bajar.
@@ -71,51 +58,7 @@ class HomeView extends ConsumerWidget {
               const SizedBox(height: 24),
               const PushPermissionCard(),
               const SizedBox(height: 12),
-              FilledButton.icon(
-                icon: const Icon(Icons.qr_code_scanner),
-                label: const Text('Escanear código'),
-                onPressed: () =>
-                    Navigator.of(context).push(ScannerView.route()),
-              ),
-              const SizedBox(height: 12),
               _PendingCapturesButton(),
-              const SizedBox(height: 12),
-              FilledButton.tonalIcon(
-                icon: const Icon(Icons.add_box_outlined),
-                label: const Text('Capturas'),
-                onPressed: () =>
-                    Navigator.of(context).push(IntakeListView.route()),
-              ),
-              const SizedBox(height: 12),
-              FilledButton.tonalIcon(
-                icon: const Icon(Icons.pallet),
-                label: const Text('Tarimas'),
-                onPressed: () =>
-                    Navigator.of(context).push(PalletsListView.route()),
-              ),
-              const SizedBox(height: 12),
-              const _MessagesButton(),
-              const SizedBox(height: 12),
-              FilledButton.tonalIcon(
-                icon: const Icon(Icons.swap_horiz),
-                label: const Text('Transferencias'),
-                onPressed: () =>
-                    Navigator.of(context).push(TransfersListView.route()),
-              ),
-              const SizedBox(height: 12),
-              FilledButton.tonalIcon(
-                icon: const Icon(Icons.inventory_2_outlined),
-                label: const Text('Cajas del centro'),
-                onPressed: () =>
-                    Navigator.of(context).push(BoxesListView.route()),
-              ),
-              const SizedBox(height: 12),
-              FilledButton.tonalIcon(
-                icon: const Icon(Icons.people_outline),
-                label: const Text('Equipo'),
-                onPressed: () =>
-                    Navigator.of(context).push(TeamDirectoryView.route()),
-              ),
             ],
           ),
         ),
@@ -155,22 +98,3 @@ class _PendingCapturesButton extends ConsumerWidget {
 /// El contador cuenta solo los privados, que es lo que el servidor devuelve:
 /// un hilo de campaña lo lee quien quiera cuando quiera, y contarlo como
 /// pendiente convertiría el número en ruido.
-class _MessagesButton extends ConsumerWidget {
-  const _MessagesButton();
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final unread = ref.watch(unreadMessagesProvider).valueOrNull ?? 0;
-
-    return FilledButton.tonalIcon(
-      icon: unread == 0
-          ? const Icon(Icons.forum_outlined)
-          : Badge(
-              label: Text('$unread'),
-              child: const Icon(Icons.forum_outlined),
-            ),
-      label: Text(unread == 0 ? 'Mensajes' : 'Mensajes · $unread sin leer'),
-      onPressed: () => Navigator.of(context).push(ThreadsListView.route()),
-    );
-  }
-}

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../api/api_error_mapper.dart';
 import '../api/api_failure.dart';
 import '../api/generated/models/token.dart';
+import '../api/generated/models/user_out.dart';
 import '../db/db_providers.dart';
 import '../push/push_providers.dart';
 import 'auth_providers.dart';
@@ -215,7 +216,17 @@ class SessionController extends Notifier<SessionState> {
         ? await _adoptIdentity(token.accessToken)
         : await _storage.readUserId();
 
-    state = SessionActive(Session.fromToken(token, userId: userId));
+    // Un token sin rol viene de renovar, y renovar no dice quién es: hay que
+    // preguntarlo. Si no se puede —sin señal, servidor caído— la sesión se abre
+    // igual y sin rol, que es la dirección segura: se ofrece de menos, nunca de
+    // más, y el servidor sigue decidiendo en cada llamada.
+    final identity = token.centerRole == null
+        ? await _identity(token.accessToken)
+        : null;
+
+    state = SessionActive(
+      Session.fromToken(token, userId: userId, identity: identity),
+    );
 
     // El registro del destino de avisos va **después** de exponer la sesión:
     // el endpoint la exige, y el cliente con sesión saca su token de este
@@ -244,6 +255,20 @@ class SessionController extends Notifier<SessionState> {
   /// servidor no contesta quién es, se borra igual. Fallar hacia el borrado es
   /// la única dirección segura, porque la alternativa es enseñarle los datos de
   /// una persona a la siguiente que agarre el teléfono del centro.
+  /// Quién es, sin decidir nada sobre el cache.
+  ///
+  /// Separado de [_adoptIdentity] a propósito: aquel resuelve identidad **y**
+  /// decide si el modelo de lectura sobrevive, porque puede haber cambiado la
+  /// persona. Aquí no puede: se viene de un refresh guardado en este mismo
+  /// dispositivo, así que preguntar solo completa lo que el token no trajo.
+  Future<UserOut?> _identity(String accessToken) async {
+    try {
+      return await _repository.me(accessToken);
+    } on Object {
+      return null;
+    }
+  }
+
   Future<String?> _adoptIdentity(String accessToken) async {
     final previous = await _storage.readUserId();
 

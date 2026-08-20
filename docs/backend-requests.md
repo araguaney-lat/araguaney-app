@@ -154,6 +154,32 @@ side; either way the client stops holding copy.
 
 ---
 
+## 7. Identity fields on `POST /v1/auth/refresh`
+
+**Blocks:** nothing now — the client works around it with an extra request.
+
+`POST /v1/auth/login` answers with `role`, `center_id` and `center_role`
+alongside the tokens. `POST /v1/auth/refresh` answers with the tokens alone,
+although the access token it mints carries those same claims inside.
+
+That asymmetry has a cost, and it went unnoticed for months. Restoring a session
+when the application opens goes through refresh, so every restart produced a
+session with no role: a center coordinator came back as a volunteer — without
+the actions their role allows, and without the screens that check for it — until
+they signed out and in again. Nothing failed loudly, because the server still
+enforced everything correctly; only the client's idea of who was using it was
+wrong.
+
+**What the application does today:** when a token arrives without
+`center_role`, it asks `GET /v1/auth/me` and fills the gap. On failure the
+session opens with no role at all, which offers less rather than more.
+
+**Shape that would work:** the same three fields on the refresh response that
+login already returns. The client would drop the extra call, and one request
+would disappear from every cold start on a connection that cannot spare it.
+
+---
+
 ## Not requests
 
 Recorded here so they are not mistaken for gaps:
