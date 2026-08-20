@@ -14,9 +14,9 @@ A row is done, partial, blocked/external, or pending; the totals below are the
 sum of those rows and nothing else.
 
 ```mermaid
-pie title Tasks completed (115 tasks)
+pie title Tasks completed (121 tasks)
     "Done" : 87
-    "Pending" : 18
+    "Pending" : 24
     "Partial" : 7
     "Blocked or external" : 4
 ```
@@ -35,7 +35,8 @@ pie title Tasks completed (115 tasks)
 | 9 | [iOS enablement](phase-09-ios-enablement.md) | 0 | 6 | ⬜ 0% |
 | 10 | [Operational parity backlog](phase-10-operational-parity.md) | 2 | 12 | 🟨 14% (4 partial, 1 blocked) |
 | 11 | [Design system](phase-11-design-system.md) | 9 | 5 | 🟨 64% |
-| **Total** | | **87** | **28** | **🟢 76%** |
+| 12 | [Measuring a pallet with the camera](phase-12-pallet-height.md) | 0 | 6 | ⬜ 0% |
+| **Total** | | **87** | **34** | **🟢 72%** |
 
 ## Blocked work
 
