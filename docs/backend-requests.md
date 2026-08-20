@@ -14,27 +14,32 @@ they become work, if they do.
 
 ---
 
-## 1. Stock by category for the caller's center
+## 1. A stock reading, not a capture reading
 
-**Blocks:** Phase 03, task 5 — the only task in that phase that never shipped.
+**Blocks:** the *stock* half of Phase 03, task 5. The screen itself is no longer
+blocked — see below.
 
-`CategoryStockOut` and `CenterStockOut` exist, but only inside
-`NationalDashboardOut` (a national aggregate) and the public campaign schemas.
-`GET /v1/dashboard/weight` is session-scoped but answers a different question:
-kilograms per campaign, not units per category.
+**Corrected on 2026-08-20.** This request used to say the contract had no
+session-scoped endpoint for category totals. That was wrong, and it had been
+wrong for a while: `GET /v1/reports/campaign/{campaign_id}/by-category` exists,
+needs only an authenticated user with access to the campaign, and scopes itself
+to the caller's center through `tenant_scope`. It returns
+`{category, box_count, unit_count}`, and the generated client already carries
+it. The application can build a category screen today without anything new.
 
-**What the application does today:** nothing. The screen was not built, and the
-roadmap says why.
+**What is genuinely missing** is narrower. That endpoint counts boxes created
+within a date range, regardless of status: a box that was sealed, palletised and
+shipped last month still adds to the total. It answers *what this center
+captured*, which is a fine question, but it is not *what this center holds*.
 
-**Why not compute it on the device:** summing `quantity` over cached boxes
-grouped by category requires deciding which box statuses count as stock. That
-rule lives in the backend, and a client copy of it would fork silently the day
-it changed there.
+**Why not filter on the device:** deciding which statuses count as stock is the
+rule itself, and a copy of it here would fork silently the day it changed in the
+backend — which is exactly the failure this repository avoids everywhere else.
 
-**Shape that would work:** anything session-scoped returning category totals for
-the caller's center — the same shape `CategoryStockOut` already has.
-
----
+**Shape that would work:** a status filter on the existing endpoint —
+`?status=open,sealed` or an explicit `in_stock=true` — or a sibling route with
+the same response shape. Either keeps one schema and one place where the rule
+lives.
 
 ## 2. `GET /v1/intakes/{id}`
 
@@ -92,28 +97,38 @@ would then carry the key, and the hand-written map and its test could go.
 
 ---
 
-## 5. A single response schema for `GET /v1/public/qr/{code}`
+## 5. A response schema for `GET /v1/public/qr/{code}`
 
-**Blocks:** generating a client for the `dashboard` tag, which in turn blocks
-Phase 10's national dashboard block.
+**Blocks:** the home screen of every role. This request is worth more than it
+looks, and the previous version of this note undersold it.
 
-That endpoint declares an `anyOf` response — box ficha or pallet ficha,
-depending on the code. `swagger_parser` cannot express it: it emits a reference
-to a sealed type it never generates, and the client stops compiling.
+`GET /v1/public/qr/{code}` declares its responses through `responses` rather
+than `response_model`, on purpose and with a comment in the backend explaining
+why: the route answers a box or a pallet depending on the code, and a
+`response_model` would pretend to validate something it does not. The generator
+cannot express that, so `api/openapi.json` is consumed with the whole
+`dashboard` tag excluded.
 
-**What the application does today:** excludes the whole `dashboard` tag from
-generation. Nothing under it is used — a scanned code resolves through the typed
-box and pallet fichas — so the cost is deferred, not paid.
+**What that exclusion actually costs**, checked route by route on 2026-08-20 —
+the tag carries seven routes, and two of them are neither public nor national:
 
-**Shape that would work:** one wrapper schema with a discriminator and both
-shapes as optional members, instead of `anyOf` at the top level. The same
-information, expressible by a code generator.
+| Route | Who can call it | What it answers |
+|---|---|---|
+| `GET /v1/dashboard/national` | any center role | scoped by `tenant_scope`: **the caller's own center** for a coordinator, everything for national administration |
+| `GET /v1/dashboard/weight` | any center role | kilograms per campaign, session-scoped |
 
-**Worth weighing:** this only matters when the mobile client needs
-`/v1/dashboard/**`. If the national dashboard is never a mobile surface, the
-exclusion can stay forever and this request can be closed.
+So the aggregate a coordinator's home screen is supposed to show — the one the
+mobile design draws as cards — is not missing from the backend. It is missing
+from the generated client, because one unrelated public route in the same tag
+cannot be typed.
 
----
+**What the application does today:** nothing reads those two. The home screen
+shows what the client can reach.
+
+**Shape that would work:** either give the QR route a schema that expresses
+"box or pallet" in a way a generator can consume, or simply **move it to its own
+tag**. The second costs one line and unblocks the other six routes immediately;
+the first is the tidier answer if the union can be expressed at all.
 
 ## 6. Named codes and Spanish messages for refusals an operator reads
 

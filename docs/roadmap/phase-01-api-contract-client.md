@@ -39,3 +39,18 @@
 ## Suggested order
 
 1 → 2 → 3 (contract pipeline first) → 4 → 5 → 6 → 7 → 8.
+
+---
+
+## Snapshot freshness, checked on 2026-08-20
+
+The vendored `api/openapi.json` was diffed route by route against the backend's
+routers on `main`. Every path the application uses is present and unchanged; the
+only route the backend has and the snapshot does not is
+`POST /v1/webhooks/resend`, which belongs to email delivery and is not a mobile
+concern.
+
+Worth keeping as a habit rather than a one-off: a stale snapshot does not fail
+loudly. It fails by making the roadmap record work as blocked when the endpoint
+that unblocks it already shipped — which is exactly what happened to Phase 03,
+task 5.

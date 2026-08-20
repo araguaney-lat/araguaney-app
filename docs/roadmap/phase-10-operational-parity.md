@@ -29,9 +29,15 @@
 | 3 | Transfers | Participating in a transfer: reading it, approving, rejecting with a reason, dispatching and receiving, each offered only where the server's machine allows it. **Creating one is not here** — see below. | 🟠 Medium | 🟨 Partial |
 | 4 | Reception and incidents | Reading a reception with its shrinkage, and raising and listing incidents on a shipment — everything a center can do. **Reconciling is closed to national administration** and stays out; see below. | 🔴 High | 🟨 Partial |
 | 5 | Coordinator views | Resolving a risk review, the center's team directory, adding somebody to the center, resending an access, and moving people in and out of a campaign — everything scoped to the caller's own center, which the server enforces. **Reading the directory is open to the whole center**; managing it is not. | 🔴 High | ✅ Done |
-| 6 | National dashboard | Aggregated read-only views for national administrators. Reopening `/v1/dashboard/**` in the generated client means solving the `anyOf` response the generator cannot express today — request 5 in `docs/backend-requests.md`. | 🟠 Medium | ⬜ Pending |
+| 6 | Aggregates for the home screen | **Not national-only, as this row used to say.** `GET /v1/dashboard/national` needs only a center role and scopes itself to the caller's center; `GET /v1/dashboard/weight` is session-scoped too. Both are unreachable because the whole `dashboard` tag is excluded from client generation over one unrelated public route — request 5. | 🟠 Medium | ⛔ Blocked |
 | 7 | Messaging / notification center | Threads, replies, marking read on open, and the unread counter on the home screen. Opening a campaign thread is included; **private threads and attachments are not** — see below. | 🟠 Medium | 🟨 Partial |
 | 8 | Riverpod 3.x + codegen migration | Still blocked, and now verified rather than assumed — see below. | 🟠 Medium | 🚫 Blocked |
+| 9 | Pre-registered donations | A donor registers online and arrives with a code. `GET /v1/donations`, `GET /v1/donations/{code}`, `POST /v1/donations/{code}/receive`, plus `/suggestions` and `/photos/{id}/read-label`, are all open to any center role and none is used today. The mobile design draws these screens (16–17). | 🔴 High | ⬜ Pending |
+| 10 | Shipment workflow | The application reads a shipment and asks for its manifest; it cannot list shipments, create one, add or remove pallets, close, dispatch, or export the customs declaration. All of it is coordinator-level and already in the client. | 🔴 High | ⬜ Pending |
+| 11 | Profile and account security | Reading and editing the profile, changing the password on purpose rather than because the server forces it, enabling or disabling the second factor, accepting terms, the avatar, and recovering a forgotten password. Fifteen endpoints, none reached from the application. The design has the screen (Ajustes / Perfil). | 🟠 Medium | ⬜ Pending |
+| 12 | Reports for the center | Seven report routes that any authenticated member of a campaign can call, all scoped by `tenant_scope`: category, activity, shrinkage, summary, countries, by-center, and a CSV export. The category one is what Phase 03 task 5 needs. | 🟠 Medium | ⬜ Pending |
+| 13 | Traceability and printed labels | `GET /v1/boxes/{id}/events` and `GET /v1/pallets/{id}/events` — the same timeline shipments already show, for the two objects an operator actually holds — plus the PDF labels for boxes and pallets, which today can only be printed from the web panel. | 🟢 Low | ⬜ Pending |
+| 14 | Better search when capturing | `GET /v1/catalog/search`, `GET /v1/catalog/barcode/{gtin}` and `GET /v1/intakes/donors/search` exist and the capture form uses none of them: it lists product types and captures donors by hand. | 🟢 Low | ⬜ Pending |
 
 ---
 
@@ -239,6 +245,27 @@ Recording it here so the next person does not spend the same afternoon
 discovering it: the check to repeat is bumping `riverpod` in `pubspec.yaml` and
 reading what `flutter pub get` says. Until that resolves, the block is not
 pending work — it is waiting on the ecosystem.
+
+---
+
+## What the backend offers and this application deliberately ignores
+
+Reviewed route by route on 2026-08-20 against the backend's routers, so the next
+person does not have to rediscover it:
+
+- **Studio** (`/v1/studio/**`, `/v1/requests/**`) is a desk product with its own
+  audience — needs matching, AI usage, audit, user administration. It requires
+  `require_user_manager` or superadmin, and none of it belongs on a phone.
+- **Center administration** (`/v1/centers`, `/v1/campaigns` write side,
+  `/v1/product-types` write side, `/v1/incidents` global, center applications)
+  is national administration or platform work, from a desk.
+- **Email failures** (`get_current_superadmin`) is operations tooling.
+- **The public donor flow** (`/v1/public/donations/**`, `/b/{code}`, `/d/{code}`,
+  `/p/{code}`) is the website's, and the QR codes this application prints point
+  at it on purpose.
+
+Everything else a center role can call is either used already or listed as a
+block above. There is no fifth category.
 
 ---
 
