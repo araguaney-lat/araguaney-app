@@ -70,6 +70,10 @@ class FakeAuthRepository extends AuthRepository {
   /// Quién contesta `GET /v1/auth/me`. Nulo con [meError] puesto simula que no
   /// se pudo confirmar la identidad.
   String meUserId = 'user-1';
+
+  /// El rol que contesta `GET /v1/auth/me`. Es el que la aplicación usa cuando
+  /// el token no lo trae, que es lo que pasa al renovar.
+  String meCenterRole = 'volunteer';
   ApiFailure? meError;
   int meCount = 0;
 
@@ -110,7 +114,7 @@ class FakeAuthRepository extends AuthRepository {
       totpEnabled: false,
       avatarUrl: null,
       centerId: 'center-1',
-      centerRole: 'volunteer',
+      centerRole: meCenterRole,
       countryCode: 'VE',
       fullName: 'Persona de prueba',
     );

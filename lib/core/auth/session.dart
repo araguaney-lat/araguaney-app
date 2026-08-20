@@ -1,4 +1,5 @@
 import '../api/generated/models/token.dart';
+import '../api/generated/models/user_out.dart';
 
 /// Sesión activa de una persona operadora.
 ///
@@ -19,16 +20,25 @@ class Session {
 
   /// El token no lleva identidad, así que [userId] se resuelve aparte y se
   /// inyecta aquí. Es nulo cuando no se pudo confirmar quién es.
-  factory Session.fromToken(Token token, {String? userId}) => Session(
-    accessToken: token.accessToken,
-    refreshToken: token.refreshToken,
-    role: token.role,
-    userId: userId,
-    centerId: token.centerId,
-    centerRole: token.centerRole,
-    mustChangePassword: token.mustChangePassword,
-    mustAcceptTerms: token.mustAcceptTerms,
-  );
+  ///
+  /// Los datos de identidad se toman del token, y de [identity] cuando el
+  /// token no los trae.
+  ///
+  /// `POST /v1/auth/refresh` devuelve solo los tokens: ni rol de centro ni
+  /// centro. Como restaurar la sesión al abrir la aplicación pasa por ahí, sin
+  /// este relleno quien coordina un centro reaparecía como voluntariado en cada
+  /// reinicio —sin su rol, sin sus acciones— hasta volver a iniciar sesión.
+  factory Session.fromToken(Token token, {String? userId, UserOut? identity}) =>
+      Session(
+        accessToken: token.accessToken,
+        refreshToken: token.refreshToken,
+        role: token.role ?? identity?.role,
+        userId: userId,
+        centerId: token.centerId ?? identity?.centerId,
+        centerRole: token.centerRole ?? identity?.centerRole,
+        mustChangePassword: token.mustChangePassword,
+        mustAcceptTerms: token.mustAcceptTerms,
+      );
 
   final String accessToken;
   final String? refreshToken;
