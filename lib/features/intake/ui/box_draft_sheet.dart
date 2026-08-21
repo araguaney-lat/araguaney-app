@@ -95,7 +95,10 @@ class _BoxDraftSheetState extends State<BoxDraftSheet> {
         expiryDate: _expiry,
         weightKg: _emptyToNull(_weight.text),
         code: widget.initial?.code,
-        gtin: widget.initial?.gtin,
+        // El del catálogo, que es el del envase que se escaneó o el del
+        // producto elegido a mano. El contrato lo acepta y hasta ahora nadie
+        // lo escribía.
+        gtin: _product!.gtin ?? widget.initial?.gtin,
       ),
     );
   }

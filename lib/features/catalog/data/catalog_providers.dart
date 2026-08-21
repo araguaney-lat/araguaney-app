@@ -3,7 +3,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/api/api_providers.dart';
 import '../../../core/db/app_database.dart';
 import '../../../core/db/db_providers.dart';
+import 'barcode_lookup.dart';
 import 'catalog_repository.dart';
+
+/// Buscar un producto por el código de barras de su envase.
+final barcodeLookupProvider = Provider<BarcodeLookup>(
+  (ref) => BarcodeLookup(
+    api: ref.watch(restClientProvider).catalog,
+    database: ref.watch(appDatabaseProvider),
+  ),
+);
 
 final catalogRepositoryProvider = Provider<CatalogRepository>(
   (ref) => CatalogRepository(

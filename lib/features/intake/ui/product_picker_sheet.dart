@@ -5,6 +5,7 @@ import '../../../core/db/app_database.dart';
 import '../../../core/ui/category_label.dart';
 import '../../../core/ui/sheet_insets.dart';
 import '../../catalog/data/catalog_providers.dart';
+import '../../catalog/ui/product_scan_view.dart';
 
 /// Selección de tipo de producto desde el catálogo **local**.
 ///
@@ -53,6 +54,22 @@ class _ProductPickerSheetState extends ConsumerState<ProductPickerSheet> {
                 prefixIcon: Icon(Icons.search),
               ),
               onChanged: (value) => setState(() => _search = value),
+            ),
+          ),
+          // Escanear está aquí y no en la barra inferior de la aplicación
+          // porque solo tiene sentido buscando un producto: lo que se lee es
+          // el envase que la persona tiene en la mano.
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+            child: OutlinedButton.icon(
+              onPressed: () async {
+                final product = await ProductScanView.push(context);
+                if (product != null && context.mounted) {
+                  Navigator.of(context).pop(product);
+                }
+              },
+              icon: const Icon(Icons.barcode_reader),
+              label: const Text('Escanear código de barras'),
             ),
           ),
           if (categories.isNotEmpty)

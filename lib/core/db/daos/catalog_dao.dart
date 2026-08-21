@@ -54,6 +54,14 @@ class CatalogDao extends DatabaseAccessor<AppDatabase> with _$CatalogDaoMixin {
 
   Future<List<ProductTypeRow>> all() => select(productTypes).get();
 
+  /// El producto cuyo código de barras es [gtin], si está descargado.
+  ///
+  /// Es la consulta que hace que escanear funcione sin señal: el catálogo local
+  /// guarda el `gtin` que sirvió el servidor, con su visibilidad por campaña.
+  Future<ProductTypeRow?> findByGtin(String gtin) => (select(
+    productTypes,
+  )..where((t) => t.gtin.equals(gtin))).getSingleOrNull();
+
   Future<ProductTypeRow?> findById(String id) =>
       (select(productTypes)..where((t) => t.id.equals(id))).getSingleOrNull();
 
