@@ -6,9 +6,9 @@ import '../../../core/db/daos/boxes_dao.dart';
 import '../../../core/sync/sync_coordinator.dart';
 import '../../../core/sync/sync_outcome.dart';
 import '../../../core/ui/stale_data_banner.dart';
+import '../../../core/ui/status_labels.dart';
 import '../data/boxes_providers.dart';
 import 'box_detail_view.dart';
-import 'box_status_label.dart';
 
 /// Cajas del centro. Se lee del cache, así que la pantalla se pinta igual con
 /// señal y sin ella; el refresco ocurre detrás y el aviso de arriba dice de

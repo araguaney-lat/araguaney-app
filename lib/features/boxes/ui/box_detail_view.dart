@@ -7,9 +7,9 @@ import '../../../core/db/daos/boxes_dao.dart';
 import '../../../core/sync/sync_coordinator.dart';
 import '../../../core/sync/sync_outcome.dart';
 import '../../../core/ui/record_field.dart';
+import '../../../core/ui/status_labels.dart';
 import '../data/boxes_providers.dart';
 import 'box_label_view.dart';
-import 'box_status_label.dart';
 
 /// Ficha de una caja, con el mismo contenido que su registro en la web.
 ///

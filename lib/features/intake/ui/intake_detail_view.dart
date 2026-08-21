@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../../core/api/generated/models/intake_out.dart';
 import '../../../core/ui/record_field.dart';
+import '../../../core/ui/status_labels.dart';
 import '../../boxes/ui/box_label_view.dart';
-import '../../boxes/ui/box_status_label.dart';
 import 'intake_list_view.dart';
 
 /// Una captura registrada, con las cajas que produjo.

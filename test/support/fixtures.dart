@@ -120,7 +120,7 @@ Map<String, Object?> publicBoxJson({
 
 Map<String, Object?> publicPalletJson({
   String code = 'TM-0001',
-  String status = 'DRAFT',
+  String status = 'OPEN',
   String centerName = 'Centro Caracas',
 }) => {
   'code': code,
@@ -235,7 +235,7 @@ Map<String, Object?> shipmentJson({
 Map<String, Object?> palletJson({
   String id = 'pallet-1',
   String code = 'TM-0001',
-  String status = 'DRAFT',
+  String status = 'OPEN',
   DateTime? closedAt,
 }) => {
   'id': id,
@@ -254,7 +254,7 @@ Map<String, Object?> palletJson({
 Map<String, Object?> palletDetailJson({
   String id = 'pallet-1',
   String code = 'TM-0001',
-  String status = 'DRAFT',
+  String status = 'OPEN',
   List<Map<String, Object?>>? boxes,
 }) => {
   ...palletJson(id: id, code: code, status: status),
@@ -267,7 +267,7 @@ Map<String, Object?> incidentJson({
   String id = 'incident-1',
   String type = 'DAMAGE',
   String description = 'Tarima mojada',
-  String status = 'DRAFT',
+  String status = 'OPEN',
   DateTime? resolvedAt,
 }) => {
   'id': id,
