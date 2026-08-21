@@ -153,3 +153,12 @@ publishing is still a deliberate act by a person with console access. Wiring the
 upload into CI is worth doing once the manual path has been walked at least
 once, and not before — an automated publish that nobody has ever done by hand is
 an automated way to publish the wrong thing.
+
+Both the artifact and the file inside it are named after the version they carry,
+read from `pubspec.yaml`: `araguaney-1.0.0+1.aab`. Play does not look at the
+file name — it reads the manifest inside the bundle, and the signature covers
+the contents rather than the name, so renaming one changes nothing about what
+gets published. The name is for the person who has three bundles in a downloads
+folder and needs to know which is which, which is a real failure mode once
+`versionCode` starts climbing: uploading the wrong one is rejected only if its
+code was already used, and accepted silently if it was not.
