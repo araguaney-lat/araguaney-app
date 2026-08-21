@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/db/app_database.dart';
 import '../../../core/ui/category_label.dart';
+import '../../../core/ui/sheet_insets.dart';
 import '../../catalog/data/catalog_providers.dart';
 
 /// Selección de tipo de producto desde el catálogo **local**.
@@ -80,6 +81,7 @@ class _ProductPickerSheetState extends ConsumerState<ProductPickerSheet> {
             child: switch (results) {
               AsyncData(:final value) when value.isEmpty => const _NoMatches(),
               AsyncData(:final value) => ListView.builder(
+                padding: EdgeInsets.only(bottom: sheetBottomInset(context)),
                 itemCount: value.length,
                 itemBuilder: (context, index) {
                   final product = value[index];

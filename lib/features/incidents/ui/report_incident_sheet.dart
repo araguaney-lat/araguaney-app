@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/ui/sheet_insets.dart';
 import '../data/incidents_repository.dart';
 
 /// Levantar una incidencia sobre un envío.
@@ -46,7 +47,7 @@ class _ReportIncidentSheetState extends State<ReportIncidentSheet> {
       left: 16,
       right: 16,
       top: 16,
-      bottom: MediaQuery.viewInsetsOf(context).bottom + 16,
+      bottom: sheetBottomInset(context),
     ),
     child: Form(
       key: _formKey,

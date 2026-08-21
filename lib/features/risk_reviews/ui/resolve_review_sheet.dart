@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/ui/sheet_insets.dart';
 import '../data/risk_reviews_repository.dart';
 
 /// Cerrar una revisión: qué se decide y por qué.
@@ -49,7 +50,7 @@ class _ResolveReviewSheetState extends State<ResolveReviewSheet> {
       left: 16,
       right: 16,
       top: 16,
-      bottom: MediaQuery.viewInsetsOf(context).bottom + 16,
+      bottom: sheetBottomInset(context),
     ),
     child: Column(
       mainAxisSize: MainAxisSize.min,

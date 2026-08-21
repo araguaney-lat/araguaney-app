@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/auth/auth_providers.dart';
+import '../../../core/ui/sheet_insets.dart';
 import '../../dashboard/ui/stock_by_category_view.dart';
 import '../../intake/data/intake_providers.dart';
 import '../../intake/ui/intake_list_view.dart';
@@ -37,6 +38,7 @@ class MoreMenuSheet extends ConsumerWidget {
     final pending = ref.watch(pendingCaptureCountProvider).valueOrNull ?? 0;
 
     return ListView(
+      padding: EdgeInsets.only(bottom: sheetBottomInset(context, base: 8)),
       shrinkWrap: true,
       children: [
         // Siempre, no solo con la cola llena: aquí se reponen los códigos de

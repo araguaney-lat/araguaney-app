@@ -57,6 +57,7 @@ dependencies:
   shared_preferences: ^2.5.5
 
 dev_dependencies:
+  flutter_launcher_icons: ^0.14.4
   flutter_test:
     sdk: flutter
 
@@ -102,6 +103,9 @@ flutter:
   # que se busca en la red es una pantalla en blanco justo ahí. Ambas son
   # variables: un solo archivo cubre todos los pesos, y en el caso de la
   # grotesca pesa menos que dos estáticas.
+  assets:
+    - assets/icon/ic_splash.png
+
   fonts:
     - family: SourceSerif4
       fonts:
@@ -124,3 +128,24 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
+# El icono se genera; las densidades no se editan a mano. La fuente es el
+# araguaney del logo de la web, recortado del anillo dorado que lo rodea: ese
+# anillo lo volvería a recortar la máscara del lanzador, y un círculo dentro de
+# otro es lo que se ve cuando alguien mete un logo entero en un icono.
+#
+# El primer plano ocupa la zona segura de 66dp de los 108dp de la capa: fuera de
+# ella el lanzador puede recortar, y cada fabricante recorta distinto.
+#
+# Sin capa monocroma a propósito. En Android 13+ eso significa que el icono
+# temático cae al normal, que es peor de ver y honesto: una silueta de un árbol
+# florido reducida a una tinta necesita un dibujo simplificado, no este archivo
+# en negro.
+flutter_launcher_icons:
+  android: true
+  # iOS espera 1024 sin transparencia y la fuente disponible es de 512; se
+  # genera cuando exista el vectorial, junto con la fase 09.
+  ios: false
+  image_path: "assets/icon/ic_launcher.png"
+  adaptive_icon_background: "#F4F1EA"
+  adaptive_icon_foreground: "assets/icon/ic_foreground.png"

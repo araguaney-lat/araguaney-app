@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- El mismo tono que la semilla del tema de la aplicación. -->
-    <color name="notification_accent">#F59E0B</color>
+    <!-- El dorado del diseño, el mismo de `AppColors.gold`. Antes era el tono
+         de la semilla con la que Material derivaba la paleta; esa semilla dejó
+         de existir en la fase 11 y este valor se quedó apuntando a un color que
+         ya no sale en ninguna pantalla. -->
+    <color name="notification_accent">#D69A00</color>
+	<color name="ic_launcher_background">#F4F1EA</color>
+
+    <!-- El dorado del diseño, a pantalla completa mientras arranca. El árbol
+         viaja sobre su disco crema porque amarillo sobre dorado no se lee. -->
+    <color name="splash_background">#D69A00</color>
 </resources>

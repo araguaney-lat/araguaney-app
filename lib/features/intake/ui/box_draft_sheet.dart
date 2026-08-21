@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import '../../../core/db/app_database.dart';
 import '../../../core/ui/confirm_button.dart';
 import '../../../core/ui/record_field.dart';
+import '../../../core/ui/sheet_insets.dart';
 import '../domain/box_draft_input.dart';
 import 'product_picker_sheet.dart';
 
@@ -110,16 +111,12 @@ class _BoxDraftSheetState extends State<BoxDraftSheet> {
       // el color de navegar: la misma hoja enseñaba lo contrario de lo que
       // enseña la pantalla que la abre.
       //
-      // La barra inferior de un `Scaffold` no sube con el teclado, y la última
-      // cosa que se escribe antes de guardar es la cantidad: sin este relleno
-      // el botón queda tapado justo cuando hace falta.
+      // La barra inferior de un `Scaffold` no sube con el teclado ni esquiva la
+      // barra de navegación del sistema. Lo último que se escribe antes de
+      // guardar es la cantidad, así que sin esto el botón queda tapado justo
+      // cuando hace falta —y en un teléfono de tres botones, tapado siempre.
       bottomNavigationBar: Padding(
-        padding: EdgeInsets.fromLTRB(
-          16,
-          8,
-          16,
-          16 + MediaQuery.viewInsetsOf(context).bottom,
-        ),
+        padding: EdgeInsets.fromLTRB(16, 8, 16, sheetBottomInset(context)),
         child: SizedBox(
           width: double.infinity,
           child: ConfirmButton(label: 'Guardar', onPressed: _save),

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../../core/ui/sheet_insets.dart';
+
 /// Peso bruto y altura con los que se cierra una tarima.
 ///
 /// Los dos son opcionales en el contrato y aquí también: una báscula rota no
@@ -50,7 +52,7 @@ class _ClosePalletSheetState extends State<ClosePalletSheet> {
       left: 16,
       right: 16,
       top: 16,
-      bottom: MediaQuery.viewInsetsOf(context).bottom + 16,
+      bottom: sheetBottomInset(context),
     ),
     child: Column(
       mainAxisSize: MainAxisSize.min,
