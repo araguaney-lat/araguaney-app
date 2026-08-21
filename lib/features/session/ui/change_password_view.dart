@@ -5,14 +5,22 @@ import '../../../core/api/api_error_mapper.dart';
 import '../../../core/auth/auth_providers.dart';
 import 'login_view.dart';
 
-/// Cambio de contraseña obligatorio.
+/// Cambiar la contraseña, por obligación o por decisión.
 ///
-/// El backend marca `must_change_password` cuando la clave la generó quien
-/// administra al crear o reiniciar la cuenta. Se interpone antes de operar: no
-/// hay forma de saltarla, porque su razón de existir es que una clave temporal
-/// enviada por correo deje de servir en cuanto se usa.
+/// Es el mismo formulario en los dos casos porque es la misma operación; lo
+/// único que cambia es por qué se está aquí.
+///
+/// Con [forced] el backend marcó `must_change_password`: la clave la generó
+/// quien administra al crear o reiniciar la cuenta, y la pantalla se interpone
+/// antes de operar sin forma de saltarla, porque su razón de existir es que una
+/// clave temporal enviada por correo deje de servir en cuanto se usa.
+///
+/// Sin [forced] se llega desde el perfil, porque nadie debería tener que
+/// esperar a que le obliguen para cambiar una contraseña que cree comprometida.
 class ChangePasswordView extends ConsumerStatefulWidget {
-  const ChangePasswordView({super.key});
+  const ChangePasswordView({super.key, this.forced = true});
+
+  final bool forced;
 
   @override
   ConsumerState<ChangePasswordView> createState() => _ChangePasswordViewState();
@@ -49,6 +57,17 @@ class _ChangePasswordViewState extends ConsumerState<ChangePasswordView> {
             currentPassword: _current.text,
             newPassword: _next.text,
           );
+      // En el caso obligatorio no hay a dónde volver: la puerta de la sesión
+      // deja de interponer esta pantalla sola. En el voluntario sí, y quedarse
+      // aquí sin decir nada parecería que no pasó nada.
+      if (!widget.forced && mounted) {
+        Navigator.of(context).pop();
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(
+            const SnackBar(content: Text('Contraseña actualizada.')),
+          );
+      }
     } on Object catch (error) {
       // La política de contraseñas la define y la aplica el servidor; su
       // mensaje es el que se muestra.
@@ -65,7 +84,10 @@ class _ChangePasswordViewState extends ConsumerState<ChangePasswordView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Cambia tu contraseña')),
+      appBar: AppBar(
+        title: const Text('Cambia tu contraseña'),
+        automaticallyImplyLeading: !widget.forced,
+      ),
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -79,8 +101,10 @@ class _ChangePasswordViewState extends ConsumerState<ChangePasswordView> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Text(
-                      'Tu contraseña actual es temporal. Elige una nueva para '
-                      'continuar.',
+                      widget.forced
+                          ? 'Tu contraseña actual es temporal. Elige una nueva '
+                                'para continuar.'
+                          : 'Escribe la que usas ahora y la nueva que quieres.',
                       style: Theme.of(context).textTheme.bodyLarge,
                     ),
                     const SizedBox(height: 24),
@@ -134,7 +158,9 @@ class _ChangePasswordViewState extends ConsumerState<ChangePasswordView> {
                               dimension: 20,
                               child: CircularProgressIndicator(strokeWidth: 2),
                             )
-                          : const Text('Guardar y continuar'),
+                          : Text(
+                              widget.forced ? 'Guardar y continuar' : 'Guardar',
+                            ),
                     ),
                   ],
                 ),

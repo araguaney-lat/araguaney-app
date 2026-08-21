@@ -157,6 +157,18 @@ void main() {
     });
   });
 
+  testWidgets('the home title carries the tree, since it is the only screen '
+      'whose title is the name', (tester) async {
+    // En las demás el título dice qué se está haciendo —«Cajas», «Registrar
+    // entrada»— y anteponerle la marca la volvería decoración repetida.
+    await pumpHome(tester, coordinator: false);
+
+    final mark = tester.widget<Image>(
+      find.descendant(of: find.byType(AppBar), matching: find.byType(Image)),
+    );
+    expect((mark.image as AssetImage).assetName, 'assets/icon/ic_mark.png');
+  });
+
   group('working without signal', () {
     testWidgets('no reserved codes is said before it hurts', (tester) async {
       // Descubrir que no se puede sellar en el sótano es el peor momento.
