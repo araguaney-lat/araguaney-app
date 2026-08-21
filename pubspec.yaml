@@ -104,6 +104,7 @@ flutter:
   # variables: un solo archivo cubre todos los pesos, y en el caso de la
   # grotesca pesa menos que dos estáticas.
   assets:
+    - assets/icon/ic_mark.png
     - assets/icon/ic_splash.png
 
   fonts:

@@ -40,7 +40,7 @@ class HomeView extends ConsumerWidget {
     final coordinates = ref.watch(isCenterCoordinatorProvider);
 
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.appTitle)),
+      appBar: AppBar(title: _Wordmark(l10n.appTitle)),
       body: RefreshIndicator(
         onRefresh: () async {
           ref
@@ -248,6 +248,40 @@ class _OfflineReadiness extends ConsumerWidget {
       ),
     );
   }
+}
+
+/// El nombre con el árbol delante.
+///
+/// Solo aquí. En las demás pantallas el título dice qué se está haciendo
+/// —«Cajas», «Registrar entrada»— y anteponerle una marca lo convertiría en
+/// decoración repetida; el inicio es la única pantalla cuyo título es el
+/// nombre de la aplicación.
+///
+/// El activo es un archivo aparte y pequeño: el del splash mide más de medio
+/// mega porque se dibuja a pantalla completa, y decodificarlo entero para
+/// veintiocho píxeles en cada arranque sería caro en el tipo de teléfono al
+/// que va esto.
+class _Wordmark extends StatelessWidget {
+  const _Wordmark(this.title);
+
+  final String title;
+
+  @override
+  Widget build(BuildContext context) => Row(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      Image.asset(
+        'assets/icon/ic_mark.png',
+        height: 30,
+        // El alto es el que manda: el árbol es más ancho que alto y dejarlo
+        // ajustarse solo lo dejaría más bajo que el texto.
+        fit: BoxFit.fitHeight,
+        filterQuality: FilterQuality.medium,
+      ),
+      const SizedBox(width: 10),
+      Text(title),
+    ],
+  );
 }
 
 class _Grid extends StatelessWidget {
