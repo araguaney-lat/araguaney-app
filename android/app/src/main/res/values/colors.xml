@@ -6,4 +6,8 @@
          ya no sale en ninguna pantalla. -->
     <color name="notification_accent">#D69A00</color>
 	<color name="ic_launcher_background">#F4F1EA</color>
+
+    <!-- El dorado del diseño, a pantalla completa mientras arranca. El árbol
+         viaja sobre su disco crema porque amarillo sobre dorado no se lee. -->
+    <color name="splash_background">#D69A00</color>
 </resources>

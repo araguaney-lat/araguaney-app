@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Modify this file to customize your launch splash screen -->
+<!-- Lo que se ve mientras el proceso arranca, en Android 11 y anteriores.
+     Desde Android 12 el sistema dibuja su propio splash y esto solo cubre el
+     hueco entre ese splash y el primer fotograma de Flutter; por eso los dos
+     llevan el mismo dorado y el mismo logo: si difieren, se ve un parpadeo. -->
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@android:color/white" />
-
-    <!-- You can insert your own image assets here -->
-    <!-- <item>
+    <item android:drawable="@color/splash_background" />
+    <item>
         <bitmap
             android:gravity="center"
-            android:src="@mipmap/launch_image" />
-    </item> -->
+            android:src="@drawable/splash_logo" />
+    </item>
 </layer-list>

@@ -103,6 +103,9 @@ flutter:
   # que se busca en la red es una pantalla en blanco justo ahí. Ambas son
   # variables: un solo archivo cubre todos los pesos, y en el caso de la
   # grotesca pesa menos que dos estáticas.
+  assets:
+    - assets/icon/ic_splash.png
+
   fonts:
     - family: SourceSerif4
       fonts:

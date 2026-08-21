@@ -7,6 +7,7 @@ import '../../features/session/ui/totp_challenge_view.dart';
 import '../../features/shell/ui/app_shell.dart';
 import '../auth/auth_providers.dart';
 import '../auth/session.dart';
+import '../ui/brand_splash.dart';
 import 'push_router.dart';
 
 /// Decide qué se ve según el estado de la sesión.
@@ -22,7 +23,7 @@ class SessionGate extends ConsumerWidget {
     final state = ref.watch(sessionControllerProvider);
 
     return switch (state) {
-      SessionRestoring() => const _RestoringView(),
+      SessionRestoring() => const BrandSplash(),
       SessionAbsent() => const LoginView(),
       SessionAwaitingTotp() => const TotpChallengeView(),
       // El cambio obligatorio se interpone incluso con sesión válida: el
@@ -35,12 +36,4 @@ class SessionGate extends ConsumerWidget {
       SessionActive() => const PushRouter(child: AppShell()),
     };
   }
-}
-
-class _RestoringView extends StatelessWidget {
-  const _RestoringView();
-
-  @override
-  Widget build(BuildContext context) =>
-      const Scaffold(body: Center(child: CircularProgressIndicator()));
 }

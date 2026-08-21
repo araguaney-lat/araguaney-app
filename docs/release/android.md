@@ -168,6 +168,26 @@ generic box. Both want a vector original that does not exist yet.
 `assets/icon/ic_launcher.png` doubles as the Play store icon: 512×512, opaque,
 no border or shadow of its own, since Play rounds the corners itself.
 
+## The splash
+
+Since Android 12 there are **two owners of that screen**. The system draws its
+own splash while the process starts — an icon masked into a circle on a colour,
+and nothing else: no text fits, because anything outside the mask is cropped.
+Then Flutter draws the application's first frame. The first one cannot be
+removed.
+
+So the only thing worth doing is making the second indistinguishable from the
+first: same gold, same logo, same size, no wordmark and no spinner. What is
+perceived is one presentation that lasts a little longer, rather than two.
+`BrandSplash` writes its colours down instead of reading the theme for the same
+reason — the theme has a dark variant and the system splash does not.
+
+The tree travels on its cream disc because yellow on gold does not read.
+
+**The v31 themes must keep a `NoTitleBar` parent.** Writing them with
+`Theme.DeviceDefault` gives the activity the system ActionBar back, and a bar
+with the application's name appears above the interface.
+
 ## Distribution
 
 Play internal testing is the standing channel during development. Production

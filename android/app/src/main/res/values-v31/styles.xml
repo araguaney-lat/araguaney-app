@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Desde Android 12 el splash lo dibuja el sistema con estos atributos. No hay
+     forma de poner el nombre aquí: es un icono enmascarado en círculo sobre un
+     color, y cualquier otra cosa queda fuera de la máscara.
+     
+     El padre tiene que seguir siendo `NoTitleBar`, el mismo que el tema base.
+     Con `Theme.DeviceDefault` la actividad recupera la ActionBar del sistema y
+     aparece una barra con el nombre de la aplicación encima de la interfaz.
+     Fue justo lo que pasó al escribir este archivo. -->
+<resources>
+    <style name="LaunchTheme" parent="@android:style/Theme.Light.NoTitleBar">
+        <item name="android:windowSplashScreenBackground">@color/splash_background</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/splash_logo</item>
+        <item name="android:windowBackground">@drawable/launch_background</item>
+    </style>
+    <style name="NormalTheme" parent="@android:style/Theme.Light.NoTitleBar">
+        <item name="android:windowBackground">?android:colorBackground</item>
+    </style>
+</resources>
