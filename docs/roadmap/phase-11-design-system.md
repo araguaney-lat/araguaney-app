@@ -93,7 +93,7 @@ phase of its own, because it is the same phase seen from the other side.
 |---|--------|--------|--------|
 | 8 | Cajas | 08 — count, scrollable status filters, sealing from the row | ✅ Done |
 | 9 | Registrar entrada | 06 — campaign in the header, box count, two fixed actions | ✅ Done |
-| 10 | Pendientes de envío | 07 | ⬜ Pending |
+| 10 | Pendientes de envío | 07 — readiness strip, per-capture contents, retry | ✅ Done |
 | 11 | Escanear código | 04 | ⬜ Pending |
 | 12 | Tarimas y tarima abierta | 09, 10 | ⬜ Pending |
 | 13 | Transferencias | 12 | ⬜ Pending |
@@ -158,3 +158,49 @@ the kind of value this repository does not publish. The client would have to
 invent a number to draw the badge — the very mistake the section above is about.
 The rejection message the server sends already says it, in words, at the moment
 it matters.
+
+### What redesigning the third screen turned up
+
+**Reserving box codes was unreachable at the only moment it is useful.** The
+top-up action lived inside the pending-captures screen, and that screen was
+offered — from the home list and from the menu — only when `pending > 0`. So the
+sequence was: you can reserve codes once you already have captures waiting,
+which happens after you have been offline, which is after the moment reserving
+would have helped. Meanwhile the home screen said «sin códigos de caja
+reservados: sin señal no vas a poder sellar» and gave no way to act on it, which
+turns a warning into a reproach. The menu entry is now unconditional and the
+home warning is tappable.
+
+**A parked capture could only be thrown away.** A business rejection stops the
+queue retrying on its own — that is invariant 4 and it is right — but the only
+decision the screen offered was «Descartar». Most rejections describe something
+somebody can resolve elsewhere: an approval that is missing, a product that gets
+created. Discarding inventory to resolve paperwork is the worse of the two
+options, and it was the only one on screen. «Reintentar» sends the row back to
+the queue with the same capture key, so it cannot duplicate, and if the reason
+still stands the server parks it again with the same text.
+
+**The design draws a denominator the system does not have.** Design 07 reads
+«intento 1 de 5». There is no maximum: the queue retries while there is a reason
+to, and a business rejection parks instead of counting. Writing «de 5» would put
+a limit on screen that nothing enforces — the same mistake as the WHO badge in
+design 06 and the invented labels of the two screens before. The attempt count is
+shown without one.
+
+**One layout defect the emulator caught and the tests could not.** The three
+readiness cells are equal height, but their labels break into a different number
+of lines, so the numbers sat at different heights and the row stopped reading as
+a row. The values are now anchored to the bottom of each cell.
+
+**«Etiquetas» is not implemented, and the second action reserves codes
+instead.** The design's second button prints labels; the application cannot
+print — PDF labels are a web-panel capability, tracked as Phase 10 task 13. The
+slot goes to «Reservar códigos», which is the action that belongs next to the
+count of codes and the one that was unreachable.
+
+The per-capture contents come from the stored payload rather than a new column:
+the payload is exactly what will be sent, so reading it to show it is free and
+retroactive. The contract carries product identifiers and not names, so a name
+is resolved against the local catalog and, when the catalog no longer has it,
+the line says only the quantity and the unit. Somebody deciding whether to
+discard a capture needs true data, not a complete-looking line.

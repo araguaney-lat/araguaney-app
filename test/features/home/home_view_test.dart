@@ -6,6 +6,7 @@ import 'package:araguaney_app/core/push/push_providers.dart';
 import 'package:araguaney_app/features/catalog/data/catalog_providers.dart';
 import 'package:araguaney_app/features/home/ui/home_view.dart';
 import 'package:araguaney_app/features/intake/data/intake_providers.dart';
+import 'package:araguaney_app/features/intake/ui/pending_captures_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -165,6 +166,20 @@ void main() {
         find.textContaining('Sin códigos de caja reservados'),
         findsOneWidget,
       );
+    });
+
+    testWidgets('the warning leads to where codes are reserved', (
+      tester,
+    ) async {
+      // Reservar solo vivía dentro de pendientes, y esa pantalla solo se
+      // ofrecía con la cola llena: la única puerta se abría cuando ya era
+      // tarde. Decir «no vas a poder sellar» sin dar el camino es un reproche.
+      await pumpHome(tester, coordinator: false);
+
+      await tester.tap(find.textContaining('Sin códigos de caja reservados'));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(PendingCapturesView), findsOneWidget);
     });
 
     testWidgets('with codes it says what is downloaded', (tester) async {

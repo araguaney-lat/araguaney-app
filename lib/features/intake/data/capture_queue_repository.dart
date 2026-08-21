@@ -50,6 +50,13 @@ class CaptureQueueRepository {
         ),
       );
 
+  /// La otra decisión que puede tomar una persona ante un rechazo: volver a
+  /// intentarlo, normalmente porque el motivo se resolvió fuera de la
+  /// aplicación. La invariante 4 pide una decisión explícita; no dice que la
+  /// única disponible tenga que ser tirar la captura.
+  Future<void> retry(String captureId) =>
+      _db.captureQueueDao.requeue(captureId);
+
   /// Descarte explícito. Es el único borrado que no viene de un envío
   /// aceptado, y por eso lo pide una persona mirando el motivo del rechazo.
   Future<void> discard(String captureId) =>

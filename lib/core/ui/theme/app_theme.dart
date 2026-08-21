@@ -20,6 +20,11 @@ class AppPalette extends ThemeExtension<AppPalette> {
     required this.centerFill,
     required this.centerInk,
     required this.danger,
+    required this.noticeFill,
+    required this.noticeBorder,
+    required this.noticeInk,
+    required this.alertFill,
+    required this.alertInk,
   });
 
   static const light = AppPalette(
@@ -31,6 +36,11 @@ class AppPalette extends ThemeExtension<AppPalette> {
     centerFill: AppColors.gold,
     centerInk: Color(0xFF3B2A00),
     danger: AppColors.danger,
+    noticeFill: AppColors.goldSoft,
+    noticeBorder: AppColors.goldBorder,
+    noticeInk: Color(0xFF8A5A08),
+    alertFill: Color(0xFFFBE0E0),
+    alertInk: Color(0xFF8A2020),
   );
 
   static const dark = AppPalette(
@@ -42,6 +52,11 @@ class AppPalette extends ThemeExtension<AppPalette> {
     centerFill: AppColors.goldDark,
     centerInk: Color(0xFF3B2A00),
     danger: AppColors.danger,
+    noticeFill: Color(0xFF3A2E0A),
+    noticeBorder: Color(0xFF4A3B10),
+    noticeInk: AppColors.goldDark,
+    alertFill: Color(0xFF3A1B1B),
+    alertInk: Color(0xFFF0A9A9),
   );
 
   final Color bar;
@@ -52,6 +67,17 @@ class AppPalette extends ThemeExtension<AppPalette> {
   final Color centerFill;
   final Color centerInk;
   final Color danger;
+
+  /// Superficie de aviso: algo espera, nada va mal. Es el dorado suave de la
+  /// barra, con su tinta legible encima.
+  final Color noticeFill;
+  final Color noticeBorder;
+  final Color noticeInk;
+
+  /// Superficie de rechazo: algo se detuvo y espera una decisión. Distinta del
+  /// aviso a propósito — «pendiente» y «rechazada» no pueden compartir color.
+  final Color alertFill;
+  final Color alertInk;
 
   static AppPalette of(BuildContext context) =>
       Theme.of(context).extension<AppPalette>() ?? light;
@@ -66,6 +92,11 @@ class AppPalette extends ThemeExtension<AppPalette> {
     Color? centerFill,
     Color? centerInk,
     Color? danger,
+    Color? noticeFill,
+    Color? noticeBorder,
+    Color? noticeInk,
+    Color? alertFill,
+    Color? alertInk,
   }) => AppPalette(
     bar: bar ?? this.bar,
     barBorder: barBorder ?? this.barBorder,
@@ -75,6 +106,11 @@ class AppPalette extends ThemeExtension<AppPalette> {
     centerFill: centerFill ?? this.centerFill,
     centerInk: centerInk ?? this.centerInk,
     danger: danger ?? this.danger,
+    noticeFill: noticeFill ?? this.noticeFill,
+    noticeBorder: noticeBorder ?? this.noticeBorder,
+    noticeInk: noticeInk ?? this.noticeInk,
+    alertFill: alertFill ?? this.alertFill,
+    alertInk: alertInk ?? this.alertInk,
   );
 
   @override
@@ -89,6 +125,11 @@ class AppPalette extends ThemeExtension<AppPalette> {
       centerFill: Color.lerp(centerFill, other.centerFill, t)!,
       centerInk: Color.lerp(centerInk, other.centerInk, t)!,
       danger: Color.lerp(danger, other.danger, t)!,
+      noticeFill: Color.lerp(noticeFill, other.noticeFill, t)!,
+      noticeBorder: Color.lerp(noticeBorder, other.noticeBorder, t)!,
+      noticeInk: Color.lerp(noticeInk, other.noticeInk, t)!,
+      alertFill: Color.lerp(alertFill, other.alertFill, t)!,
+      alertInk: Color.lerp(alertInk, other.alertInk, t)!,
     );
   }
 }

@@ -95,6 +95,28 @@ class CaptureQueueDao extends DatabaseAccessor<AppDatabase>
         ),
       );
 
+  /// Devuelve a la cola una captura aparcada.
+  ///
+  /// Aparcar es dejar de reintentar **solo**, no cerrar el caso: el rechazo
+  /// suele describir algo que alguien puede resolver fuera —una aprobación que
+  /// falta, un producto que se dio de alta—, y entonces reintentar es la
+  /// respuesta correcta. Hasta ahora la única salida ofrecida era descartar, y
+  /// tirar inventario para resolver un trámite es la peor de las dos.
+  ///
+  /// El motivo anterior se borra porque ya no describe el estado de la fila;
+  /// [attempts] no se toca, porque los intentos ocurrieron. Y la llave de
+  /// idempotencia sigue siendo la misma, así que reintentar no puede duplicar.
+  Future<void> requeue(String captureId) =>
+      (update(
+        queuedCaptures,
+      )..where((t) => t.captureId.equals(captureId))).write(
+        const QueuedCapturesCompanion(
+          status: Value(QueuedCaptureStatus.pending),
+          lastFailureCode: Value(null),
+          lastFailureMessage: Value(null),
+        ),
+      );
+
   /// Saca una captura de la cola. La llaman dos sitios: el envío exitoso y el
   /// descarte explícito de una persona. Nada más borra de aquí.
   Future<void> remove(String captureId) => (delete(

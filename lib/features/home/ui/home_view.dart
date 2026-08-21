@@ -219,15 +219,32 @@ class _OfflineReadiness extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final ready = ref.watch(offlineReadinessProvider);
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
-      child: Text(
-        ready.codes == 0
-            ? 'Sin códigos de caja reservados: sin señal no vas a poder sellar. '
-                  '${ready.products} productos descargados.'
-            : 'Listo para trabajar sin señal: ${ready.products} productos y '
-                  '${ready.codes} códigos descargados.',
-        style: Theme.of(context).textTheme.bodySmall,
+    // Se toca para llegar a donde se reponen los códigos. Decir «sin códigos
+    // no vas a poder sellar» sin ofrecer el camino para arreglarlo dejaba el
+    // aviso siendo solo un reproche: reservar solo estaba dentro de la
+    // pantalla de pendientes, y esa solo aparecía si ya había algo en la cola
+    // — es decir, nunca antes de bajar al sótano, que es el único momento en
+    // que reservar sirve de algo.
+    return InkWell(
+      onTap: () => Navigator.of(context).push(PendingCapturesView.route()),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                ready.codes == 0
+                    ? 'Sin códigos de caja reservados: sin señal no vas a '
+                          'poder sellar. ${ready.products} productos '
+                          'descargados.'
+                    : 'Listo para trabajar sin señal: ${ready.products} '
+                          'productos y ${ready.codes} códigos descargados.',
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            ),
+            const Icon(Icons.chevron_right, size: 18),
+          ],
+        ),
       ),
     );
   }

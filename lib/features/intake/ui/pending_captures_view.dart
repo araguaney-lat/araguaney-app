@@ -4,16 +4,20 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/db/app_database.dart';
 import '../../../core/db/tables/queued_captures_table.dart';
 import '../../../core/sync/sync_outcome.dart';
+import '../../../core/ui/confirm_button.dart';
 import '../../../core/ui/record_field.dart';
+import '../../../core/ui/theme/app_theme.dart';
+import '../../catalog/data/catalog_providers.dart';
 import '../data/capture_queue_sync.dart';
 import '../data/intake_providers.dart';
+import '../domain/queued_capture_lines.dart';
 
 /// Las capturas que esperan señal.
 ///
 /// La pantalla existe para que la cola no sea invisible: una captura que nadie
 /// puede ver es una captura que nadie sabe que se perdió. Nada se descarta solo
-/// —una rechazada se queda aquí con el motivo del servidor— y el descarte lo
-/// pide una persona.
+/// —una rechazada se queda aquí con el motivo del servidor— y tanto descartar
+/// como reintentar los pide una persona.
 class PendingCapturesView extends ConsumerStatefulWidget {
   const PendingCapturesView({super.key});
 
@@ -37,14 +41,13 @@ class _PendingCapturesViewState extends ConsumerState<PendingCapturesView> {
     if (!mounted) return;
     setState(() => _flushing = false);
 
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(_reportMessage(report))));
+    final messenger = ScaffoldMessenger.of(context)..hideCurrentSnackBar();
+    messenger.showSnackBar(SnackBar(content: Text(_reportMessage(report))));
   }
 
-  /// Qué se le dice a quien pulsó «intentar ahora». El motivo del servidor
-  /// manda sobre el recuento: saber que no hay señal es más útil que saber que
-  /// no se envió nada.
+  /// Qué se le dice a quien pulsó «sincronizar». El motivo del servidor manda
+  /// sobre el recuento: saber que no hay señal es más útil que saber que no se
+  /// envió nada.
   static String _reportMessage(QueueFlushReport report) {
     if (report.stoppedBy case final failure?) return failure.operatorMessage;
     if (report.sent > 0 && report.remaining == 0) {
@@ -84,39 +87,162 @@ class _PendingCapturesViewState extends ConsumerState<PendingCapturesView> {
     }
   }
 
+  /// Devolver a la cola una captura aparcada. No se pregunta antes porque no
+  /// destruye nada: vuelve a intentarlo con la misma llave de captura, y si el
+  /// motivo sigue en pie el servidor la aparcará otra vez con el mismo texto.
+  Future<void> _retry(QueuedCaptureRow row) async {
+    await ref.read(captureQueueRepositoryProvider).retry(row.captureId);
+    if (!mounted) return;
+    await _flush();
+  }
+
   @override
   Widget build(BuildContext context) {
     final captures = ref.watch(queuedCapturesProvider);
+    final products = ref.watch(productTypesProvider(null)).valueOrNull ?? [];
     final codes = ref.watch(availableBoxCodesProvider).valueOrNull ?? 0;
+    final queued = captures.valueOrNull?.length ?? 0;
+
+    final names = {
+      for (final product in products) product.id: product.displayName,
+    };
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Capturas pendientes'),
-        actions: [
-          IconButton(
-            tooltip: 'Intentar ahora',
-            icon: const Icon(Icons.sync),
-            onPressed: _flushing ? null : _flush,
-          ),
-        ],
+        title: const _Header(),
+        bottom: _flushing
+            ? const PreferredSize(
+                preferredSize: Size.fromHeight(4),
+                child: LinearProgressIndicator(),
+              )
+            : null,
       ),
-      body: Column(
-        children: [
-          if (_flushing) const LinearProgressIndicator(),
-          _CodeBlockBanner(available: codes),
-          Expanded(
-            child: switch (captures) {
-              AsyncData(:final value) when value.isEmpty => const _Empty(),
-              AsyncData(:final value) => ListView.separated(
-                itemCount: value.length,
-                separatorBuilder: (_, _) => const Divider(height: 1),
-                itemBuilder: (context, index) => _CaptureTile(
-                  row: value[index],
-                  onDiscard: () => _discard(value[index]),
+      body: switch (captures) {
+        AsyncData(:final value) => ListView(
+          padding: const EdgeInsets.all(16),
+          children: [
+            _ReadinessStrip(
+              products: products.length,
+              codes: codes,
+              queued: queued,
+            ),
+            const SizedBox(height: 12),
+            _Actions(onSync: _flushing ? null : _flush),
+            const SizedBox(height: 16),
+            if (value.isEmpty)
+              const _Empty()
+            else
+              for (final row in value)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: _QueuedCard(
+                    row: row,
+                    lines: queuedCaptureLines(row.payload, names),
+                    onRetry: () => _retry(row),
+                    onDiscard: () => _discard(row),
+                  ),
                 ),
-              ),
-              _ => const Center(child: CircularProgressIndicator()),
-            },
+          ],
+        ),
+        _ => const Center(child: CircularProgressIndicator()),
+      },
+    );
+  }
+}
+
+class _Header extends StatelessWidget {
+  const _Header();
+
+  @override
+  Widget build(BuildContext context) => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      const Text('Pendientes de envío'),
+      Text(
+        'Nada se pierde: todo espera aquí',
+        style: Theme.of(context).textTheme.bodySmall,
+      ),
+    ],
+  );
+}
+
+/// Con qué se cuenta para trabajar sin señal, en tres números.
+///
+/// Están juntos porque se leen juntos: bajar a un sótano con catálogo pero sin
+/// códigos, o con códigos pero con la cola llena, son situaciones distintas y
+/// ninguna se ve mirando un solo número.
+class _ReadinessStrip extends StatelessWidget {
+  const _ReadinessStrip({
+    required this.products,
+    required this.codes,
+    required this.queued,
+  });
+
+  final int products;
+  final int codes;
+  final int queued;
+
+  // `IntrinsicHeight` para que las tres celdas midan lo mismo: sus rótulos
+  // parten en distinto número de líneas y tres cajas de alturas distintas se
+  // leen como tres cosas distintas, que es justo lo contrario de lo que son.
+  @override
+  Widget build(BuildContext context) => IntrinsicHeight(
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Expanded(
+          child: _Cell(label: 'Productos descargados', value: products),
+        ),
+        const SizedBox(width: 9),
+        Expanded(
+          child: _Cell(label: 'Códigos apartados', value: codes),
+        ),
+        const SizedBox(width: 9),
+        Expanded(
+          child: _Cell(label: 'Capturas en cola', value: queued),
+        ),
+      ],
+    ),
+  );
+}
+
+class _Cell extends StatelessWidget {
+  const _Cell({required this.label, required this.value});
+
+  final String label;
+  final int value;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final palette = AppPalette.of(context);
+    return Container(
+      padding: const EdgeInsets.all(11),
+      decoration: BoxDecoration(
+        color: palette.noticeFill,
+        border: Border.all(color: palette.noticeBorder),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: palette.noticeInk,
+            ),
+          ),
+          // Al fondo de la celda, no debajo del rótulo: «Capturas en cola»
+          // cabe en una línea y los otros dos rótulos parten en dos, así que
+          // apoyados arriba los tres números quedaban a distinta altura y la
+          // fila dejaba de leerse como una fila.
+          const Spacer(),
+          Text(
+            '$value',
+            style: theme.textTheme.headlineSmall?.copyWith(
+              color: palette.noticeInk,
+            ),
           ),
         ],
       ),
@@ -124,24 +250,21 @@ class _PendingCapturesViewState extends ConsumerState<PendingCapturesView> {
   }
 }
 
-/// Cuántos códigos quedan para capturar sin señal, y la forma de reponerlos.
-///
-/// Se repone **con** señal, que es el único momento en que se puede: quien baja
-/// a un sótano con el bloque vacío se queda sin etiquetas hasta que vuelva a
-/// subir.
-class _CodeBlockBanner extends ConsumerStatefulWidget {
-  const _CodeBlockBanner({required this.available});
+class _Actions extends ConsumerStatefulWidget {
+  const _Actions({required this.onSync});
 
-  final int available;
+  final VoidCallback? onSync;
 
   @override
-  ConsumerState<_CodeBlockBanner> createState() => _CodeBlockBannerState();
+  ConsumerState<_Actions> createState() => _ActionsState();
 }
 
-class _CodeBlockBannerState extends ConsumerState<_CodeBlockBanner> {
+class _ActionsState extends ConsumerState<_Actions> {
   static const _blockSize = 50;
   bool _reserving = false;
 
+  /// Se reponen **con** señal, que es el único momento en que se puede: quien
+  /// baja a un sótano con el bloque vacío se queda sin etiquetas hasta subir.
   Future<void> _topUp() async {
     final userId = ref.read(currentUserIdProvider);
     if (userId == null) return;
@@ -157,69 +280,135 @@ class _CodeBlockBannerState extends ConsumerState<_CodeBlockBanner> {
       SyncSucceeded(:final itemCount) => 'Se reservaron $itemCount códigos.',
       SyncFailed(:final failure) => failure.operatorMessage,
     };
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(message)));
+    final messenger = ScaffoldMessenger.of(context)..hideCurrentSnackBar();
+    messenger.showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
-  Widget build(BuildContext context) => ListTile(
-    dense: true,
-    title: Text('Códigos disponibles: ${widget.available}'),
-    subtitle: const Text('Se reservan con conexión y se gastan sin ella'),
-    trailing: TextButton(
-      onPressed: _reserving ? null : _topUp,
-      child: const Text('Reservar'),
-    ),
+  Widget build(BuildContext context) => Row(
+    children: [
+      Expanded(
+        child: ConfirmButton(label: 'Sincronizar', onPressed: widget.onSync),
+      ),
+      const SizedBox(width: 9),
+      Expanded(
+        child: OutlinedButton(
+          onPressed: _reserving ? null : _topUp,
+          child: const Text('Reservar códigos'),
+        ),
+      ),
+    ],
   );
 }
 
-class _CaptureTile extends StatelessWidget {
-  const _CaptureTile({required this.row, required this.onDiscard});
+class _QueuedCard extends StatelessWidget {
+  const _QueuedCard({
+    required this.row,
+    required this.lines,
+    required this.onRetry,
+    required this.onDiscard,
+  });
 
   final QueuedCaptureRow row;
+  final List<String> lines;
+  final VoidCallback onRetry;
   final VoidCallback onDiscard;
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final rejected = row.status == QueuedCaptureStatus.rejected;
 
-    return ListTile(
-      leading: Icon(
-        rejected ? Icons.report_gmailerrorred_outlined : Icons.schedule,
-      ),
-      title: Text(row.summary),
-      subtitle: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            rejected
-                ? 'El servidor la rechazó'
-                : 'Esperando conexión · ${row.attempts} '
-                      '${row.attempts == 1 ? 'intento' : 'intentos'}',
-          ),
-          if (row.lastFailureMessage case final message?)
-            Padding(
-              padding: const EdgeInsets.only(top: 4),
-              child: Text(
-                message,
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(14),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(row.summary, style: theme.textTheme.titleMedium),
+                      const SizedBox(height: 3),
+                      Text(_when(row), style: theme.textTheme.bodySmall),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 10),
+                _StatusChip(rejected: rejected),
+              ],
             ),
-          Text(
-            'Capturada el ${formatShortDate(row.createdAt)}',
-            style: Theme.of(context).textTheme.bodySmall,
-          ),
-        ],
+            if (lines.isNotEmpty) const SizedBox(height: 10),
+            for (final line in lines)
+              Text('· $line', style: theme.textTheme.bodySmall),
+            if (row.lastFailureMessage case final message?) ...[
+              const SizedBox(height: 10),
+              Text(message, style: theme.textTheme.bodyMedium),
+            ],
+            // Reintentar y descartar solo aparecen en una captura aparcada.
+            // Una que sigue esperando señal no necesita que nadie decida nada:
+            // se reintenta sola en cuanto haya red.
+            if (rejected) ...[
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: onRetry,
+                      child: const Text('Reintentar'),
+                    ),
+                  ),
+                  const SizedBox(width: 9),
+                  Expanded(
+                    child: TextButton(
+                      onPressed: onDiscard,
+                      child: const Text('Descartar'),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ],
+        ),
       ),
-      isThreeLine: true,
-      trailing: rejected
-          ? IconButton(
-              tooltip: 'Descartar',
-              icon: const Icon(Icons.delete_outline),
-              onPressed: onDiscard,
-            )
-          : null,
+    );
+  }
+
+  /// Cuándo se capturó y cuántas veces se ha intentado.
+  ///
+  /// Sin denominador: la cola reintenta mientras haya motivo para hacerlo y no
+  /// tiene un máximo. Escribir «intento 1 de 5» pondría en pantalla un límite
+  /// que este sistema no tiene.
+  static String _when(QueuedCaptureRow row) => [
+    formatShortDateTime(row.createdAt),
+    if (row.attempts > 0) 'intento ${row.attempts}' else 'sin intentos todavía',
+  ].join(' · ');
+}
+
+class _StatusChip extends StatelessWidget {
+  const _StatusChip({required this.rejected});
+
+  final bool rejected;
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AppPalette.of(context);
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
+      decoration: BoxDecoration(
+        color: rejected ? palette.alertFill : palette.noticeFill,
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Text(
+        rejected ? 'Rechazada' : 'Pendiente',
+        style: Theme.of(context).textTheme.labelSmall?.copyWith(
+          color: rejected ? palette.alertInk : palette.noticeInk,
+        ),
+      ),
     );
   }
 }
@@ -228,15 +417,13 @@ class _Empty extends StatelessWidget {
   const _Empty();
 
   @override
-  Widget build(BuildContext context) => Center(
-    child: Padding(
-      padding: const EdgeInsets.all(32),
-      child: Text(
-        'No hay capturas esperando. Las que se hagan sin señal aparecerán '
-        'aquí hasta que se envíen.',
-        textAlign: TextAlign.center,
-        style: Theme.of(context).textTheme.bodyMedium,
-      ),
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 16),
+    child: Text(
+      'No hay capturas esperando. Las que se hagan sin señal aparecerán '
+      'aquí hasta que se envíen.',
+      textAlign: TextAlign.center,
+      style: Theme.of(context).textTheme.bodyMedium,
     ),
   );
 }

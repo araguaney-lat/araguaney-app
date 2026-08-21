@@ -39,15 +39,20 @@ class MoreMenuSheet extends ConsumerWidget {
     return ListView(
       shrinkWrap: true,
       children: [
-        if (pending > 0)
-          ListTile(
-            leading: Badge(
-              label: Text('$pending'),
-              child: const Icon(Icons.cloud_upload_outlined),
-            ),
-            title: const Text('Capturas pendientes de enviar'),
-            onTap: () => _go(context, PendingCapturesView.route()),
-          ),
+        // Siempre, no solo con la cola llena: aquí se reponen los códigos de
+        // caja, y hacerlo hace falta **antes** de quedarse sin señal. Estaba
+        // condicionado a `pending > 0`, así que la única puerta a reservar se
+        // abría cuando ya era tarde.
+        ListTile(
+          leading: pending > 0
+              ? Badge(
+                  label: Text('$pending'),
+                  child: const Icon(Icons.cloud_upload_outlined),
+                )
+              : const Icon(Icons.cloud_upload_outlined),
+          title: const Text('Pendientes de envío'),
+          onTap: () => _go(context, PendingCapturesView.route()),
+        ),
         ListTile(
           leading: const Icon(Icons.list_alt_outlined),
           title: const Text('Capturas'),

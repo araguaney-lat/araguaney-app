@@ -1,0 +1,232 @@
+import 'package:araguaney_app/core/api/generated/clients/intakes_api.dart';
+import 'package:araguaney_app/core/api/generated/clients/product_types_api.dart';
+import 'package:araguaney_app/core/db/app_database.dart';
+import 'package:araguaney_app/core/db/db_providers.dart';
+import 'package:araguaney_app/core/db/tables/queued_captures_table.dart';
+import 'package:araguaney_app/features/catalog/data/catalog_providers.dart';
+import 'package:araguaney_app/features/catalog/data/catalog_repository.dart';
+import 'package:araguaney_app/features/intake/data/capture_queue_repository.dart';
+import 'package:araguaney_app/features/intake/data/capture_queue_sync.dart';
+import 'package:araguaney_app/features/intake/data/intake_providers.dart';
+import 'package:araguaney_app/features/intake/domain/box_draft_input.dart';
+import 'package:araguaney_app/features/intake/domain/intake_draft.dart';
+import 'package:araguaney_app/features/intake/ui/pending_captures_view.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
+
+import '../../support/fake_api.dart';
+import '../../support/fake_http_adapter.dart';
+import '../../support/fixtures.dart';
+import '../../support/test_database.dart';
+
+void main() {
+  late AppDatabase db;
+  late CaptureQueueRepository queue;
+
+  setUp(() async {
+    db = openTestDatabase();
+    queue = CaptureQueueRepository(database: db, now: () => testNow);
+    await db.catalogDao.replaceAll([
+      productTypeRow(id: 'pt-1', displayName: 'Paracetamol 500 mg'),
+    ]);
+  });
+
+  tearDown(() => db.close());
+
+  IntakeDraft draftWith({String captureId = 'capture-1', int quantity = 240}) =>
+      IntakeDraft(captureId: captureId).addBox(
+        BoxDraftInput(
+          productType: productTypeRow(id: 'pt-1'),
+          quantity: quantity,
+          unit: 'unidad',
+        ),
+      );
+
+  /// La cola es real —SQLite en memoria— porque la mitad de los errores de esta
+  /// capa viven en las transacciones y no en la pantalla.
+  Future<void> pumpPending(
+    WidgetTester tester, {
+    FakeHttpAdapter? adapter,
+  }) async {
+    final dio = fakeDio(
+      adapter ?? FakeHttpAdapter((_) => FakeResponse(201, intakeJson())),
+    );
+    final container = ProviderContainer(
+      overrides: [
+        // La base tiene que ser la de la prueba: `boxCodeRepositoryProvider`
+        // no se sustituye aquí —los códigos apartados son parte de lo que la
+        // pantalla cuenta— y sin esto abriría la base real del dispositivo.
+        appDatabaseProvider.overrideWithValue(db),
+        currentUserIdProvider.overrideWithValue('user-1'),
+        captureQueueRepositoryProvider.overrideWithValue(queue),
+        captureQueueSyncProvider.overrideWithValue(
+          CaptureQueueSync(
+            api: IntakesApi(dio),
+            database: db,
+            now: () => testNow,
+          ),
+        ),
+        catalogRepositoryProvider.overrideWithValue(
+          CatalogRepository(api: ProductTypesApi(dio), database: db),
+        ),
+      ],
+    );
+    addTearDown(container.dispose);
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: const MaterialApp(home: PendingCapturesView()),
+      ),
+    );
+    await tester.pumpAndSettle();
+  }
+
+  /// Aparca una captura como lo haría el servidor: rechazándola por una regla.
+  ///
+  /// Va dentro de `runAsync` porque el cuerpo de `testWidgets` corre con un
+  /// reloj falso: una petición de dio esperada ahí no avanza nunca, y la
+  /// prueba se queda colgada sin llegar a fallar.
+  Future<void> park(WidgetTester tester, String message) async {
+    await queue.enqueue(draft: draftWith(), userId: 'user-1');
+    await tester.runAsync(
+      () => CaptureQueueSync(
+        api: IntakesApi(
+          fakeDio(
+            FakeHttpAdapter(
+              (_) => FakeResponse(422, {
+                'error': {'code': 'SHELF_LIFE_TOO_SHORT', 'message': message},
+              }),
+            ),
+          ),
+        ),
+        database: db,
+        now: () => testNow,
+      ).flush('user-1'),
+    );
+  }
+
+  testWidgets('the screen says what waiting means', (tester) async {
+    await pumpPending(tester);
+
+    expect(find.text('Pendientes de envío'), findsOneWidget);
+    expect(find.text('Nada se pierde: todo espera aquí'), findsOneWidget);
+  });
+
+  testWidgets('the strip counts what there is to work without signal', (
+    tester,
+  ) async {
+    await queue.enqueue(draft: draftWith(), userId: 'user-1');
+
+    await pumpPending(tester);
+
+    expect(find.text('Productos descargados'), findsOneWidget);
+    expect(find.text('Códigos apartados'), findsOneWidget);
+    expect(find.text('Capturas en cola'), findsOneWidget);
+    // Un producto en el catálogo, ningún código reservado, una captura en cola.
+    expect(find.text('1'), findsNWidgets(2));
+    expect(find.text('0'), findsOneWidget);
+  });
+
+  testWidgets('a queued capture lists what is inside it', (tester) async {
+    await queue.enqueue(draft: draftWith(), userId: 'user-1');
+
+    await pumpPending(tester);
+
+    expect(find.text('· Paracetamol 500 mg — 240 unidad'), findsOneWidget);
+    expect(find.text('Pendiente'), findsOneWidget);
+  });
+
+  testWidgets('one still waiting is not asked about', (tester) async {
+    // Se reintenta sola en cuanto haya red: nadie tiene que decidir nada.
+    await queue.enqueue(draft: draftWith(), userId: 'user-1');
+
+    await pumpPending(tester);
+
+    expect(find.text('Reintentar'), findsNothing);
+    expect(find.text('Descartar'), findsNothing);
+  });
+
+  testWidgets('a rejected one shows the reason and both decisions', (
+    tester,
+  ) async {
+    await park(tester, 'La caducidad no alcanza el mínimo de la campaña');
+
+    await pumpPending(tester);
+
+    expect(find.text('Rechazada'), findsOneWidget);
+    expect(
+      find.text('La caducidad no alcanza el mínimo de la campaña'),
+      findsOneWidget,
+    );
+    expect(find.text('Reintentar'), findsOneWidget);
+    expect(find.text('Descartar'), findsOneWidget);
+  });
+
+  testWidgets('retrying puts it back in the queue and sends it', (
+    tester,
+  ) async {
+    await park(tester, 'La caducidad no alcanza el mínimo de la campaña');
+    final accepted = FakeHttpAdapter((_) => FakeResponse(201, intakeJson()));
+
+    await pumpPending(tester, adapter: accepted);
+    await tester.tap(find.text('Reintentar'));
+    await tester.pumpAndSettle();
+
+    // Con la misma llave de captura, así que reintentar no puede duplicar.
+    final body = accepted.requests.single.data as Map<String, dynamic>;
+    expect(body['capture_id'], 'capture-1');
+    expect(await db.captureQueueDao.findById('capture-1'), isNull);
+  });
+
+  testWidgets('retrying something still refused parks it again', (
+    tester,
+  ) async {
+    await park(tester, 'La caducidad no alcanza el mínimo de la campaña');
+    final refused = FakeHttpAdapter(
+      (_) => FakeResponse(422, {
+        'error': {
+          'code': 'SHELF_LIFE_TOO_SHORT',
+          'message': 'La caducidad no alcanza el mínimo de la campaña',
+        },
+      }),
+    );
+
+    await pumpPending(tester, adapter: refused);
+    await tester.tap(find.text('Reintentar'));
+    await tester.pumpAndSettle();
+
+    // Sigue en la cola con su motivo: reintentar no descarta nada.
+    final row = await db.captureQueueDao.findById('capture-1');
+    expect(row?.status, QueuedCaptureStatus.rejected);
+    expect(
+      row?.lastFailureMessage,
+      'La caducidad no alcanza el mínimo de la campaña',
+    );
+  });
+
+  testWidgets('discarding asks first and names what is being thrown away', (
+    tester,
+  ) async {
+    await park(tester, 'La caducidad no alcanza el mínimo de la campaña');
+
+    await pumpPending(tester);
+    await tester.tap(find.text('Descartar'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('¿Descartar esta captura?'), findsOneWidget);
+    expect(find.textContaining('Paracetamol 500 mg'), findsWidgets);
+
+    await tester.tap(find.text('Conservar'));
+    await tester.pumpAndSettle();
+
+    expect(await db.captureQueueDao.findById('capture-1'), isNotNull);
+  });
+
+  testWidgets('an empty queue says so', (tester) async {
+    await pumpPending(tester);
+
+    expect(find.textContaining('No hay capturas esperando'), findsOneWidget);
+  });
+}
