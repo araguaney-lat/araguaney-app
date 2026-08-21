@@ -153,6 +153,53 @@ void main() {
 
   group('invariant 4 — nothing is discarded on its own', () {
     test(
+      'a parked capture can be sent back to the queue by a person',
+      () async {
+        await queue.enqueue(draft: draftWith(), userId: 'user-1');
+        await syncOn(
+          FakeHttpAdapter(
+            (_) => FakeResponse(422, {
+              'error': {
+                'code': 'NOT_CAMPAIGN_MEMBER',
+                'message': 'No perteneces a esa campaña',
+              },
+            }),
+          ),
+        ).flush('user-1');
+
+        // Aparcar es dejar de reintentar solo. Cuando el motivo se resuelve
+        // fuera, la salida correcta es volver a la cola y no tirar inventario.
+        await queue.retry('capture-1');
+
+        final row = await db.captureQueueDao.findById('capture-1');
+        expect(row?.status, QueuedCaptureStatus.pending);
+        expect(row?.lastFailureMessage, isNull);
+        // Los intentos ocurrieron: reintentar no los borra.
+        expect(row?.attempts, 1);
+      },
+    );
+
+    test('retrying sends the same capture id, so nothing duplicates', () async {
+      await queue.enqueue(draft: draftWith(), userId: 'user-1');
+      await syncOn(
+        FakeHttpAdapter(
+          (_) => FakeResponse(422, {
+            'error': {'code': 'NOT_CAMPAIGN_MEMBER', 'message': 'No.'},
+          }),
+        ),
+      ).flush('user-1');
+
+      await queue.retry('capture-1');
+      final accepted = FakeHttpAdapter((_) => FakeResponse(201, intakeJson()));
+      final report = await syncOn(accepted).flush('user-1');
+
+      expect(report.sent, 1);
+      final body = accepted.requests.single.data as Map<String, dynamic>;
+      expect(body['capture_id'], 'capture-1');
+      expect(await db.captureQueueDao.findById('capture-1'), isNull);
+    });
+
+    test(
       'a business rejection parks the capture with the server reason',
       () async {
         await queue.enqueue(draft: draftWith(), userId: 'user-1');
