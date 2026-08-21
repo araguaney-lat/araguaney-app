@@ -21,12 +21,51 @@ class ScannerCamera extends StatelessWidget {
   /// Lo que se pinta encima de la imagen: una pista, un registro de lecturas.
   final Widget? overlay;
 
-  /// El controlador que las dos pantallas necesitan: solo QR, y sin repetir la
-  /// misma lectura mientras el teléfono siga encima de la etiqueta.
-  static MobileScannerController buildController() => MobileScannerController(
-    formats: const [BarcodeFormat.qrCode],
+  /// Cada pantalla declara qué espera leer, y el decodificador no intenta nada
+  /// más. No es una validación posterior: un formato que no está en la lista no
+  /// produce una lectura equivocada, produce ninguna.
+  ///
+  /// Por eso el escáner de cajas y tarimas se queda en QR. Un cartón lleva
+  /// además el código de barras del fabricante, y aceptarlo haría que apuntar
+  /// a nuestra etiqueta pudiera devolver la del laboratorio — un acierto falso,
+  /// que es peor que un fallo claro.
+  ///
+  /// `noDuplicates` evita repetir la misma lectura mientras el teléfono sigue
+  /// encima de la etiqueta.
+  static MobileScannerController buildController({
+    List<BarcodeFormat> formats = const [BarcodeFormat.qrCode],
+  }) => MobileScannerController(
+    formats: formats,
     detectionSpeed: DetectionSpeed.noDuplicates,
   );
+
+  /// Lo que se lee en el envase de un producto.
+  ///
+  /// Los cuatro lineales cubren los dos sistemas del mundo: EAN-13 y EAN-8
+  /// fuera de Norteamérica —México es `750`, Venezuela `759`— y UPC-A y UPC-E
+  /// en Estados Unidos y Canadá, de donde viene buena parte de lo que se dona.
+  ///
+  /// **UPC-E se expande antes de consultarlo** (`gtinFromScan`): su dígito de
+  /// control se calculó sobre el UPC-A de doce del que salió, así que enviarlo
+  /// comprimido produce un escaneo que parece ir bien y que el servidor
+  /// rechaza.
+  ///
+  /// **DataMatrix no está**: no apareció en ningún envase de la muestra y
+  /// aceptarlo sin interpretar los identificadores GS1 mandaría dígitos
+  /// equivocados.
+  ///
+  /// El QR entra en la lista pero no se consulta nunca: está para poder decir
+  /// qué se leyó. En un envase el QR suele ser del laboratorio —lleva su logo
+  /// dentro— y no identifica el producto; y puede ser también una etiqueta
+  /// nuestra. Sin leerlo, apuntar ahí no haría nada, y no hacer nada es la peor
+  /// respuesta posible cuando no se sabe si falla la cámara o la puntería.
+  static const productFormats = [
+    BarcodeFormat.ean13,
+    BarcodeFormat.ean8,
+    BarcodeFormat.upcA,
+    BarcodeFormat.upcE,
+    BarcodeFormat.qrCode,
+  ];
 
   @override
   Widget build(BuildContext context) => Stack(
