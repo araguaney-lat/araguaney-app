@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/ui/sheet_insets.dart';
 import '../../intake/data/intake_providers.dart';
 
 /// Abrir un hilo de campaña.
@@ -56,7 +57,7 @@ class _NewThreadSheetState extends ConsumerState<NewThreadSheet> {
         left: 16,
         right: 16,
         top: 16,
-        bottom: MediaQuery.viewInsetsOf(context).bottom + 16,
+        bottom: sheetBottomInset(context),
       ),
       child: Form(
         key: _formKey,

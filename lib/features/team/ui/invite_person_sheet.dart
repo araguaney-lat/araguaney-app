@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/ui/sheet_insets.dart';
+
 /// Lo que hace falta para dar de alta a alguien en el centro.
 typedef InviteDraft = ({
   String email,
@@ -60,7 +62,7 @@ class _InvitePersonSheetState extends State<InvitePersonSheet> {
       left: 16,
       right: 16,
       top: 16,
-      bottom: MediaQuery.viewInsetsOf(context).bottom + 16,
+      bottom: sheetBottomInset(context),
     ),
     child: Form(
       key: _formKey,
