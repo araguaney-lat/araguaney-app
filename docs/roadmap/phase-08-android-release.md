@@ -24,14 +24,14 @@
 
 | # | Task | Description | Complexity | Status |
 |---|------|-------------|------------|--------|
-| 1 | Google Play developer account | Registration, identity verification, payment. External prerequisite. | 🟠 Medium | ⛔ External |
+| 1 | Google Play developer account | Registration, identity verification, payment. External prerequisite. **Done on 2026-08-20: the account is registered and identity verification passed.** | 🟠 Medium | ✅ Done |
 | 2 | Upload keystore and signing config | Gradle reads `key.properties`; template and generation documented; release builds unsigned when it is absent, so a fork can build without a key. **The keystore itself and Play App Signing are external.** | 🟠 Medium | 🟨 Partial |
 | 3 | Release build configuration | Shrinking and resource shrinking with R8, keep rules per plugin explaining what breaks without each, obfuscation with split debug info, and release `AppConfig` values via `--dart-define` (`API_BASE_URL`, `WEB_BASE_URL`, `APP_FLAVOR`, `SENTRY_DSN`). | 🟠 Medium | ✅ Done |
 | 4 | CI release workflow | Tag → signed AAB with a pinned Flutter version → bundle and debug symbols as artifacts; signing material from repository secrets, written and deleted around the build. Integration CI pins the same version. | 🔴 High | ✅ Done |
-| 5 | Play internal testing | App created in the console, internal track configured, first AAB uploaded and installable. Needs task 1. | 🟠 Medium | ⛔ External |
+| 5 | Play internal testing | App created in the console, internal track configured, first AAB uploaded and installable. **Unblocked on 2026-08-20** — task 1 is done; what remains is the upload keystore (task 2) and the console steps. | 🟠 Medium | ⬜ Pending |
 | 6 | Version strategy | `versionCode`/`versionName` discipline documented in `docs/release/versioning.md` and aligned with `GET /v1/client/version`. | 🟠 Medium | ✅ Done |
 | 7 | Crash reporting release wiring | Sentry initialised only when a DSN is configured, tagged `package@version+build`, no request bodies. Symbols are published as a build artifact. **Uploading them to Sentry needs the DSN and an auth token.** | 🟠 Medium | 🟨 Partial |
-| 8 | Store listing (internal) | Spanish-first listing assets sufficient for testing tracks. Needs task 1. | 🟢 Low | ⛔ External |
+| 8 | Store listing (internal) | Spanish-first listing assets sufficient for testing tracks. **Unblocked on 2026-08-20** with task 1. | 🟢 Low | ⬜ Pending |
 | 9 | Roadmap update | Mark tasks and update totals. | 🟢 Low | ✅ Done |
 
 ---

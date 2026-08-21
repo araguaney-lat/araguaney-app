@@ -5,7 +5,7 @@ import '../../../core/api/api_error_mapper.dart';
 import '../../../core/api/generated/models/pallet_detail_out.dart';
 import '../../../core/connectivity/connectivity_controller.dart';
 import '../../../core/ui/record_field.dart';
-import '../../boxes/ui/box_status_label.dart';
+import '../../../core/ui/status_labels.dart';
 import '../../scanning/domain/scanned_code.dart';
 import '../../scanning/ui/continuous_scan_view.dart';
 import '../data/pallets_providers.dart';
@@ -163,7 +163,7 @@ class _Fields extends StatelessWidget {
   Widget build(BuildContext context) => ListView(
     padding: const EdgeInsets.symmetric(vertical: 8),
     children: [
-      RecordField(label: 'Estado', value: pallet.status),
+      RecordField(label: 'Estado', value: palletStatusLabel(pallet.status)),
       RecordField(label: 'Cajas', value: '${pallet.boxes.length}'),
       if (pallet.tareWeightKg case final tare?)
         RecordField(label: 'Tara', value: '$tare kg'),

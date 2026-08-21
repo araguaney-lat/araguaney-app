@@ -6,7 +6,7 @@ import '../../../core/api/generated/models/transfer_detail_out.dart';
 import '../../../core/auth/auth_providers.dart';
 import '../../../core/connectivity/connectivity_controller.dart';
 import '../../../core/ui/record_field.dart';
-import '../../boxes/ui/box_status_label.dart';
+import '../../../core/ui/status_labels.dart';
 import '../data/transfers_providers.dart';
 import '../data/transfers_repository.dart';
 import '../domain/transfer_actions.dart';

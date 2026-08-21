@@ -14,11 +14,11 @@ A row is done, partial, blocked/external, or pending; the totals below are the
 sum of those rows and nothing else.
 
 ```mermaid
-pie title Tasks completed (121 tasks)
-    "Done" : 88
-    "Pending" : 23
+pie title Tasks completed (122 tasks)
+    "Done" : 90
+    "Pending" : 24
     "Partial" : 7
-    "Blocked or external" : 4
+    "Blocked or external" : 1
 ```
 
 | Phase | Name | Done | Pending | Progress |
@@ -31,12 +31,12 @@ pie title Tasks completed (121 tasks)
 | 5 | [Online intake and box operations](phase-05-intake-online.md) | 10 | 0 | ✅ 100% |
 | 6 | [Offline capture queue](phase-06-offline-queue.md) | 10 | 0 | ✅ 100% |
 | 7 | [Push notifications](phase-07-push-notifications.md) | 10 | 1 | 🟨 91% (1 partial) |
-| 8 | [Android release and distribution](phase-08-android-release.md) | 4 | 5 | 🟨 44% (2 partial, 3 external) |
+| 8 | [Android release and distribution](phase-08-android-release.md) | 5 | 4 | 🟨 56% (2 partial) |
 | 9 | [iOS enablement](phase-09-ios-enablement.md) | 0 | 6 | ⬜ 0% |
 | 10 | [Operational parity backlog](phase-10-operational-parity.md) | 2 | 12 | 🟨 14% (4 partial, 1 blocked) |
-| 11 | [Design system](phase-11-design-system.md) | 10 | 4 | 🟨 71% |
+| 11 | [Design system](phase-11-design-system.md) | 11 | 3 | 🟨 79% |
 | 12 | [Measuring a pallet with the camera](phase-12-pallet-height.md) | 0 | 6 | ⬜ 0% |
-| **Total** | | **88** | **33** | **🟢 73%** |
+| **Total** | | **90** | **32** | **🟢 74%** |
 
 ## Blocked work
 

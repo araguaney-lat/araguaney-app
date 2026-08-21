@@ -94,7 +94,7 @@ phase of its own, because it is the same phase seen from the other side.
 | 8 | Cajas | 08 — count, scrollable status filters, sealing from the row | ✅ Done |
 | 9 | Registrar entrada | 06 — campaign in the header, box count, two fixed actions | ✅ Done |
 | 10 | Pendientes de envío | 07 — readiness strip, per-capture contents, retry | ✅ Done |
-| 11 | Escanear código | 04 | ⬜ Pending |
+| 11 | Escanear código | 04 — full-bleed camera, viewfinder, result as a sheet | ✅ Done |
 | 12 | Tarimas y tarima abierta | 09, 10 | ⬜ Pending |
 | 13 | Transferencias | 12 | ⬜ Pending |
 | 14 | Revisiones | 13 | ⬜ Pending |
@@ -204,3 +204,42 @@ retroactive. The contract carries product identifiers and not names, so a name
 is resolved against the local catalog and, when the catalog no longer has it,
 the line says only the quantity and the unit. Somebody deciding whether to
 discard a capture needs true data, not a complete-looking line.
+
+### What redesigning the fourth screen turned up
+
+The result stops being a screen and becomes a sheet over the camera. Checking a
+pallet means scanning one box after another, and every answer used to cost a
+push and a pop; closing the sheet leaves the camera pointing again. The sheet
+identifies — it does not replace the record. Where there is a record with
+actions behind it (a cached box, a donation to capture) the sheet leads to it
+with a button.
+
+**Two more status tables were showing the server's keys.** A pallet's status was
+rendered raw in two places and a donation's in one: «OPEN», «REGISTERED». The
+three tables — boxes, pallets, donations — now live together in
+`core/ui/status_labels.dart`, and the file says why: a translation table hidden
+inside one screen leaves the others speaking the backend's language. That is the
+third time the same shape has been paid for, after the category labels and the
+box statuses.
+
+**The pallet fixtures used `DRAFT`**, which is a *box* status — pallets are
+`OPEN`, `CLOSED`, `SHIPPED`. Incidents had it too. Same as the invented
+categories two screens ago: fixtures that agree with nothing but themselves.
+
+The camera now fills the screen with a transparent bar over it, and a viewfinder
+marks where to put the label. The viewfinder crops nothing — `mobile_scanner`
+reads the whole frame and a code outside the square still resolves. It is an
+instruction, not a restriction, and the dimming around it exists so the white
+text above and below stays readable over whatever the camera is pointing at.
+
+### A counting error in the summary, fixed by counting
+
+The README says its totals are the sum of the phase task tables «and nothing
+else». They were not: the pending column had been one short since before this
+phase, and every update since carried the error forward because each one edited
+the total by hand rather than recounting. Counted from the phase files, the
+project has **122 tasks**, not 121.
+
+It is a small number and a familiar shape: a figure kept by editing instead of
+by deriving drifts from what it claims to summarise, exactly like a label table
+kept in one screen drifts from the values the server sends.
