@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/auth/auth_providers.dart';
 import '../../../core/ui/sheet_insets.dart';
+import '../../account/ui/profile_view.dart';
 import '../../dashboard/ui/stock_by_category_view.dart';
 import '../../intake/data/intake_providers.dart';
 import '../../intake/ui/intake_list_view.dart';
@@ -20,10 +21,19 @@ import '../../transfers/ui/transfers_list_view.dart';
 class MoreMenuSheet extends ConsumerWidget {
   const MoreMenuSheet({super.key});
 
+  /// `isScrollControlled` porque el menú creció: sin él la hoja se topa en
+  /// poco más de la mitad de la pantalla y las últimas entradas quedan bajo el
+  /// pliegue, que en un menú es lo mismo que no existir. Con él se ajusta a su
+  /// contenido, y el `ConstrainedBox` evita que llegue a tapar la pantalla
+  /// entera cuando la lista siga creciendo.
   static Future<void> show(BuildContext context) => showModalBottomSheet<void>(
     context: context,
     useSafeArea: true,
     showDragHandle: true,
+    isScrollControlled: true,
+    constraints: BoxConstraints(
+      maxHeight: MediaQuery.sizeOf(context).height * 0.85,
+    ),
     builder: (_) => const MoreMenuSheet(),
   );
 
@@ -54,6 +64,11 @@ class MoreMenuSheet extends ConsumerWidget {
               : const Icon(Icons.cloud_upload_outlined),
           title: const Text('Pendientes de envío'),
           onTap: () => _go(context, PendingCapturesView.route()),
+        ),
+        ListTile(
+          leading: const Icon(Icons.person_outline),
+          title: const Text('Perfil y seguridad'),
+          onTap: () => _go(context, ProfileView.route()),
         ),
         ListTile(
           leading: const Icon(Icons.list_alt_outlined),

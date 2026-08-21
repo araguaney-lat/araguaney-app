@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/auth/auth_providers.dart';
 import '../../../core/auth/session.dart';
+import 'forgot_password_view.dart';
 
 /// Inicio de sesión. Las credenciales las valida el servidor: aquí solo se
 /// comprueba que los campos no vengan vacíos, para no gastar una petición.
@@ -122,6 +123,15 @@ class _LoginViewState extends ConsumerState<LoginView> {
                               child: CircularProgressIndicator(strokeWidth: 2),
                             )
                           : const Text('Entrar'),
+                    ),
+                    const SizedBox(height: 8),
+                    TextButton(
+                      onPressed: _submitting
+                          ? null
+                          : () => Navigator.of(
+                              context,
+                            ).push(ForgotPasswordView.route()),
+                      child: const Text('¿Olvidaste tu contraseña?'),
                     ),
                   ],
                 ),
