@@ -9,6 +9,7 @@ import '../../../core/api/generated/models/qr_event_out.dart';
 import '../../../core/api/generated/models/reception_out.dart';
 import '../../../core/api/generated/models/shipment_detail_out.dart';
 import '../../../core/auth/auth_providers.dart';
+import '../../../core/platform/open_link.dart';
 import '../../../core/ui/confirm_button.dart';
 import '../../../core/ui/record_field.dart';
 import '../../../core/ui/status_labels.dart';

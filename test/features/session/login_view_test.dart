@@ -1,5 +1,6 @@
 import 'package:araguaney_app/core/auth/auth_providers.dart';
 import 'package:araguaney_app/core/db/db_providers.dart';
+import 'package:araguaney_app/core/platform/open_link.dart';
 import 'package:araguaney_app/core/push/push_providers.dart';
 import 'package:araguaney_app/features/session/ui/login_view.dart';
 import 'package:flutter/material.dart';
@@ -13,9 +14,14 @@ void main() {
   Future<void> pumpLogin(
     WidgetTester tester, {
     bool disableAnimations = false,
+    List<String>? opened,
   }) async {
     final container = ProviderContainer(
       overrides: [
+        openLinkProvider.overrideWithValue((url) async {
+          opened?.add(url);
+          return true;
+        }),
         authRepositoryProvider.overrideWithValue(FakeAuthRepository()),
         tokenStorageProvider.overrideWithValue(FakeTokenStorage()),
         onSessionStartedProvider.overrideWithValue(() async {}),
@@ -109,5 +115,56 @@ void main() {
 
     expect(markOpacity(tester), 1);
     expect(SchedulerBinding.instance.transientCallbackCount, 0);
+  });
+
+  group('the way out for somebody without a centre', () {
+    Future<void> tapLink(WidgetTester tester, List<String> opened) async {
+      await pumpLogin(tester, opened: opened);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('¿Tu centro aún no está registrado?'));
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('a phone in Spanish reaches the Spanish form', (tester) async {
+      // Explícito: el arnés de pruebas arranca en `en_US`, así que dar por
+      // hecho el español aquí probaría el caso contrario sin avisar.
+      tester.platformDispatcher.localeTestValue = const Locale('es', 'VE');
+      addTearDown(tester.platformDispatcher.clearLocaleTestValue);
+
+      final opened = <String>[];
+      await tapLink(tester, opened);
+
+      expect(opened, ['https://araguaney.lat/registrar-centro']);
+    });
+
+    testWidgets('a phone in English reaches the English form', (tester) async {
+      // La interfaz sigue en español —es el idioma en que se opera un centro—
+      // pero quien toca esto todavía no opera ninguno, y la página pública
+      // existe en los dos. El slug en inglés es otro, no el mismo traducido.
+      tester.platformDispatcher.localeTestValue = const Locale('en', 'US');
+      addTearDown(tester.platformDispatcher.clearLocaleTestValue);
+
+      final opened = <String>[];
+      await tapLink(tester, opened);
+
+      expect(opened, ['https://araguaney.lat/en/register-center']);
+    });
+
+    testWidgets('any other language falls back to Spanish', (tester) async {
+      tester.platformDispatcher.localeTestValue = const Locale('pt', 'BR');
+      addTearDown(tester.platformDispatcher.clearLocaleTestValue);
+
+      final opened = <String>[];
+      await tapLink(tester, opened);
+
+      expect(opened, ['https://araguaney.lat/registrar-centro']);
+    });
+  });
+
+  testWidgets('recovering a password is reachable from here', (tester) async {
+    await pumpLogin(tester);
+    await tester.pumpAndSettle();
+
+    expect(find.text('¿Olvidaste tu contraseña?'), findsOneWidget);
   });
 }

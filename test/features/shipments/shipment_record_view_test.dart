@@ -1,7 +1,7 @@
 import 'package:araguaney_app/core/api/api_providers.dart';
 import 'package:araguaney_app/core/api/generated/rest_client.dart';
 import 'package:araguaney_app/core/auth/auth_providers.dart';
-import 'package:araguaney_app/features/shipments/data/shipments_providers.dart';
+import 'package:araguaney_app/core/platform/open_link.dart';
 import 'package:araguaney_app/features/shipments/ui/shipment_record_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

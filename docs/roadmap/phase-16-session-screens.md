@@ -63,8 +63,11 @@ as there — derive the list rather than keep it.
 ## Objectives
 
 1. Put the mark on the screen where the application introduces itself.
-2. Return the session screens to the component theme they opted out of.
-3. Extend phase 11's screen table to cover every screen, so that «done» means
+2. Design the error state of a field, which no screen declares today, and drop
+   the hand-written borders that stand in for it on five of them.
+3. Give somebody without a centre somewhere to go instead of a form they cannot
+   fill.
+4. Extend phase 11's screen table to cover every screen, so that «done» means
    the application and not a subset of it.
 
 ## Non-objectives
@@ -142,6 +145,44 @@ this ships to it is also the only one that costs nothing to draw.
 
 ---
 
+## Somebody who does not have a centre yet
+
+The application opens at a sign-in and offers no registration, deliberately: a
+person reaches a centre through an invitation. But the web has a public page —
+`/registrar-centro` — where a centre applies to join the platform, and the
+application never mentioned it. Somebody who heard about Araguaney, installed
+this, and does not have a centre met a form that explained nothing.
+
+**The form is not brought here, and not out of laziness.** It sits behind a
+browser anti-abuse check; rebuilding it natively would mean running that check
+inside an embedded web view, where it is worth less, with its configuration
+carried in the binary. The application then ends in an email whose link opens
+the web — the same shape as the password reset in Phase 14, and closing it
+in-app needs App Links and an `assetlinks.json` served from the domain, which
+is a change to the other repository.
+
+So the login carries a link and the browser does the rest.
+
+### The destination follows the phone, the interface does not
+
+The texts of this application are Spanish because Spanish is the language a
+collection centre is operated in, and `MaterialApp` fixes `Locale('es')` for
+that reason. There is exactly one `app_es.arb`; there is no English.
+
+The public page is different: it genuinely exists in both, at two different
+paths — `/registrar-centro` in Spanish, unprefixed because Spanish is the web's
+default, and `/en/register-center` in English, which is a different slug and not
+the same one translated. Whoever taps this link is not operating a centre yet,
+so sending them to the Spanish form while holding an English phone would lose
+something for nothing. The link reads
+`View.of(context).platformDispatcher.locale` — the phone's language, not the
+application's, since asking `Localizations` would answer `es` forever.
+
+Writing the test taught the same lesson the screens keep teaching: the widget
+harness starts at `en_US`, so the Spanish case had to set its locale explicitly.
+Assuming the default would have asserted the English behaviour under a Spanish
+name and passed.
+
 ## Tasks
 
 | # | Task | Description | Complexity | Status |
@@ -150,5 +191,6 @@ this ships to it is also the only one that costs nothing to draw.
 | 2 | A mark sized for a login | `ic_mark_lg.png` cropped from the launcher foreground, with the three-file decision written down. | 🟢 Low | ✅ Done |
 | 3 | The mark on the login | Above the name, with a one-shot fade and rise that does not delay the form and obeys the reduced-motion setting. | 🟠 Medium | ✅ Done |
 | 4 | Design the error state, and drop the five borders | `errorBorder` and `focusedErrorBorder` in the theme, which no screen declares today, and the hand-written `OutlineInputBorder()` removed from the session and second-factor fields. Pinned by a test on a field that is actually in error. | 🟠 Medium | ⬜ Pending |
-| 5 | Complete phase 11's screen table | Every screen listed, with the session ones marked, so the phase's total describes the application. | 🟢 Low | ⬜ Pending |
-| 6 | Verify on a device | The handover from the system splash to the login is the point of task 3, and it cannot be judged from a widget test. | 🟢 Low | ⬜ Pending |
+| 5 | The way out for somebody without a centre | A link on the login to the web's public application form, opening the browser at the page in the phone's language. The form itself stays on the web, and the file says why. | 🟢 Low | ✅ Done |
+| 6 | Complete phase 11's screen table | Every screen listed, with the session ones marked, so the phase's total describes the application. | 🟢 Low | ⬜ Pending |
+| 7 | Verify on a device | The handover from the system splash to the login is the point of task 3, and it cannot be judged from a widget test. The link's destination is worth one tap on a real phone too. | 🟢 Low | ⬜ Pending |
