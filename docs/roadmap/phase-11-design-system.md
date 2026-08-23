@@ -95,9 +95,9 @@ phase of its own, because it is the same phase seen from the other side.
 | 9 | Registrar entrada | 06 — campaign in the header, box count, two fixed actions | ✅ Done |
 | 10 | Pendientes de envío | 07 — readiness strip, per-capture contents, retry | ✅ Done |
 | 11 | Escanear código | 04 — full-bleed camera, viewfinder, result as a sheet | ✅ Done |
-| 12 | Tarimas y tarima abierta | 09, 10 | ⬜ Pending |
-| 13 | Transferencias | 12 | ⬜ Pending |
-| 14 | Revisiones | 13 | ⬜ Pending |
+| 12 | Tarimas y tarima abierta | 09, 10 | ✅ Done |
+| 13 | Transferencias | 12 | ✅ Done |
+| 14 | Revisiones | 13 | ✅ Done |
 
 ### What redesigning the first screen turned up
 
@@ -231,6 +231,44 @@ marks where to put the label. The viewfinder crops nothing — `mobile_scanner`
 reads the whole frame and a code outside the square still resolves. It is an
 instruction, not a restriction, and the dimming around it exists so the white
 text above and below stays readable over whatever the camera is pointing at.
+
+### What redesigning the last three screens turned up
+
+**Two more translation tables were hidden inside a screen**, which is the same
+finding as the fourth screen's and the second's, now for the fifth and sixth
+time. A transfer's status was translated inside the transfers screen and a
+review's inside the reviews screen, so every other place that touched those
+values — a row, a sheet, a future notification — would have printed
+«REQUESTED». The file that holds them says why in one line: *una tabla de
+traducción escondida en una pantalla deja a las otras enseñando el idioma del
+backend.* All six tables now live in `core/ui/status_labels.dart`.
+
+**Transferencias filters by direction, not by status**, and that is the design's
+reading of the screen rather than a shortcut. What a coordinator needs to know
+first is whether the transfer is theirs to answer: an incoming request waits on
+them, an outgoing one waits on somebody else. Status is the second question and
+it is on the row.
+
+**The screen cannot name the other centre, and says so instead of guessing.**
+The contract carries `from_center_id` and `to_center_id` and nothing
+else, and both `/v1/centers` endpoints require a national administrator, so a
+coordinator's token cannot resolve an identifier into a name. Printing the
+identifier would be decoration; inventing a name would be worse. Recorded as
+request 3 in `backend-requests.md`.
+
+**Revisiones quotes the server's words rather than restating them.** The reason
+a capture was flagged is the server's sentence, shown between quotation marks
+and unedited. Paraphrasing it would put the client in the position of explaining
+a control it does not implement — and the threshold that produced the sentence
+is exactly the kind of value this repository does not publish.
+
+**A second layout defect only the emulator caught.** An open pallet has no
+weight, no height, no closing date and no shipment, so its subtitle was an empty
+`Text('')` — a blank second line that made every open row taller than it needed
+to be and left the code floating. The row now has no subtitle when it has
+nothing to say, pinned by a test. Like the readiness cells two screens ago, no
+test failed and nothing looked wrong in the widget tree: it was visible only on
+a device.
 
 ### A counting error in the summary, fixed by counting
 

@@ -75,17 +75,22 @@ void main() {
     Future<FakeHttpAdapter> pumpReviews(
       WidgetTester tester, {
       required bool canResolve,
+      List<Map<String, Object?>>? reviews,
     }) async {
       final adapter = FakeHttpAdapter((options) {
         if (options.path.endsWith('/resolve')) {
           return FakeResponse(200, riskReviewJson());
         }
-        return FakeResponse(200, [
-          riskReviewJson(
-            id: 'rr-1',
-            reason: 'Volumen inusual para una donación anónima',
-          ),
-        ]);
+        return FakeResponse(
+          200,
+          reviews ??
+              [
+                riskReviewJson(
+                  id: 'rr-1',
+                  reason: 'Volumen inusual para una donación anónima',
+                ),
+              ],
+        );
       });
 
       final container = ProviderContainer(
@@ -111,12 +116,12 @@ void main() {
     ) async {
       final adapter = await pumpReviews(tester, canResolve: true);
 
-      await tester.tap(find.text('Resolver'));
+      await tester.tap(find.text('Aprobar o rechazar'));
       await tester.pumpAndSettle();
 
       // El motivo sigue delante mientras se decide.
       expect(
-        find.text('Volumen inusual para una donación anónima'),
+        find.textContaining('Volumen inusual para una donación anónima'),
         findsWidgets,
       );
 
@@ -139,7 +144,7 @@ void main() {
       // incómoda.
       await pumpReviews(tester, canResolve: true);
 
-      await tester.tap(find.text('Resolver'));
+      await tester.tap(find.text('Aprobar o rechazar'));
       await tester.pumpAndSettle();
 
       expect(find.widgetWithText(OutlinedButton, 'Rechazar'), findsOneWidget);
@@ -152,10 +157,46 @@ void main() {
       await pumpReviews(tester, canResolve: false);
 
       expect(
-        find.text('Volumen inusual para una donación anónima'),
+        find.textContaining('Volumen inusual para una donación anónima'),
         findsOneWidget,
       );
-      expect(find.text('Resolver'), findsNothing);
+      expect(find.text('Aprobar o rechazar'), findsNothing);
+    });
+
+    testWidgets('resolved ones drop below, under their own heading', (
+      tester,
+    ) async {
+      // Siguen consultables —saber que algo se aprobó, y con qué nota, es la
+      // mitad del valor de haberlo marcado— y dejan de competir con lo que
+      // todavía espera una decisión.
+      await pumpReviews(
+        tester,
+        canResolve: true,
+        reviews: [
+          riskReviewJson(id: 'rr-1', status: 'APPROVED'),
+          riskReviewJson(id: 'rr-2'),
+        ],
+      );
+
+      expect(find.text('Ya resueltas'), findsOneWidget);
+      expect(find.text('Aprobada'), findsOneWidget);
+      // Solo la pendiente ofrece decidir.
+      expect(find.text('Aprobar o rechazar'), findsOneWidget);
+    });
+
+    testWidgets('with nothing pending it says what this screen is for', (
+      tester,
+    ) async {
+      await pumpReviews(
+        tester,
+        canResolve: true,
+        reviews: const <Map<String, Object?>>[],
+      );
+
+      expect(
+        find.textContaining('el servidor marcó para que alguien las mire'),
+        findsOneWidget,
+      );
     });
   });
 }

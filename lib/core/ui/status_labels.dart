@@ -49,6 +49,27 @@ String shipmentStatusLabel(String status) => switch (status) {
   _ => status,
 };
 
+/// `TRANSFER_STATUSES` en el backend. Vivía dentro de la función de
+/// transferencias, que es exactamente cómo las otras cuatro acabaron
+/// enseñando la clave del servidor en las pantallas que no la importaban.
+String transferStatusLabel(String status) => switch (status) {
+  'REQUESTED' => 'Solicitada',
+  'APPROVED' => 'Aprobada',
+  'IN_TRANSIT' => 'En tránsito',
+  'RECEIVED' => 'Recibida',
+  'REJECTED' => 'Rechazada',
+  _ => status,
+};
+
+/// El estado de una revisión de riesgo. `PENDING` es el que espera una
+/// decisión; los otros dos ya la llevan.
+String reviewStatusLabel(String status) => switch (status) {
+  'PENDING' => 'Pendiente',
+  'APPROVED' => 'Aprobada',
+  'REJECTED' => 'Rechazada',
+  _ => status,
+};
+
 /// El ciclo de una donación pre-registrada: se registra por correo, se
 /// confirma, y se recibe cuando alguien la captura en un centro.
 String donationStatusLabel(String status) => switch (status) {
