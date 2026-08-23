@@ -126,7 +126,6 @@ class _TotpSetupViewState extends ConsumerState<TotpSetupView> {
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             decoration: const InputDecoration(
               labelText: 'Código de seis dígitos',
-              border: OutlineInputBorder(),
             ),
             onSubmitted: (_) => _confirm(),
           ),

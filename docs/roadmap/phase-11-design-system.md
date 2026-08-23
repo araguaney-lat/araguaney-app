@@ -99,6 +99,83 @@ phase of its own, because it is the same phase seen from the other side.
 | 13 | Transferencias | 12 | ✅ Done |
 | 14 | Revisiones | 13 | ✅ Done |
 
+### The complete inventory, which is the point
+
+The table above lists the screens the design deck draws. It was mistaken for a
+list of the screens the application has, and that mistake is what Phase 16
+exists to pay for: everything absent from it was invisible, so nobody scheduled
+the login and nobody noticed when the phase was declared finished.
+
+So here is the whole surface, every destination and every sheet, and what
+dressed it. **Its source is `lib/features/*/ui/`** — a screen that is not on
+this table is a missing row, not a screen that does not count. Three of the
+values mean different things:
+
+- **design NN** — the deck draws it and the row above tracked the work.
+- **phase 16** — no design was drawn, but the screen needed the foundation
+  applied on purpose rather than by inheritance. That is this phase.
+- **foundation** — it takes the tokens, the type and the component themes and
+  needs nothing of its own. Done by construction, which is what Phase 11 was
+  for.
+
+«Foundation» is a claim, not a shrug: it says somebody can open that screen and
+find the design's colours, serif titles and bordered cards without a line of
+per-screen styling. Where that turns out to be false, the row changes and the
+work gets a number.
+
+| Feature | Screen or sheet | Dressed by |
+|---|---|---|
+| account | `profile_view.dart` | foundation |
+| account | `totp_setup_view.dart` | phase 16 |
+| boxes | `box_detail_view.dart` | foundation |
+| boxes | `box_label_view.dart` | foundation |
+| boxes | `boxes_list_view.dart` | design 08 |
+| catalog | `product_scan_view.dart` | foundation |
+| dashboard | `stock_by_category_view.dart` | foundation |
+| home | `home_view.dart` | foundation |
+| incidents | `report_incident_sheet.dart` *(sheet)* | foundation |
+| intake | `anonymous_exception_dialog.dart` *(sheet)* | foundation |
+| intake | `box_draft_sheet.dart` *(sheet)* | foundation |
+| intake | `campaign_sheet.dart` *(sheet)* | foundation |
+| intake | `donor_sheet.dart` *(sheet)* | foundation |
+| intake | `intake_detail_view.dart` | foundation |
+| intake | `intake_form_view.dart` | design 06 |
+| intake | `intake_list_view.dart` | foundation |
+| intake | `intake_queued_view.dart` | foundation |
+| intake | `intake_submitted_view.dart` | foundation |
+| intake | `pending_captures_view.dart` | design 07 |
+| intake | `product_picker_sheet.dart` *(sheet)* | foundation |
+| messaging | `new_thread_sheet.dart` *(sheet)* | foundation |
+| messaging | `thread_view.dart` | foundation |
+| messaging | `threads_list_view.dart` | foundation |
+| pallets | `close_pallet_sheet.dart` *(sheet)* | foundation |
+| pallets | `pallet_detail_view.dart` | design 10 |
+| pallets | `pallets_list_view.dart` | design 09 |
+| risk_reviews | `resolve_review_sheet.dart` *(sheet)* | foundation |
+| risk_reviews | `risk_reviews_view.dart` | design 13 |
+| scanning | `continuous_scan_view.dart` | foundation |
+| scanning | `scan_result_sheet.dart` *(sheet)* | foundation |
+| scanning | `scanner_view.dart` | design 04 |
+| session | `change_password_view.dart` | phase 16 |
+| session | `forgot_password_view.dart` | phase 16 |
+| session | `login_view.dart` | phase 16 |
+| session | `totp_challenge_view.dart` | phase 16 |
+| shell | `more_menu_sheet.dart` *(sheet)* | foundation |
+| shipments | `create_shipment_sheet.dart` *(sheet)* | foundation |
+| shipments | `pick_pallet_sheet.dart` *(sheet)* | foundation |
+| shipments | `shipment_record_view.dart` | foundation |
+| shipments | `shipments_list_view.dart` | foundation |
+| team | `campaign_members_view.dart` | foundation |
+| team | `invite_person_sheet.dart` *(sheet)* | foundation |
+| team | `pick_person_sheet.dart` *(sheet)* | foundation |
+| team | `team_directory_view.dart` | foundation |
+| transfers | `transfer_detail_view.dart` | foundation |
+| transfers | `transfers_list_view.dart` | design 12 |
+
+Files under `ui/` that are neither a destination nor a sheet — `scanner_camera`,
+`scanner_viewfinder`, `push_permission_card`, `app_shell` — are parts of the
+screens above and are dressed with them.
+
 ### What redesigning the first screen turned up
 
 The status labels never worked. `boxStatusLabel` mapped `open`, `sealed`,

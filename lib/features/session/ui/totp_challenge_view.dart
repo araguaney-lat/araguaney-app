@@ -77,7 +77,6 @@ class _TotpChallengeViewState extends ConsumerState<TotpChallengeView> {
                     onSubmitted: (_) => _submit(),
                     decoration: const InputDecoration(
                       labelText: 'Código de 6 dígitos',
-                      border: OutlineInputBorder(),
                       counterText: '',
                     ),
                   ),

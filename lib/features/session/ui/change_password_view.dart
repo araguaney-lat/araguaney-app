@@ -113,7 +113,6 @@ class _ChangePasswordViewState extends ConsumerState<ChangePasswordView> {
                       obscureText: true,
                       decoration: const InputDecoration(
                         labelText: 'Contraseña actual',
-                        border: OutlineInputBorder(),
                       ),
                       validator: (value) => (value == null || value.isEmpty)
                           ? 'Escribe tu contraseña actual'
@@ -125,7 +124,6 @@ class _ChangePasswordViewState extends ConsumerState<ChangePasswordView> {
                       obscureText: true,
                       decoration: const InputDecoration(
                         labelText: 'Contraseña nueva',
-                        border: OutlineInputBorder(),
                       ),
                       validator: (value) => (value == null || value.isEmpty)
                           ? 'Escribe tu contraseña nueva'
@@ -138,7 +136,6 @@ class _ChangePasswordViewState extends ConsumerState<ChangePasswordView> {
                       onFieldSubmitted: (_) => _submit(),
                       decoration: const InputDecoration(
                         labelText: 'Repite la contraseña nueva',
-                        border: OutlineInputBorder(),
                       ),
                       // Lo único que se valida aquí: que las dos coincidan. Es
                       // un dedazo que el servidor no puede detectar.
