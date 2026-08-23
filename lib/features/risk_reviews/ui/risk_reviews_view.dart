@@ -5,6 +5,7 @@ import '../../../core/api/api_error_mapper.dart';
 import '../../../core/api/generated/models/risk_review_out.dart';
 import '../../../core/auth/auth_providers.dart';
 import '../../../core/ui/record_field.dart';
+import '../../../core/ui/status_labels.dart';
 import '../data/risk_reviews_providers.dart';
 import '../data/risk_reviews_repository.dart';
 import 'resolve_review_sheet.dart';
@@ -14,6 +15,10 @@ import 'resolve_review_sheet.dart';
 /// Es el destino de un aviso `risk_review`, y también la única pantalla donde
 /// se puede leer **por qué** se levantó una: el aviso no lo dice a propósito,
 /// porque se lee en una pantalla de bloqueo y a veces con alguien al lado.
+///
+/// Cada tarjeta es una decisión, así que lleva su motivo a la vista y el par
+/// aprobar/rechazar al alcance del pulgar. Las que ya se resolvieron bajan al
+/// final: siguen consultables y dejan de competir con lo que espera.
 class RiskReviewsView extends ConsumerWidget {
   const RiskReviewsView({super.key, this.highlightIntakeId});
 
@@ -53,9 +58,9 @@ class RiskReviewsView extends ConsumerWidget {
 
     ref.invalidate(riskReviewsProvider);
     if (outcome case ResolveRefused(:final failure)) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(failure.operatorMessage)));
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(SnackBar(content: Text(failure.operatorMessage)));
     }
   }
 
@@ -65,25 +70,16 @@ class RiskReviewsView extends ConsumerWidget {
     final canResolve = ref.watch(isCenterCoordinatorProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Revisiones de riesgo')),
+      appBar: AppBar(title: const _Header()),
       body: RefreshIndicator(
         onRefresh: () async => ref.invalidate(riskReviewsProvider),
         child: switch (reviews) {
-          AsyncData(:final value) when value.isEmpty => const _Message(
-            'No hay revisiones abiertas sobre las capturas de este centro.',
-          ),
-          AsyncData(:final value) => ListView.separated(
-            itemCount: value.length,
-            separatorBuilder: (_, _) => const Divider(height: 1),
-            itemBuilder: (context, index) => _ReviewTile(
-              review: value[index],
-              highlighted:
-                  highlightIntakeId != null &&
-                  value[index].intakeId == highlightIntakeId,
-              onResolve: canResolve
-                  ? () => _resolve(context, ref, value[index])
-                  : null,
-            ),
+          AsyncData(:final value) => _Loaded(
+            reviews: value,
+            highlightIntakeId: highlightIntakeId,
+            onResolve: canResolve
+                ? (review) => _resolve(context, ref, review)
+                : null,
           ),
           AsyncError(:final error) => _Message(
             ApiErrorMapper.fromAny(error).operatorMessage,
@@ -95,11 +91,73 @@ class RiskReviewsView extends ConsumerWidget {
   }
 }
 
-class _ReviewTile extends StatelessWidget {
-  const _ReviewTile({
+class _Header extends StatelessWidget {
+  const _Header();
+
+  @override
+  Widget build(BuildContext context) => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      const Text('Revisiones'),
+      Text(
+        'Capturas marcadas que esperan una decisión',
+        style: Theme.of(context).textTheme.bodySmall,
+      ),
+    ],
+  );
+}
+
+class _Loaded extends StatelessWidget {
+  const _Loaded({
+    required this.reviews,
+    required this.highlightIntakeId,
+    required this.onResolve,
+  });
+
+  final List<RiskReviewOut> reviews;
+  final String? highlightIntakeId;
+  final void Function(RiskReviewOut review)? onResolve;
+
+  @override
+  Widget build(BuildContext context) {
+    final pending = reviews.where((r) => r.status == 'PENDING').toList();
+    final settled = reviews.where((r) => r.status != 'PENDING').toList();
+
+    return ListView(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+      children: [
+        if (pending.isEmpty)
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 24),
+            child: Text(
+              'Nada espera una decisión. Aquí aparecen las capturas que el '
+              'servidor marcó para que alguien las mire.',
+              textAlign: TextAlign.center,
+            ),
+          ),
+        for (final review in pending)
+          _ReviewCard(
+            review: review,
+            highlighted: review.intakeId == highlightIntakeId,
+            onResolve: onResolve == null ? null : () => onResolve!(review),
+          ),
+        if (settled.isNotEmpty) ...[
+          const SizedBox(height: 8),
+          Text('Ya resueltas', style: Theme.of(context).textTheme.titleSmall),
+          const SizedBox(height: 8),
+          for (final review in settled) _SettledRow(review: review),
+        ],
+      ],
+    );
+  }
+}
+
+class _ReviewCard extends StatelessWidget {
+  const _ReviewCard({
     required this.review,
     required this.highlighted,
-    this.onResolve,
+    required this.onResolve,
   });
 
   final RiskReviewOut review;
@@ -110,48 +168,76 @@ class _ReviewTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
 
-    return Container(
-      color: highlighted ? scheme.secondaryContainer : null,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (highlighted)
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-              child: Text(
+    return Card(
+      margin: const EdgeInsets.only(bottom: 12),
+      child: Padding(
+        padding: const EdgeInsets.all(14),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (highlighted) ...[
+              Text(
                 'La del aviso que abriste',
-                style: Theme.of(context).textTheme.labelSmall,
+                style: theme.textTheme.labelSmall,
               ),
+              const SizedBox(height: 6),
+            ],
+            Text(review.kind, style: theme.textTheme.titleMedium),
+            const SizedBox(height: 3),
+            Text(
+              [
+                if (review.boxes case final boxes?) '$boxes cajas',
+                formatShortDate(review.createdAt),
+              ].join(' · '),
+              style: theme.textTheme.bodySmall,
             ),
-          RecordField(label: 'Motivo', value: review.reason ?? review.kind),
-          RecordField(label: 'Estado', value: review.status),
-          RecordField(
-            label: 'Abierta',
-            value: formatShortDate(review.createdAt),
-          ),
-          if (review.boxes case final boxes?)
-            RecordField(label: 'Cajas', value: boxes),
-          if (review.reviewNote case final note?)
-            RecordField(label: 'Nota de la revisión', value: note),
-          if (onResolve case final onResolve?)
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: FilledButton.tonal(
+            // El motivo entre comillas y tal como lo redactó el servidor: es lo
+            // único que explica por qué esta captura está aquí, y reescribirlo
+            // sería opinar sobre una regla que no es nuestra.
+            if (review.reason case final reason?) ...[
+              const SizedBox(height: 10),
+              Text('«$reason»', style: theme.textTheme.bodyMedium),
+            ],
+            if (review.reviewNote case final note?) ...[
+              const SizedBox(height: 8),
+              Text('Nota: $note', style: theme.textTheme.bodySmall),
+            ],
+            if (onResolve case final onResolve?) ...[
+              const SizedBox(height: 14),
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton(
                   onPressed: onResolve,
-                  child: const Text('Resolver'),
+                  child: const Text('Aprobar o rechazar'),
                 ),
               ),
-            )
-          else
-            const SizedBox(height: 8),
-        ],
+            ],
+          ],
+        ),
       ),
     );
   }
+}
+
+/// Una revisión ya decidida. Se conserva porque saber que algo se aprobó, y con
+/// qué nota, es la mitad del valor de haberlo marcado.
+class _SettledRow extends StatelessWidget {
+  const _SettledRow({required this.review});
+
+  final RiskReviewOut review;
+
+  @override
+  Widget build(BuildContext context) => ListTile(
+    contentPadding: EdgeInsets.zero,
+    dense: true,
+    title: Text(review.kind),
+    subtitle: Text(
+      [formatShortDate(review.createdAt), ?review.reviewNote].join(' · '),
+    ),
+    trailing: Chip(label: Text(reviewStatusLabel(review.status))),
+  );
 }
 
 class _Message extends StatelessWidget {
@@ -161,15 +247,7 @@ class _Message extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => ListView(
-    children: [
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 64),
-        child: Text(
-          text,
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.bodyMedium,
-        ),
-      ),
-    ],
+    padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 64),
+    children: [Text(text, textAlign: TextAlign.center)],
   );
 }

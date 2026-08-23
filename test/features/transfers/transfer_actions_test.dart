@@ -1,3 +1,4 @@
+import 'package:araguaney_app/core/ui/status_labels.dart';
 import 'package:araguaney_app/features/transfers/domain/transfer_actions.dart';
 import 'package:flutter_test/flutter_test.dart';
 

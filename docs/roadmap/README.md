@@ -22,8 +22,8 @@ row below so the surface stays visible.
 
 ```mermaid
 pie title Tasks completed (125 tasks, backlog aside)
-    "Done" : 106
-    "Pending" : 18
+    "Done" : 109
+    "Pending" : 15
     "Partial" : 1
     "Blocked or external" : 0
 ```
@@ -41,12 +41,12 @@ pie title Tasks completed (125 tasks, backlog aside)
 | 8 | [Android release and distribution](phase-08-android-release.md) | 9 | 0 | ✅ 100% |
 | 9 | [iOS enablement](phase-09-ios-enablement.md) | 0 | 6 | ⬜ 0% |
 | 10 | [Operational parity backlog](phase-10-operational-parity.md) *(backlog, not counted)* | 5 | 9 | 🟨 36% (5 partial, 1 blocked) |
-| 11 | [Design system](phase-11-design-system.md) | 11 | 3 | 🟨 79% |
+| 11 | [Design system](phase-11-design-system.md) | 14 | 0 | ✅ 100% |
 | 12 | [Measuring a pallet with the camera](phase-12-pallet-height.md) | 0 | 6 | ⬜ 0% |
 | 13 | [Finding a product by its barcode](phase-13-product-barcode.md) | 4 | 1 | 🟨 80% |
 | 14 | [The account: profile, password and second factor](phase-14-account-and-security.md) | 5 | 1 | 🟨 83% |
 | 15 | [The shipment, from opening to dispatch](phase-15-shipment-workflow.md) | 5 | 1 | 🟨 83% |
-| **Total** (Phase 10 aside) | | **106** | **19** | **🟢 85%** |
+| **Total** (Phase 10 aside) | | **109** | **16** | **🟢 87%** |
 
 ## Blocked work
 

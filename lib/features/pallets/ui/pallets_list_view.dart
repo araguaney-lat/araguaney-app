@@ -5,8 +5,10 @@ import '../../../core/api/api_error_mapper.dart';
 import '../../../core/api/generated/models/pallet_out.dart';
 import '../../../core/connectivity/connectivity_controller.dart';
 import '../../../core/ui/record_field.dart';
+import '../../../core/ui/status_labels.dart';
 import '../data/pallets_providers.dart';
 import '../data/pallets_repository.dart';
+import 'close_pallet_sheet.dart';
 import 'pallet_detail_view.dart';
 
 /// Tarimas del centro.
@@ -14,39 +16,76 @@ import 'pallet_detail_view.dart';
 /// Se consultan en línea y no se cachean, a diferencia de las cajas: una tarima
 /// es estado compartido que otro dispositivo puede estar armando ahora mismo, y
 /// una copia vieja invita a agregar una caja a algo que ya se cerró.
-class PalletsListView extends ConsumerWidget {
+class PalletsListView extends ConsumerStatefulWidget {
   const PalletsListView({super.key});
 
   static Route<void> route() =>
       MaterialPageRoute<void>(builder: (_) => const PalletsListView());
 
-  Future<void> _create(BuildContext context, WidgetRef ref) async {
+  @override
+  ConsumerState<PalletsListView> createState() => _PalletsListViewState();
+}
+
+class _PalletsListViewState extends ConsumerState<PalletsListView> {
+  /// El camino que recorre una tarima, que es el orden en que se piensa.
+  static const order = ['OPEN', 'CLOSED', 'SHIPPED'];
+
+  String? _status;
+
+  Future<void> _create() async {
     final outcome = await ref.read(palletsRepositoryProvider).create();
-    if (!context.mounted) return;
+    if (!mounted) return;
 
     switch (outcome) {
       case PalletChanged(:final value):
         ref.invalidate(palletsProvider);
         await Navigator.of(context).push(PalletDetailView.route(value.id));
+        if (mounted) ref.invalidate(palletsProvider);
       case PalletRejected(:final failure):
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(failure.operatorMessage)));
+        _say(failure.operatorMessage);
     }
   }
 
+  /// Cerrar una tarima pide su peso, que es el dato que el envío necesita y que
+  /// solo se puede tomar con la tarima delante. Por eso se cierra desde aquí y
+  /// no hay que entrar a la ficha para hacerlo.
+  Future<void> _close(PalletOut pallet) async {
+    final weights = await ClosePalletSheet.show(context);
+    if (weights == null || !mounted) return;
+
+    final outcome = await ref
+        .read(palletsRepositoryProvider)
+        .close(
+          palletId: pallet.id,
+          grossWeightKg: weights.grossWeightKg,
+          heightCm: weights.heightCm,
+        );
+    if (!mounted) return;
+
+    switch (outcome) {
+      case PalletChanged():
+        ref.invalidate(palletsProvider);
+      case PalletRejected(:final failure):
+        _say(failure.operatorMessage);
+    }
+  }
+
+  void _say(String message) => ScaffoldMessenger.of(context)
+    ..hideCurrentSnackBar()
+    ..showSnackBar(SnackBar(content: Text(message)));
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final pallets = ref.watch(palletsProvider);
     final canOperate = ref.watch(canOperatePalletsProvider);
     final offline =
         ref.watch(connectivityControllerProvider) == ConnectivityStatus.offline;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Tarimas del centro')),
+      appBar: AppBar(title: const _Header()),
       floatingActionButton: canOperate && !offline
           ? FloatingActionButton.extended(
-              onPressed: () => _create(context, ref),
+              onPressed: _create,
               icon: const Icon(Icons.add),
               label: const Text('Nueva tarima'),
             )
@@ -54,13 +93,13 @@ class PalletsListView extends ConsumerWidget {
       body: RefreshIndicator(
         onRefresh: () async => ref.invalidate(palletsProvider),
         child: switch (pallets) {
-          AsyncData(:final value) when value.isEmpty => const _Message(
-            'Este centro no tiene tarimas abiertas.',
-          ),
-          AsyncData(:final value) => ListView.separated(
-            itemCount: value.length,
-            separatorBuilder: (_, _) => const Divider(height: 1),
-            itemBuilder: (context, index) => _PalletTile(pallet: value[index]),
+          AsyncData(:final value) => _Loaded(
+            pallets: value,
+            status: _status,
+            onStatus: (status) => setState(() => _status = status),
+            // Cerrar decide sobre estado compartido: exige conexión, igual que
+            // sellar una caja.
+            onClose: canOperate && !offline ? _close : null,
           ),
           AsyncError(:final error) => _Message(
             ApiErrorMapper.fromAny(error).operatorMessage,
@@ -72,23 +111,128 @@ class PalletsListView extends ConsumerWidget {
   }
 }
 
-class _PalletTile extends StatelessWidget {
-  const _PalletTile({required this.pallet});
-
-  final PalletOut pallet;
+class _Header extends ConsumerWidget {
+  const _Header();
 
   @override
-  Widget build(BuildContext context) => ListTile(
-    title: Text(pallet.code),
-    subtitle: Text(
-      [
-        pallet.status,
-        if (pallet.closedAt case final closed?)
-          'cerrada ${formatShortDate(closed)}',
-      ].join(' · '),
-    ),
-    onTap: () => Navigator.of(context).push(PalletDetailView.route(pallet.id)),
-  );
+  Widget build(BuildContext context, WidgetRef ref) {
+    final pallets = ref.watch(palletsProvider).valueOrNull ?? const [];
+    final open = pallets.where((p) => p.status == 'OPEN').length;
+    final closed = pallets.where((p) => p.status == 'CLOSED').length;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const Text('Tarimas'),
+        // Abiertas y cerradas son las dos cifras que deciden qué hacer ahora:
+        // una abierta admite cajas, una cerrada espera un envío.
+        Text(
+          '$open ${open == 1 ? 'abierta' : 'abiertas'} · '
+          '$closed ${closed == 1 ? 'cerrada' : 'cerradas'}',
+          style: Theme.of(context).textTheme.bodySmall,
+        ),
+      ],
+    );
+  }
+}
+
+class _Loaded extends StatelessWidget {
+  const _Loaded({
+    required this.pallets,
+    required this.status,
+    required this.onStatus,
+    required this.onClose,
+  });
+
+  final List<PalletOut> pallets;
+  final String? status;
+  final ValueChanged<String?> onStatus;
+  final void Function(PalletOut pallet)? onClose;
+
+  @override
+  Widget build(BuildContext context) {
+    final counts = <String, int>{};
+    for (final pallet in pallets) {
+      counts.update(pallet.status, (n) => n + 1, ifAbsent: () => 1);
+    }
+    final shown = status == null
+        ? pallets
+        : pallets.where((p) => p.status == status).toList();
+
+    return ListView(
+      padding: const EdgeInsets.only(bottom: 88),
+      children: [
+        SizedBox(
+          height: 56,
+          child: ListView(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            children: [
+              for (final value in _PalletsListViewState.order)
+                if (counts[value] case final count?)
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8),
+                    child: ChoiceChip(
+                      label: Text('${palletStatusLabel(value)} · $count'),
+                      selected: status == value,
+                      onSelected: (chosen) => onStatus(chosen ? value : null),
+                    ),
+                  ),
+            ],
+          ),
+        ),
+        if (shown.isEmpty)
+          const Padding(
+            padding: EdgeInsets.all(32),
+            child: Text(
+              'Este centro no tiene tarimas todavía. Una tarima agrupa cajas '
+              'selladas para que viajen juntas.',
+              textAlign: TextAlign.center,
+            ),
+          ),
+        for (final pallet in shown)
+          _PalletRow(
+            pallet: pallet,
+            onClose: pallet.status == 'OPEN' && onClose != null
+                ? () => onClose!(pallet)
+                : null,
+          ),
+      ],
+    );
+  }
+}
+
+class _PalletRow extends StatelessWidget {
+  const _PalletRow({required this.pallet, required this.onClose});
+
+  final PalletOut pallet;
+  final VoidCallback? onClose;
+
+  @override
+  Widget build(BuildContext context) {
+    // El número de cajas no viaja en el listado; solo está en la ficha. Se dice
+    // lo que sí se sabe en vez de contar algo que nadie mandó — y una tarima
+    // recién abierta no sabe nada todavía, así que no lleva segunda línea: un
+    // subtítulo vacío deja un hueco que se lee como algo roto.
+    final details = [
+      if (pallet.grossWeightKg case final weight?) '$weight kg',
+      if (pallet.heightCm case final height?) '$height cm',
+      if (pallet.closedAt case final closed?)
+        'cerrada ${formatShortDate(closed)}',
+      if (pallet.shipmentId != null) 'en un envío',
+    ];
+
+    return ListTile(
+      title: Text(pallet.code),
+      subtitle: details.isEmpty ? null : Text(details.join(' · ')),
+      trailing: onClose != null
+          ? TextButton(onPressed: onClose, child: const Text('Cerrar'))
+          : Chip(label: Text(palletStatusLabel(pallet.status))),
+      onTap: () =>
+          Navigator.of(context).push(PalletDetailView.route(pallet.id)),
+    );
+  }
 }
 
 class _Message extends StatelessWidget {
@@ -98,15 +242,7 @@ class _Message extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => ListView(
-    children: [
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 64),
-        child: Text(
-          text,
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.bodyMedium,
-        ),
-      ),
-    ],
+    padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 64),
+    children: [Text(text, textAlign: TextAlign.center)],
   );
 }

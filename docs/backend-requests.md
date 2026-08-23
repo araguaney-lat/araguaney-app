@@ -1,13 +1,15 @@
 # What the mobile client needs from the backend
 
-Five things this application cannot do because the `/v1` contract does not offer
-them. Each was found while building a phase, and each is written here with what
-it blocks and what the application does instead in the meantime — so that
-whoever picks one up can judge whether it is worth doing, not just what to do.
+Seven things this application cannot do because the `/v1` contract does not
+offer them — two of which are now resolved and kept here for what they cost
+while they were open. Each was found while building a phase, and each is written
+here with what it blocks and what the application does instead in the meantime —
+so that whoever picks one up can judge whether it is worth doing, not just what
+to do.
 
 Nothing here is urgent in the sense of broken. The application ships and works
-without all five; what they change is how much of the operation it can cover and
-how well it can explain itself.
+without any of them; what they change is how much of the operation it can cover
+and how well it can explain itself.
 
 These are requests, not decisions. The backend repository's roadmap is where
 they become work, if they do.

@@ -5,6 +5,7 @@ import '../../../core/api/api_error_mapper.dart';
 import '../../../core/api/generated/models/transfer_out.dart';
 import '../../../core/auth/auth_providers.dart';
 import '../../../core/ui/record_field.dart';
+import '../../../core/ui/status_labels.dart';
 import '../data/transfers_providers.dart';
 import '../domain/transfer_actions.dart';
 import 'transfer_detail_view.dart';
@@ -13,31 +14,47 @@ import 'transfer_detail_view.dart';
 ///
 /// Lo primero que se lee de cada una es si sale o llega: para quien coordina,
 /// «viene hacia mí» y «sale de aquí» son dos trabajos distintos, y el estado
-/// solo importa después de saber cuál de los dos es.
-class TransfersListView extends ConsumerWidget {
+/// solo importa después de saber cuál de los dos es. Por eso el filtro es la
+/// dirección y no el estado, al revés que en cajas o envíos.
+///
+/// **El otro centro no se nombra.** El contrato manda identificadores y los dos
+/// endpoints de centros exigen administración nacional, así que quien coordina
+/// —que es quien usa esta pantalla— no puede resolver el nombre ni desde aquí
+/// ni desde el servidor. Enseñar un identificador sería peor que no enseñar
+/// nada. Es la petición 3 de `backend-requests.md`.
+class TransfersListView extends ConsumerStatefulWidget {
   const TransfersListView({super.key});
 
   static Route<void> route() =>
       MaterialPageRoute<void>(builder: (_) => const TransfersListView());
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<TransfersListView> createState() => _TransfersListViewState();
+}
+
+class _TransfersListViewState extends ConsumerState<TransfersListView> {
+  TransferDirection? _direction;
+
+  @override
+  Widget build(BuildContext context) {
     final transfers = ref.watch(transfersProvider);
     final myCenterId = ref.watch(myCenterIdProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Transferencias')),
+      appBar: AppBar(
+        title: _Header(
+          transfers: transfers.valueOrNull ?? const [],
+          myCenterId: myCenterId,
+        ),
+      ),
       body: RefreshIndicator(
         onRefresh: () async => ref.invalidate(transfersProvider),
         child: switch (transfers) {
-          AsyncData(:final value) when value.isEmpty => const _Message(
-            'Este centro no participa en ninguna transferencia.',
-          ),
-          AsyncData(:final value) => ListView.separated(
-            itemCount: value.length,
-            separatorBuilder: (_, _) => const Divider(height: 1),
-            itemBuilder: (context, index) =>
-                _TransferTile(transfer: value[index], myCenterId: myCenterId),
+          AsyncData(:final value) => _Loaded(
+            transfers: value,
+            myCenterId: myCenterId,
+            direction: _direction,
+            onDirection: (value) => setState(() => _direction = value),
           ),
           AsyncError(:final error) => _Message(
             ApiErrorMapper.fromAny(error).operatorMessage,
@@ -49,39 +66,139 @@ class TransfersListView extends ConsumerWidget {
   }
 }
 
-class _TransferTile extends StatelessWidget {
-  const _TransferTile({required this.transfer, required this.myCenterId});
+class _Header extends StatelessWidget {
+  const _Header({required this.transfers, required this.myCenterId});
 
-  final TransferOut transfer;
+  final List<TransferOut> transfers;
   final String? myCenterId;
 
   @override
   Widget build(BuildContext context) {
-    final direction = transferDirection(
-      fromCenterId: transfer.fromCenterId,
-      toCenterId: transfer.toCenterId,
-      myCenterId: myCenterId,
-    );
+    // Lo que espera una decisión de este centro: solicitadas en las que somos
+    // el origen, que es exactamente cuando el servidor deja aprobar o rechazar.
+    final waiting = transfers.where((transfer) {
+      final direction = transferDirection(
+        fromCenterId: transfer.fromCenterId,
+        toCenterId: transfer.toCenterId,
+        myCenterId: myCenterId,
+      );
+      return direction == TransferDirection.outgoing &&
+          transfer.status == 'REQUESTED';
+    }).length;
 
-    return ListTile(
-      leading: Icon(switch (direction) {
-        TransferDirection.incoming => Icons.call_received,
-        TransferDirection.outgoing => Icons.call_made,
-        TransferDirection.other => Icons.swap_horiz,
-      }),
-      title: Text(switch (direction) {
-        TransferDirection.incoming => 'Entrante',
-        TransferDirection.outgoing => 'Saliente',
-        TransferDirection.other => 'Entre otros centros',
-      }),
-      subtitle: Text(
-        '${transferStatusLabel(transfer.status)} · '
-        '${formatShortDate(transfer.createdAt)}',
-      ),
-      onTap: () =>
-          Navigator.of(context).push(TransferDetailView.route(transfer.id)),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const Text('Transferencias'),
+        Text(
+          waiting == 0
+              ? 'Ninguna espera tu decisión'
+              : waiting == 1
+              ? '1 espera tu decisión'
+              : '$waiting esperan tu decisión',
+          style: Theme.of(context).textTheme.bodySmall,
+        ),
+      ],
     );
   }
+}
+
+class _Loaded extends StatelessWidget {
+  const _Loaded({
+    required this.transfers,
+    required this.myCenterId,
+    required this.direction,
+    required this.onDirection,
+  });
+
+  final List<TransferOut> transfers;
+  final String? myCenterId;
+  final TransferDirection? direction;
+  final ValueChanged<TransferDirection?> onDirection;
+
+  TransferDirection _directionOf(TransferOut transfer) => transferDirection(
+    fromCenterId: transfer.fromCenterId,
+    toCenterId: transfer.toCenterId,
+    myCenterId: myCenterId,
+  );
+
+  @override
+  Widget build(BuildContext context) {
+    final counts = <TransferDirection, int>{};
+    for (final transfer in transfers) {
+      counts.update(_directionOf(transfer), (n) => n + 1, ifAbsent: () => 1);
+    }
+    final shown = direction == null
+        ? transfers
+        : transfers.where((t) => _directionOf(t) == direction).toList();
+
+    return ListView(
+      children: [
+        SizedBox(
+          height: 56,
+          child: ListView(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            children: [
+              for (final value in TransferDirection.values)
+                if (counts[value] case final count?)
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8),
+                    child: ChoiceChip(
+                      label: Text('${_directionLabel(value)} · $count'),
+                      selected: direction == value,
+                      onSelected: (chosen) =>
+                          onDirection(chosen ? value : null),
+                    ),
+                  ),
+            ],
+          ),
+        ),
+        if (shown.isEmpty)
+          const Padding(
+            padding: EdgeInsets.all(32),
+            child: Text(
+              'Este centro no participa en ninguna transferencia.',
+              textAlign: TextAlign.center,
+            ),
+          ),
+        for (final transfer in shown)
+          _TransferRow(transfer: transfer, direction: _directionOf(transfer)),
+      ],
+    );
+  }
+}
+
+String _directionLabel(TransferDirection direction) => switch (direction) {
+  TransferDirection.incoming => 'Entrantes',
+  TransferDirection.outgoing => 'Salientes',
+  TransferDirection.other => 'De otros centros',
+};
+
+class _TransferRow extends StatelessWidget {
+  const _TransferRow({required this.transfer, required this.direction});
+
+  final TransferOut transfer;
+  final TransferDirection direction;
+
+  @override
+  Widget build(BuildContext context) => ListTile(
+    leading: Icon(switch (direction) {
+      TransferDirection.incoming => Icons.call_received,
+      TransferDirection.outgoing => Icons.call_made,
+      TransferDirection.other => Icons.swap_horiz,
+    }),
+    title: Text(switch (direction) {
+      TransferDirection.incoming => 'Entrante',
+      TransferDirection.outgoing => 'Saliente',
+      TransferDirection.other => 'Entre otros centros',
+    }),
+    subtitle: Text(formatShortDate(transfer.createdAt)),
+    trailing: Chip(label: Text(transferStatusLabel(transfer.status))),
+    onTap: () =>
+        Navigator.of(context).push(TransferDetailView.route(transfer.id)),
+  );
 }
 
 class _Message extends StatelessWidget {
@@ -91,15 +208,7 @@ class _Message extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => ListView(
-    children: [
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 64),
-        child: Text(
-          text,
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.bodyMedium,
-        ),
-      ),
-    ],
+    padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 64),
+    children: [Text(text, textAlign: TextAlign.center)],
   );
 }

@@ -22,15 +22,6 @@ abstract final class TransferStatus {
   static const rejected = 'REJECTED';
 }
 
-String transferStatusLabel(String status) => switch (status) {
-  TransferStatus.requested => 'Solicitada',
-  TransferStatus.approved => 'Aprobada',
-  TransferStatus.inTransit => 'En tránsito',
-  TransferStatus.received => 'Recibida',
-  TransferStatus.rejected => 'Rechazada',
-  _ => status,
-};
-
 TransferDirection transferDirection({
   required String fromCenterId,
   required String toCenterId,

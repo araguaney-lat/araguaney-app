@@ -60,9 +60,12 @@ void main() {
     push.open(const RiskReviewDestination('intake-9'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Revisiones de riesgo'), findsOneWidget);
+    expect(find.text('Revisiones'), findsOneWidget);
     // El motivo es justo lo que el aviso no dice, y por eso se viene aquí.
-    expect(find.text('Caducidad por debajo del mínimo'), findsOneWidget);
+    expect(
+      find.textContaining('Caducidad por debajo del mínimo'),
+      findsOneWidget,
+    );
     expect(find.text('La del aviso que abriste'), findsOneWidget);
   });
 
