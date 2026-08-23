@@ -34,6 +34,21 @@ String palletStatusLabel(String status) => switch (status) {
   _ => status,
 };
 
+/// `SHIPMENT_STATUSES` en el backend.
+///
+/// «Abierto» y «cerrado» hablan de si admite tarimas, no de si terminó: un
+/// envío cerrado todavía no salió. Por eso «despachado» y «entregado» son
+/// estados distintos, y «conciliado» es el final de verdad, cuando lo recibido
+/// se cuadró con lo enviado.
+String shipmentStatusLabel(String status) => switch (status) {
+  'OPEN' => 'Abierto',
+  'CLOSED' => 'Cerrado',
+  'SHIPPED' => 'Despachado',
+  'DELIVERED' => 'Entregado',
+  'RECONCILED' => 'Conciliado',
+  _ => status,
+};
+
 /// El ciclo de una donación pre-registrada: se registra por correo, se
 /// confirma, y se recibe cuando alguien la captura en un centro.
 String donationStatusLabel(String status) => switch (status) {

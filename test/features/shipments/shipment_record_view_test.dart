@@ -11,6 +11,8 @@ import '../../support/fake_api.dart';
 import '../../support/fake_http_adapter.dart';
 import '../../support/fixtures.dart';
 
+late FakeHttpAdapter _adapter;
+
 void main() {
   Future<void> pumpRecord(
     WidgetTester tester, {
@@ -21,6 +23,9 @@ void main() {
     Map<String, Object?>? manifestJob,
     List<String>? opened,
     int receptionStatus = 200,
+    String status = 'DELIVERED',
+    List<Map<String, Object?>> pallets = const [],
+    List<String> heightWarnings = const [],
   }) async {
     final adapter = FakeHttpAdapter((options) {
       if (options.path.endsWith('/events')) {
@@ -49,7 +54,15 @@ void main() {
       if (options.path.endsWith('/incidents')) {
         return FakeResponse(200, incidents ?? const []);
       }
-      return FakeResponse(200, shipmentJson(reference: 'ENV-77'));
+      return FakeResponse(
+        200,
+        shipmentJson(
+          reference: 'ENV-77',
+          status: status,
+          pallets: pallets,
+          heightWarnings: heightWarnings,
+        ),
+      );
     });
 
     final container = ProviderContainer(
@@ -63,6 +76,7 @@ void main() {
       ],
     );
     addTearDown(container.dispose);
+    _adapter = adapter;
 
     await tester.pumpWidget(
       UncontrolledProviderScope(
@@ -187,5 +201,120 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('El envío no tiene tarimas'), findsOneWidget);
+  });
+
+  group('advancing the shipment', () {
+    testWidgets('an open one offers to close, naming what it carries', (
+      tester,
+    ) async {
+      await pumpRecord(
+        tester,
+        coordinator: true,
+        status: 'OPEN',
+        pallets: [palletDetailJson(code: 'TM-0001')],
+      );
+
+      expect(find.text('Abierto'), findsOneWidget);
+      await tester.tap(find.text('Cerrar el envío'));
+      await tester.pumpAndSettle();
+
+      // Cerrar no se deshace, así que dice qué está en juego antes.
+      expect(find.text('¿Cerrar el envío?'), findsOneWidget);
+      expect(find.textContaining('1 tarima'), findsOneWidget);
+      expect(find.textContaining('Caracas'), findsWidgets);
+    });
+
+    testWidgets('saying «todavía no» changes nothing', (tester) async {
+      await pumpRecord(tester, coordinator: true, status: 'OPEN');
+
+      await tester.tap(find.text('Cerrar el envío'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Todavía no'));
+      await tester.pumpAndSettle();
+
+      expect(
+        _adapter.requests.where((r) => r.path.endsWith('/close')),
+        isEmpty,
+      );
+    });
+
+    testWidgets('a closed one offers to dispatch, not to close again', (
+      tester,
+    ) async {
+      await pumpRecord(tester, coordinator: true, status: 'CLOSED');
+
+      expect(find.text('Despachar'), findsOneWidget);
+      expect(find.text('Cerrar el envío'), findsNothing);
+    });
+
+    testWidgets('a dispatched one offers nothing further', (tester) async {
+      // Lo que sigue —entregar, conciliar— no es del centro de origen.
+      await pumpRecord(tester, coordinator: true, status: 'SHIPPED');
+
+      expect(find.text('Despachar'), findsNothing);
+      expect(find.text('Cerrar el envío'), findsNothing);
+    });
+
+    testWidgets('volunteering is offered nothing at all', (tester) async {
+      await pumpRecord(tester, coordinator: false, status: 'OPEN');
+
+      expect(find.text('Cerrar el envío'), findsNothing);
+    });
+  });
+
+  group('the pallets it carries', () {
+    testWidgets('an open shipment offers to add and to remove', (tester) async {
+      await pumpRecord(
+        tester,
+        coordinator: true,
+        status: 'OPEN',
+        pallets: [palletDetailJson(code: 'TM-0001')],
+      );
+
+      expect(find.text('TM-0001'), findsOneWidget);
+      expect(find.text('Añadir tarima'), findsOneWidget);
+      expect(find.byTooltip('Quitar del envío'), findsOneWidget);
+    });
+
+    testWidgets('a closed one offers neither: it admits no changes', (
+      tester,
+    ) async {
+      await pumpRecord(
+        tester,
+        coordinator: true,
+        status: 'CLOSED',
+        pallets: [palletDetailJson(code: 'TM-0001')],
+      );
+
+      expect(find.text('TM-0001'), findsOneWidget);
+      expect(find.text('Añadir tarima'), findsNothing);
+      expect(find.byTooltip('Quitar del envío'), findsNothing);
+    });
+
+    testWidgets('an empty one says so rather than showing a gap', (
+      tester,
+    ) async {
+      await pumpRecord(tester, coordinator: true, status: 'OPEN');
+
+      expect(
+        find.textContaining('todavía no lleva ninguna tarima'),
+        findsOneWidget,
+      );
+    });
+  });
+
+  testWidgets('a height warning is repeated as the server phrased it', (
+    tester,
+  ) async {
+    // El umbral es del perfil del envío y el servidor decide; la aplicación
+    // no lo interpreta ni lo convierte en un bloqueo, porque él tampoco.
+    await pumpRecord(
+      tester,
+      coordinator: true,
+      status: 'OPEN',
+      heightWarnings: ['TM-0001 supera la altura del perfil'],
+    );
+
+    expect(find.text('TM-0001 supera la altura del perfil'), findsOneWidget);
   });
 }

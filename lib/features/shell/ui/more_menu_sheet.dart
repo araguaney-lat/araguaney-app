@@ -10,6 +10,7 @@ import '../../intake/ui/intake_list_view.dart';
 import '../../intake/ui/pending_captures_view.dart';
 import '../../pallets/ui/pallets_list_view.dart';
 import '../../risk_reviews/ui/risk_reviews_view.dart';
+import '../../shipments/ui/shipments_list_view.dart';
 import '../../team/ui/team_directory_view.dart';
 import '../../transfers/ui/transfers_list_view.dart';
 
@@ -85,6 +86,12 @@ class MoreMenuSheet extends ConsumerWidget {
           title: const Text('Tarimas'),
           onTap: () => _go(context, PalletsListView.route()),
         ),
+        if (coordinates)
+          ListTile(
+            leading: const Icon(Icons.local_shipping_outlined),
+            title: const Text('Envíos'),
+            onTap: () => _go(context, ShipmentsListView.route()),
+          ),
         ListTile(
           leading: const Icon(Icons.swap_horiz),
           title: const Text('Transferencias'),

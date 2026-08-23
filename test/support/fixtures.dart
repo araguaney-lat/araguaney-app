@@ -215,7 +215,9 @@ Map<String, Object?> shipmentJson({
   String id = 'shipment-1',
   String reference = 'ENV-01',
   String destination = 'Caracas',
-  String status = 'delivered',
+  String status = 'DELIVERED',
+  List<Map<String, Object?>> pallets = const [],
+  List<String> heightWarnings = const [],
 }) => {
   'id': id,
   'reference': reference,
@@ -228,9 +230,9 @@ Map<String, Object?> shipmentJson({
   'created_at': testNow.toIso8601String(),
   'delivered_at': testNow.toIso8601String(),
   'height_profile': null,
-  'height_warnings': const [],
+  'height_warnings': heightWarnings,
   'notes': null,
-  'pallets': const [],
+  'pallets': pallets,
   'reconciled_at': null,
   'shipped_at': null,
 };
