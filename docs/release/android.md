@@ -13,8 +13,54 @@ These are external prerequisites; the repository cannot supply them.
 | Upload keystore | Generated on the publisher's machine, stored outside the repository |
 | Play App Signing | Enabled when the app is created in the console |
 | Android app registered in Firebase | Package `lat.araguaney.araguaney_app`; produces `google-services.json` |
-| Repository secrets | `ANDROID_KEYSTORE_BASE64`, `ANDROID_STORE_PASSWORD`, `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD`, `GOOGLE_SERVICES_JSON`, `SENTRY_DSN` |
-| Repository variables | `API_BASE_URL`, `WEB_BASE_URL` |
+| Sentry project | Produces the DSN, and an auth token for uploading symbols |
+
+### Repository secrets
+
+| Secret | What it carries |
+|---|---|
+| `ANDROID_KEYSTORE_BASE64` | The upload keystore, base64-encoded |
+| `ANDROID_STORE_PASSWORD` | Its store password |
+| `ANDROID_KEY_ALIAS` | The key alias inside it |
+| `ANDROID_KEY_PASSWORD` | That key's password |
+| `GOOGLE_SERVICES_JSON` | `google-services.json`, base64-encoded |
+| `SENTRY_DSN` | The project's DSN, whole, with its scheme |
+| `SENTRY_AUTH_TOKEN` | A token with `project:releases`, `project:write` and `org:read` |
+| `SENTRY_ORG` | The organisation **slug**, not its display name |
+| `SENTRY_PROJECT` | The project **slug** |
+
+The two slugs are the ones in the Sentry URL — lowercase, hyphenated, and
+frequently nothing like the name shown in the interface. `sentry-cli` only
+understands the slug, and given a display name it fails with an «organization
+not found» that helps nobody.
+
+The DSN is the odd one in this table: it ends up **inside the shipped binary**
+and anybody can read it out of the APK, so it is not a credential in the strong
+sense — it only permits sending events. It stays a secret anyway, because this
+repository publishes no infrastructure identifiers. The auth token is a real
+credential and must never leave the secret store.
+
+### Repository variables
+
+| Variable | Value |
+|---|---|
+| `API_BASE_URL` | `https://api.araguaney.lat` |
+| `WEB_BASE_URL` | `https://araguaney.lat` |
+
+These are variables rather than secrets on purpose: they are public addresses,
+and seeing them in a build log is what makes a misconfigured build diagnosable.
+
+### There is no `.env`
+
+A mobile application reads no environment at run time — there is no process and
+no server, only a compiled binary that already carries its values. Configuration
+enters at **build time** through `--dart-define`, and `AppConfig` reads it with
+`String.fromEnvironment`.
+
+Bundling a `.env` as an asset, which some Flutter projects do, would put those
+values inside the APK where unzipping reveals them. The only local template in
+this repository is `android/key.properties.example`, for signing; the table
+above is the equivalent for CI.
 
 ## Which Android versions this runs on
 
