@@ -4,16 +4,21 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/api/api_error_mapper.dart';
 import '../../../core/api/api_providers.dart';
 import '../../../core/api/generated/models/incident_out.dart';
+import '../../../core/api/generated/models/pallet_detail_out.dart';
 import '../../../core/api/generated/models/qr_event_out.dart';
 import '../../../core/api/generated/models/reception_out.dart';
 import '../../../core/api/generated/models/shipment_detail_out.dart';
 import '../../../core/auth/auth_providers.dart';
+import '../../../core/ui/confirm_button.dart';
 import '../../../core/ui/record_field.dart';
+import '../../../core/ui/status_labels.dart';
 import '../../incidents/data/incidents_providers.dart';
 import '../../incidents/data/incidents_repository.dart';
 import '../../incidents/ui/report_incident_sheet.dart';
+import '../../pallets/data/pallets_providers.dart';
 import '../data/shipments_providers.dart';
 import '../data/shipments_repository.dart';
+import 'pick_pallet_sheet.dart';
 
 /// Ficha de un envío, de solo lectura, con lo que llegó y lo que no.
 ///
@@ -125,6 +130,10 @@ class ShipmentRecordView extends ConsumerWidget {
               label: const Text('Incidencia'),
             )
           : null,
+      bottomNavigationBar: switch (shipment) {
+        AsyncData(:final value) when canReport => _Advance(shipment: value),
+        _ => null,
+      },
       body: switch (shipment) {
         AsyncData(:final value) => RefreshIndicator(
           onRefresh: () async {
@@ -158,6 +167,33 @@ class _Body extends ConsumerWidget {
   final ShipmentDetailOut shipment;
   final String shipmentId;
 
+  /// Meter una tarima. Se elige de las cerradas que no viajan ya en otro
+  /// envío; el filtro lo hace la hoja, y el servidor lo vuelve a comprobar.
+  Future<void> _addPallet(
+    BuildContext context,
+    WidgetRef ref,
+    ShipmentDetailOut shipment,
+  ) async {
+    final pallet = await PickPalletSheet.show(
+      context,
+      alreadyIn: {for (final p in shipment.pallets) p.id},
+    );
+    if (pallet == null || !context.mounted) return;
+
+    final outcome = await ref
+        .read(shipmentsRepositoryProvider)
+        .addPallet(shipmentId: shipment.id, palletId: pallet.id);
+    if (!context.mounted) return;
+
+    if (outcome case ShipmentRefused(:final failure)) {
+      _say(context, failure.operatorMessage);
+      return;
+    }
+    ref
+      ..invalidate(shipmentProvider(shipmentId))
+      ..invalidate(palletsProvider);
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final reception = ref.watch(shipmentReceptionProvider(shipmentId));
@@ -167,7 +203,10 @@ class _Body extends ConsumerWidget {
     return ListView(
       padding: const EdgeInsets.symmetric(vertical: 8),
       children: [
-        RecordField(label: 'Estado', value: shipment.status),
+        RecordField(
+          label: 'Estado',
+          value: shipmentStatusLabel(shipment.status),
+        ),
         RecordField(label: 'Destino', value: shipment.destination),
         if (shipment.carrier case final carrier?)
           RecordField(label: 'Transportista', value: carrier),
@@ -178,6 +217,29 @@ class _Body extends ConsumerWidget {
           RecordField(label: 'Entregado', value: formatShortDate(delivered)),
         if (shipment.notes case final notes?)
           RecordField(label: 'Notas', value: notes),
+        // Los avisos de altura los calcula el servidor contra el perfil del
+        // envío, y avisan sin bloquear. La aplicación los repite tal cual: el
+        // umbral es suyo y aquí no se interpreta.
+        for (final warning in shipment.heightWarnings) _Note(warning),
+        const Divider(),
+        _SectionTitle('Tarimas'),
+        if (shipment.pallets.isEmpty)
+          const _Note('Este envío todavía no lleva ninguna tarima.'),
+        for (final pallet in shipment.pallets)
+          _PalletRow(
+            pallet: pallet,
+            shipmentId: shipmentId,
+            removable: shipment.status == 'OPEN',
+          ),
+        if (shipment.status == 'OPEN')
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+            child: OutlinedButton.icon(
+              onPressed: () => _addPallet(context, ref, shipment),
+              icon: const Icon(Icons.add),
+              label: const Text('Añadir tarima'),
+            ),
+          ),
         const Divider(),
         _SectionTitle('Recepción'),
         switch (reception) {
@@ -219,6 +281,151 @@ class _Body extends ConsumerWidget {
     );
   }
 }
+
+/// Una tarima dentro del envío.
+class _PalletRow extends ConsumerWidget {
+  const _PalletRow({
+    required this.pallet,
+    required this.shipmentId,
+    required this.removable,
+  });
+
+  final PalletDetailOut pallet;
+  final String shipmentId;
+
+  /// Solo mientras el envío sigue abierto. Cerrado ya no admite cambios, y
+  /// ofrecer un botón que el servidor va a rechazar es peor que no tenerlo.
+  final bool removable;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) => ListTile(
+    title: Text(pallet.code),
+    subtitle: Text(
+      [
+        '${pallet.boxes.length} '
+            '${pallet.boxes.length == 1 ? 'caja' : 'cajas'}',
+        if (pallet.heightCm case final height?) '$height cm',
+        if (pallet.grossWeightKg case final weight?) '$weight kg',
+      ].join(' · '),
+    ),
+    trailing: removable
+        ? IconButton(
+            tooltip: 'Quitar del envío',
+            icon: const Icon(Icons.remove_circle_outline),
+            onPressed: () => _remove(context, ref),
+          )
+        : null,
+  );
+
+  Future<void> _remove(BuildContext context, WidgetRef ref) async {
+    final outcome = await ref
+        .read(shipmentsRepositoryProvider)
+        .removePallet(shipmentId: shipmentId, palletId: pallet.id);
+    if (!context.mounted) return;
+
+    if (outcome case ShipmentRefused(:final failure)) {
+      _say(context, failure.operatorMessage);
+      return;
+    }
+    ref
+      ..invalidate(shipmentProvider(shipmentId))
+      ..invalidate(palletsProvider);
+  }
+}
+
+/// Lo único que se puede hacer avanzar desde aquí, y solo lo siguiente.
+///
+/// Cerrar deja de admitir tarimas; despachar dice que el envío salió. Las dos
+/// van en una sola dirección y el servidor no las deshace, así que las dos
+/// preguntan antes y nombran lo que está en juego.
+class _Advance extends ConsumerStatefulWidget {
+  const _Advance({required this.shipment});
+
+  final ShipmentDetailOut shipment;
+
+  @override
+  ConsumerState<_Advance> createState() => _AdvanceState();
+}
+
+class _AdvanceState extends ConsumerState<_Advance> {
+  bool _busy = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final label = switch (widget.shipment.status) {
+      'OPEN' => 'Cerrar el envío',
+      'CLOSED' => 'Despachar',
+      _ => null,
+    };
+    if (label == null) return const SizedBox.shrink();
+
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: SizedBox(
+          width: double.infinity,
+          child: ConfirmButton(
+            label: label,
+            onPressed: _busy ? null : () => _advance(label),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _advance(String label) async {
+    final shipment = widget.shipment;
+    final closing = shipment.status == 'OPEN';
+    final pallets = shipment.pallets.length;
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(closing ? '¿Cerrar el envío?' : '¿Despachar el envío?'),
+        content: Text(
+          closing
+              ? 'Deja de admitir tarimas. Lleva $pallets '
+                    '${pallets == 1 ? 'tarima' : 'tarimas'} a '
+                    '${shipment.destination}.'
+              : 'Queda registrado que salió hacia ${shipment.destination}, '
+                    'con $pallets ${pallets == 1 ? 'tarima' : 'tarimas'}.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Todavía no'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(closing ? 'Cerrar' : 'Despachar'),
+          ),
+        ],
+      ),
+    );
+    if (!(confirmed ?? false) || !mounted) return;
+
+    setState(() => _busy = true);
+    final repository = ref.read(shipmentsRepositoryProvider);
+    final outcome = closing
+        ? await repository.close(shipment.id)
+        : await repository.ship(shipment.id);
+    if (!mounted) return;
+    setState(() => _busy = false);
+
+    if (outcome case ShipmentRefused(:final failure)) {
+      _say(context, failure.operatorMessage);
+      return;
+    }
+    ref
+      ..invalidate(shipmentProvider(shipment.id))
+      ..invalidate(shipmentsProvider)
+      ..invalidate(shipmentEventsProvider(shipment.id));
+  }
+}
+
+void _say(BuildContext context, String message) => ScaffoldMessenger.of(context)
+  ..hideCurrentSnackBar()
+  ..showSnackBar(SnackBar(content: Text(message)));
 
 class _Reception extends StatelessWidget {
   const _Reception({required this.reception});
