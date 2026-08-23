@@ -147,6 +147,38 @@ jobs:
           path: build/symbols
           if-no-files-found: error
 
+      # Los símbolos también van a Sentry, no solo al artefacto. Sin ellos, una
+      # traza de un binario ofuscado es una lista de letras, y ese es justo el
+      # binario que corre en el teléfono de quien reporta el fallo.
+      - name: Upload debug symbols to Sentry
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+          VERSION: ${{ steps.version.outputs.name }}+${{ steps.version.outputs.code }}
+        run: |
+          # Sin token no se manda nada y no se falla: quien compile un fork no
+          # tiene por qué subir a nuestra organización ni romperse por no poder.
+          # Es la misma regla que sigue el DSN.
+          if [ -z "$SENTRY_AUTH_TOKEN" ]; then
+            echo "::notice::Sin SENTRY_AUTH_TOKEN: los símbolos quedan solo como artefacto."
+            exit 0
+          fi
+          if [ -z "$SENTRY_ORG" ] || [ -z "$SENTRY_PROJECT" ]; then
+            echo "::error::Hay token de Sentry pero falta SENTRY_ORG o SENTRY_PROJECT."
+            exit 1
+          fi
+
+          curl -sL https://sentry.io/get-cli/ | bash
+
+          # El nombre del release tiene que ser exactamente el que arma la
+          # aplicación en tiempo de ejecución (ver `lib/main.dart`), o los
+          # símbolos quedan colgando de una versión que nadie está corriendo.
+          release="lat.araguaney.araguaney_app@$VERSION"
+          sentry-cli debug-files upload build/symbols
+          sentry-cli releases new "$release"
+          sentry-cli releases finalize "$release"
+
       - name: Clean up signing material
         if: always()
         run: rm -f android/key.properties android/app/google-services.json "$RUNNER_TEMP/upload.jks"
