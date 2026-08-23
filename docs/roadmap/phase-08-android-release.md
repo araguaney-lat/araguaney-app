@@ -30,8 +30,8 @@
 | 4 | CI release workflow | Tag → signed AAB with a pinned Flutter version → bundle and debug symbols as artifacts; signing material from repository secrets, written and deleted around the build. Integration CI pins the same version. | 🔴 High | ✅ Done |
 | 5 | Play internal testing | App created in the console, internal track configured, first AAB uploaded and installable. **Unblocked on 2026-08-20** — task 1 is done; what remains is the upload keystore (task 2) and the console steps.  **Done on 2026-08-20**: the app exists in the console, the internal track is configured, and `1.0.0+1` was uploaded and installed on a real phone. | 🟠 Medium | ✅ Done |
 | 6 | Version strategy | `versionCode`/`versionName` discipline documented in `docs/release/versioning.md` and aligned with `GET /v1/client/version`. | 🟠 Medium | ✅ Done |
-| 7 | Crash reporting release wiring | Sentry initialised only when a DSN is configured, tagged `package@version+build`, no request bodies. Symbols are published as a build artifact. **Uploading them to Sentry needs the DSN and an auth token.** | 🟠 Medium | 🟨 Partial |
-| 8 | Store listing (internal) | Spanish-first listing assets sufficient for testing tracks. **Unblocked on 2026-08-20** with task 1. | 🟢 Low | ⬜ Pending |
+| 7 | Crash reporting release wiring | Sentry initialised only when a DSN is configured, tagged `package@version+build`, no request bodies. Symbols are published as a build artifact. **Uploading them to Sentry needs the DSN and an auth token.**  **Done on 2026-08-23**: the release workflow uploads the symbols and creates the Sentry release, verified end to end — three architectures uploaded and `lat.araguaney.araguaney_app@1.0.0+2` finalised. | 🟠 Medium | ✅ Done |
+| 8 | Store listing (internal) | Spanish-first listing assets sufficient for testing tracks. **Unblocked on 2026-08-20** with task 1.  **Done on 2026-08-23**: copy in [`store-listing.md`](../release/store-listing.md), five screenshots from a real session, feature graphic and 512 icon. Pasting them into the console is the publisher's step. | 🟢 Low | ✅ Done |
 | 9 | Roadmap update | Mark tasks and update totals. | 🟢 Low | ✅ Done |
 
 ---
