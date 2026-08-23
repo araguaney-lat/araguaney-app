@@ -52,6 +52,24 @@ give the theme the error borders it never declared. The second is the one that
 matters, because until it exists the error state is not designed anywhere — it
 is inherited from whatever each screen happened to pass.
 
+**What the measurement changed about that.** Writing the test first was worth
+it, and not for the usual reason. The first version of it read
+`InputDecorator.decoration.border` and reported that a field in error was drawn
+in the resting line colour — which would have meant the error was not signalled
+at all. That is false, and it is false because `decoration.border` is the
+declared fallback and not what gets painted. Reading the painted border instead
+— through the border painter, the way Flutter's own tests do it — says something
+narrower: **Material's own M3 defaults were already resolving the colour to the
+error colour.** What the five screens lost was the shape, four points of corner
+radius instead of the design's twelve.
+
+So the defect is smaller than the first draft of this file implied, and the fix
+is still the same one. The theme now declares `errorBorder` and
+`focusedErrorBorder`, which makes the error state a decision this repository
+made rather than one Material made for it, and makes it independent of whatever
+border a screen passes. The tests pin the shape and the colour, in both themes,
+and were confirmed to fail without the change.
+
 This is the seventh time this repository has paid for the same shape: **work
 written before a rule existed, kept out of the audit because the list that
 decides what gets audited was maintained by hand.** The status labels, the
@@ -190,7 +208,7 @@ name and passed.
 | 1 | Name the gap | Record that phase 11's screen list omitted the session screens and that «14 of 14» was counted against it. This file. | 🟢 Low | ✅ Done |
 | 2 | A mark sized for a login | `ic_mark_lg.png` cropped from the launcher foreground, with the three-file decision written down. | 🟢 Low | ✅ Done |
 | 3 | The mark on the login | Above the name, with a one-shot fade and rise that does not delay the form and obeys the reduced-motion setting. | 🟠 Medium | ✅ Done |
-| 4 | Design the error state, and drop the five borders | `errorBorder` and `focusedErrorBorder` in the theme, which no screen declares today, and the hand-written `OutlineInputBorder()` removed from the session and second-factor fields. Pinned by a test on a field that is actually in error. | 🟠 Medium | ⬜ Pending |
+| 4 | Design the error state, and drop the five borders | `errorBorder` and `focusedErrorBorder` in the theme, and the hand-written `OutlineInputBorder()` gone from the session and second-factor fields. Pinned by tests that read the painted border of a field actually in error, in both themes. | 🟠 Medium | ✅ Done |
 | 5 | The way out for somebody without a centre | A link on the login to the web's public application form, opening the browser at the page in the phone's language. The form itself stays on the web, and the file says why. | 🟢 Low | ✅ Done |
-| 6 | Complete phase 11's screen table | Every screen listed, with the session ones marked, so the phase's total describes the application. | 🟢 Low | ⬜ Pending |
+| 6 | Complete phase 11's screen inventory | Every destination and every sheet listed in Phase 11, derived from `lib/features/*/ui/`, with what dressed each one — a design, this phase, or the foundation. A screen missing from it is now a missing row rather than an invisible one. | 🟢 Low | ✅ Done |
 | 7 | Verify on a device | The handover from the system splash to the login is the point of task 3, and it cannot be judged from a widget test. The link's destination is worth one tap on a real phone too. | 🟢 Low | ⬜ Pending |

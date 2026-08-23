@@ -280,6 +280,21 @@ abstract final class AppTheme {
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(color: scheme.primary, width: 1.5),
         ),
+        // Un campo con error de validación no los declaraba nadie, y eso no
+        // se veía: `InputDecorator` busca estos dos, no los encontraba, y caía
+        // al `border` de respaldo. El resultado era que «escribe tu
+        // contraseña» dejaba el recuadro idéntico al de un campo en reposo, y
+        // en las pantallas que pasaban un borde a mano además perdía las
+        // esquinas del diseño. Solo aparece cuando alguien escribe mal la
+        // contraseña, que es justo lo rutinario.
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: AppColors.danger),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: AppColors.danger, width: 1.5),
+        ),
         labelStyle: text.bodyMedium?.copyWith(color: muted),
         hintStyle: text.bodyMedium?.copyWith(color: muted),
       ),

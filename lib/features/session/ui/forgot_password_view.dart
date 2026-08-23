@@ -91,10 +91,7 @@ class _ForgotPasswordViewState extends ConsumerState<ForgotPasswordView> {
           keyboardType: TextInputType.emailAddress,
           autocorrect: false,
           onFieldSubmitted: (_) => _submit(),
-          decoration: const InputDecoration(
-            labelText: 'Correo',
-            border: OutlineInputBorder(),
-          ),
+          decoration: const InputDecoration(labelText: 'Correo'),
           validator: (value) => (value == null || value.trim().isEmpty)
               ? 'Escribe tu correo'
               : null,
