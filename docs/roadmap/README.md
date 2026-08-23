@@ -15,8 +15,8 @@ sum of those rows and nothing else.
 
 ```mermaid
 pie title Tasks completed (133 tasks)
-    "Done" : 100
-    "Pending" : 25
+    "Done" : 103
+    "Pending" : 22
     "Partial" : 7
     "Blocked or external" : 1
 ```
@@ -31,14 +31,14 @@ pie title Tasks completed (133 tasks)
 | 5 | [Online intake and box operations](phase-05-intake-online.md) | 10 | 0 | ✅ 100% |
 | 6 | [Offline capture queue](phase-06-offline-queue.md) | 10 | 0 | ✅ 100% |
 | 7 | [Push notifications](phase-07-push-notifications.md) | 10 | 1 | 🟨 91% (1 partial) |
-| 8 | [Android release and distribution](phase-08-android-release.md) | 5 | 4 | 🟨 56% (2 partial) |
+| 8 | [Android release and distribution](phase-08-android-release.md) | 7 | 2 | 🟨 78% (1 partial) |
 | 9 | [iOS enablement](phase-09-ios-enablement.md) | 0 | 6 | ⬜ 0% |
-| 10 | [Operational parity backlog](phase-10-operational-parity.md) | 3 | 11 | 🟨 21% (4 partial, 1 blocked) |
+| 10 | [Operational parity backlog](phase-10-operational-parity.md) | 4 | 10 | 🟨 29% (5 partial, 1 blocked) |
 | 11 | [Design system](phase-11-design-system.md) | 11 | 3 | 🟨 79% |
 | 12 | [Measuring a pallet with the camera](phase-12-pallet-height.md) | 0 | 6 | ⬜ 0% |
 | 13 | [Finding a product by its barcode](phase-13-product-barcode.md) | 4 | 1 | 🟨 80% |
 | 14 | [The account: profile, password and second factor](phase-14-account-and-security.md) | 5 | 1 | 🟨 83% |
-| **Total** | | **100** | **33** | **🟢 75%** |
+| **Total** | | **103** | **30** | **🟢 77%** |
 
 ## Blocked work
 
