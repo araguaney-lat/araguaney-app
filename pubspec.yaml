@@ -105,6 +105,7 @@ flutter:
   # grotesca pesa menos que dos estáticas.
   assets:
     - assets/icon/ic_mark.png
+    - assets/icon/ic_mark_lg.png
     - assets/icon/ic_splash.png
 
   fonts:

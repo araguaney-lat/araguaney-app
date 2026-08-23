@@ -56,6 +56,8 @@ class _LoginViewState extends ConsumerState<LoginView> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
+                    const _ArrivingMark(),
+                    const SizedBox(height: 16),
                     Text(
                       'Araguaney',
                       style: Theme.of(context).textTheme.headlineMedium,
@@ -138,6 +140,92 @@ class _LoginViewState extends ConsumerState<LoginView> {
               ),
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+/// El árbol, entrando.
+///
+/// **La animación existe por una costura, no por adorno.** El splash del
+/// sistema dibuja este mismo árbol mientras arranca el proceso, y el primer
+/// fotograma de Flutter lo sustituye por un formulario. Sin nada en medio, el
+/// corte se ve. Una aparición corta convierte dos pantallas en una llegada.
+///
+/// Tres cosas que no puede costar:
+///
+/// - **No retrasa el formulario.** Quien llega aquí se quedó sin sesión, y a
+///   veces a mitad de un turno. Esto envuelve lo que se dibuja: los campos
+///   responden desde el primer fotograma y nada espera a que el tween termine.
+/// - **No se repite.** Un logotipo en movimiento en la pantalla donde se
+///   escribe una contraseña es algo de lo que apartar la vista.
+/// - **Obedece la configuración del sistema.** Con las animaciones desactivadas
+///   se dibuja el estado final y ya. La sensibilidad al movimiento no es una
+///   preferencia que una marca pueda pisar.
+class _ArrivingMark extends StatefulWidget {
+  const _ArrivingMark();
+
+  /// Ochenta puntos: `ic_mark_lg.png` mide 320 × 288, así que hasta una
+  /// pantalla de 3,5× lo dibuja sin estirarlo.
+  static const double _height = 80;
+
+  @override
+  State<_ArrivingMark> createState() => _ArrivingMarkState();
+}
+
+class _ArrivingMarkState extends State<_ArrivingMark>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 620),
+  );
+
+  bool _started = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Se arranca aquí y no en `initState` porque la decisión depende del
+    // `MediaQuery`, que allí todavía no existe.
+    if (_started) return;
+    _started = true;
+    if (MediaQuery.disableAnimationsOf(context)) {
+      _controller.value = 1;
+    } else {
+      _controller.forward();
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final entrance = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeOutCubic,
+    );
+    return FadeTransition(
+      opacity: entrance,
+      child: SlideTransition(
+        // Sube un octavo de su alto: lo justo para que se lea como que llega,
+        // no como que se desliza desde fuera de la pantalla.
+        position: Tween<Offset>(
+          begin: const Offset(0, 0.12),
+          end: Offset.zero,
+        ).animate(entrance),
+        child: Image.asset(
+          'assets/icon/ic_mark_lg.png',
+          height: _ArrivingMark._height,
+          // El alto manda, igual que en la cabecera del inicio: el árbol es
+          // más ancho que alto.
+          fit: BoxFit.fitHeight,
+          filterQuality: FilterQuality.medium,
+          semanticLabel: 'Araguaney',
         ),
       ),
     );
