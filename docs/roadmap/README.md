@@ -20,10 +20,16 @@ double-counts the same work — shipments are one row there and six tasks in
 Phase 15 — and makes the board read as permanently unfinished. It keeps its
 row below so the surface stays visible.
 
+**Phase 11 reads as complete and is, against its own table.** That table listed
+seven screens and left out every screen somebody sees before signing in, so the
+phase closed without them ever being scheduled. Phase 16 is that omission,
+written down and being paid off. A percentage is only as honest as the list it
+divides by.
+
 ```mermaid
-pie title Tasks completed (125 tasks, backlog aside)
-    "Done" : 109
-    "Pending" : 15
+pie title Tasks completed (132 tasks, backlog aside)
+    "Done" : 113
+    "Pending" : 18
     "Partial" : 1
     "Blocked or external" : 0
 ```
@@ -46,7 +52,8 @@ pie title Tasks completed (125 tasks, backlog aside)
 | 13 | [Finding a product by its barcode](phase-13-product-barcode.md) | 4 | 1 | 🟨 80% |
 | 14 | [The account: profile, password and second factor](phase-14-account-and-security.md) | 5 | 1 | 🟨 83% |
 | 15 | [The shipment, from opening to dispatch](phase-15-shipment-workflow.md) | 5 | 1 | 🟨 83% |
-| **Total** (Phase 10 aside) | | **109** | **16** | **🟢 87%** |
+| 16 | [The screens phase 11 never reached](phase-16-session-screens.md) | 4 | 3 | 🟨 57% |
+| **Total** (Phase 10 aside) | | **113** | **19** | **🟢 86%** |
 
 ## Blocked work
 
