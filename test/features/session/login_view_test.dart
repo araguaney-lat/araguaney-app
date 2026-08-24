@@ -15,11 +15,16 @@ void main() {
     WidgetTester tester, {
     bool disableAnimations = false,
     List<String>? opened,
+    List<LinkTarget>? targets,
   }) async {
     final container = ProviderContainer(
       overrides: [
-        openLinkProvider.overrideWithValue((url) async {
+        openLinkProvider.overrideWithValue((
+          url, {
+          target = LinkTarget.systemApp,
+        }) async {
           opened?.add(url);
+          targets?.add(target);
           return true;
         }),
         authRepositoryProvider.overrideWithValue(FakeAuthRepository()),
@@ -124,6 +129,22 @@ void main() {
       await tester.tap(find.text('¿Tu centro aún no está registrado?'));
       await tester.pumpAndSettle();
     }
+
+    testWidgets('it opens inside the application, not beside it', (
+      tester,
+    ) async {
+      // Es una página pública que no pide contraseña, y quien la toca sigue
+      // en el acceso. Custom Tabs sigue siendo el navegador del sistema: no
+      // es un WebView nuestro, así que la verificación antiabuso de la página
+      // trabaja donde debe.
+      final targets = <LinkTarget>[];
+      await pumpLogin(tester, opened: <String>[], targets: targets);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('¿Tu centro aún no está registrado?'));
+      await tester.pumpAndSettle();
+
+      expect(targets, [LinkTarget.inAppBrowser]);
+    });
 
     testWidgets('a phone in Spanish reaches the Spanish form', (tester) async {
       // Explícito: el arnés de pruebas arranca en `en_US`, así que dar por

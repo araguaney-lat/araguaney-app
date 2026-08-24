@@ -185,7 +185,14 @@ class _RegisterCenterLink extends ConsumerWidget {
 
     return TextButton(
       onPressed: () async {
-        final opened = await ref.read(openLinkProvider)(url);
+        // El único enlace de la aplicación que se abre dentro. Es una
+        // página pública, no pide contraseña, y quien la toca sigue en el
+        // acceso: el botón atrás lo devuelve aquí en vez de dejar la
+        // aplicación en segundo plano.
+        final opened = await ref.read(openLinkProvider)(
+          url,
+          target: LinkTarget.inAppBrowser,
+        );
         if (!opened && context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('No se pudo abrir el navegador.')),

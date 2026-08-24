@@ -201,6 +201,39 @@ harness starts at `en_US`, so the Spanish case had to set its locale explicitly.
 Assuming the default would have asserted the English behaviour under a Spanish
 name and passed.
 
+### Inside the application, but still the system's browser
+
+The link first opened the browser beside the application, which meant somebody
+tapping it left the sign-in screen and had to find their way back. It now opens
+in **Custom Tabs** on Android and `SFSafariViewController` on iOS —
+`LaunchMode.inAppBrowserView`, one argument in `url_launcher`, no new
+dependency.
+
+The distinction that matters is not cosmetic. Custom Tabs **is the system's
+browser**: its engine, its process, the person's cookies, their password
+manager, their anti-fraud protection. It is drawn inside this application's
+task and the back button returns to the sign-in screen, and that is the whole
+difference. So the objection recorded above — that the page's anti-abuse check
+is worth less inside an embedded view — does not apply to it. That objection
+was, and remains, about a `WebView`.
+
+A `WebView` is an engine this application would host: its own cookie jar, no
+password manager, and the ability to inject and read the page's JavaScript,
+which would make this repository part of that page's security boundary. **The
+rule this phase writes down is that nothing which asks for a password goes in
+one.** The registration form asks for none; if the application ever links to
+something that does, it stays in the real browser.
+
+`LinkTarget` therefore defaults to `systemApp`, and a screen that wants the
+in-app browser has to say so. The shipment manifest keeps opening outside on
+purpose, and a test pins that: it is a signed PDF, and the system viewer is
+where it can be saved, printed or sent onward.
+
+The manifest gained a `<queries>` entry for `https`, because since Android 11
+an application cannot see which browsers are installed unless it declares the
+intent it wants to resolve. Without it, resolving a Custom Tabs provider can
+fail on a phone whose default browser is not the emulator's.
+
 ## Tasks
 
 | # | Task | Description | Complexity | Status |
@@ -211,4 +244,5 @@ name and passed.
 | 4 | Design the error state, and drop the five borders | `errorBorder` and `focusedErrorBorder` in the theme, and the hand-written `OutlineInputBorder()` gone from the session and second-factor fields. Pinned by tests that read the painted border of a field actually in error, in both themes. | 🟠 Medium | ✅ Done |
 | 5 | The way out for somebody without a centre | A link on the login to the web's public application form, opening the browser at the page in the phone's language. The form itself stays on the web, and the file says why. | 🟢 Low | ✅ Done |
 | 6 | Complete phase 11's screen inventory | Every destination and every sheet listed in Phase 11, derived from `lib/features/*/ui/`, with what dressed each one — a design, this phase, or the foundation. A screen missing from it is now a missing row rather than an invisible one. | 🟢 Low | ✅ Done |
-| 7 | Verify on a device | The handover from the system splash to the login is the point of task 3, and it cannot be judged from a widget test. The link's destination is worth one tap on a real phone too. | 🟢 Low | ⬜ Pending |
+| 7 | The registration link opens inside the application | Custom Tabs through `LinkTarget.inAppBrowser`, the default left outside, the shipment manifest pinned to the system viewer, and the `<queries>` entry Android 11 needs to resolve a browser. | 🟢 Low | ✅ Done |
+| 8 | Verify on a device | The handover from the system splash to the login is the point of task 3, and it cannot be judged from a widget test. The in-app browser and the link's destination in both languages are worth one tap on a real phone too. | 🟢 Low | ⬜ Pending |
