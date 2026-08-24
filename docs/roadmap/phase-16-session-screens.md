@@ -234,6 +234,30 @@ an application cannot see which browsers are installed unless it declares the
 intent it wants to resolve. Without it, resolving a Custom Tabs provider can
 fail on a phone whose default browser is not the emulator's.
 
+### What is pressed has corners, not a pill
+
+The foundation gave every filled and outlined button a `StadiumBorder`, so a
+button sat next to a field with twelve-point corners and a card with fourteen
+and matched neither. The design draws a rectangle with soft corners. Buttons now
+carry the field's radius — one value for everything interactive — and cards stay
+two points more open, which is what separates a surface from an action.
+
+Text buttons are themed too. They draw no container, but they do draw a ripple
+when pressed, and without the shape that ripple stayed the pill this change
+removes.
+
+This belongs to Phase 11 by subject and is recorded here by choice: reopening a
+closed phase to append a row is worse than writing the correction where the work
+happened. It is the same reason the inventory says what dressed each screen
+rather than pretending the deck covered everything.
+
+**Found while measuring, not fixed here.** `FilledButton.tonal` renders with the
+same background as `FilledButton` — both `#1F5E8C` — because the theme sets
+`backgroundColor: scheme.primary` and that beats the tonal variant's own
+default. Two buttons in the application ask for tonal and get primary
+(`box_draft_sheet`, `pallet_detail_view`). It is a colour decision rather than a
+shape one, so it is written down rather than changed on the way past.
+
 ## Tasks
 
 | # | Task | Description | Complexity | Status |
@@ -245,4 +269,5 @@ fail on a phone whose default browser is not the emulator's.
 | 5 | The way out for somebody without a centre | A link on the login to the web's public application form, opening the browser at the page in the phone's language. The form itself stays on the web, and the file says why. | 🟢 Low | ✅ Done |
 | 6 | Complete phase 11's screen inventory | Every destination and every sheet listed in Phase 11, derived from `lib/features/*/ui/`, with what dressed each one — a design, this phase, or the foundation. A screen missing from it is now a missing row rather than an invisible one. | 🟢 Low | ✅ Done |
 | 7 | The registration link opens inside the application | Custom Tabs through `LinkTarget.inAppBrowser`, the default left outside, the shipment manifest pinned to the system viewer, and the `<queries>` entry Android 11 needs to resolve a browser. | 🟢 Low | ✅ Done |
-| 8 | Verify on a device | The handover from the system splash to the login is the point of task 3, and it cannot be judged from a widget test. The in-app browser and the link's destination in both languages are worth one tap on a real phone too. | 🟢 Low | ⬜ Pending |
+| 8 | Buttons with corners instead of a pill | `StadiumBorder` retired from filled, outlined and text buttons in favour of the field's radius, pinned in both themes. | 🟢 Low | ✅ Done |
+| 9 | Verify on a device | The handover from the system splash to the login is the point of task 3, and it cannot be judged from a widget test. The in-app browser and the link's destination in both languages are worth one tap on a real phone too. | 🟢 Low | ⬜ Pending |

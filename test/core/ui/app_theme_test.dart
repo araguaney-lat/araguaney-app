@@ -86,4 +86,40 @@ void main() {
       );
     });
   });
+
+  group('what is pressed has corners, not a pill', () {
+    test('the three button kinds share one radius, in both themes', () {
+      // Una pastilla no se alinea con el campo ni con la tarjeta que tiene al
+      // lado. El radio es el mismo que el de los campos a proposito: un solo
+      // valor para todo lo interactivo.
+      const expected = BorderRadius.all(Radius.circular(12));
+
+      for (final theme in [AppTheme.light, AppTheme.dark]) {
+        final shapes = <OutlinedBorder?>[
+          theme.filledButtonTheme.style?.shape?.resolve({}),
+          theme.outlinedButtonTheme.style?.shape?.resolve({}),
+          theme.textButtonTheme.style?.shape?.resolve({}),
+        ];
+
+        for (final shape in shapes) {
+          expect(shape, isA<RoundedRectangleBorder>());
+          expect((shape! as RoundedRectangleBorder).borderRadius, expected);
+        }
+      }
+    });
+
+    test('cards stay a little more open than what is pressed', () {
+      // Es lo que separa una superficie de una accion: si compartieran radio,
+      // una tarjeta parecería pulsable.
+      final card = AppTheme.light.cardTheme.shape! as RoundedRectangleBorder;
+      final button =
+          AppTheme.light.filledButtonTheme.style!.shape!.resolve({})!
+              as RoundedRectangleBorder;
+
+      expect(
+        (card.borderRadius as BorderRadius).topLeft.x,
+        greaterThan((button.borderRadius as BorderRadius).topLeft.x),
+      );
+    });
+  });
 }

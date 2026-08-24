@@ -134,6 +134,18 @@ class AppPalette extends ThemeExtension<AppPalette> {
   }
 }
 
+/// La forma de todo lo que se toca.
+///
+/// El diseño dibuja botones con esquinas y no con forma de pastilla: un
+/// rectángulo de esquinas suaves se alinea con los campos y las tarjetas que
+/// tiene al lado, y una pastilla no se alinea con nada. El radio es el mismo
+/// que el de los campos a propósito —un solo valor para todo lo interactivo—
+/// y las tarjetas quedan dos puntos más abiertas, que es lo que las separa
+/// visualmente de lo que se pulsa.
+const _buttonShape = RoundedRectangleBorder(
+  borderRadius: BorderRadius.all(Radius.circular(12)),
+);
+
 /// El tema de la aplicación, en sus dos versiones.
 abstract final class AppTheme {
   static ThemeData get light => _build(
@@ -245,7 +257,7 @@ abstract final class AppTheme {
           foregroundColor: scheme.onPrimary,
           textStyle: text.labelLarge,
           minimumSize: const Size(0, 48),
-          shape: const StadiumBorder(),
+          shape: _buttonShape,
         ),
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
@@ -254,7 +266,18 @@ abstract final class AppTheme {
           textStyle: text.labelLarge,
           minimumSize: const Size(0, 48),
           side: BorderSide(color: scheme.primary, width: 1.5),
-          shape: const StadiumBorder(),
+          shape: _buttonShape,
+        ),
+      ),
+      // Un botón de texto no dibuja fondo, pero sí dibuja el destello al
+      // pulsarlo. Sin esto ese destello seguiría siendo una pastilla, que es
+      // la forma que acabamos de retirar de los otros dos.
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          foregroundColor: scheme.primary,
+          textStyle: text.labelLarge,
+          minimumSize: const Size(0, 48),
+          shape: _buttonShape,
         ),
       ),
       // Dorado confirma. Es el color de la acción central de la barra, y por eso
