@@ -251,12 +251,32 @@ closed phase to append a row is worse than writing the correction where the work
 happened. It is the same reason the inventory says what dressed each screen
 rather than pretending the deck covered everything.
 
-**Found while measuring, not fixed here.** `FilledButton.tonal` renders with the
-same background as `FilledButton` — both `#1F5E8C` — because the theme sets
-`backgroundColor: scheme.primary` and that beats the tonal variant's own
-default. Two buttons in the application ask for tonal and get primary
-(`box_draft_sheet`, `pallet_detail_view`). It is a colour decision rather than a
-shape one, so it is written down rather than changed on the way past.
+### A tonal button was a primary one
+
+Found while measuring the shape change. `FilledButton.tonal` rendered with the
+same background as `FilledButton` — both `#1F5E8C` — because
+`FilledButtonThemeData` is read by **both** variants and the theme set
+`backgroundColor: scheme.primary` on it, which beats the tonal variant's own
+default. Two buttons asked for tonal and got primary, so the hierarchy between
+them did not exist.
+
+The theme no longer names those colours. Material 3 takes them from the
+`ColorScheme` written above: primary from `primary`, tonal from
+`secondaryContainer`, which is the design's soft gold. Nothing about the primary
+button changes, and that was verified by reading the painted background rather
+than assumed.
+
+**Which moved a button.** With its own colour back, a tonal button says «gold
+confirms». That is right for «Cerrar» on a pallet, which is a confirmation. It
+is wrong for «Elegir producto», which opens a search — so that one becomes an
+outlined button, blue and low-emphasis, and the rule holds on both.
+
+**And it moved a test.** «Blue navigates and gold confirms» asserted the rule by
+reading `filledButtonTheme.style.backgroundColor` — the value the theme
+declares. Removing that value broke a test of a rule that still holds, which is
+the second time in this phase that a test read a declaration instead of what is
+drawn. It now checks the scheme, and a widget test reads the painted background
+of both variants in both themes.
 
 ## Tasks
 
@@ -270,4 +290,5 @@ shape one, so it is written down rather than changed on the way past.
 | 6 | Complete phase 11's screen inventory | Every destination and every sheet listed in Phase 11, derived from `lib/features/*/ui/`, with what dressed each one — a design, this phase, or the foundation. A screen missing from it is now a missing row rather than an invisible one. | 🟢 Low | ✅ Done |
 | 7 | The registration link opens inside the application | Custom Tabs through `LinkTarget.inAppBrowser`, the default left outside, the shipment manifest pinned to the system viewer, and the `<queries>` entry Android 11 needs to resolve a browser. | 🟢 Low | ✅ Done |
 | 8 | Buttons with corners instead of a pill | `StadiumBorder` retired from filled, outlined and text buttons in favour of the field's radius, pinned in both themes. | 🟢 Low | ✅ Done |
-| 9 | Verify on a device | The handover from the system splash to the login is the point of task 3, and it cannot be judged from a widget test. The in-app browser and the link's destination in both languages are worth one tap on a real phone too. | 🟢 Low | ⬜ Pending |
+| 9 | A tonal button is not a primary one | The theme stops naming button colours so Material 3 reads them from the scheme, «Elegir producto» becomes outlined because gold would say confirm, and the painted background of both variants is pinned in both themes. | 🟢 Low | ✅ Done |
+| 10 | Verify on a device | The handover from the system splash to the login is the point of task 3, and it cannot be judged from a widget test. The in-app browser and the link's destination in both languages are worth one tap on a real phone too. | 🟢 Low | ⬜ Pending |

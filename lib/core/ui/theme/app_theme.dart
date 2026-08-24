@@ -251,10 +251,15 @@ abstract final class AppTheme {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
       // Azul navega.
+      // Sin `backgroundColor` ni `foregroundColor` a propósito. Este tema lo
+      // leen los dos: `FilledButton` y `FilledButton.tonal`. Fijarlos aquí
+      // ganaba sobre el valor propio de la variante tonal, así que un botón
+      // que pedía tonal se pintaba idéntico a uno primario y la jerarquía
+      // entre los dos desaparecía. Los valores de Material 3 ya salen del
+      // `ColorScheme` escrito arriba: primario toma `primary`, y tonal toma
+      // `secondaryContainer`, que es el dorado suave del diseño.
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
-          backgroundColor: scheme.primary,
-          foregroundColor: scheme.onPrimary,
           textStyle: text.labelLarge,
           minimumSize: const Size(0, 48),
           shape: _buttonShape,

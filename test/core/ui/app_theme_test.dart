@@ -19,10 +19,12 @@ void main() {
       // confirmar en azul enseña lo contrario en todas las demás pantallas.
       for (final theme in [AppTheme.light, AppTheme.dark]) {
         final palette = theme.extension<AppPalette>()!;
-        expect(
-          theme.filledButtonTheme.style!.backgroundColor!.resolve({}),
-          theme.colorScheme.primary,
-        );
+        // El tema ya no fija el fondo del botón: hacerlo alcanzaba también a
+        // la variante tonal. Lo que sostiene la regla es que el azul sea el
+        // primario del esquema, que es de donde Material lo toma. Que un
+        // botón lo pinte de verdad lo comprueba «a tonal button is not a
+        // primary one», que lee el color dibujado y no el declarado.
+        expect(theme.colorScheme.primary, isNot(theme.colorScheme.secondary));
         expect(
           theme.floatingActionButtonTheme.backgroundColor,
           palette.centerFill,
@@ -120,6 +122,59 @@ void main() {
         (card.borderRadius as BorderRadius).topLeft.x,
         greaterThan((button.borderRadius as BorderRadius).topLeft.x),
       );
+    });
+  });
+
+  group('a tonal button is not a primary one', () {
+    testWidgets('the two variants differ, in both themes', (tester) async {
+      // Fijar `backgroundColor` en `FilledButtonThemeData` alcanzaba a las dos
+      // variantes, asi que un boton que pedia tonal se pintaba identico a uno
+      // primario y la jerarquia entre ambos desaparecia.
+      for (final (name, theme) in [
+        ('claro', AppTheme.light),
+        ('oscuro', AppTheme.dark),
+      ]) {
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: theme,
+            home: Scaffold(
+              body: Column(
+                children: [
+                  FilledButton(onPressed: () {}, child: const Text('primario')),
+                  FilledButton.tonal(
+                    onPressed: () {},
+                    child: const Text('tonal'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        Color? backgroundOf(String label) => tester
+            .widget<Material>(
+              find
+                  .ancestor(
+                    of: find.text(label),
+                    matching: find.byType(Material),
+                  )
+                  .first,
+            )
+            .color;
+
+        expect(
+          backgroundOf('primario'),
+          theme.colorScheme.primary,
+          reason: 'el primario cambio en el tema $name',
+        );
+        expect(
+          backgroundOf('tonal'),
+          theme.colorScheme.secondaryContainer,
+          reason: 'el tonal no recupero su color en el tema $name',
+        );
+        expect(backgroundOf('primario'), isNot(backgroundOf('tonal')));
+      }
     });
   });
 }
