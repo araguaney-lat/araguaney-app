@@ -20,6 +20,15 @@ double-counts the same work — shipments are one row there and six tasks in
 Phase 15 — and makes the board read as permanently unfinished. It keeps its
 row below so the surface stays visible.
 
+**The total fell from 88 % to 57 % on 2026-08-24, and nothing was undone.**
+What changed is the denominator. Until that day the board measured this
+application against its own list of phases, and that list had never been
+compared to what the panel offers. [Parity with the
+panel](parity-with-the-panel.md) is that comparison, derived rather than
+remembered, and Phases 17 to 30 are what it found. A percentage is only as
+honest as the list it divides by, and the old one was flattering because it was
+short.
+
 **Phase 11 reads as complete and is, against its own table.** That table listed
 seven screens and left out every screen somebody sees before signing in, so the
 phase closed without them ever being scheduled. Phase 16 is that omission,
@@ -27,9 +36,9 @@ written down and being paid off. A percentage is only as honest as the list it
 divides by.
 
 ```mermaid
-pie title Tasks completed (137 tasks, backlog aside)
-    "Done" : 120
-    "Pending" : 16
+pie title Tasks completed (219 tasks, backlog aside)
+    "Done" : 124
+    "Pending" : 94
     "Partial" : 1
     "Blocked or external" : 0
 ```
@@ -53,7 +62,32 @@ pie title Tasks completed (137 tasks, backlog aside)
 | 14 | [The account: profile, password and second factor](phase-14-account-and-security.md) | 5 | 1 | 🟨 83% |
 | 15 | [The shipment, from opening to dispatch](phase-15-shipment-workflow.md) | 5 | 1 | 🟨 83% |
 | 16 | [The screens phase 11 never reached](phase-16-session-screens.md) | 11 | 1 | 🟨 92% |
-| **Total** (Phase 10 aside) | | **120** | **17** | **🟢 88%** |
+| 17 | [The product catalogue](phase-17-product-catalogue.md) | 0 | 8 | ⬜ 0% |
+| 18 | [Pre-registered donations](phase-18-preregistered-donations.md) | 0 | 8 | ⬜ 0% |
+| 19 | [Reports for the centre](phase-19-center-reports.md) | 0 | 8 | ⬜ 0% |
+| 20 | [Campaigns](phase-20-campaigns.md) | 0 | 5 | ⬜ 0% |
+| 21 | [Centres](phase-21-centers.md) | 0 | 5 | ⬜ 0% |
+| 22 | [The centre application queue](phase-22-center-applications.md) | 0 | 6 | ⬜ 0% |
+| 23 | [Incidents and the audit log](phase-23-incidents-and-audit.md) | 0 | 6 | ⬜ 0% |
+| 24 | [Users beyond one centre](phase-24-users-beyond-a-center.md) | 0 | 6 | ⬜ 0% |
+| 25 | [The studio](phase-25-the-studio.md) | 1 | 2 | 🟨 33% |
+| 26 | [The shipment, from dispatch to delivery](phase-26-shipment-to-delivery.md) | 0 | 6 | ⬜ 0% |
+| 27 | [Creating a transfer](phase-27-create-a-transfer.md) | 0 | 5 | ⬜ 0% |
+| 28 | [The requests board](phase-28-the-requests-board.md) | 1 | 3 | 🟨 25% |
+| 29 | [The minimum version gate](phase-29-the-version-gate.md) | 1 | 4 | 🟨 20% |
+| 30 | [Writing as a national administrator](phase-30-writing-as-national-admin.md) | 1 | 6 | 🟨 14% |
+| **Total** (Phase 10 aside) | | **124** | **95** | **🟢 57%** |
+
+## What is missing, and how that is kept honest
+
+[`parity-with-the-panel.md`](parity-with-the-panel.md) compares the panel's
+navigation, its routes and the vendored contract against what this application
+calls, and carries the command that regenerates the number. On 2026-08-24: 161
+generated operations, 69 used, 92 unused.
+
+Phases 17 to 30 come from that file. Several of them graduate blocks out of
+Phase 10, which is what that backlog says should happen to a block when it is
+scheduled.
 
 ## Blocked work
 
