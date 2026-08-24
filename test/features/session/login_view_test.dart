@@ -24,7 +24,9 @@ void main() {
       overrides: [
         appVersionProvider.overrideWithValue('1.2.3'),
         appBuildNumberProvider.overrideWithValue('7'),
-        clientVersionStatusProvider.overrideWith((ref) async => versionStatus),
+        clientVersionStatusProvider.overrideWith(
+          (ref) async => (status: versionStatus, latest: '9.9.9'),
+        ),
         openLinkProvider.overrideWithValue((
           url, {
           target = LinkTarget.systemApp,

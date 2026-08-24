@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../features/session/ui/change_password_view.dart';
 import '../../features/session/ui/login_view.dart';
 import '../../features/session/ui/totp_challenge_view.dart';
+import '../../features/session/ui/update_available_view.dart';
 import '../../features/session/ui/update_required_view.dart';
 import '../../features/shell/ui/app_shell.dart';
 import '../api/client_version_gate.dart';
@@ -30,9 +31,22 @@ class SessionGate extends ConsumerWidget {
     // `valueOrNull` y no `value`: en un `AsyncError` el segundo **relanza**, y
     // eso convertiría un fallo de la comprobación en una pantalla de error —
     // exactamente lo que esta compuerta promete no hacer.
-    if (ref.watch(clientVersionStatusProvider).valueOrNull ==
-        ClientVersionStatus.updateRequired) {
+    final version = ref.watch(clientVersionStatusProvider).valueOrNull;
+
+    // El muro va primero y no admite nada por delante: por debajo del mínimo el
+    // contrato ya no garantiza que esta compilación se entienda.
+    if (version?.status == ClientVersionStatus.updateRequired) {
       return const UpdateRequiredView();
+    }
+
+    // El aviso va después, y solo en el arranque. Se descarta para el resto de
+    // la vida del proceso en cuanto alguien lo ve, así que un cambio de sesión
+    // —entrar, cambiar una contraseña obligada— no lo trae de vuelta a mitad de
+    // un turno.
+    if (version?.status == ClientVersionStatus.updateAvailable &&
+        !ref.watch(updatePromptDismissedProvider) &&
+        !(ref.watch(updateSnoozedProvider).valueOrNull ?? true)) {
+      return UpdateAvailableView(latest: version?.latest);
     }
 
     final state = ref.watch(sessionControllerProvider);

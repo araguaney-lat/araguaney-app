@@ -31,7 +31,7 @@ class AppVersionFooter extends ConsumerWidget {
     // un `AsyncError` y tumbaría el acceso entero por no poder consultar una
     // versión.
     final outdated =
-        ref.watch(clientVersionStatusProvider).valueOrNull ==
+        ref.watch(clientVersionStatusProvider).valueOrNull?.status ==
         ClientVersionStatus.updateAvailable;
 
     return Column(

@@ -39,6 +39,40 @@ time out in a basement, and an application that refuses to open because it could
 not reach a version endpoint is worse than one running slightly behind. An
 unreachable gate means «carry on», and it is checked again later.
 
+## «Más tarde» tiene que significar más tarde
+
+The wall is the contract's edge and takes no argument. The other state — a newer
+version exists and the installed one still works — is a different question, and
+getting it wrong in either direction is easy.
+
+**A screen that forces every time** teaches people that this application
+interrupts for things that do not matter. **A reminder every few hours** is worse:
+it gets tapped away by reflex, and the day the wall finally arrives it arrives as
+a surprise after weeks of dismissing the same thing.
+
+The decisive observation is that **effectiveness does not come from frequency,
+it comes from timing.** A notice beside a truck, mid-scan, is dismissed unread.
+The same notice at launch — before anything has been started — costs almost
+nothing and gets acted on. So:
+
+- **It appears only at launch.** Never on a timer, never mid-shift. Once
+  dismissed it stays gone for the life of the process, so a session change —
+  signing in, a forced password change — cannot bring it back while somebody is
+  working.
+- **It says that queued captures survive the update.** That is the real fear of
+  anybody holding unsent work, and without saying it «Más tarde» is the only
+  reasonable answer.
+- **Silence starts long and tightens**: five days on the first dismissal, two on
+  the second, one from the third on. There are no publication dates in the
+  contract, so a version's age is approximated by how many times *that* version
+  has been put off — somebody ignoring it accumulates dismissals.
+- **A new publication starts over.** The count is stored against the version, so
+  a different one is a different thing being asked.
+
+Play already updates most people in the background, so whoever sees this screen
+has automatic updates off or is on a metered connection. That is a minority, and
+treating it as if it never updated would be disproportionate.
+
 ## What the backend publishes today
 
 ```
@@ -94,7 +128,8 @@ locks anybody out». It was written before the code was correct, and it failed.
 | 1 | Name the gap | Record that the gate exists and nothing calls it. This file. | 🟢 Low | ✅ Done |
 | 2 | Ask for the version | `GET /v1/client/version` on start through the unauthenticated client, cached for the session, failing open. | 🟠 Medium | ✅ Done |
 | 3 | The wall | Below the minimum, a screen with no way past it, saying that queued captures survive, and opening the store through `market://` with the web listing as a fallback. | 🟠 Medium | ✅ Done |
-| 4 | The mention | Said at the foot of the sign-in screen, beside the installed version, where it interrupts nothing. | 🟢 Low | ✅ Done |
-| 5 | The installed version, at the foot | `Versión 1.0.0 (3)` on the sign-in screen and on the wall, with the build number, so asking «what version do you have» stops costing a conversation. | 🟢 Low | ✅ Done |
-| 6 | Real values in the backend | Both are `0.0.0` today, so the gate is inert. Recorded as a request. | 🟢 Low | ⬜ Pending |
-| 7 | Verify on a device | With a build deliberately declared below the minimum, once the backend publishes real values. | 🟢 Low | ⬜ Pending |
+| 4 | The mention | A line at the foot of the sign-in screen, beside the installed version. | 🟢 Low | ✅ Done |
+| 5 | «Actualizar» or «Más tarde», at launch | The screen, shown only when the application opens, remembered per version, with silence starting at five days and tightening to one. | 🟠 Medium | ✅ Done |
+| 6 | The installed version, at the foot | `Versión 1.0.0 (3)` on the sign-in screen and on the wall, with the build number, so asking «what version do you have» stops costing a conversation. | 🟢 Low | ✅ Done |
+| 7 | Real values in the backend | Both are `0.0.0` today, so the gate is inert. Recorded as a request. | 🟢 Low | ⬜ Pending |
+| 8 | Verify on a device | With a build deliberately declared below the minimum, once the backend publishes real values. | 🟢 Low | ⬜ Pending |

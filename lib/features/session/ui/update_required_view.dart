@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/auth/auth_providers.dart';
-import '../../../core/platform/open_link.dart';
 import 'app_version_footer.dart';
+import 'store_link.dart';
 
 /// El muro: esta compilación ya no la soporta el backend.
 ///
@@ -57,7 +56,7 @@ class UpdateRequiredView extends ConsumerWidget {
                   ),
                   const SizedBox(height: 24),
                   FilledButton(
-                    onPressed: () => _openStore(context, ref),
+                    onPressed: () => openStore(context, ref),
                     child: const Text('Actualizar'),
                   ),
                   const SizedBox(height: 24),
@@ -69,29 +68,5 @@ class UpdateRequiredView extends ConsumerWidget {
         ),
       ),
     );
-  }
-
-  Future<void> _openStore(BuildContext context, WidgetRef ref) async {
-    final package = ref.read(appPackageNameProvider);
-    // `market://` lo abre la tienda instalada sin pasar por el navegador. Si no
-    // hay ninguna que lo atienda —un emulador sin Play, un dispositivo sin
-    // servicios de Google— se cae a la ficha web, que también sirve.
-    final opened = await ref.read(openLinkProvider)(
-      'market://details?id=$package',
-    );
-    if (opened || !context.mounted) return;
-
-    final fallback = await ref.read(openLinkProvider)(
-      'https://play.google.com/store/apps/details?id=$package',
-    );
-    if (!fallback && context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'No se pudo abrir la tienda. Búscala como «Araguaney».',
-          ),
-        ),
-      );
-    }
   }
 }
