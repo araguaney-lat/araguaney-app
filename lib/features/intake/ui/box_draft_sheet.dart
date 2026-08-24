@@ -147,7 +147,11 @@ class _BoxDraftSheetState extends State<BoxDraftSheet> {
                 ),
               )
             else
-              FilledButton.tonalIcon(
+              // Delineado y no tonal: esto abre un buscador, no confirma
+              // nada, y desde que el tonal recuperó su color propio —el
+              // dorado suave— habría dicho «confirmar» en una pantalla donde
+              // lo que se confirma está más abajo.
+              OutlinedButton.icon(
                 onPressed: _pickProduct,
                 icon: const Icon(Icons.search),
                 label: const Text('Elegir producto'),

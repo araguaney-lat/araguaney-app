@@ -15,11 +15,16 @@ void main() {
     WidgetTester tester, {
     bool disableAnimations = false,
     List<String>? opened,
+    List<LinkTarget>? targets,
   }) async {
     final container = ProviderContainer(
       overrides: [
-        openLinkProvider.overrideWithValue((url) async {
+        openLinkProvider.overrideWithValue((
+          url, {
+          target = LinkTarget.systemApp,
+        }) async {
           opened?.add(url);
+          targets?.add(target);
           return true;
         }),
         authRepositoryProvider.overrideWithValue(FakeAuthRepository()),
@@ -125,6 +130,22 @@ void main() {
       await tester.pumpAndSettle();
     }
 
+    testWidgets('it opens inside the application, not beside it', (
+      tester,
+    ) async {
+      // Es una página pública que no pide contraseña, y quien la toca sigue
+      // en el acceso. Custom Tabs sigue siendo el navegador del sistema: no
+      // es un WebView nuestro, así que la verificación antiabuso de la página
+      // trabaja donde debe.
+      final targets = <LinkTarget>[];
+      await pumpLogin(tester, opened: <String>[], targets: targets);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('¿Tu centro aún no está registrado?'));
+      await tester.pumpAndSettle();
+
+      expect(targets, [LinkTarget.inAppBrowser]);
+    });
+
     testWidgets('a phone in Spanish reaches the Spanish form', (tester) async {
       // Explícito: el arnés de pruebas arranca en `en_US`, así que dar por
       // hecho el español aquí probaría el caso contrario sin avisar.
@@ -134,20 +155,24 @@ void main() {
       final opened = <String>[];
       await tapLink(tester, opened);
 
-      expect(opened, ['https://araguaney.lat/registrar-centro']);
+      expect(opened, ['http://localhost:3000/registrar-centro']);
     });
 
     testWidgets('a phone in English reaches the English form', (tester) async {
       // La interfaz sigue en español —es el idioma en que se opera un centro—
       // pero quien toca esto todavía no opera ninguno, y la página pública
       // existe en los dos. El slug en inglés es otro, no el mismo traducido.
+      //
+      // La base es la de `AppConfig`, que sin `--dart-define` es la de
+      // desarrollo: eso es justo lo que se quiere fijar, que el enlace salga
+      // de la configuración y no de una constante escrita en la pantalla.
       tester.platformDispatcher.localeTestValue = const Locale('en', 'US');
       addTearDown(tester.platformDispatcher.clearLocaleTestValue);
 
       final opened = <String>[];
       await tapLink(tester, opened);
 
-      expect(opened, ['https://araguaney.lat/en/register-center']);
+      expect(opened, ['http://localhost:3000/en/register-center']);
     });
 
     testWidgets('any other language falls back to Spanish', (tester) async {
@@ -157,7 +182,7 @@ void main() {
       final opened = <String>[];
       await tapLink(tester, opened);
 
-      expect(opened, ['https://araguaney.lat/registrar-centro']);
+      expect(opened, ['http://localhost:3000/registrar-centro']);
     });
   });
 

@@ -71,5 +71,14 @@
             <action android:name="android.intent.action.PROCESS_TEXT"/>
             <data android:mimeType="text/plain"/>
         </intent>
+        <!-- Desde Android 11 una aplicación no ve qué otras hay instaladas si
+             no lo declara. Sin esto no se puede resolver qué navegador soporta
+             Custom Tabs, y el enlace de registro de un centro se abriría fuera
+             —o no se abriría— en un teléfono cuyo navegador por defecto no sea
+             el que trae el emulador. -->
+        <intent>
+            <action android:name="android.intent.action.VIEW"/>
+            <data android:scheme="https"/>
+        </intent>
     </queries>
 </manifest>

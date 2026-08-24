@@ -26,6 +26,22 @@ const _refusalCopy = {
   'ACCOUNT_DISABLED': 'Esa cuenta está desactivada.',
   'EMAIL_NOT_VERIFIED': 'Tienes que verificar tu correo antes de operar.',
 
+  // Lo que se lee al iniciar sesión (401, 429).
+  //
+  // Sin la primera, escribir mal una contraseña respondía «Tu sesión expiró»
+  // en la pantalla donde todavía no hay sesión ninguna. La segunda no arregla
+  // un fallo sino una imprecisión: una cuenta bloqueada por intentos fallidos
+  // caía en el texto de límite de peticiones, que describe otra cosa.
+  //
+  // Ninguna de las dos dice cuántos intentos ni cuántos minutos: ese es un
+  // parámetro de un control del servidor y no se publica desde aquí. El
+  // servidor sí manda el tiempo restante en su propio mensaje, y quien lo
+  // necesite lo tiene ahí.
+  'INVALID_CREDENTIALS': 'El correo o la contraseña no coinciden.',
+  'ACCOUNT_LOCKED':
+      'Demasiados intentos fallidos. Espera un momento antes de volver a '
+      'intentarlo.',
+
   // Reglas de negocio que el servidor contesta en inglés (400, 409, 422).
   'EMAIL_TAKEN': 'Ese correo ya tiene una cuenta.',
   'USERNAME_TAKEN': 'Ese nombre de usuario ya está tomado.',

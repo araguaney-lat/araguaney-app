@@ -22,6 +22,7 @@ void main() {
     List<Map<String, Object?>>? events,
     Map<String, Object?>? manifestJob,
     List<String>? opened,
+    List<LinkTarget>? targets,
     int receptionStatus = 200,
     String status = 'DELIVERED',
     List<Map<String, Object?>> pallets = const [],
@@ -69,8 +70,12 @@ void main() {
       overrides: [
         restClientProvider.overrideWithValue(RestClient(fakeDio(adapter))),
         isCenterCoordinatorProvider.overrideWithValue(coordinator),
-        openLinkProvider.overrideWithValue((url) async {
+        openLinkProvider.overrideWithValue((
+          url, {
+          target = LinkTarget.systemApp,
+        }) async {
           opened?.add(url);
+          targets?.add(target);
           return true;
         }),
       ],
@@ -178,13 +183,23 @@ void main() {
   testWidgets('asking for the manifest opens it outside the application', (
     tester,
   ) async {
+    // Fuera y no dentro: el manifiesto es un PDF firmado, y el visor del
+    // sistema es donde se guarda, se imprime o se manda. Traérselo al
+    // navegador interno le quitaría todo eso a quien lo abre.
     final opened = <String>[];
+    final targets = <LinkTarget>[];
 
-    await pumpRecord(tester, coordinator: true, opened: opened);
+    await pumpRecord(
+      tester,
+      coordinator: true,
+      opened: opened,
+      targets: targets,
+    );
     await tester.tap(find.byTooltip('Manifiesto'));
     await tester.pumpAndSettle();
 
     expect(opened, ['https://files.test/manifiesto.pdf']);
+    expect(targets, [LinkTarget.systemApp]);
   });
 
   testWidgets('a manifest the server could not build says why', (tester) async {

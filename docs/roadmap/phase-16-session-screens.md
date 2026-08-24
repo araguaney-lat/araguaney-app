@@ -201,6 +201,125 @@ harness starts at `en_US`, so the Spanish case had to set its locale explicitly.
 Assuming the default would have asserted the English behaviour under a Spanish
 name and passed.
 
+### Inside the application, but still the system's browser
+
+The link first opened the browser beside the application, which meant somebody
+tapping it left the sign-in screen and had to find their way back. It now opens
+in **Custom Tabs** on Android and `SFSafariViewController` on iOS —
+`LaunchMode.inAppBrowserView`, one argument in `url_launcher`, no new
+dependency.
+
+The distinction that matters is not cosmetic. Custom Tabs **is the system's
+browser**: its engine, its process, the person's cookies, their password
+manager, their anti-fraud protection. It is drawn inside this application's
+task and the back button returns to the sign-in screen, and that is the whole
+difference. So the objection recorded above — that the page's anti-abuse check
+is worth less inside an embedded view — does not apply to it. That objection
+was, and remains, about a `WebView`.
+
+A `WebView` is an engine this application would host: its own cookie jar, no
+password manager, and the ability to inject and read the page's JavaScript,
+which would make this repository part of that page's security boundary. **The
+rule this phase writes down is that nothing which asks for a password goes in
+one.** The registration form asks for none; if the application ever links to
+something that does, it stays in the real browser.
+
+`LinkTarget` therefore defaults to `systemApp`, and a screen that wants the
+in-app browser has to say so. The shipment manifest keeps opening outside on
+purpose, and a test pins that: it is a signed PDF, and the system viewer is
+where it can be saved, printed or sent onward.
+
+The manifest gained a `<queries>` entry for `https`, because since Android 11
+an application cannot see which browsers are installed unless it declares the
+intent it wants to resolve. Without it, resolving a Custom Tabs provider can
+fail on a phone whose default browser is not the emulator's.
+
+### What is pressed has corners, not a pill
+
+The foundation gave every filled and outlined button a `StadiumBorder`, so a
+button sat next to a field with twelve-point corners and a card with fourteen
+and matched neither. The design draws a rectangle with soft corners. Buttons now
+carry the field's radius — one value for everything interactive — and cards stay
+two points more open, which is what separates a surface from an action.
+
+Text buttons are themed too. They draw no container, but they do draw a ripple
+when pressed, and without the shape that ripple stayed the pill this change
+removes.
+
+This belongs to Phase 11 by subject and is recorded here by choice: reopening a
+closed phase to append a row is worse than writing the correction where the work
+happened. It is the same reason the inventory says what dressed each screen
+rather than pretending the deck covered everything.
+
+### A tonal button was a primary one
+
+Found while measuring the shape change. `FilledButton.tonal` rendered with the
+same background as `FilledButton` — both `#1F5E8C` — because
+`FilledButtonThemeData` is read by **both** variants and the theme set
+`backgroundColor: scheme.primary` on it, which beats the tonal variant's own
+default. Two buttons asked for tonal and got primary, so the hierarchy between
+them did not exist.
+
+The theme no longer names those colours. Material 3 takes them from the
+`ColorScheme` written above: primary from `primary`, tonal from
+`secondaryContainer`, which is the design's soft gold. Nothing about the primary
+button changes, and that was verified by reading the painted background rather
+than assumed.
+
+**Which moved a button.** With its own colour back, a tonal button says «gold
+confirms». That is right for «Cerrar» on a pallet, which is a confirmation. It
+is wrong for «Elegir producto», which opens a search — so that one becomes an
+outlined button, blue and low-emphasis, and the rule holds on both.
+
+**And it moved a test.** «Blue navigates and gold confirms» asserted the rule by
+reading `filledButtonTheme.style.backgroundColor` — the value the theme
+declares. Removing that value broke a test of a rule that still holds, which is
+the second time in this phase that a test read a declaration instead of what is
+drawn. It now checks the scheme, and a widget test reads the painted background
+of both variants in both themes.
+
+### Two messages that described something that had not happened
+
+Found because a misconfigured emulator build made the sign-in fail and the
+screen said «Ocurrió un error inesperado». The build was pointing at the website
+instead of the API, which is nobody's fault but ours; what it exposed is worth
+keeping.
+
+**Wrong credentials claimed the session had expired.** The server answers a bad
+password with `401 INVALID_CREDENTIALS`, and every 401 mapped to «Tu sesión
+expiró. Inicia sesión de nuevo.» — on the screen where there is no session yet.
+`UnauthorizedFailure` now consults the copy table first, so a named 401 speaks
+and the generic one still describes an expiry.
+
+**A test was pinning a response the server does not send.** "A real credentials
+rejection still says what the server said" built its fixture as a
+`BusinessRuleFailure` carrying a Spanish message. The server sends a 401 with
+«Invalid credentials» in English. So the test agreed with the code and with
+nothing else, and the defect above lived underneath it — the same shape as the
+invented status labels, the invented categories and the pallet fixtures that
+used a box status. It now uses the real shape.
+
+**A locked account was told it was not their password.** The sign-in screen
+treats a rate limit as «no es tu contraseña», which is right: that limit is not
+counted per person and at the start of a shift the whole centre can exhaust it.
+But `ACCOUNT_LOCKED` arrives with the same 429 and means the opposite — those
+were this account's failed attempts. It now falls through to its own copy.
+
+Neither new message names a number. How many attempts and for how long are
+parameters of a server-side control, and this repository publishes the
+mechanism and never the value. The server sends the remaining time in its own
+message for whoever needs it.
+
+### A URL written where a configuration already existed
+
+The registration link carried `https://araguaney.lat/...` as two constants in
+the widget, while `AppConfig.webBaseUrl` already exists, is injected with
+`--dart-define=WEB_BASE_URL`, and is what draws the QR on a box label. A build
+pointing somewhere else — a fork, or a development environment — would still
+have sent people here. It now derives from the configuration, which is the
+seventh time this repository has recorded the same shape: a value written into
+a screen instead of read from where it is configured.
+
 ## Tasks
 
 | # | Task | Description | Complexity | Status |
@@ -211,4 +330,9 @@ name and passed.
 | 4 | Design the error state, and drop the five borders | `errorBorder` and `focusedErrorBorder` in the theme, and the hand-written `OutlineInputBorder()` gone from the session and second-factor fields. Pinned by tests that read the painted border of a field actually in error, in both themes. | 🟠 Medium | ✅ Done |
 | 5 | The way out for somebody without a centre | A link on the login to the web's public application form, opening the browser at the page in the phone's language. The form itself stays on the web, and the file says why. | 🟢 Low | ✅ Done |
 | 6 | Complete phase 11's screen inventory | Every destination and every sheet listed in Phase 11, derived from `lib/features/*/ui/`, with what dressed each one — a design, this phase, or the foundation. A screen missing from it is now a missing row rather than an invisible one. | 🟢 Low | ✅ Done |
-| 7 | Verify on a device | The handover from the system splash to the login is the point of task 3, and it cannot be judged from a widget test. The link's destination is worth one tap on a real phone too. | 🟢 Low | ⬜ Pending |
+| 7 | The registration link opens inside the application | Custom Tabs through `LinkTarget.inAppBrowser`, the default left outside, the shipment manifest pinned to the system viewer, and the `<queries>` entry Android 11 needs to resolve a browser. | 🟢 Low | ✅ Done |
+| 8 | Buttons with corners instead of a pill | `StadiumBorder` retired from filled, outlined and text buttons in favour of the field's radius, pinned in both themes. | 🟢 Low | ✅ Done |
+| 9 | A tonal button is not a primary one | The theme stops naming button colours so Material 3 reads them from the scheme, «Elegir producto» becomes outlined because gold would say confirm, and the painted background of both variants is pinned in both themes. | 🟢 Low | ✅ Done |
+| 10 | Say what actually failed when signing in | A named 401 speaks instead of claiming the session expired, a locked account stops being told it is not their password, and the fixture that hid the first one is corrected to the shape the server sends. | 🟠 Medium | ✅ Done |
+| 11 | The registration link reads its base from the configuration | `AppConfig.webBaseUrl` instead of two constants in the widget, so a build pointing elsewhere sends people to its own web. | 🟢 Low | ✅ Done |
+| 12 | Verify on a device | The handover from the system splash to the login is the point of task 3, and it cannot be judged from a widget test. The in-app browser and the link's destination in both languages are worth one tap on a real phone too. | 🟢 Low | ⬜ Pending |

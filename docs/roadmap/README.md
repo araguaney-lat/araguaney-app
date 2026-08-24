@@ -27,8 +27,8 @@ written down and being paid off. A percentage is only as honest as the list it
 divides by.
 
 ```mermaid
-pie title Tasks completed (132 tasks, backlog aside)
-    "Done" : 115
+pie title Tasks completed (137 tasks, backlog aside)
+    "Done" : 120
     "Pending" : 16
     "Partial" : 1
     "Blocked or external" : 0
@@ -52,8 +52,8 @@ pie title Tasks completed (132 tasks, backlog aside)
 | 13 | [Finding a product by its barcode](phase-13-product-barcode.md) | 4 | 1 | 🟨 80% |
 | 14 | [The account: profile, password and second factor](phase-14-account-and-security.md) | 5 | 1 | 🟨 83% |
 | 15 | [The shipment, from opening to dispatch](phase-15-shipment-workflow.md) | 5 | 1 | 🟨 83% |
-| 16 | [The screens phase 11 never reached](phase-16-session-screens.md) | 6 | 1 | 🟨 86% |
-| **Total** (Phase 10 aside) | | **115** | **17** | **🟢 87%** |
+| 16 | [The screens phase 11 never reached](phase-16-session-screens.md) | 11 | 1 | 🟨 92% |
+| **Total** (Phase 10 aside) | | **120** | **17** | **🟢 88%** |
 
 ## Blocked work
 
