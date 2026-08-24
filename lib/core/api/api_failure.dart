@@ -63,6 +63,12 @@ final class NetworkFailure extends ApiFailure {
 }
 
 /// La sesión no es válida o expiró (401).
+///
+/// El mismo estado cubre dos momentos muy distintos: una sesión que caducó, y
+/// unas credenciales que no coinciden en la pantalla donde todavía no hay
+/// sesión ninguna. Por eso consulta primero la copia por código: decirle «tu
+/// sesión expiró» a quien acaba de escribir mal su contraseña describe algo
+/// que no ocurrió.
 final class UnauthorizedFailure extends ApiFailure {
   const UnauthorizedFailure({
     required super.code,
@@ -75,7 +81,8 @@ final class UnauthorizedFailure extends ApiFailure {
   bool get isRetryable => false;
 
   @override
-  String get operatorMessage => 'Tu sesión expiró. Inicia sesión de nuevo.';
+  String get operatorMessage =>
+      refusalCopyFor(code) ?? 'Tu sesión expiró. Inicia sesión de nuevo.';
 }
 
 /// La sesión es válida pero no alcanza para esta operación (403).
@@ -150,6 +157,10 @@ final class BusinessRuleFailure extends ApiFailure {
 }
 
 /// Se superó el límite de peticiones (429).
+///
+/// El bloqueo de una cuenta por intentos fallidos llega con este mismo estado
+/// y un código propio, así que consulta la copia por código antes de hablar de
+/// peticiones seguidas: son dos cosas distintas y solo el código las separa.
 final class RateLimitFailure extends ApiFailure {
   const RateLimitFailure({
     required super.code,
@@ -163,6 +174,7 @@ final class RateLimitFailure extends ApiFailure {
 
   @override
   String get operatorMessage =>
+      refusalCopyFor(code) ??
       'Demasiadas peticiones seguidas. Espera un momento e inténtalo de nuevo.';
 }
 

@@ -346,12 +346,17 @@ void main() {
     });
 
     test(
-      'a real credentials rejection still says what the server said',
+      'a real credentials rejection says the credentials do not match',
       () async {
+        // El servidor contesta 401 con `INVALID_CREDENTIALS` y un mensaje en
+        // inglés —«Invalid credentials»—, no un rechazo de regla de negocio en
+        // español. Este fixture decía lo segundo, así que fijaba una respuesta
+        // que el servidor no manda; con la real, la pantalla llegó a decir «Tu
+        // sesión expiró» a quien todavía no tenía sesión.
         final repository = FakeAuthRepository(
-          loginError: const BusinessRuleFailure(
+          loginError: const UnauthorizedFailure(
             code: 'INVALID_CREDENTIALS',
-            message: 'Usuario o contraseña incorrectos',
+            message: 'Invalid credentials',
           ),
         );
         final built = _build(
@@ -364,9 +369,23 @@ void main() {
 
         final state =
             built.container.read(sessionControllerProvider) as SessionAbsent;
-        expect(state.failureMessage, 'Usuario o contraseña incorrectos');
+        expect(state.failureMessage, 'El correo o la contraseña no coinciden.');
+        expect(state.failureMessage, isNot(contains('sesión expiró')));
       },
     );
+
+    test('a locked account is not told that it is not their password', () {
+      // El limite global no es culpa de quien lo recibe; el bloqueo por
+      // intentos fallidos si tiene que ver con lo que se escribio. Son dos
+      // rechazos con el mismo tipo y distinto codigo.
+      const locked = RateLimitFailure(
+        code: 'ACCOUNT_LOCKED',
+        message: 'Too many failed attempts.',
+      );
+
+      expect(locked.operatorMessage, contains('intentos fallidos'));
+      expect(locked.operatorMessage, isNot(contains('no es tu contraseña')));
+    });
   });
 
   group('second factor', () {

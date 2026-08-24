@@ -98,7 +98,10 @@ class SessionController extends Notifier<SessionState> {
   /// era el problema.
   String _loginMessageFor(Object error) {
     final failure = _failureFor(error);
-    if (failure is RateLimitFailure) {
+    // `ACCOUNT_LOCKED` llega con este mismo tipo y es lo contrario: ahí el
+    // bloqueo lo causaron los intentos fallidos de esa cuenta, así que decir
+    // «no es tu contraseña» sería falso. Se deja pasar a su copia propia.
+    if (failure is RateLimitFailure && failure.code != 'ACCOUNT_LOCKED') {
       return 'Demasiados intentos seguidos. Espera unos minutos y vuelve a '
           'entrar: no es tu contraseña.';
     }

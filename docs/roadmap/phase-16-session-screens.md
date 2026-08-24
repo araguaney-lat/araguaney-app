@@ -278,6 +278,48 @@ the second time in this phase that a test read a declaration instead of what is
 drawn. It now checks the scheme, and a widget test reads the painted background
 of both variants in both themes.
 
+### Two messages that described something that had not happened
+
+Found because a misconfigured emulator build made the sign-in fail and the
+screen said «Ocurrió un error inesperado». The build was pointing at the website
+instead of the API, which is nobody's fault but ours; what it exposed is worth
+keeping.
+
+**Wrong credentials claimed the session had expired.** The server answers a bad
+password with `401 INVALID_CREDENTIALS`, and every 401 mapped to «Tu sesión
+expiró. Inicia sesión de nuevo.» — on the screen where there is no session yet.
+`UnauthorizedFailure` now consults the copy table first, so a named 401 speaks
+and the generic one still describes an expiry.
+
+**A test was pinning a response the server does not send.** "A real credentials
+rejection still says what the server said" built its fixture as a
+`BusinessRuleFailure` carrying a Spanish message. The server sends a 401 with
+«Invalid credentials» in English. So the test agreed with the code and with
+nothing else, and the defect above lived underneath it — the same shape as the
+invented status labels, the invented categories and the pallet fixtures that
+used a box status. It now uses the real shape.
+
+**A locked account was told it was not their password.** The sign-in screen
+treats a rate limit as «no es tu contraseña», which is right: that limit is not
+counted per person and at the start of a shift the whole centre can exhaust it.
+But `ACCOUNT_LOCKED` arrives with the same 429 and means the opposite — those
+were this account's failed attempts. It now falls through to its own copy.
+
+Neither new message names a number. How many attempts and for how long are
+parameters of a server-side control, and this repository publishes the
+mechanism and never the value. The server sends the remaining time in its own
+message for whoever needs it.
+
+### A URL written where a configuration already existed
+
+The registration link carried `https://araguaney.lat/...` as two constants in
+the widget, while `AppConfig.webBaseUrl` already exists, is injected with
+`--dart-define=WEB_BASE_URL`, and is what draws the QR on a box label. A build
+pointing somewhere else — a fork, or a development environment — would still
+have sent people here. It now derives from the configuration, which is the
+seventh time this repository has recorded the same shape: a value written into
+a screen instead of read from where it is configured.
+
 ## Tasks
 
 | # | Task | Description | Complexity | Status |
@@ -291,4 +333,6 @@ of both variants in both themes.
 | 7 | The registration link opens inside the application | Custom Tabs through `LinkTarget.inAppBrowser`, the default left outside, the shipment manifest pinned to the system viewer, and the `<queries>` entry Android 11 needs to resolve a browser. | 🟢 Low | ✅ Done |
 | 8 | Buttons with corners instead of a pill | `StadiumBorder` retired from filled, outlined and text buttons in favour of the field's radius, pinned in both themes. | 🟢 Low | ✅ Done |
 | 9 | A tonal button is not a primary one | The theme stops naming button colours so Material 3 reads them from the scheme, «Elegir producto» becomes outlined because gold would say confirm, and the painted background of both variants is pinned in both themes. | 🟢 Low | ✅ Done |
-| 10 | Verify on a device | The handover from the system splash to the login is the point of task 3, and it cannot be judged from a widget test. The in-app browser and the link's destination in both languages are worth one tap on a real phone too. | 🟢 Low | ⬜ Pending |
+| 10 | Say what actually failed when signing in | A named 401 speaks instead of claiming the session expired, a locked account stops being told it is not their password, and the fixture that hid the first one is corrected to the shape the server sends. | 🟠 Medium | ✅ Done |
+| 11 | The registration link reads its base from the configuration | `AppConfig.webBaseUrl` instead of two constants in the widget, so a build pointing elsewhere sends people to its own web. | 🟢 Low | ✅ Done |
+| 12 | Verify on a device | The handover from the system splash to the login is the point of task 3, and it cannot be judged from a widget test. The in-app browser and the link's destination in both languages are worth one tap on a real phone too. | 🟢 Low | ⬜ Pending |

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/auth/auth_providers.dart';
 import '../../../core/auth/session.dart';
+import '../../../core/config/app_config.dart';
 import '../../../core/platform/open_link.dart';
 import 'forgot_password_view.dart';
 
@@ -172,8 +173,16 @@ class _RegisterCenterLink extends ConsumerWidget {
 
   /// El español es el idioma por defecto de la web y va sin prefijo; el inglés
   /// lleva prefijo **y otro slug**, no una traducción del mismo.
-  static const _spanish = 'https://araguaney.lat/registrar-centro';
-  static const _english = 'https://araguaney.lat/en/register-center';
+  ///
+  /// La base sale de `AppConfig`, no escrita aquí: es la misma que dibuja el
+  /// QR de una caja, y una compilación apuntando a otro sitio —un fork, o el
+  /// entorno de desarrollo— tiene que mandar a su propia web y no a esta.
+  static String _formUrl(String languageCode) {
+    final base = AppConfig.webBaseUrl.replaceAll(RegExp(r'/+$'), '');
+    return languageCode == 'en'
+        ? '$base/en/register-center'
+        : '$base/registrar-centro';
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -181,7 +190,7 @@ class _RegisterCenterLink extends ConsumerWidget {
     // `Locale('es')`, así que preguntarle a `Localizations` respondería
     // siempre lo mismo.
     final phone = View.of(context).platformDispatcher.locale;
-    final url = phone.languageCode == 'en' ? _english : _spanish;
+    final url = _formUrl(phone.languageCode);
 
     return TextButton(
       onPressed: () async {
