@@ -1,6 +1,6 @@
 # What the mobile client needs from the backend
 
-Seven things this application cannot do because the `/v1` contract does not
+Eight things this application cannot do because the `/v1` contract does not
 offer them — two of which are now resolved and kept here for what they cost
 while they were open. Each was found while building a phase, and each is written
 here with what it blocks and what the application does instead in the meantime —
@@ -191,6 +191,25 @@ session opens with no role at all, which offers less rather than more.
 **Shape that would work:** the same three fields on the refresh response that
 login already returns. The client would drop the extra call, and one request
 would disappear from every cold start on a connection that cannot spare it.
+
+---
+
+## 8. Real values on `GET /v1/client/version`
+
+**Blocks:** the minimum-version gate doing anything at all.
+
+The route answers `{"min_supported":"0.0.0","latest":"0.0.0"}`. Both are
+placeholders, and with them the gate evaluates to «current» for every build that
+has ever existed: nothing is below `0.0.0` and nothing is newer than it.
+
+**What the application does today:** asks on every start, evaluates, and acts on
+the answer — the wall below the minimum, a mention when a newer one exists. All
+of it is wired and inert, waiting on the numbers.
+
+**Shape that would work:** `min_supported` set to the oldest build the contract
+still guarantees, and `latest` to the newest published to Play. Raising
+`min_supported` is then the lever that retires a build, and it is worth knowing
+that it takes effect on the next start of every installed application.
 
 ---
 

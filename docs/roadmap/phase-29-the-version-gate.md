@@ -39,6 +39,39 @@ time out in a basement, and an application that refuses to open because it could
 not reach a version endpoint is worse than one running slightly behind. An
 unreachable gate means «carry on», and it is checked again later.
 
+## What the backend publishes today
+
+```
+GET https://api.araguaney.lat/v1/client/version
+{"min_supported":"0.0.0","latest":"0.0.0"}
+```
+
+Both are placeholders, and that decides what «done» means here. With those
+values the gate evaluates to `current` for every build ever shipped: nothing is
+below `0.0.0`, and no version is newer than it either, so the wall can never
+appear and the mention can never fire.
+
+**That is the correct state for the client side to be in.** The mechanism is
+wired, tested and inert, and it starts working the day somebody publishes real
+numbers — which is a decision for the other repository and not something this
+one can make on its own. The alternative, leaving the client unwired until the
+backend has values, is how it stayed unwired for six phases.
+
+Recorded as a request rather than assumed: until `min_supported` names a real
+version, no build can ever be blocked, and until `latest` does, nobody is ever
+told there is a newer one.
+
+## What was found while wiring it
+
+`AsyncValue.value` **rethrows** on an `AsyncError`. The first version of the
+gate read `ref.watch(clientVersionStatusProvider).value`, which meant a failed
+check would have thrown while building `SessionGate` and shown an error screen
+— the exact opposite of the promise this phase is built on. It reads
+`valueOrNull` now.
+
+The test that caught it is the one that matters most here: «a failed check never
+locks anybody out». It was written before the code was correct, and it failed.
+
 ---
 
 ## Objectives
@@ -59,7 +92,9 @@ unreachable gate means «carry on», and it is checked again later.
 | # | Task | Description | Complexity | Status |
 |---|------|-------------|------------|--------|
 | 1 | Name the gap | Record that the gate exists and nothing calls it. This file. | 🟢 Low | ✅ Done |
-| 2 | Ask for the version | `GET /v1/client/version` on start, cached for the session, never blocking on failure. | 🟠 Medium | ⬜ Pending |
-| 3 | The wall | Below the minimum, a screen that says what to do and offers Play, with no way past it. | 🟠 Medium | ⬜ Pending |
-| 4 | The mention | An available update said once, where it does not interrupt what somebody is doing. | 🟢 Low | ⬜ Pending |
-| 5 | Verify on a device | With a build deliberately declared below the minimum. | 🟢 Low | ⬜ Pending |
+| 2 | Ask for the version | `GET /v1/client/version` on start through the unauthenticated client, cached for the session, failing open. | 🟠 Medium | ✅ Done |
+| 3 | The wall | Below the minimum, a screen with no way past it, saying that queued captures survive, and opening the store through `market://` with the web listing as a fallback. | 🟠 Medium | ✅ Done |
+| 4 | The mention | Said at the foot of the sign-in screen, beside the installed version, where it interrupts nothing. | 🟢 Low | ✅ Done |
+| 5 | The installed version, at the foot | `Versión 1.0.0 (3)` on the sign-in screen and on the wall, with the build number, so asking «what version do you have» stops costing a conversation. | 🟢 Low | ✅ Done |
+| 6 | Real values in the backend | Both are `0.0.0` today, so the gate is inert. Recorded as a request. | 🟢 Low | ⬜ Pending |
+| 7 | Verify on a device | With a build deliberately declared below the minimum, once the backend publishes real values. | 🟢 Low | ⬜ Pending |

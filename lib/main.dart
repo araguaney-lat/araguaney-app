@@ -16,7 +16,11 @@ Future<void> main() async {
   final packageInfo = await PackageInfo.fromPlatform();
 
   Widget buildApp() => ProviderScope(
-    overrides: [appVersionProvider.overrideWithValue(packageInfo.version)],
+    overrides: [
+      appVersionProvider.overrideWithValue(packageInfo.version),
+      appBuildNumberProvider.overrideWithValue(packageInfo.buildNumber),
+      appPackageNameProvider.overrideWithValue(packageInfo.packageName),
+    ],
     child: const AraguaneyApp(),
   );
 

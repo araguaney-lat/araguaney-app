@@ -15,6 +15,20 @@ final appVersionProvider = Provider<String>(
   (ref) => throw UnimplementedError('appVersionProvider debe sobrescribirse'),
 );
 
+/// El número de compilación (`+3` de `1.0.0+3`).
+///
+/// Separado de la versión porque el nombre se repite entre publicaciones y este
+/// es el que identifica un binario. No viaja en el user agent; se enseña al
+/// pie del acceso para que preguntar «qué versión tienes» no cueste una
+/// conversación.
+final appBuildNumberProvider = Provider<String>((ref) => '');
+
+/// El identificador del paquete, para abrir su ficha en la tienda.
+final appPackageNameProvider = Provider<String>(
+  (ref) =>
+      throw UnimplementedError('appPackageNameProvider debe sobrescribirse'),
+);
+
 final tokenStorageProvider = Provider<TokenStorage>(
   (ref) => SecureTokenStorage(),
 );

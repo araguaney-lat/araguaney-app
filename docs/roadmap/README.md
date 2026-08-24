@@ -36,9 +36,9 @@ written down and being paid off. A percentage is only as honest as the list it
 divides by.
 
 ```mermaid
-pie title Tasks completed (219 tasks, backlog aside)
-    "Done" : 124
-    "Pending" : 94
+pie title Tasks completed (221 tasks, backlog aside)
+    "Done" : 128
+    "Pending" : 92
     "Partial" : 1
     "Blocked or external" : 0
 ```
@@ -74,9 +74,9 @@ pie title Tasks completed (219 tasks, backlog aside)
 | 26 | [The shipment, from dispatch to delivery](phase-26-shipment-to-delivery.md) | 0 | 6 | ⬜ 0% |
 | 27 | [Creating a transfer](phase-27-create-a-transfer.md) | 0 | 5 | ⬜ 0% |
 | 28 | [The requests board](phase-28-the-requests-board.md) | 1 | 3 | 🟨 25% |
-| 29 | [The minimum version gate](phase-29-the-version-gate.md) | 1 | 4 | 🟨 20% |
+| 29 | [The minimum version gate](phase-29-the-version-gate.md) | 5 | 2 | 🟨 71% |
 | 30 | [Writing as a national administrator](phase-30-writing-as-national-admin.md) | 1 | 6 | 🟨 14% |
-| **Total** (Phase 10 aside) | | **124** | **95** | **🟢 57%** |
+| **Total** (Phase 10 aside) | | **128** | **93** | **🟢 58%** |
 
 ## What is missing, and how that is kept honest
 
