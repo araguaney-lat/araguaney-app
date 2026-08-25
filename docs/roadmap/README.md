@@ -36,9 +36,9 @@ written down and being paid off. A percentage is only as honest as the list it
 divides by.
 
 ```mermaid
-pie title Tasks completed (222 tasks, backlog aside)
-    "Done" : 129
-    "Pending" : 92
+pie title Tasks completed (223 tasks, backlog aside)
+    "Done" : 133
+    "Pending" : 89
     "Partial" : 1
     "Blocked or external" : 0
 ```
@@ -66,7 +66,7 @@ pie title Tasks completed (222 tasks, backlog aside)
 | 18 | [Pre-registered donations](phase-18-preregistered-donations.md) | 0 | 8 | ⬜ 0% |
 | 19 | [Reports for the centre](phase-19-center-reports.md) | 0 | 8 | ⬜ 0% |
 | 20 | [Campaigns](phase-20-campaigns.md) | 0 | 5 | ⬜ 0% |
-| 21 | [Centres](phase-21-centers.md) | 0 | 5 | ⬜ 0% |
+| 21 | [Centres](phase-21-centers.md) | 3 | 2 | 🟨 60% |
 | 22 | [The centre application queue](phase-22-center-applications.md) | 0 | 6 | ⬜ 0% |
 | 23 | [Incidents and the audit log](phase-23-incidents-and-audit.md) | 0 | 6 | ⬜ 0% |
 | 24 | [Users beyond one centre](phase-24-users-beyond-a-center.md) | 0 | 6 | ⬜ 0% |
@@ -74,9 +74,9 @@ pie title Tasks completed (222 tasks, backlog aside)
 | 26 | [The shipment, from dispatch to delivery](phase-26-shipment-to-delivery.md) | 0 | 6 | ⬜ 0% |
 | 27 | [Creating a transfer](phase-27-create-a-transfer.md) | 0 | 5 | ⬜ 0% |
 | 28 | [The requests board](phase-28-the-requests-board.md) | 1 | 3 | 🟨 25% |
-| 29 | [The minimum version gate](phase-29-the-version-gate.md) | 6 | 2 | 🟨 75% |
+| 29 | [The minimum version gate](phase-29-the-version-gate.md) | 7 | 2 | 🟨 78% |
 | 30 | [Writing as a national administrator](phase-30-writing-as-national-admin.md) | 1 | 6 | 🟨 14% |
-| **Total** (Phase 10 aside) | | **129** | **93** | **🟢 58%** |
+| **Total** (Phase 10 aside) | | **133** | **90** | **🟢 60%** |
 
 ## What is missing, and how that is kept honest
 

@@ -14,7 +14,7 @@ void main() {
   Future<void> pumpList(
     WidgetTester tester, {
     required List<Map<String, Object?>> transfers,
-    String myCenterId = 'mine',
+    String? myCenterId = 'mine',
   }) async {
     final adapter = FakeHttpAdapter((_) => FakeResponse(200, transfers));
     final container = ProviderContainer(
@@ -118,5 +118,16 @@ void main() {
     );
 
     expect(find.textContaining('other'), findsNothing);
+  });
+
+  testWidgets('somebody with no centre is not told about «this centre»', (
+    tester,
+  ) async {
+    // Una administracion nacional no pertenece a ninguno. Hablarle de «este
+    // centro» describe algo que no existe.
+    await pumpList(tester, transfers: const [], myCenterId: null);
+
+    expect(find.text('No hay transferencias registradas.'), findsOneWidget);
+    expect(find.textContaining('Este centro'), findsNothing);
   });
 }
