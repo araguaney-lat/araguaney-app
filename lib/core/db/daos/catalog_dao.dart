@@ -75,4 +75,19 @@ class CatalogDao extends DatabaseAccessor<AppDatabase> with _$CatalogDaoMixin {
         await delete(productTypes).go();
         await batch((b) => b.insertAll(productTypes, rows));
       });
+
+  /// Guarda un producto suelto, el que se acaba de crear o corregir.
+  ///
+  /// It is not a merge of the catalogue — [replaceAll] stays the only way the
+  /// window is rebuilt. It is one row the server just confirmed, put where
+  /// capture can find it: a product is created while somebody is holding it,
+  /// and waiting for the next sync would mean creating it and still not being
+  /// able to use it.
+  ///
+  /// `insertOrReplace` and not `insertOnConflictUpdate`: the second leaves out
+  /// the columns that arrived null, so a product that **stopped** belonging to
+  /// a campaign would keep the old one locally. Promotion is exactly that —
+  /// the server clears `campaign_id` — and the row has to say so.
+  Future<void> upsert(ProductTypeRow row) =>
+      into(productTypes).insert(row, mode: InsertMode.insertOrReplace);
 }

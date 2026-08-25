@@ -6,6 +6,7 @@ import '../../../core/center/center_providers.dart';
 import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/ui/sheet_insets.dart';
 import '../../account/ui/profile_view.dart';
+import '../../catalog/ui/catalog_list_view.dart';
 import '../../center_applications/data/center_applications_providers.dart';
 import '../../center_applications/ui/application_queue_view.dart';
 import '../../centers/data/centers_providers.dart';
@@ -100,6 +101,13 @@ class MoreMenuSheet extends ConsumerWidget {
           leading: const Icon(Icons.donut_small_outlined),
           title: Text(context.l10n.stockByCategoryTitle),
           onTap: () => _go(context, StockByCategoryView.route()),
+        ),
+        // Para todo el mundo: buscar un producto es de quien captura, y dar de
+        // alta uno es lo único que la pantalla reserva por rol.
+        ListTile(
+          leading: const Icon(Icons.inventory_outlined),
+          title: Text(context.l10n.catalogTitle),
+          onTap: () => _go(context, CatalogListView.route()),
         ),
         ListTile(
           leading: const Icon(Icons.pallet),

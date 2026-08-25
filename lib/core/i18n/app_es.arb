@@ -2404,5 +2404,250 @@
   "threadTypePrivate": "Privado",
   "@threadTypePrivate": {
     "description": "A conversation that is not tied to a campaign."
+  },
+  "categoryMedicine": "Medicamentos",
+  "@categoryMedicine": {
+    "description": "Catalogue category MEDICINE."
+  },
+  "categoryFood": "Alimentos",
+  "@categoryFood": {
+    "description": "Catalogue category FOOD."
+  },
+  "categoryWater": "Agua",
+  "@categoryWater": {
+    "description": "Catalogue category WATER."
+  },
+  "categoryHygiene": "Higiene",
+  "@categoryHygiene": {
+    "description": "Catalogue category HYGIENE."
+  },
+  "categoryTool": "Herramientas",
+  "@categoryTool": {
+    "description": "Catalogue category TOOL."
+  },
+  "categoryOther": "Otros",
+  "@categoryOther": {
+    "description": "Catalogue category OTHER."
+  },
+  "catalogTitle": "Catálogo",
+  "@catalogTitle": {
+    "description": "The product catalogue, as a screen title and a menu entry."
+  },
+  "catalogSearchLabel": "Buscar un producto",
+  "@catalogSearchLabel": {
+    "description": "Search field over the catalogue."
+  },
+  "catalogEmpty": "El catálogo no está descargado en este dispositivo todavía.",
+  "@catalogEmpty": {
+    "description": "Nothing cached and nothing typed: the device has never synced the catalogue."
+  },
+  "catalogNothingCachedFor": "Nada descargado que coincida con «{query}».",
+  "@catalogNothingCachedFor": {
+    "description": "The cached catalogue has no match for what was typed. The server may still have one.",
+    "placeholders": {
+      "query": {
+        "type": "String"
+      }
+    }
+  },
+  "catalogSearchServerAction": "Buscar en el servidor",
+  "@catalogSearchServerAction": {
+    "description": "Asks the server for what the device does not have. One request per search, on purpose."
+  },
+  "catalogFoundOnServer": "En el servidor",
+  "@catalogFoundOnServer": {
+    "description": "Heading over the results the server returned."
+  },
+  "catalogNotOnServerEither": "El servidor tampoco lo tiene.",
+  "@catalogNotOnServerEither": {
+    "description": "The search reached the server and there is no such product, which is the answer the cache cannot give."
+  },
+  "productRecordTitle": "Producto",
+  "@productRecordTitle": {
+    "description": "Title of a product's record."
+  },
+  "productNewTitle": "Nuevo producto",
+  "@productNewTitle": {
+    "description": "Title of the form that creates a product."
+  },
+  "productEditTitle": "Editar producto",
+  "@productEditTitle": {
+    "description": "Title of the same form when correcting one."
+  },
+  "productCreateAction": "Crear producto",
+  "@productCreateAction": {
+    "description": "Submits the new-product form."
+  },
+  "productProposed": "Propuesto",
+  "@productProposed": {
+    "description": "A product that belongs to one campaign and has not been accepted platform-wide."
+  },
+  "productProposedExplanation": "Existe dentro de una campaña. Aceptarlo lo deja disponible para toda la plataforma.",
+  "@productProposedExplanation": {
+    "description": "Explains what «proposed» means, next to the action that accepts it."
+  },
+  "productGlobal": "En el catálogo",
+  "@productGlobal": {
+    "description": "A product accepted platform-wide."
+  },
+  "productGlobalExplanation": "Disponible para cualquier campaña.",
+  "@productGlobalExplanation": {
+    "description": "Explains what an accepted product means."
+  },
+  "productPromoteAction": "Aceptar en el catálogo",
+  "@productPromoteAction": {
+    "description": "Promotes a campaign product to the platform catalogue."
+  },
+  "productPromoteTitle": "Aceptar este producto",
+  "@productPromoteTitle": {
+    "description": "Title of the confirmation before promoting."
+  },
+  "productPromoteExplanation": "Deja de pertenecer a una campaña y queda disponible para todas. No se deshace desde aquí.",
+  "@productPromoteExplanation": {
+    "description": "What promoting does, before it is done. It is a decision, not a save."
+  },
+  "gtinsTitle": "Códigos de barras",
+  "@gtinsTitle": {
+    "description": "The barcodes that point at a product."
+  },
+  "gtinsExplanation": "Un producto puede llevar varios: la misma lata en dos presentaciones, o un importado reetiquetado.",
+  "@gtinsExplanation": {
+    "description": "Why a product carries more than one barcode."
+  },
+  "gtinsEmpty": "Ninguno todavía. Se aprenden al escanear en captura.",
+  "@gtinsEmpty": {
+    "description": "No barcode is linked yet, and how they get linked."
+  },
+  "gtinLabel": "Código de barras",
+  "@gtinLabel": {
+    "description": "A single barcode, as a form field."
+  },
+  "gtinUnlinkAction": "Desligar",
+  "@gtinUnlinkAction": {
+    "description": "Removes the link between a barcode and a product."
+  },
+  "gtinUnlinkTitle": "Desligar el código",
+  "@gtinUnlinkTitle": {
+    "description": "Title of the confirmation before unlinking."
+  },
+  "gtinUnlinkExplanation": "{gtin} deja de apuntar a este producto. Es como se corrige un escaneo que llevaba a lo que no era.",
+  "@gtinUnlinkExplanation": {
+    "description": "What unlinking does, and why somebody would.",
+    "placeholders": {
+      "gtin": {
+        "type": "String"
+      }
+    }
+  },
+  "brandLabel": "Marca",
+  "@brandLabel": {
+    "description": "A product's brand."
+  },
+  "formLabel": "Presentación",
+  "@formLabel": {
+    "description": "A product's form: tablet, syrup, box."
+  },
+  "strengthLabel": "Concentración",
+  "@strengthLabel": {
+    "description": "A medicine's strength."
+  },
+  "innLabel": "Nombre genérico",
+  "@innLabel": {
+    "description": "A medicine's international non-proprietary name."
+  },
+  "unitWeightLabel": "Peso por unidad",
+  "@unitWeightLabel": {
+    "description": "How much one unit of the product weighs."
+  },
+  "minShelfLifeLabel": "Vida útil mínima",
+  "@minShelfLifeLabel": {
+    "description": "The minimum shelf life a box of this product must have left."
+  },
+  "controlledLabel": "Producto controlado",
+  "@controlledLabel": {
+    "description": "Whether the product is legally controlled."
+  },
+  "controlledYes": "Sí",
+  "@controlledYes": {
+    "description": "Affirmative answer for a yes-or-no field on a record."
+  },
+  "controlledExplanation": "Requiere manejo y registro especiales.",
+  "@controlledExplanation": {
+    "description": "What marking a product as controlled means."
+  },
+  "dayCount": "{count, plural, =1{1 día} other{{count} días}}",
+  "@dayCount": {
+    "description": "A number of days, on its own.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "categoryFieldLabel": "Categoría",
+  "@categoryFieldLabel": {
+    "description": "The category field on a product record and in its form."
+  },
+  "missingProductTitle": "Este producto no está en el catálogo",
+  "@missingProductTitle": {
+    "description": "Heading of the sheet that opens when a scanned package is not in the catalogue."
+  },
+  "missingProductUnknown": "Nadie lo reconoce por su código {gtin}.",
+  "@missingProductUnknown": {
+    "description": "Neither the platform nor the barcode database knows the package.",
+    "placeholders": {
+      "gtin": {
+        "type": "String"
+      }
+    }
+  },
+  "missingProductDescribed": "El código {gtin} lo describe como «{name}», pero la plataforma no lo tiene.",
+  "@missingProductDescribed": {
+    "description": "The barcode database knows the package and the platform does not. What it says is a draft, not a product.",
+    "placeholders": {
+      "gtin": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "missingProductAskAction": "Pedir que lo agreguen",
+  "@missingProductAskAction": {
+    "description": "A volunteer's way out: say what they are holding so somebody with the role creates it."
+  },
+  "missingProductAskHint": "Se abre un hilo en la campaña con el código ya escrito.",
+  "@missingProductAskHint": {
+    "description": "What asking actually does, so nobody wonders where the request went."
+  },
+  "missingProductCreateHint": "Lo que se sepa del envase llega como borrador: confírmalo antes de guardar.",
+  "@missingProductCreateHint": {
+    "description": "The prefill comes from a third party and is confirmed by whoever holds the package."
+  },
+  "missingProductThreadTitle": "Falta un producto en el catálogo",
+  "@missingProductThreadTitle": {
+    "description": "Subject of the thread a volunteer opens to ask for a product."
+  },
+  "missingProductThreadBody": "Estoy recibiendo un producto que no está en el catálogo. Su código de barras es {gtin}.",
+  "@missingProductThreadBody": {
+    "description": "Body of that thread when nothing is known about the package beyond its barcode.",
+    "placeholders": {
+      "gtin": {
+        "type": "String"
+      }
+    }
+  },
+  "missingProductThreadBodyNamed": "Estoy recibiendo un producto que no está en el catálogo. Su código de barras es {gtin} y el envase dice «{name}».",
+  "@missingProductThreadBodyNamed": {
+    "description": "Body of that thread when the barcode database described the package.",
+    "placeholders": {
+      "gtin": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
   }
 }

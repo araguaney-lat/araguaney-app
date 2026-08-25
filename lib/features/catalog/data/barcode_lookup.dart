@@ -48,6 +48,14 @@ final class BarcodeUnresolved extends BarcodeOutcome {
 /// funciona en un sótano, que es donde se captura. La consulta al servidor es
 /// para lo que el dispositivo no tiene.
 class BarcodeLookup {
+  /// Con qué código se dice «nadie lo conoce».
+  ///
+  /// Lo nombra esta capa porque no viene del servidor: es la conclusión de
+  /// haber preguntado a los dos sitios. La pantalla lo mira para ofrecer darlo
+  /// de alta, así que compararlo contra una cadena suelta allá dejaría la
+  /// misma decisión escrita en dos lugares.
+  static const notFoundCode = 'BARCODE_NOT_FOUND';
+
   const BarcodeLookup({required CatalogApi api, required AppDatabase database})
     : _catalog = api,
       _db = database;
@@ -99,7 +107,7 @@ class BarcodeLookup {
       BarcodeOnlyDescribed(prefill),
     _ => const BarcodeUnresolved(
       BusinessRuleFailure(
-        code: 'BARCODE_NOT_FOUND',
+        code: notFoundCode,
         message: 'The barcode is not in the catalogue',
       ),
     ),

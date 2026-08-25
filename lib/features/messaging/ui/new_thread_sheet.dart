@@ -12,15 +12,26 @@ import '../../intake/data/intake_providers.dart';
 /// selección es trabajo de escritorio; desde un teléfono lo que se hace es
 /// avisar de algo a quien esté en la campaña.
 class NewThreadSheet extends ConsumerStatefulWidget {
-  const NewThreadSheet({super.key});
+  const NewThreadSheet({super.key, this.initialTitle, this.initialBody});
+
+  /// Con qué llega escrito el hilo.
+  ///
+  /// It exists for one caller: somebody holding a package the catalogue does
+  /// not have. Making them type the barcode they just scanned would be asking
+  /// for the one thing the phone already knows.
+  final String? initialTitle;
+  final String? initialBody;
 
   static Future<({String campaignId, String title, String body})?> show(
-    BuildContext context,
-  ) => showModalBottomSheet<({String campaignId, String title, String body})>(
+    BuildContext context, {
+    String? initialTitle,
+    String? initialBody,
+  }) => showModalBottomSheet<({String campaignId, String title, String body})>(
     context: context,
     isScrollControlled: true,
     useSafeArea: true,
-    builder: (_) => const NewThreadSheet(),
+    builder: (_) =>
+        NewThreadSheet(initialTitle: initialTitle, initialBody: initialBody),
   );
 
   @override
@@ -32,6 +43,13 @@ class _NewThreadSheetState extends ConsumerState<NewThreadSheet> {
   final _title = TextEditingController();
   final _body = TextEditingController();
   String? _campaignId;
+
+  @override
+  void initState() {
+    super.initState();
+    _title.text = widget.initialTitle ?? '';
+    _body.text = widget.initialBody ?? '';
+  }
 
   @override
   void dispose() {
