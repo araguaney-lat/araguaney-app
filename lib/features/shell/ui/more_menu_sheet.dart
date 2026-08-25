@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/auth/auth_providers.dart';
 import '../../../core/ui/sheet_insets.dart';
 import '../../account/ui/profile_view.dart';
+import '../../center_applications/data/center_applications_providers.dart';
+import '../../center_applications/ui/application_queue_view.dart';
 import '../../centers/data/centers_providers.dart';
 import '../../centers/ui/centers_list_view.dart';
 import '../../dashboard/ui/stock_by_category_view.dart';
@@ -104,6 +106,12 @@ class MoreMenuSheet extends ConsumerWidget {
             leading: const Icon(Icons.flag_outlined),
             title: const Text('Revisiones de riesgo'),
             onTap: () => _go(context, RiskReviewsView.route()),
+          ),
+        if (ref.watch(canReviewApplicationsProvider))
+          ListTile(
+            leading: const Icon(Icons.inbox_outlined),
+            title: const Text('Solicitudes'),
+            onTap: () => _go(context, ApplicationQueueView.route()),
           ),
         if (ref.watch(canListCentersProvider))
           ListTile(

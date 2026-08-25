@@ -36,6 +36,50 @@ platform is going to read.
 The same shape as resolving a risk review, and worth reusing rather than
 reinventing.
 
+## What approving actually does, and why the screen says it
+
+`CenterApplicationService.approve` does three things in one call:
+
+1. Creates the centre.
+2. Registers the applicant as its **coordinator**, with a generated password and
+   `must_change_password` set.
+3. Emails them that password.
+
+None of it can be undone from here, and two of the three are invisible from the
+name of the button. So the confirmation names all three and says where the
+password is going. A dialog that only asks «¿seguro?» informs nobody, and this
+is the screen where being wrong creates an account for a stranger.
+
+It also refuses, usefully, when a user already exists with that contact address
+— the service says so rather than guessing, and the message reaches the person
+deciding.
+
+## The queue is a queue, not a history
+
+`list_queue` filters `PENDING_REVIEW`, oldest first, and scopes by country for a
+national administrator while a superadministrator sees every country. Deciding
+one takes it out. So there is no «already resolved» section to build, and the
+count in the header is the whole of what is waiting.
+
+## Everything the decision rests on is on the card
+
+Centre, place, contact, phone, address, backing organisation, links and the
+message they wrote. Making somebody open a record to find out who backs a centre
+turns a queue of three into three navigations, and the fields are short enough
+to fit.
+
+**The message is quoted and unedited**, like the reason on a risk review: they
+are the applicant's words, and paraphrasing them would put this repository
+between two people who are trying to evaluate each other.
+
+## Rejecting is not the second button
+
+`POST .../reject` carries a reason, and the reason **is emailed to whoever
+applied** — outside the platform, probably with no other context than that
+sentence. So the sheet says where the text is going before anybody starts
+typing, and the field is required here as well as on the server: reaching the
+server to be told would spend a request and a wait for something already known.
+
 ---
 
 ## Objectives
@@ -56,9 +100,9 @@ reinventing.
 
 | # | Task | Description | Complexity | Status |
 |---|------|-------------|------------|--------|
-| 1 | Applications repository | `GET /v1/center-applications` and the two decisions, behind a sealed outcome. | 🟠 Medium | ⬜ Pending |
-| 2 | The queue | Who is waiting and since when, with the count that says whether anything needs a person. | 🟠 Medium | ⬜ Pending |
-| 3 | The application | Centre, place, contact, backing organisation, links and the message they wrote — everything the decision rests on. | 🟠 Medium | ⬜ Pending |
-| 4 | Approve | Creates a centre; the screen says so before it happens, because it is not undoable from here. | 🟠 Medium | ⬜ Pending |
-| 5 | Reject with a reason | The sheet that already exists for risk reviews, with copy that says the reason will be read by the applicant. | 🟠 Medium | ⬜ Pending |
-| 6 | Verify on a device | Against a real application, on a staging centre if one exists. | 🟢 Low | ⬜ Pending |
+| 1 | Applications repository | The queue and the two decisions behind a sealed outcome that reads a 403 as an answer. | 🟠 Medium | ✅ Done |
+| 2 | The queue | Who is waiting and since when, with the count in the header and pull to refresh. | 🟠 Medium | ✅ Done |
+| 3 | The application on the card | Everything the decision rests on, without a second navigation, omitting what the response does not carry. The message quoted and unedited. | 🟠 Medium | ✅ Done |
+| 4 | Approve | Names its three consequences before doing them — the centre, the coordinator account, and the password that is emailed — because none is undoable from here. | 🟠 Medium | ✅ Done |
+| 5 | Reject with a reason | A sheet that says the reason is emailed to the applicant, and refuses to send an empty one. | 🟠 Medium | ✅ Done |
+| 6 | Verify on a device | Against a real application. **Approving writes to production**, so it waits for one that is genuinely meant to be approved. | 🟢 Low | ⬜ Pending |
