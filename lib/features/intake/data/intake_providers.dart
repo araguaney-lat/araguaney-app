@@ -6,7 +6,7 @@ import '../../../core/api/generated/models/campaign_out.dart';
 import '../../../core/api/generated/models/donor_input.dart';
 import '../../../core/api/generated/models/intake_out.dart';
 import '../../../core/auth/auth_providers.dart';
-import '../../../core/auth/session.dart';
+import '../../../core/center/center_providers.dart';
 import '../../../core/db/app_database.dart';
 import '../../../core/db/db_providers.dart';
 import '../domain/box_draft_input.dart';
@@ -28,10 +28,9 @@ final intakeRepositoryProvider = Provider<IntakeRepository>(
 
 /// Quién tiene la sesión abierta. La cola y los códigos reservados son suyos y
 /// de nadie más, así que todo lo que los toca pasa por aquí.
-final currentUserIdProvider = Provider<String?>((ref) {
-  final state = ref.watch(sessionControllerProvider);
-  return state is SessionActive ? state.session.userId : null;
-});
+final currentUserIdProvider = Provider<String?>(
+  (ref) => ref.watch(sessionUserIdProvider),
+);
 
 final captureQueueRepositoryProvider = Provider<CaptureQueueRepository>(
   (ref) => CaptureQueueRepository(database: ref.watch(appDatabaseProvider)),
@@ -66,10 +65,16 @@ final queuedCapturesProvider = StreamProvider<List<QueuedCaptureRow>>((ref) {
 });
 
 /// Códigos de caja sin gastar que le quedan a esta persona en el dispositivo.
+///
+/// Counted for the centre being worked in: a block reserved for another one is
+/// not going to label anything here, and counting it would promise a box's
+/// worth of labels that do not exist.
 final availableBoxCodesProvider = StreamProvider<int>((ref) {
   final userId = ref.watch(currentUserIdProvider);
   if (userId == null) return Stream.value(0);
-  return ref.watch(boxCodeRepositoryProvider).watchAvailable(userId);
+  return ref
+      .watch(boxCodeRepositoryProvider)
+      .watchAvailable(userId, centerId: ref.watch(writeCenterIdProvider));
 });
 
 /// Campañas en las que participa quien capturó la sesión. Se consultan en
@@ -84,9 +89,18 @@ final myCampaignsProvider = FutureProvider<List<CampaignOut>>(
 
 /// Las capturas registradas del centro. Se consultan en línea: la lectura sin
 /// conexión que la operación necesita es la del inventario, no la del historial.
-final intakesProvider = FutureProvider<List<IntakeOut>>(
-  (ref) => ref.watch(intakeRepositoryProvider).list(),
-);
+///
+/// Narrowed to the working centre when the session has one: the count of what
+/// was registered today answers «how is this centre doing», and the country's
+/// total is a different question with its own screen.
+final intakesProvider = FutureProvider<List<IntakeOut>>((ref) async {
+  final intakes = await ref.watch(intakeRepositoryProvider).list();
+  final center = ref.watch(writeCenterIdProvider);
+  if (center == null) return intakes;
+  return intakes
+      .where((intake) => intake.centerId == center)
+      .toList(growable: false);
+});
 
 /// Dueño del formulario de captura.
 ///
@@ -95,9 +109,15 @@ final intakesProvider = FutureProvider<List<IntakeOut>>(
 /// cambia por nada —ni al editar, ni al fallar, ni al reintentar—, que es la
 /// primera invariante de la cola sin conexión.
 class IntakeDraftController extends AutoDisposeNotifier<IntakeDraft> {
+  /// The working centre is read **once, here**, with the same `read` and for
+  /// the same reason as the idempotency key: both identify what this capture
+  /// is, and neither may change while it is being written or waiting to be
+  /// sent.
   @override
-  IntakeDraft build() =>
-      IntakeDraft(captureId: ref.read(captureIdGeneratorProvider)());
+  IntakeDraft build() => IntakeDraft(
+    captureId: ref.read(captureIdGeneratorProvider)(),
+    centerId: ref.read(writeCenterIdProvider),
+  );
 
   void setCampaign(String? campaignId) =>
       state = state.copyWith(campaignId: campaignId);

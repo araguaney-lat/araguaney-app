@@ -1,5 +1,6 @@
 import 'package:araguaney_app/core/api/api_providers.dart';
 import 'package:araguaney_app/core/api/generated/rest_client.dart';
+import 'package:araguaney_app/core/center/center_providers.dart';
 import 'package:araguaney_app/core/connectivity/connectivity_controller.dart';
 import 'package:araguaney_app/core/i18n/generated/app_localizations.dart';
 import 'package:araguaney_app/features/pallets/data/pallets_providers.dart';
@@ -24,10 +25,12 @@ void main() {
     required List<Map<String, Object?>> pallets,
     bool canOperate = true,
     bool offline = false,
+    String? workingCenterId,
   }) async {
     final adapter = FakeHttpAdapter((_) => FakeResponse(200, pallets));
     final container = ProviderContainer(
       overrides: [
+        writeCenterIdProvider.overrideWithValue(workingCenterId),
         connectivityProbeProvider.overrideWithValue(probe),
         restClientProvider.overrideWithValue(RestClient(fakeDio(adapter))),
         canOperatePalletsProvider.overrideWithValue(canOperate),
@@ -52,6 +55,25 @@ void main() {
     );
     await tester.pumpAndSettle();
   }
+
+  testWidgets('a working centre hides the other centres\' pallets', (
+    tester,
+  ) async {
+    // The server sends a national session every centre's pallets. Coordinating
+    // one from another warehouse means deciding about boxes nobody in the room
+    // can see.
+    await pumpList(
+      tester,
+      workingCenterId: 'center-1',
+      pallets: [
+        palletJson(id: 'p-1', code: 'TM-0001'),
+        palletJson(id: 'p-2', code: 'TM-0002', centerId: 'center-2'),
+      ],
+    );
+
+    expect(find.text('TM-0001'), findsOneWidget);
+    expect(find.text('TM-0002'), findsNothing);
+  });
 
   testWidgets('the header splits open from closed, which decide what to do', (
     tester,

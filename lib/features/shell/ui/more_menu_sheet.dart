@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/auth/auth_providers.dart';
+import '../../../core/center/center_providers.dart';
 import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/ui/sheet_insets.dart';
 import '../../account/ui/profile_view.dart';
@@ -9,6 +10,7 @@ import '../../center_applications/data/center_applications_providers.dart';
 import '../../center_applications/ui/application_queue_view.dart';
 import '../../centers/data/centers_providers.dart';
 import '../../centers/ui/centers_list_view.dart';
+import '../../centers/ui/choose_center_view.dart';
 import '../../dashboard/ui/stock_by_category_view.dart';
 import '../../incidents/ui/incidents_list_view.dart';
 import '../../intake/data/intake_providers.dart';
@@ -72,6 +74,18 @@ class MoreMenuSheet extends ConsumerWidget {
           title: Text(context.l10n.pendingCapturesTitle),
           onTap: () => _go(context, PendingCapturesView.route()),
         ),
+        // Only for a session with no centre of its own. It sits high because
+        // it is where somebody checks what they are about to write into, not
+        // only where they change it.
+        if (ref.watch(workingCenterProvider).valueOrNull case final center?)
+          if (ref.watch(writeCenterIdProvider) != null)
+            ListTile(
+              leading: const Icon(Icons.apartment_outlined),
+              title: Text(context.l10n.workingCenterTitle),
+              subtitle: Text(center.name),
+              trailing: Text(context.l10n.workingCenterChangeAction),
+              onTap: () => _go(context, ChooseCenterView.route()),
+            ),
         ListTile(
           leading: const Icon(Icons.person_outline),
           title: Text(context.l10n.profileTitle),

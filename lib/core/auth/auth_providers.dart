@@ -62,6 +62,16 @@ final isCenterCoordinatorProvider = Provider<bool>((ref) {
   }.contains(state.session.centerRole);
 });
 
+/// Who has the session open.
+///
+/// It is the key to everything the device keeps per person: the capture queue,
+/// the reserved codes and the working centre. It lives in `core` because a
+/// shared device divides all three by the same criterion.
+final sessionUserIdProvider = Provider<String?>((ref) {
+  final state = ref.watch(sessionControllerProvider);
+  return state is SessionActive ? state.session.userId : null;
+});
+
 /// El centro de quien tiene la sesión.
 ///
 /// Decide si una transferencia sale o llega y de qué directorio se habla, así

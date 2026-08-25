@@ -36,7 +36,8 @@ class BoxesRepository {
   final AppDatabase _db;
   final DateTime Function() _now;
 
-  Stream<List<BoxWithProduct>> watchBoxes() => _db.boxesDao.watchAll();
+  Stream<List<BoxWithProduct>> watchBoxes({String? centerId}) =>
+      _db.boxesDao.watchAll(centerId: centerId);
 
   Stream<BoxWithProduct?> watchBox(String id) =>
       _db.boxesDao.watchWithProduct(id);

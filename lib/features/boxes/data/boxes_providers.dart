@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/api/api_providers.dart';
 import '../../../core/api/generated/models/qr_event_out.dart';
+import '../../../core/center/center_providers.dart';
 import '../../../core/db/app_database.dart';
 import '../../../core/db/daos/boxes_dao.dart';
 import '../../../core/db/db_providers.dart';
@@ -15,7 +16,9 @@ final boxesRepositoryProvider = Provider<BoxesRepository>(
 );
 
 final boxesProvider = StreamProvider<List<BoxWithProduct>>(
-  (ref) => ref.watch(boxesRepositoryProvider).watchBoxes(),
+  (ref) => ref
+      .watch(boxesRepositoryProvider)
+      .watchBoxes(centerId: ref.watch(writeCenterIdProvider)),
 );
 
 final boxProvider = StreamProvider.family<BoxWithProduct?, String>(

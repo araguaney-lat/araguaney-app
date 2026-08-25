@@ -5,6 +5,7 @@ import '../../../core/auth/auth_providers.dart';
 import '../../../core/auth/session.dart';
 import '../../../core/i18n/generated/app_localizations.dart';
 import '../../../core/i18n/l10n_extension.dart';
+import '../../../core/ui/working_center_banner.dart';
 import '../../dashboard/data/center_dashboard_providers.dart';
 import '../../dashboard/ui/stock_by_category_view.dart';
 import '../../intake/data/intake_providers.dart';
@@ -44,33 +45,43 @@ class HomeView extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(title: _Wordmark(l10n.appTitle)),
-      body: RefreshIndicator(
-        onRefresh: () async {
-          ref
-            ..invalidate(centerAggregatesProvider)
-            ..invalidate(intakesProvider);
-        },
-        child: ListView(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
-          children: [
-            if (session?.centerRole case final role?)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 12),
-                child: Text(
-                  _roleLabel(context.l10n, role),
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
+      body: Column(
+        children: [
+          const WorkingCenterBanner(),
+          Expanded(
+            child: RefreshIndicator(
+              onRefresh: () async {
+                ref
+                  ..invalidate(centerAggregatesProvider)
+                  ..invalidate(intakesProvider);
+              },
+              child: ListView(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+                children: [
+                  if (session?.centerRole case final role?)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: Text(
+                        _roleLabel(context.l10n, role),
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                    ),
+                  const PushPermissionCard(),
+                  const _PendingCaptures(),
+                  if (coordinates) const _PendingReviews(),
+                  const SizedBox(height: 8),
+                  if (coordinates)
+                    const _CoordinatorGrid()
+                  else
+                    const _DayGrid(),
+                  const SizedBox(height: 8),
+                  const _CenterWeight(),
+                  const _OfflineReadiness(),
+                ],
               ),
-            const PushPermissionCard(),
-            const _PendingCaptures(),
-            if (coordinates) const _PendingReviews(),
-            const SizedBox(height: 8),
-            if (coordinates) const _CoordinatorGrid() else const _DayGrid(),
-            const SizedBox(height: 8),
-            const _CenterWeight(),
-            const _OfflineReadiness(),
-          ],
-        ),
+            ),
+          ),
+        ],
       ),
     );
   }

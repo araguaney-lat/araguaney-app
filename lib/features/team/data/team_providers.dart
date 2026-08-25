@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/api/api_providers.dart';
 import '../../../core/api/generated/models/campaign_member_out.dart';
 import '../../../core/api/generated/models/user_out.dart';
-import '../../../core/auth/auth_providers.dart';
+import '../../../core/center/center_providers.dart';
 import 'team_repository.dart';
 
 final teamRepositoryProvider = Provider<TeamRepository>((ref) {
@@ -13,10 +13,12 @@ final teamRepositoryProvider = Provider<TeamRepository>((ref) {
 
 /// El equipo del propio centro.
 ///
-/// Sin centro no hay directorio: una administración nacional no pertenece a
-/// uno, y elegir cuál mirar es trabajo de escritorio.
+/// «Own» now includes the chosen one: a national administrator belongs to no
+/// centre, and used to get a directory of nobody. With a working centre there
+/// is an answer, and the backend already allows it — `list_center_users` lets a
+/// national administrator read any centre's team.
 final centerUsersProvider = FutureProvider<List<UserOut>>((ref) {
-  final centerId = ref.watch(myCenterIdProvider);
+  final centerId = ref.watch(actingCenterIdProvider);
   if (centerId == null) return Future.value(const []);
   return ref.watch(teamRepositoryProvider).centerUsers(centerId);
 });

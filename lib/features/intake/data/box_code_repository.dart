@@ -23,23 +23,33 @@ class BoxCodeRepository {
   final AppDatabase _db;
   final DateTime Function() _now;
 
-  Stream<int> watchAvailable(String userId) =>
-      _db.boxCodesDao.watchAvailable(userId);
+  Stream<int> watchAvailable(String userId, {String? centerId}) =>
+      _db.boxCodesDao.watchAvailable(userId, centerId: centerId);
 
   /// Pide un bloque al servidor y lo guarda.
   ///
   /// Cuántos códigos caben en una petición lo decide el backend; aquí no se
   /// replica ese límite. Si pide de más, contesta y esta capa muestra su
   /// motivo.
+  ///
+  /// [centerId] is the centre the block is asked for, and the same one it is
+  /// stored under. A session that belongs to a centre leaves it null: the
+  /// server takes the centre from the token and refuses to be told otherwise.
   Future<SyncOutcome> topUp({
     required int count,
     required String userId,
+    String? centerId,
   }) async {
     try {
       final block = await _boxesApi.reserveBoxCodesV1BoxesCodesReservePost(
-        body: BoxCodeReserveIn(count: count),
+        body: BoxCodeReserveIn(count: count, centerId: centerId),
       );
-      await _db.boxCodesDao.store(block.codes, userId: userId, at: _now());
+      await _db.boxCodesDao.store(
+        block.codes,
+        userId: userId,
+        centerId: centerId,
+        at: _now(),
+      );
       return SyncSucceeded(at: _now(), itemCount: block.codes.length);
     } on Object catch (error) {
       return SyncFailed(ApiErrorMapper.fromAny(error));
@@ -51,6 +61,14 @@ class BoxCodeRepository {
   /// Puede devolver menos de los pedidos. Quedarse sin códigos no impide
   /// capturar —perder la captura sería mucho peor—, solo impide etiquetar esas
   /// cajas hasta que la captura llegue al servidor.
-  Future<List<String>> take(int count, {required String userId}) =>
-      _db.boxCodesDao.take(count, userId: userId, at: _now());
+  Future<List<String>> take(
+    int count, {
+    required String userId,
+    String? centerId,
+  }) => _db.boxCodesDao.take(
+    count,
+    userId: userId,
+    centerId: centerId,
+    at: _now(),
+  );
 }

@@ -1,5 +1,6 @@
 import 'package:araguaney_app/core/api/generated/clients/boxes_api.dart';
 import 'package:araguaney_app/core/api/generated/clients/product_types_api.dart';
+import 'package:araguaney_app/core/center/center_providers.dart';
 import 'package:araguaney_app/core/connectivity/connectivity_controller.dart';
 import 'package:araguaney_app/core/db/app_database.dart';
 import 'package:araguaney_app/core/db/daos/sync_markers_dao.dart';
@@ -41,6 +42,7 @@ void main() {
     final http = adapter ?? OfflineHttpAdapter();
     final container = ProviderContainer(
       overrides: [
+        writeCenterIdProvider.overrideWithValue(null),
         connectivityProbeProvider.overrideWithValue(probe),
         // La pantalla dispara el coordinador al abrirse, y este vacía la cola
         // de quien tenga sesión. Aquí no hay sesión: lo que se prueba es la

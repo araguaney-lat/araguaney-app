@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/api/api_error_mapper.dart';
 import '../../../core/api/generated/models/transfer_out.dart';
-import '../../../core/auth/auth_providers.dart';
+import '../../../core/center/center_providers.dart';
 import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/ui/record_field.dart';
 import '../../../core/ui/status_labels.dart';
@@ -43,7 +43,7 @@ class _TransfersListViewState extends ConsumerState<TransfersListView> {
   @override
   Widget build(BuildContext context) {
     final transfers = ref.watch(transfersProvider);
-    final myCenterId = ref.watch(myCenterIdProvider);
+    final myCenterId = ref.watch(actingCenterIdProvider);
 
     return Scaffold(
       appBar: AppBar(

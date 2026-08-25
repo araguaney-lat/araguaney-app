@@ -2764,6 +2764,17 @@ class $BoxCodeReservationsTable extends BoxCodeReservations
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _centerIdMeta = const VerificationMeta(
+    'centerId',
+  );
+  @override
+  late final GeneratedColumn<String> centerId = GeneratedColumn<String>(
+    'center_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _reservedAtMeta = const VerificationMeta(
     'reservedAt',
   );
@@ -2787,7 +2798,13 @@ class $BoxCodeReservationsTable extends BoxCodeReservations
     requiredDuringInsert: false,
   );
   @override
-  List<GeneratedColumn> get $columns => [code, userId, reservedAt, spentAt];
+  List<GeneratedColumn> get $columns => [
+    code,
+    userId,
+    centerId,
+    reservedAt,
+    spentAt,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -2815,6 +2832,12 @@ class $BoxCodeReservationsTable extends BoxCodeReservations
       );
     } else if (isInserting) {
       context.missing(_userIdMeta);
+    }
+    if (data.containsKey('center_id')) {
+      context.handle(
+        _centerIdMeta,
+        centerId.isAcceptableOrUnknown(data['center_id']!, _centerIdMeta),
+      );
     }
     if (data.containsKey('reserved_at')) {
       context.handle(
@@ -2847,6 +2870,10 @@ class $BoxCodeReservationsTable extends BoxCodeReservations
         DriftSqlType.string,
         data['${effectivePrefix}user_id'],
       )!,
+      centerId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}center_id'],
+      ),
       reservedAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}reserved_at'],
@@ -2871,11 +2898,25 @@ class BoxCodeReservationRow extends DataClass
   /// Quién lo reservó. La cola es por persona y los códigos también: en un
   /// dispositivo compartido, dos turnos no pueden repartirse el mismo bloque.
   final String userId;
+
+  /// Which centre the block was reserved for.
+  ///
+  /// The server hands out codes **for a centre**, so spending them in another
+  /// one puts the wrong centre's label on a physical box. A national
+  /// administrator can change working centre with a block half spent, and
+  /// without this column the rest of it would be spent there.
+  ///
+  /// Null in rows written before this column existed, and those are spendable
+  /// anywhere. That is not a convenient exception: reserving has always
+  /// required belonging to a centre — the server refuses anybody who has none —
+  /// so a row without one can only belong to somebody who had exactly one.
+  final String? centerId;
   final DateTime reservedAt;
   final DateTime? spentAt;
   const BoxCodeReservationRow({
     required this.code,
     required this.userId,
+    this.centerId,
     required this.reservedAt,
     this.spentAt,
   });
@@ -2884,6 +2925,9 @@ class BoxCodeReservationRow extends DataClass
     final map = <String, Expression>{};
     map['code'] = Variable<String>(code);
     map['user_id'] = Variable<String>(userId);
+    if (!nullToAbsent || centerId != null) {
+      map['center_id'] = Variable<String>(centerId);
+    }
     map['reserved_at'] = Variable<DateTime>(reservedAt);
     if (!nullToAbsent || spentAt != null) {
       map['spent_at'] = Variable<DateTime>(spentAt);
@@ -2895,6 +2939,9 @@ class BoxCodeReservationRow extends DataClass
     return BoxCodeReservationsCompanion(
       code: Value(code),
       userId: Value(userId),
+      centerId: centerId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(centerId),
       reservedAt: Value(reservedAt),
       spentAt: spentAt == null && nullToAbsent
           ? const Value.absent()
@@ -2910,6 +2957,7 @@ class BoxCodeReservationRow extends DataClass
     return BoxCodeReservationRow(
       code: serializer.fromJson<String>(json['code']),
       userId: serializer.fromJson<String>(json['userId']),
+      centerId: serializer.fromJson<String?>(json['centerId']),
       reservedAt: serializer.fromJson<DateTime>(json['reservedAt']),
       spentAt: serializer.fromJson<DateTime?>(json['spentAt']),
     );
@@ -2920,6 +2968,7 @@ class BoxCodeReservationRow extends DataClass
     return <String, dynamic>{
       'code': serializer.toJson<String>(code),
       'userId': serializer.toJson<String>(userId),
+      'centerId': serializer.toJson<String?>(centerId),
       'reservedAt': serializer.toJson<DateTime>(reservedAt),
       'spentAt': serializer.toJson<DateTime?>(spentAt),
     };
@@ -2928,11 +2977,13 @@ class BoxCodeReservationRow extends DataClass
   BoxCodeReservationRow copyWith({
     String? code,
     String? userId,
+    Value<String?> centerId = const Value.absent(),
     DateTime? reservedAt,
     Value<DateTime?> spentAt = const Value.absent(),
   }) => BoxCodeReservationRow(
     code: code ?? this.code,
     userId: userId ?? this.userId,
+    centerId: centerId.present ? centerId.value : this.centerId,
     reservedAt: reservedAt ?? this.reservedAt,
     spentAt: spentAt.present ? spentAt.value : this.spentAt,
   );
@@ -2940,6 +2991,7 @@ class BoxCodeReservationRow extends DataClass
     return BoxCodeReservationRow(
       code: data.code.present ? data.code.value : this.code,
       userId: data.userId.present ? data.userId.value : this.userId,
+      centerId: data.centerId.present ? data.centerId.value : this.centerId,
       reservedAt: data.reservedAt.present
           ? data.reservedAt.value
           : this.reservedAt,
@@ -2952,6 +3004,7 @@ class BoxCodeReservationRow extends DataClass
     return (StringBuffer('BoxCodeReservationRow(')
           ..write('code: $code, ')
           ..write('userId: $userId, ')
+          ..write('centerId: $centerId, ')
           ..write('reservedAt: $reservedAt, ')
           ..write('spentAt: $spentAt')
           ..write(')'))
@@ -2959,13 +3012,14 @@ class BoxCodeReservationRow extends DataClass
   }
 
   @override
-  int get hashCode => Object.hash(code, userId, reservedAt, spentAt);
+  int get hashCode => Object.hash(code, userId, centerId, reservedAt, spentAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is BoxCodeReservationRow &&
           other.code == this.code &&
           other.userId == this.userId &&
+          other.centerId == this.centerId &&
           other.reservedAt == this.reservedAt &&
           other.spentAt == this.spentAt);
 }
@@ -2974,12 +3028,14 @@ class BoxCodeReservationsCompanion
     extends UpdateCompanion<BoxCodeReservationRow> {
   final Value<String> code;
   final Value<String> userId;
+  final Value<String?> centerId;
   final Value<DateTime> reservedAt;
   final Value<DateTime?> spentAt;
   final Value<int> rowid;
   const BoxCodeReservationsCompanion({
     this.code = const Value.absent(),
     this.userId = const Value.absent(),
+    this.centerId = const Value.absent(),
     this.reservedAt = const Value.absent(),
     this.spentAt = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -2987,6 +3043,7 @@ class BoxCodeReservationsCompanion
   BoxCodeReservationsCompanion.insert({
     required String code,
     required String userId,
+    this.centerId = const Value.absent(),
     required DateTime reservedAt,
     this.spentAt = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -2996,6 +3053,7 @@ class BoxCodeReservationsCompanion
   static Insertable<BoxCodeReservationRow> custom({
     Expression<String>? code,
     Expression<String>? userId,
+    Expression<String>? centerId,
     Expression<DateTime>? reservedAt,
     Expression<DateTime>? spentAt,
     Expression<int>? rowid,
@@ -3003,6 +3061,7 @@ class BoxCodeReservationsCompanion
     return RawValuesInsertable({
       if (code != null) 'code': code,
       if (userId != null) 'user_id': userId,
+      if (centerId != null) 'center_id': centerId,
       if (reservedAt != null) 'reserved_at': reservedAt,
       if (spentAt != null) 'spent_at': spentAt,
       if (rowid != null) 'rowid': rowid,
@@ -3012,6 +3071,7 @@ class BoxCodeReservationsCompanion
   BoxCodeReservationsCompanion copyWith({
     Value<String>? code,
     Value<String>? userId,
+    Value<String?>? centerId,
     Value<DateTime>? reservedAt,
     Value<DateTime?>? spentAt,
     Value<int>? rowid,
@@ -3019,6 +3079,7 @@ class BoxCodeReservationsCompanion
     return BoxCodeReservationsCompanion(
       code: code ?? this.code,
       userId: userId ?? this.userId,
+      centerId: centerId ?? this.centerId,
       reservedAt: reservedAt ?? this.reservedAt,
       spentAt: spentAt ?? this.spentAt,
       rowid: rowid ?? this.rowid,
@@ -3033,6 +3094,9 @@ class BoxCodeReservationsCompanion
     }
     if (userId.present) {
       map['user_id'] = Variable<String>(userId.value);
+    }
+    if (centerId.present) {
+      map['center_id'] = Variable<String>(centerId.value);
     }
     if (reservedAt.present) {
       map['reserved_at'] = Variable<DateTime>(reservedAt.value);
@@ -3051,6 +3115,7 @@ class BoxCodeReservationsCompanion
     return (StringBuffer('BoxCodeReservationsCompanion(')
           ..write('code: $code, ')
           ..write('userId: $userId, ')
+          ..write('centerId: $centerId, ')
           ..write('reservedAt: $reservedAt, ')
           ..write('spentAt: $spentAt, ')
           ..write('rowid: $rowid')
@@ -4384,6 +4449,7 @@ typedef $$BoxCodeReservationsTableCreateCompanionBuilder =
     BoxCodeReservationsCompanion Function({
       required String code,
       required String userId,
+      Value<String?> centerId,
       required DateTime reservedAt,
       Value<DateTime?> spentAt,
       Value<int> rowid,
@@ -4392,6 +4458,7 @@ typedef $$BoxCodeReservationsTableUpdateCompanionBuilder =
     BoxCodeReservationsCompanion Function({
       Value<String> code,
       Value<String> userId,
+      Value<String?> centerId,
       Value<DateTime> reservedAt,
       Value<DateTime?> spentAt,
       Value<int> rowid,
@@ -4413,6 +4480,11 @@ class $$BoxCodeReservationsTableFilterComposer
 
   ColumnFilters<String> get userId => $composableBuilder(
     column: $table.userId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get centerId => $composableBuilder(
+    column: $table.centerId,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -4446,6 +4518,11 @@ class $$BoxCodeReservationsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get centerId => $composableBuilder(
+    column: $table.centerId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get reservedAt => $composableBuilder(
     column: $table.reservedAt,
     builder: (column) => ColumnOrderings(column),
@@ -4471,6 +4548,9 @@ class $$BoxCodeReservationsTableAnnotationComposer
 
   GeneratedColumn<String> get userId =>
       $composableBuilder(column: $table.userId, builder: (column) => column);
+
+  GeneratedColumn<String> get centerId =>
+      $composableBuilder(column: $table.centerId, builder: (column) => column);
 
   GeneratedColumn<DateTime> get reservedAt => $composableBuilder(
     column: $table.reservedAt,
@@ -4526,12 +4606,14 @@ class $$BoxCodeReservationsTableTableManager
               ({
                 Value<String> code = const Value.absent(),
                 Value<String> userId = const Value.absent(),
+                Value<String?> centerId = const Value.absent(),
                 Value<DateTime> reservedAt = const Value.absent(),
                 Value<DateTime?> spentAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => BoxCodeReservationsCompanion(
                 code: code,
                 userId: userId,
+                centerId: centerId,
                 reservedAt: reservedAt,
                 spentAt: spentAt,
                 rowid: rowid,
@@ -4540,12 +4622,14 @@ class $$BoxCodeReservationsTableTableManager
               ({
                 required String code,
                 required String userId,
+                Value<String?> centerId = const Value.absent(),
                 required DateTime reservedAt,
                 Value<DateTime?> spentAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => BoxCodeReservationsCompanion.insert(
                 code: code,
                 userId: userId,
+                centerId: centerId,
                 reservedAt: reservedAt,
                 spentAt: spentAt,
                 rowid: rowid,

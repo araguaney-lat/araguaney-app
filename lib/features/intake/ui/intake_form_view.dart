@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/api/generated/models/campaign_out.dart';
+import '../../../core/center/center_providers.dart';
 import '../../../core/connectivity/connectivity_controller.dart';
 import '../../../core/i18n/generated/app_localizations.dart';
 import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/ui/confirm_button.dart';
 import '../../../core/ui/record_field.dart';
 import '../../../core/ui/theme/app_theme.dart';
+import '../../../core/ui/working_center_banner.dart';
 import '../data/intake_providers.dart';
 import '../data/intake_repository.dart';
 import '../domain/box_draft_input.dart';
@@ -160,7 +162,11 @@ class _IntakeFormViewState extends ConsumerState<IntakeFormView> {
     if (withoutCode > 0) {
       final codes = await ref
           .read(boxCodeRepositoryProvider)
-          .take(withoutCode, userId: userId);
+          .take(
+            withoutCode,
+            userId: userId,
+            centerId: ref.read(writeCenterIdProvider),
+          );
       _controller.assignCodes(codes);
     }
 
@@ -220,35 +226,42 @@ class _IntakeFormViewState extends ConsumerState<IntakeFormView> {
           onTap: () => _pickCampaign(campaigns.valueOrNull ?? const []),
         ),
       ),
-      body: AbsorbPointer(
-        absorbing: _submitting,
-        child: ListView(
-          padding: const EdgeInsets.all(16),
-          children: [
-            if (_submitting) const LinearProgressIndicator(),
-            if (draft.donationId != null) const _DonationNotice(),
-            _DonorSection(
-              draft: draft,
-              onIdentify: _identifyDonor,
-              onClear: _controller.clearDonor,
-              donanteLibre: _donanteLibre,
-            ),
-            const SizedBox(height: 16),
-            _BoxesCard(
-              boxes: draft.boxes,
-              onEdit: _editBox,
-              onRemove: _controller.removeBox,
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: _notes,
-              maxLines: 3,
-              decoration: InputDecoration(
-                labelText: context.l10n.notesOptionalLabel,
+      body: Column(
+        children: [
+          const WorkingCenterBanner(),
+          Expanded(
+            child: AbsorbPointer(
+              absorbing: _submitting,
+              child: ListView(
+                padding: const EdgeInsets.all(16),
+                children: [
+                  if (_submitting) const LinearProgressIndicator(),
+                  if (draft.donationId != null) const _DonationNotice(),
+                  _DonorSection(
+                    draft: draft,
+                    onIdentify: _identifyDonor,
+                    onClear: _controller.clearDonor,
+                    donanteLibre: _donanteLibre,
+                  ),
+                  const SizedBox(height: 16),
+                  _BoxesCard(
+                    boxes: draft.boxes,
+                    onEdit: _editBox,
+                    onRemove: _controller.removeBox,
+                  ),
+                  const SizedBox(height: 16),
+                  TextField(
+                    controller: _notes,
+                    maxLines: 3,
+                    decoration: InputDecoration(
+                      labelText: context.l10n.notesOptionalLabel,
+                    ),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
       // Las dos acciones viven abajo y no se van con el desplazamiento: añadir
       // caja es lo que más se repite, y registrar es lo que cierra. Buscarlas

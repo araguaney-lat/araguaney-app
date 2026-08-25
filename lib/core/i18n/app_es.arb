@@ -2050,5 +2050,42 @@
   "refusalBarcodeNotFound": "Ese código no está en el catálogo.",
   "@refusalBarcodeNotFound": {
     "description": "A valid barcode the catalogue does not know. Raised by this application, not the server."
+  },
+  "workingCenterTitle": "Centro de trabajo",
+  "@workingCenterTitle": {
+    "description": "Name for the centre a national administrator is operating in. Used as a menu entry and a screen title."
+  },
+  "workingCenterQuestion": "¿En qué centro vas a operar?",
+  "@workingCenterQuestion": {
+    "description": "Heading of the screen that asks a national administrator to choose a centre, right after signing in."
+  },
+  "workingCenterExplanation": "Todo lo que registres —donaciones, cajas, tarimas y envíos— queda en el centro que elijas. Puedes cambiarlo cuando quieras desde el menú.",
+  "@workingCenterExplanation": {
+    "description": "Explains what choosing a centre decides, and that it can be changed later. Shown under the question."
+  },
+  "workingCenterUnavailable": "No se pudo cargar la lista de centros.",
+  "@workingCenterUnavailable": {
+    "description": "Shown when the centres cannot be read, so no choice can be offered yet."
+  },
+  "workingCenterEmpty": "No hay centros activos.",
+  "@workingCenterEmpty": {
+    "description": "Shown when the server returns no active centre to choose from."
+  },
+  "workingCenterRegisteringIn": "Registrando en {center}",
+  "@workingCenterRegisteringIn": {
+    "description": "Permanent reminder, on every screen that writes, of which centre the work is being recorded in.",
+    "placeholders": {
+      "center": {
+        "type": "String"
+      }
+    }
+  },
+  "workingCenterChangeAction": "Cambiar",
+  "@workingCenterChangeAction": {
+    "description": "Action that opens the centre chooser again from the menu."
+  },
+  "refusalCenterRequired": "Elige primero el centro en el que vas a registrar. Se cambia desde el menú.",
+  "@refusalCenterRequired": {
+    "description": "The server refuses a create because the session belongs to no centre and named none (CENTER_REQUIRED). Only a national administrator can see this."
   }
 }

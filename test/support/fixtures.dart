@@ -241,11 +241,12 @@ Map<String, Object?> palletJson({
   String id = 'pallet-1',
   String code = 'TM-0001',
   String status = 'OPEN',
+  String centerId = 'center-1',
   DateTime? closedAt,
 }) => {
   'id': id,
   'code': code,
-  'center_id': 'center-1',
+  'center_id': centerId,
   'shipment_id': null,
   'status': status,
   'notes': null,

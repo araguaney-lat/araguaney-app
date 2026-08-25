@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/api/refusal_copy.dart';
+import '../../../core/center/center_providers.dart';
 import '../../../core/db/app_database.dart';
 import '../../../core/db/tables/queued_captures_table.dart';
 import '../../../core/i18n/generated/app_localizations.dart';
@@ -279,7 +280,11 @@ class _ActionsState extends ConsumerState<_Actions> {
     setState(() => _reserving = true);
     final outcome = await ref
         .read(boxCodeRepositoryProvider)
-        .topUp(count: _blockSize, userId: userId);
+        .topUp(
+          count: _blockSize,
+          userId: userId,
+          centerId: ref.read(writeCenterIdProvider),
+        );
     if (!mounted) return;
     setState(() => _reserving = false);
 

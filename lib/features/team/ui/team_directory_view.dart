@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/api/api_error_mapper.dart';
 import '../../../core/api/generated/models/user_out.dart';
 import '../../../core/auth/auth_providers.dart';
+import '../../../core/center/center_providers.dart';
 import '../../../core/i18n/l10n_extension.dart';
 import '../data/team_providers.dart';
 import '../data/team_repository.dart';
@@ -23,7 +24,7 @@ class TeamDirectoryView extends ConsumerWidget {
       MaterialPageRoute<void>(builder: (_) => const TeamDirectoryView());
 
   Future<void> _invite(BuildContext context, WidgetRef ref) async {
-    final centerId = ref.read(myCenterIdProvider);
+    final centerId = ref.read(actingCenterIdProvider);
     if (centerId == null) return;
 
     final draft = await InvitePersonSheet.show(context);
@@ -48,7 +49,7 @@ class TeamDirectoryView extends ConsumerWidget {
     WidgetRef ref,
     UserOut person,
   ) async {
-    final centerId = ref.read(myCenterIdProvider);
+    final centerId = ref.read(actingCenterIdProvider);
     if (centerId == null) return;
 
     final outcome = await ref
@@ -84,7 +85,7 @@ class TeamDirectoryView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final people = ref.watch(centerUsersProvider);
     final canManage = ref.watch(isCenterCoordinatorProvider);
-    final hasCenter = ref.watch(myCenterIdProvider) != null;
+    final hasCenter = ref.watch(actingCenterIdProvider) != null;
 
     return Scaffold(
       appBar: AppBar(

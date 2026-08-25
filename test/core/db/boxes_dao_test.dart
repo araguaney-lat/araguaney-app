@@ -29,6 +29,20 @@ void main() {
     expect(rows.first.productName, 'Paracetamol 500 mg');
   });
 
+  test('watchAll narrows to the working centre when there is one', () async {
+    // The cache holds whatever the server served, and a national session is
+    // served every centre. A list of boxes that are somewhere else cannot be
+    // checked against the shelf in front of anybody.
+    await db.boxesDao.replaceAll([
+      boxRow(id: 'box-here', code: 'CJ-0001', centerId: 'center-1'),
+      boxRow(id: 'box-elsewhere', code: 'CJ-0002', centerId: 'center-2'),
+    ]);
+
+    final rows = await db.boxesDao.watchAll(centerId: 'center-1').first;
+
+    expect(rows.map((row) => row.box.code), ['CJ-0001']);
+  });
+
   test('a box whose product type is not cached still lists', () async {
     await db.boxesDao.replaceAll([boxRow(productTypeId: 'pt-missing')]);
 

@@ -16,6 +16,7 @@ abstract final class DonorType {
 class IntakeDraft {
   const IntakeDraft({
     required this.captureId,
+    this.centerId,
     this.campaignId,
     this.donor,
     this.donorTermsAccepted = false,
@@ -30,6 +31,18 @@ class IntakeDraft {
   /// regenerada. Reintentar una captura es el caso normal, no la excepción: el
   /// servidor devuelve la que ya registró en vez de duplicarla.
   final String captureId;
+
+  /// Where this capture is being registered, when the session has to say so.
+  ///
+  /// It is fixed **when the capture starts** and never resolved again — not
+  /// when the queue drains, not on a retry. A national administrator can change
+  /// working centre while captures are still waiting for signal, and resolving
+  /// this at send time would move donations that were already registered
+  /// somewhere else, days after the boxes were physically put down.
+  ///
+  /// Null for everybody else: the server writes to the centre in their token
+  /// and ignores this field, so sending it would only suggest otherwise.
+  final String? centerId;
 
   final String? campaignId;
   final DonorInput? donor;
@@ -64,6 +77,7 @@ class IntakeDraft {
     List<BoxDraftInput>? boxes,
   }) => IntakeDraft(
     captureId: captureId,
+    centerId: centerId,
     campaignId: campaignId ?? this.campaignId,
     donor: donor ?? this.donor,
     donorTermsAccepted: donorTermsAccepted ?? this.donorTermsAccepted,
@@ -79,6 +93,7 @@ class IntakeDraft {
   /// campo en nulo con un parámetro opcional es indistinguible de no tocarlo.
   IntakeDraft withoutDonor() => IntakeDraft(
     captureId: captureId,
+    centerId: centerId,
     campaignId: campaignId,
     donorTermsAccepted: false,
     donanteLibre: donanteLibre,
@@ -100,6 +115,7 @@ class IntakeDraft {
 
   IntakeCreate toRequest() => IntakeCreate(
     captureId: captureId,
+    centerId: centerId,
     campaignId: campaignId,
     donor: donor,
     donorTermsAccepted: donorTermsAccepted,
