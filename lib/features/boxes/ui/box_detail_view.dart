@@ -248,8 +248,7 @@ class _NotCachedView extends ConsumerWidget {
             const SizedBox(height: 16),
             Text(
               offline
-                  ? 'Esta caja no está descargada en el dispositivo. '
-                        'Necesitas conexión para consultarla.'
+                  ? context.l10n.boxNotCachedNeedsConnection
                   : 'No encontramos esta caja.',
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodyMedium,

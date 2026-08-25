@@ -79,7 +79,7 @@ class _CreateShipmentSheetState extends State<CreateShipmentSheet> {
               labelText: context.l10n.destinationLabel,
             ),
             validator: (value) => (value == null || value.trim().isEmpty)
-                ? 'Escribe a dónde va'
+                ? context.l10n.destinationRequired
                 : null,
           ),
           const SizedBox(height: 12),

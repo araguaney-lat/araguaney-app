@@ -62,11 +62,16 @@ class TeamDirectoryView extends ConsumerWidget {
   void _report(BuildContext context, WidgetRef ref, TeamOutcome outcome) {
     switch (outcome) {
       case TeamChanged(:final notice):
+        final text = switch (notice) {
+          TeamNotice.invited => context.l10n.invitationSent,
+          TeamNotice.accessResent => context.l10n.accessResent,
+          null => null,
+        };
         ref.invalidate(centerUsersProvider);
-        if (notice != null) {
+        if (text != null) {
           ScaffoldMessenger.of(
             context,
-          ).showSnackBar(SnackBar(content: Text(notice)));
+          ).showSnackBar(SnackBar(content: Text(text)));
         }
       case TeamRefused(:final reason):
         ScaffoldMessenger.of(context).showSnackBar(
@@ -103,12 +108,9 @@ class TeamDirectoryView extends ConsumerWidget {
       body: RefreshIndicator(
         onRefresh: () async => ref.invalidate(centerUsersProvider),
         child: switch (people) {
-          AsyncData() when !hasCenter => const _Message(
-            'Tu sesión no pertenece a un centro, así que no hay un equipo que '
-            'mostrar aquí.',
-          ),
-          AsyncData(:final value) when value.isEmpty => const _Message(
-            'Todavía no hay nadie más en este centro.',
+          AsyncData() when !hasCenter => _Message(context.l10n.teamNoCenter),
+          AsyncData(:final value) when value.isEmpty => _Message(
+            context.l10n.teamEmpty,
           ),
           AsyncData(:final value) => ListView.separated(
             itemCount: value.length,
@@ -144,7 +146,7 @@ class _Person extends StatelessWidget {
     title: Text(person.fullName ?? person.username),
     subtitle: Text(
       [
-        centerRoleLabel(person.centerRole),
+        centerRoleLabel(context.l10n, person.centerRole),
         person.username,
         if (!person.isActive) 'cuenta desactivada',
       ].join(' · '),

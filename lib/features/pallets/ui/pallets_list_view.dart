@@ -219,7 +219,7 @@ class _PalletRow extends StatelessWidget {
       if (pallet.heightCm case final height?) '$height cm',
       if (pallet.closedAt case final closed?)
         'cerrada ${formatShortDate(closed)}',
-      if (pallet.shipmentId != null) 'en un envío',
+      if (pallet.shipmentId != null) context.l10n.palletInShipment,
     ];
 
     return ListTile(

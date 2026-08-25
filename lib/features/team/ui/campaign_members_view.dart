@@ -86,10 +86,7 @@ class _CampaignMembersViewState extends ConsumerState<CampaignMembersView> {
       context: context,
       builder: (context) => AlertDialog(
         title: Text(context.l10n.removeFromCampaignTitle),
-        content: Text(
-          '$name dejará de participar en esta campaña. Sigue en el centro y '
-          'se le puede volver a sumar.',
-        ),
+        content: Text(context.l10n.removeFromCampaignExplanation(name)),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
@@ -155,9 +152,7 @@ class _CampaignMembersViewState extends ConsumerState<CampaignMembersView> {
             ),
           ),
           if (campaign == null)
-            const Expanded(
-              child: _Message('Elige una campaña para ver quién participa.'),
-            )
+            Expanded(child: _Message(context.l10n.pickCampaignToSeeMembers))
           else
             Expanded(
               child: _Members(campaign: campaign, onRemove: _remove),
@@ -183,8 +178,8 @@ class _Members extends ConsumerWidget {
       onRefresh: () async =>
           ref.invalidate(campaignMembersProvider(campaign.id)),
       child: switch (members) {
-        AsyncData(:final value) when value.isEmpty => const _Message(
-          'Todavía no participa nadie de tu centro en esta campaña.',
+        AsyncData(:final value) when value.isEmpty => _Message(
+          context.l10n.campaignHasNoMembers,
         ),
         AsyncData(:final value) => ListView.separated(
           itemCount: value.length + 1,
@@ -194,10 +189,7 @@ class _Members extends ConsumerWidget {
             // se saca a nadie, y el servidor responde 422 si se intenta.
             if (index == 0) {
               return campaign.isGeneral
-                  ? const _Note(
-                      'Es la campaña general: recoge lo que no pertenece a '
-                      'ninguna otra, y de ella no se saca a nadie.',
-                    )
+                  ? _Note(context.l10n.generalCampaignExplanation)
                   : const SizedBox.shrink();
             }
             final member = value[index - 1];
@@ -229,7 +221,7 @@ class _Member extends StatelessWidget {
     leading: const Icon(Icons.person_outline),
     title: Text(member.fullName ?? member.username),
     subtitle: Text(
-      '${centerRoleLabel(member.centerRole)} · ${member.username}',
+      '${centerRoleLabel(context.l10n, member.centerRole)} · ${member.username}',
     ),
     trailing: onRemove == null
         ? null

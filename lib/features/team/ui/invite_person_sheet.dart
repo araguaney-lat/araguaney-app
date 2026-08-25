@@ -88,7 +88,7 @@ class _InvitePersonSheetState extends State<InvitePersonSheet> {
             decoration: InputDecoration(labelText: context.l10n.emailLabel),
             validator: (value) {
               final text = value?.trim() ?? '';
-              if (text.isEmpty) return 'Escribe el correo';
+              if (text.isEmpty) return context.l10n.emailRequired;
               // Comprobación mínima: quien valida de verdad es el servidor, y
               // una expresión regular más lista rechazaría correos válidos.
               return text.contains('@') ? null : 'Ese correo no parece válido';
@@ -102,7 +102,7 @@ class _InvitePersonSheetState extends State<InvitePersonSheet> {
               labelText: context.l10n.usernameFieldLabel,
             ),
             validator: (value) => (value == null || value.trim().isEmpty)
-                ? 'Escribe el nombre de usuario'
+                ? context.l10n.usernameRequired
                 : null,
           ),
           const SizedBox(height: 12),

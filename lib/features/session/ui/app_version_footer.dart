@@ -39,7 +39,9 @@ class AppVersionFooter extends ConsumerWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
-          build.isEmpty ? 'Versión $version' : 'Versión $version ($build)',
+          build.isEmpty
+              ? context.l10n.appVersion(version)
+              : context.l10n.appVersionWithBuild(version, build),
           style: theme.textTheme.bodySmall,
           textAlign: TextAlign.center,
         ),

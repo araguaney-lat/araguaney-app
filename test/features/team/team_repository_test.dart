@@ -124,7 +124,8 @@ void main() {
         centerRole: 'volunteer',
       );
 
-      expect((outcome as TeamChanged).notice, contains('correo'));
+      // La capa de datos marca qué pasó; la frase la pone la pantalla.
+      expect((outcome as TeamChanged).notice, TeamNotice.invited);
       expect(adapter.requests.single.data, {
         'email': 'ana@centro.test',
         'username': 'ana',
@@ -158,7 +159,7 @@ void main() {
         adapter,
       ).reinvite(centerId: 'center-1', userId: 'user-1');
 
-      expect((outcome as TeamChanged).notice, contains('acceso nuevo'));
+      expect((outcome as TeamChanged).notice, TeamNotice.accessResent);
     });
 
     test('no signal is a failure with its own words', () async {
@@ -174,15 +175,20 @@ void main() {
   });
 
   group('reading a role', () {
-    test('the three roles read in Spanish', () {
-      expect(centerRoleLabel('volunteer'), 'Voluntariado');
-      expect(centerRoleLabel('coordinator'), 'Coordinación');
-      expect(centerRoleLabel('national_admin'), 'Administración nacional');
+    test('the three roles read in Spanish', () async {
+      final l10n = await spanish();
+      expect(centerRoleLabel(l10n, 'volunteer'), 'Voluntariado');
+      expect(centerRoleLabel(l10n, 'coordinator'), 'Coordinación');
+      expect(
+        centerRoleLabel(l10n, 'national_admin'),
+        'Administración nacional',
+      );
     });
 
-    test('a role this version does not know still reads', () {
-      expect(centerRoleLabel('auditor'), 'auditor');
-      expect(centerRoleLabel(null), 'Sin rol');
+    test('a role this version does not know still reads', () async {
+      final l10n = await spanish();
+      expect(centerRoleLabel(l10n, 'auditor'), 'auditor');
+      expect(centerRoleLabel(l10n, null), 'Sin rol');
     });
   });
 }

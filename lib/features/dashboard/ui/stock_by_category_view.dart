@@ -32,11 +32,9 @@ class StockByCategoryView extends ConsumerWidget {
       body: RefreshIndicator(
         onRefresh: () async => ref.invalidate(centerAggregatesProvider),
         child: switch (aggregates) {
-          AsyncData(:final value) when value.byCategory.isEmpty =>
-            const _Message(
-              'No hay cajas selladas todavía. Una caja cuenta aquí cuando se '
-              'sella, no cuando se captura.',
-            ),
+          AsyncData(:final value) when value.byCategory.isEmpty => _Message(
+            context.l10n.stockEmpty,
+          ),
           AsyncData(:final value) => ListView.separated(
             itemCount: value.byCategory.length + 1,
             separatorBuilder: (_, _) => const Divider(height: 1),
@@ -64,10 +62,8 @@ class _Scope extends StatelessWidget {
     padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
     child: Text(
       national
-          ? 'Cajas selladas de todos los centros. Una caja cuenta desde que se '
-                'sella hasta que sale en un envío.'
-          : 'Cajas selladas de este centro. Una caja cuenta desde que se sella '
-                'hasta que sale en un envío.',
+          ? context.l10n.stockNationalCaption
+          : context.l10n.stockCenterCaption,
       style: Theme.of(context).textTheme.bodySmall,
     ),
   );
@@ -80,7 +76,7 @@ class _Row extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => ListTile(
-    title: Text(categoryLabel(row.category)),
+    title: Text(categoryLabel(context.l10n, row.category)),
     subtitle: Text('${row.boxCount} cajas'),
     trailing: Text(
       '${row.totalUnits}',

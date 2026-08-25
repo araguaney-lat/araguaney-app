@@ -5,6 +5,7 @@ import '../../../core/api/generated/models/reply_create.dart';
 import '../../../core/api/generated/models/thread_create.dart';
 import '../../../core/api/generated/models/thread_detail_out.dart';
 import '../../../core/api/generated/models/thread_out.dart';
+import '../../../core/i18n/generated/app_localizations.dart';
 
 /// Las dos clases de hilo que reconoce el backend.
 ///
@@ -16,8 +17,8 @@ abstract final class ThreadType {
   static const private = 'PRIVATE';
 }
 
-String threadTypeLabel(String type) => switch (type) {
-  ThreadType.public => 'De la campaña',
+String threadTypeLabel(AppLocalizations l10n, String type) => switch (type) {
+  ThreadType.public => l10n.threadTypeCampaign,
   ThreadType.private => 'Privado',
   _ => type,
 };

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
+import '../../../core/i18n/generated/app_localizations.dart';
 import '../../../core/i18n/l10n_extension.dart';
 
 /// La cámara, con su manejo de permiso y su linterna.
@@ -102,7 +103,7 @@ class ScannerError extends StatelessWidget {
           const Icon(Icons.no_photography_outlined, size: 48),
           const SizedBox(height: 16),
           Text(
-            _message,
+            _message(context.l10n),
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.bodyMedium,
           ),
@@ -116,14 +117,10 @@ class ScannerError extends StatelessWidget {
     ),
   );
 
-  String get _message => switch (error.errorCode) {
-    MobileScannerErrorCode.permissionDenied =>
-      'Araguaney necesita la cámara para leer los códigos QR de las cajas. '
-          'Concede el permiso desde los ajustes del sistema y vuelve a '
-          'intentarlo.',
-    MobileScannerErrorCode.unsupported =>
-      'Este dispositivo no puede escanear códigos.',
-    _ => 'No se pudo abrir la cámara. Inténtalo de nuevo.',
+  String _message(AppLocalizations l10n) => switch (error.errorCode) {
+    MobileScannerErrorCode.permissionDenied => l10n.cameraPermissionDenied,
+    MobileScannerErrorCode.unsupported => l10n.cameraUnsupported,
+    _ => l10n.cameraFailed,
   };
 }
 

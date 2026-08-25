@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../features/shipments/data/shipments_repository.dart';
 import '../api/generated/models/qr_event_out.dart';
+import '../i18n/l10n_extension.dart';
 import 'record_field.dart';
 
 /// El recorrido de un objeto, dibujado igual en los tres sitios que lo tienen.
@@ -16,7 +17,7 @@ class EventTimeline extends StatelessWidget {
     super.key,
     required this.events,
     required this.statusLabel,
-    this.empty = 'Todavía no hay nada que contar.',
+    this.empty,
   });
 
   final List<QrEventOut> events;
@@ -24,14 +25,18 @@ class EventTimeline extends StatelessWidget {
   /// La tabla del objeto al que pertenecen estos eventos.
   final String Function(String) statusLabel;
 
-  final String empty;
+  /// Qué decir cuando no hay nada. Nulo usa el texto general.
+  final String? empty;
 
   @override
   Widget build(BuildContext context) {
     if (events.isEmpty) {
       return Padding(
         padding: const EdgeInsets.all(16),
-        child: Text(empty, style: Theme.of(context).textTheme.bodySmall),
+        child: Text(
+          empty ?? context.l10n.timelineEmpty,
+          style: Theme.of(context).textTheme.bodySmall,
+        ),
       );
     }
 
@@ -52,7 +57,11 @@ class _EventRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final described = describeEvent(event, statusLabel: statusLabel);
+    final described = describeEvent(
+      context.l10n,
+      event,
+      statusLabel: statusLabel,
+    );
 
     return ListTile(
       dense: true,

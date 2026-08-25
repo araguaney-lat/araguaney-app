@@ -116,9 +116,7 @@ class _Loaded extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
           child: Text(
-            shipments.length == 1
-                ? '1 envío en el centro'
-                : '${shipments.length} envíos en el centro',
+            context.l10n.shipmentsInCenter(shipments.length),
             style: Theme.of(context).textTheme.bodySmall,
           ),
         ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/db/app_database.dart';
+import '../../../core/i18n/generated/app_localizations.dart';
 import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/ui/category_label.dart';
 import '../../../core/ui/sheet_insets.dart';
@@ -84,7 +85,7 @@ class _ProductPickerSheetState extends ConsumerState<ProductPickerSheet> {
                     Padding(
                       padding: const EdgeInsets.only(right: 8),
                       child: FilterChip(
-                        label: Text(categoryLabel(category)),
+                        label: Text(categoryLabel(context.l10n, category)),
                         selected: _category == category,
                         onSelected: (selected) => setState(
                           () => _category = selected ? category : null,
@@ -105,7 +106,7 @@ class _ProductPickerSheetState extends ConsumerState<ProductPickerSheet> {
                   final product = value[index];
                   return ListTile(
                     title: Text(product.displayName),
-                    subtitle: Text(_describe(product)),
+                    subtitle: Text(_describe(context.l10n, product)),
                     trailing: product.isControlled
                         ? const Icon(Icons.gpp_maybe_outlined)
                         : null,
@@ -121,8 +122,8 @@ class _ProductPickerSheetState extends ConsumerState<ProductPickerSheet> {
     );
   }
 
-  static String _describe(ProductTypeRow product) => [
-    categoryLabel(product.category),
+  static String _describe(AppLocalizations l10n, ProductTypeRow product) => [
+    categoryLabel(l10n, product.category),
     ?product.brand,
     ?product.strength,
   ].join(' · ');

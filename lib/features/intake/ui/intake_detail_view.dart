@@ -27,7 +27,7 @@ class IntakeDetailView extends StatelessWidget {
       children: [
         RecordField(
           label: context.l10n.donorLabel,
-          value: donorLabel(intake) ?? 'Anónimo',
+          value: donorLabel(intake) ?? context.l10n.donorAnonymous,
         ),
         if (intake.notes case final notes?)
           RecordField(label: context.l10n.notesLabel, value: notes),

@@ -128,7 +128,7 @@ class _Sent extends StatelessWidget {
       Text(
         // El servidor contesta lo mismo exista o no la cuenta, para que esta
         // pantalla no sirva para averiguar quién tiene una. Se repite tal cual.
-        'Si ese correo tiene una cuenta, el enlace ya va en camino.',
+        context.l10n.forgotPasswordSent,
         textAlign: TextAlign.center,
         style: Theme.of(context).textTheme.titleMedium,
       ),

@@ -233,7 +233,11 @@ class _ApplicationCard extends StatelessWidget {
                   child: Text(application.centerName, style: text.titleMedium),
                 ),
                 Text(
-                  describeAge(application.createdAt, DateTime.now()),
+                  describeAge(
+                    context.l10n,
+                    application.createdAt,
+                    DateTime.now(),
+                  ),
                   style: text.bodySmall,
                 ),
               ],

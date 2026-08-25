@@ -472,8 +472,10 @@ class _Reception extends StatelessWidget {
           RecordField(label: context.l10n.receivedByLabel, value: consignee),
         RecordField(
           label: context.l10n.boxesTitle,
-          value:
-              '${shrinkage.received} de ${shrinkage.totalBoxes} llegaron bien',
+          value: context.l10n.shrinkageArrived(
+            shrinkage.received,
+            shrinkage.totalBoxes,
+          ),
         ),
         // El porcentaje lo calcula el servidor y aquí se enseña sin adjetivos:
         // cuánta merma es demasiada es un criterio de la coordinación.
@@ -500,7 +502,7 @@ class _Incident extends StatelessWidget {
           ? Icons.error_outline
           : Icons.check_circle_outline,
     ),
-    title: Text(incidentTypeLabel(incident.type)),
+    title: Text(incidentTypeLabel(context.l10n, incident.type)),
     subtitle: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -528,6 +530,7 @@ class _Event extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final described = describeEvent(
+      context.l10n,
       event,
       statusLabel: (status) => shipmentStatusLabel(context.l10n, status),
     );

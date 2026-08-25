@@ -37,8 +37,8 @@ class IntakeListView extends ConsumerWidget {
       body: RefreshIndicator(
         onRefresh: () async => ref.invalidate(intakesProvider),
         child: switch (intakes) {
-          AsyncData(:final value) when value.isEmpty => const _Message(
-            'Este centro todavía no registró ninguna captura.',
+          AsyncData(:final value) when value.isEmpty => _Message(
+            context.l10n.capturesEmpty,
           ),
           AsyncData(:final value) => _IntakeList(intakes: value),
           AsyncError(:final error) => _Message(

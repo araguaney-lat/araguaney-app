@@ -54,7 +54,7 @@ class PickPersonSheet extends StatelessWidget {
                 leading: const Icon(Icons.person_outline),
                 title: Text(person.fullName ?? person.username),
                 subtitle: Text(
-                  '${centerRoleLabel(person.centerRole)} · ${person.username}',
+                  '${centerRoleLabel(context.l10n, person.centerRole)} · ${person.username}',
                 ),
                 onTap: () => Navigator.of(context).pop(person),
               );

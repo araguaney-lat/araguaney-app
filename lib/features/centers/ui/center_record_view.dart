@@ -53,8 +53,7 @@ class CenterRecordView extends ConsumerWidget {
         AsyncData(value: CentersRefused(:final isForbidden, :final failure)) =>
           _Message(
             isForbidden
-                ? 'Solo la administración nacional puede ver la ficha de un '
-                      'centro.'
+                ? context.l10n.centerRecordForbidden
                 : failure.operatorMessage(context.l10n),
           ),
         AsyncError(:final error) => _Message('$error'),

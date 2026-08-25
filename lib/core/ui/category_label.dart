@@ -1,3 +1,5 @@
+import '../i18n/generated/app_localizations.dart';
+
 /// Cómo se lee una categoría del catálogo.
 ///
 /// Las ocho claves son las de `PRODUCT_CATEGORIES` en el backend. Una que esta
@@ -8,14 +10,15 @@
 /// varias, y una tabla de traducción que solo importa una acaba dejando a las
 /// demás enseñando la clave del servidor. Fue exactamente lo que pasó: el
 /// selector de producto llevaba meses mostrando `MEDICAL_SUPPLY`.
-String categoryLabel(String category) => switch (category) {
-  'MEDICINE' => 'Medicamentos',
-  'MEDICAL_SUPPLY' => 'Insumo médico',
-  'FOOD' => 'Alimentos',
-  'WATER' => 'Agua',
-  'HYGIENE' => 'Higiene',
-  'TOOL' => 'Herramientas',
-  'RESCUE_GEAR' => 'Equipo de rescate',
-  'OTHER' => 'Otros',
-  _ => category,
-};
+String categoryLabel(AppLocalizations l10n, String category) =>
+    switch (category) {
+      'MEDICINE' => 'Medicamentos',
+      'MEDICAL_SUPPLY' => l10n.categoryMedicalSupply,
+      'FOOD' => 'Alimentos',
+      'WATER' => 'Agua',
+      'HYGIENE' => 'Higiene',
+      'TOOL' => 'Herramientas',
+      'RESCUE_GEAR' => l10n.categoryRescueGear,
+      'OTHER' => 'Otros',
+      _ => category,
+    };

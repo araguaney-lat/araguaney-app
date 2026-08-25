@@ -142,7 +142,7 @@ class SessionController extends Notifier<SessionState> {
     if (refreshToken == null) {
       throw const UnauthorizedFailure(
         code: 'NO_REFRESH_TOKEN',
-        message: 'No hay credencial para renovar la sesión',
+        message: 'No credential to renew the session',
       );
     }
 

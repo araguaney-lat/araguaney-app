@@ -79,7 +79,7 @@ class _RejectApplicationSheetState extends State<RejectApplicationSheet> {
             onChanged: (_) => setState(() {}),
             decoration: InputDecoration(
               labelText: context.l10n.reasonLabel,
-              errorText: empty ? 'Escribe el motivo del rechazo' : null,
+              errorText: empty ? context.l10n.rejectReasonRequired : null,
             ),
           ),
           const SizedBox(height: 16),

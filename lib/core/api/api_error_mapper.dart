@@ -19,16 +19,16 @@ abstract final class ApiErrorMapper {
       case DioExceptionType.receiveTimeout:
       case DioExceptionType.transformTimeout:
       case DioExceptionType.connectionError:
-        return NetworkFailure(message: error.message ?? 'Sin conexión');
+        return NetworkFailure(message: error.message ?? 'No connection');
       case DioExceptionType.cancel:
         return const UnknownFailure(
           code: 'CANCELLED',
-          message: 'La petición se canceló',
+          message: 'The request was cancelled',
         );
       case DioExceptionType.badCertificate:
         return const NetworkFailure(
           code: 'BAD_CERTIFICATE',
-          message: 'Certificado del servidor no válido',
+          message: 'Invalid server certificate',
         );
       case DioExceptionType.badResponse:
       case DioExceptionType.unknown:

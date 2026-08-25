@@ -109,12 +109,12 @@ class _LoginViewState extends ConsumerState<LoginView> {
                                 : Icons.visibility_off_outlined,
                           ),
                           tooltip: _obscurePassword
-                              ? 'Mostrar contraseña'
-                              : 'Ocultar contraseña',
+                              ? context.l10n.showPassword
+                              : context.l10n.hidePassword,
                         ),
                       ),
                       validator: (value) => (value == null || value.isEmpty)
-                          ? 'Escribe tu contraseña'
+                          ? context.l10n.passwordRequired
                           : null,
                     ),
                     if (failure != null) ...[

@@ -103,9 +103,8 @@ class _ChangePasswordViewState extends ConsumerState<ChangePasswordView> {
                   children: [
                     Text(
                       widget.forced
-                          ? 'Tu contraseña actual es temporal. Elige una nueva '
-                                'para continuar.'
-                          : 'Escribe la que usas ahora y la nueva que quieres.',
+                          ? context.l10n.forcedPasswordChangeExplanation
+                          : context.l10n.deliberatePasswordChangeExplanation,
                       style: Theme.of(context).textTheme.bodyLarge,
                     ),
                     const SizedBox(height: 24),
@@ -116,7 +115,7 @@ class _ChangePasswordViewState extends ConsumerState<ChangePasswordView> {
                         labelText: context.l10n.currentPasswordLabel,
                       ),
                       validator: (value) => (value == null || value.isEmpty)
-                          ? 'Escribe tu contraseña actual'
+                          ? context.l10n.currentPasswordRequired
                           : null,
                     ),
                     const SizedBox(height: 16),
@@ -127,7 +126,7 @@ class _ChangePasswordViewState extends ConsumerState<ChangePasswordView> {
                         labelText: context.l10n.newPasswordLabel,
                       ),
                       validator: (value) => (value == null || value.isEmpty)
-                          ? 'Escribe tu contraseña nueva'
+                          ? context.l10n.newPasswordRequired
                           : null,
                     ),
                     const SizedBox(height: 16),
@@ -141,7 +140,7 @@ class _ChangePasswordViewState extends ConsumerState<ChangePasswordView> {
                       // Lo único que se valida aquí: que las dos coincidan. Es
                       // un dedazo que el servidor no puede detectar.
                       validator: (value) => value != _next.text
-                          ? 'Las contraseñas no coinciden'
+                          ? context.l10n.passwordsDoNotMatch
                           : null,
                     ),
                     if (_failure case final message?) ...[

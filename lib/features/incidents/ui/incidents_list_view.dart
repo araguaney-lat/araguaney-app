@@ -82,7 +82,7 @@ class _IncidentsListViewState extends ConsumerState<IncidentsListView> {
         ) =>
           _Message(
             isForbidden
-                ? 'Hace falta coordinar un centro para ver sus incidencias.'
+                ? context.l10n.incidentsForbidden
                 : failure.operatorMessage(context.l10n),
           ),
         AsyncError(:final error) => _Message('$error'),
@@ -154,7 +154,7 @@ class _Header extends StatelessWidget {
   Widget build(BuildContext context) => Padding(
     padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
     child: Text(switch (open) {
-      0 => 'Ninguna espera una decisión',
+      0 => context.l10n.nothingAwaitsDecision,
       1 => 'Una incidencia abierta',
       _ => '$open incidencias abiertas',
     }, style: Theme.of(context).textTheme.bodyMedium),
@@ -190,12 +190,12 @@ class _IncidentCard extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    incidentTypeLabel(incident.type),
+                    incidentTypeLabel(context.l10n, incident.type),
                     style: text.titleMedium,
                   ),
                 ),
                 Text(
-                  describeAge(incident.createdAt, DateTime.now()),
+                  describeAge(context.l10n, incident.createdAt, DateTime.now()),
                   style: text.bodySmall,
                 ),
               ],

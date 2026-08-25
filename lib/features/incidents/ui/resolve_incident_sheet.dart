@@ -77,7 +77,7 @@ class _ResolveIncidentSheetState extends State<ResolveIncidentSheet> {
             onChanged: (_) => setState(() {}),
             decoration: InputDecoration(
               labelText: context.l10n.incidentOutcomeLabel,
-              errorText: empty ? 'Escribe en qué terminó' : null,
+              errorText: empty ? context.l10n.incidentOutcomeRequired : null,
             ),
           ),
           const SizedBox(height: 16),

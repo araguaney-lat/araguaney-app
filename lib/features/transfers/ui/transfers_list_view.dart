@@ -98,10 +98,8 @@ class _Header extends StatelessWidget {
         Text(context.l10n.navTransfers),
         Text(
           waiting == 0
-              ? 'Ninguna espera tu decisión'
-              : waiting == 1
-              ? '1 espera tu decisión'
-              : '$waiting esperan tu decisión',
+              ? context.l10n.transfersNothingAwaits
+              : context.l10n.transfersAwaitingDecision(waiting),
           style: Theme.of(context).textTheme.bodySmall,
         ),
       ],
@@ -169,7 +167,7 @@ class _Loaded extends StatelessWidget {
               // encontró mirar la pantalla con esa sesión, no un test.
               myCenterId == null
                   ? 'No hay transferencias registradas.'
-                  : 'Este centro no participa en ninguna transferencia.',
+                  : context.l10n.transfersEmptyForCenter,
               textAlign: TextAlign.center,
             ),
           ),

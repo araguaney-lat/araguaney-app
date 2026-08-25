@@ -133,9 +133,7 @@ class _ScannerViewState extends ConsumerState<ScannerView> {
       body: ScannerCamera(
         controller: _controller,
         onDetect: _onDetect,
-        overlay: const ScannerViewfinder(
-          hint: 'Apunta al código QR de una caja, una tarima o una donación.',
-        ),
+        overlay: ScannerViewfinder(hint: context.l10n.scannerHint),
       ),
     );
   }

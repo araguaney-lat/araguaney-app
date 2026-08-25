@@ -43,7 +43,7 @@ class PickPalletSheet extends ConsumerWidget {
               .where((p) => p.status == 'CLOSED' && !alreadyIn.contains(p.id))
               .toList(),
         ),
-        AsyncError() => const _Note('No se pudieron consultar las tarimas.'),
+        AsyncError() => _Note(context.l10n.palletsUnavailable),
         _ => const Padding(
           padding: EdgeInsets.all(32),
           child: Center(child: CircularProgressIndicator()),
@@ -61,10 +61,7 @@ class _List extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (pallets.isEmpty) {
-      return const _Note(
-        'No hay tarimas cerradas disponibles. Una tarima entra en un envío '
-        'cuando se cierra.',
-      );
+      return _Note(context.l10n.noClosedPallets);
     }
 
     return ListView(

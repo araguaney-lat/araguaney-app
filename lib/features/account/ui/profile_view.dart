@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/api/api_error_mapper.dart';
 import '../../../core/api/generated/models/user_out.dart';
 import '../../../core/api/generated/models/user_profile_out.dart';
+import '../../../core/i18n/generated/app_localizations.dart';
 import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/ui/record_field.dart';
 import '../../session/ui/change_password_view.dart';
@@ -65,7 +66,10 @@ class _Loaded extends ConsumerWidget {
       if (profile.centerName case final center?)
         RecordField(label: context.l10n.centerLabel, value: center),
       if (profile.centerRole case final role?)
-        RecordField(label: context.l10n.roleLabel, value: _roleLabel(role)),
+        RecordField(
+          label: context.l10n.roleLabel,
+          value: _roleLabel(context.l10n, role),
+        ),
       Padding(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
         child: OutlinedButton(
@@ -89,12 +93,13 @@ class _Loaded extends ConsumerWidget {
     ],
   );
 
-  static String _roleLabel(String role) => switch (role) {
-    'volunteer' => 'Voluntariado',
-    'coordinator' => 'Coordinación',
-    'national_admin' => 'Administración nacional',
-    _ => role,
-  };
+  static String _roleLabel(AppLocalizations l10n, String role) =>
+      switch (role) {
+        'volunteer' => l10n.roleVolunteerLabel,
+        'coordinator' => l10n.roleCoordinatorLabel,
+        'national_admin' => l10n.roleNationalAdminLabel,
+        _ => role,
+      };
 
   Future<void> _rename(
     BuildContext context,
@@ -147,8 +152,8 @@ class _TotpTile extends ConsumerWidget {
     title: Text(context.l10n.totpChallengeTitle),
     subtitle: Text(
       enabled
-          ? 'Activada: al entrar se te pide un código'
-          : 'Desactivada: tu contraseña es lo único que protege la cuenta',
+          ? context.l10n.totpEnabledCaption
+          : context.l10n.totpDisabledCaption,
     ),
     trailing: const Icon(Icons.chevron_right),
     onTap: () async {

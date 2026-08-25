@@ -93,14 +93,14 @@ class _NewThreadSheetState extends ConsumerState<NewThreadSheet> {
                 ],
                 onChanged: (value) => setState(() => _campaignId = value),
                 validator: (value) =>
-                    value == null ? 'Elige una campaña' : null,
+                    value == null ? context.l10n.campaignRequired : null,
               ),
             const SizedBox(height: 12),
             TextFormField(
               controller: _title,
               decoration: InputDecoration(labelText: context.l10n.subjectLabel),
               validator: (value) => (value == null || value.trim().isEmpty)
-                  ? 'Escribe un asunto'
+                  ? context.l10n.subjectRequired
                   : null,
             ),
             const SizedBox(height: 12),
@@ -109,7 +109,7 @@ class _NewThreadSheetState extends ConsumerState<NewThreadSheet> {
               maxLines: 4,
               decoration: InputDecoration(labelText: context.l10n.messageLabel),
               validator: (value) => (value == null || value.trim().isEmpty)
-                  ? 'Escribe el mensaje'
+                  ? context.l10n.messageRequired
                   : null,
             ),
             const SizedBox(height: 16),

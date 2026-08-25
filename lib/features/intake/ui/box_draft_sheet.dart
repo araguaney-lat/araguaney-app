@@ -174,7 +174,7 @@ class _BoxDraftSheetState extends State<BoxDraftSheet> {
               validator: (value) {
                 final parsed = int.tryParse(value ?? '');
                 if (parsed == null || parsed < 1) {
-                  return 'Escribe cuántas unidades trae la caja';
+                  return context.l10n.quantityRequired;
                 }
                 return null;
               },
@@ -187,7 +187,7 @@ class _BoxDraftSheetState extends State<BoxDraftSheet> {
                 helperText: context.l10n.unitHint,
               ),
               validator: (value) => (value == null || value.trim().isEmpty)
-                  ? 'Indica la unidad'
+                  ? context.l10n.unitRequired
                   : null,
             ),
             const SizedBox(height: 12),

@@ -62,9 +62,9 @@ class _PendingCapturesViewState extends ConsumerState<PendingCapturesView> {
     }
     if (report.sent > 0) return 'Se enviaron ${report.sent}.';
     if (report.parked > 0) {
-      return 'El servidor rechazó ${report.parked}. Revisa el motivo.';
+      return l10n.queueParkedByServer(report.parked);
     }
-    return 'No había nada que enviar.';
+    return l10n.nothingToSend;
   }
 
   Future<void> _discard(QueuedCaptureRow row) async {
@@ -72,10 +72,7 @@ class _PendingCapturesViewState extends ConsumerState<PendingCapturesView> {
       context: context,
       builder: (context) => AlertDialog(
         title: Text(context.l10n.discardCaptureConfirmTitle),
-        content: Text(
-          'Se borra del dispositivo y no se envía. Lo que se registró en '
-          'papel o en las cajas de ${row.summary} no se recupera desde aquí.',
-        ),
+        content: Text(context.l10n.discardCaptureExplanation(row.summary)),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
@@ -287,7 +284,7 @@ class _ActionsState extends ConsumerState<_Actions> {
     setState(() => _reserving = false);
 
     final message = switch (outcome) {
-      SyncSucceeded(:final itemCount) => 'Se reservaron $itemCount códigos.',
+      SyncSucceeded(:final itemCount) => context.l10n.codesReserved(itemCount),
       SyncFailed(:final failure) => failure.operatorMessage(context.l10n),
     };
     final messenger = ScaffoldMessenger.of(context)..hideCurrentSnackBar();
@@ -347,7 +344,10 @@ class _QueuedCard extends StatelessWidget {
                     children: [
                       Text(row.summary, style: theme.textTheme.titleMedium),
                       const SizedBox(height: 3),
-                      Text(_when(row), style: theme.textTheme.bodySmall),
+                      Text(
+                        _when(context.l10n, row),
+                        style: theme.textTheme.bodySmall,
+                      ),
                     ],
                   ),
                 ),
@@ -401,9 +401,12 @@ class _QueuedCard extends StatelessWidget {
   /// Sin denominador: la cola reintenta mientras haya motivo para hacerlo y no
   /// tiene un máximo. Escribir «intento 1 de 5» pondría en pantalla un límite
   /// que este sistema no tiene.
-  static String _when(QueuedCaptureRow row) => [
+  static String _when(AppLocalizations l10n, QueuedCaptureRow row) => [
     formatShortDateTime(row.createdAt),
-    if (row.attempts > 0) 'intento ${row.attempts}' else 'sin intentos todavía',
+    if (row.attempts > 0)
+      l10n.attemptNumber(row.attempts)
+    else
+      l10n.noAttemptsYet,
   ].join(' · ');
 }
 

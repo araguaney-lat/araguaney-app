@@ -35,12 +35,12 @@ class CentersListView extends ConsumerWidget {
           : null,
       body: switch (centers) {
         AsyncData(value: CentersRead(:final value)) when value.isEmpty =>
-          const _Message('No hay centros registrados todavía.'),
+          _Message(context.l10n.centersEmpty),
         AsyncData(value: CentersRead(:final value)) => _List(centers: value),
         AsyncData(value: CentersRefused(:final isForbidden, :final failure)) =>
           _Message(
             isForbidden
-                ? 'Solo la administración nacional puede ver los centros.'
+                ? context.l10n.centersForbidden
                 : failure.operatorMessage(context.l10n),
           ),
         AsyncError(:final error) => _Message('$error'),

@@ -59,8 +59,8 @@ class ThreadsListView extends ConsumerWidget {
             ..invalidate(unreadMessagesProvider);
         },
         child: switch (threads) {
-          AsyncData(:final value) when value.isEmpty => const _Message(
-            'No hay hilos que puedas leer todavía.',
+          AsyncData(:final value) when value.isEmpty => _Message(
+            context.l10n.threadsEmpty,
           ),
           AsyncData(:final value) => ListView.separated(
             itemCount: value.length,
@@ -91,7 +91,7 @@ class _ThreadTile extends StatelessWidget {
     ),
     title: Text(thread.title),
     subtitle: Text(
-      '${threadTypeLabel(thread.threadType)} · '
+      '${threadTypeLabel(context.l10n, thread.threadType)} · '
       '${formatShortDate(thread.updatedAt)}',
     ),
     onTap: () => Navigator.of(context).push(ThreadView.route(thread.id)),

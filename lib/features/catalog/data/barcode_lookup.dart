@@ -68,7 +68,7 @@ class BarcodeLookup {
       return const BarcodeUnresolved(
         BusinessRuleFailure(
           code: 'INVALID_GTIN',
-          message: 'Ese código no lleva ningún número.',
+          message: 'The scanned code carries no digits',
         ),
       );
     }
@@ -100,7 +100,7 @@ class BarcodeLookup {
     _ => const BarcodeUnresolved(
       BusinessRuleFailure(
         code: 'BARCODE_NOT_FOUND',
-        message: 'Ese código no está en el catálogo.',
+        message: 'The barcode is not in the catalogue',
       ),
     ),
   };

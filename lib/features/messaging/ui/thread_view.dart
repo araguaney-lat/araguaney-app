@@ -119,9 +119,7 @@ class _Conversation extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(top: 16),
           child: Text(
-            '${thread.attachments.length} '
-            '${thread.attachments.length == 1 ? 'adjunto' : 'adjuntos'} · '
-            'se abren desde el panel web',
+            context.l10n.threadAttachments(thread.attachments.length),
             style: Theme.of(context).textTheme.bodySmall,
           ),
         ),

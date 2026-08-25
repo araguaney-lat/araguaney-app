@@ -12,6 +12,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import '../../support/fake_api.dart';
 import '../../support/fake_http_adapter.dart';
+import '../../support/l10n.dart';
 
 void main() {
   Map<String, Object?> aggregatesJson({
@@ -144,14 +145,16 @@ void main() {
   });
 
   group('reading a category', () {
-    test('the eight keys read in Spanish', () {
-      expect(categoryLabel('MEDICINE'), 'Medicamentos');
-      expect(categoryLabel('RESCUE_GEAR'), 'Equipo de rescate');
-      expect(categoryLabel('OTHER'), 'Otros');
+    test('the eight keys read in Spanish', () async {
+      final l10n = await spanish();
+      expect(categoryLabel(l10n, 'MEDICINE'), 'Medicamentos');
+      expect(categoryLabel(l10n, 'RESCUE_GEAR'), 'Equipo de rescate');
+      expect(categoryLabel(l10n, 'OTHER'), 'Otros');
     });
 
-    test('one this version does not know still renders', () {
-      expect(categoryLabel('PROSTHETICS'), 'PROSTHETICS');
+    test('one this version does not know still renders', () async {
+      final l10n = await spanish();
+      expect(categoryLabel(l10n, 'PROSTHETICS'), 'PROSTHETICS');
     });
   });
 }

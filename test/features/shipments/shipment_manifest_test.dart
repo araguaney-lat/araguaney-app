@@ -130,6 +130,7 @@ void main() {
     test('a milestone reads by its name', () async {
       final l10n = await spanish();
       final described = describeEvent(
+        l10n,
         QrEventOut(
           fromStatus: 'SHIPPED',
           toStatus: 'SHIPPED',
@@ -152,6 +153,7 @@ void main() {
       // OPEN, CLOSED, SHIPPED, DELIVERED, RECONCILED. Traducir las etiquetas
       // fue lo que destapo el fixture inventado.
       final described = describeEvent(
+        l10n,
         QrEventOut(
           fromStatus: 'CLOSED',
           toStatus: 'SHIPPED',
@@ -164,10 +166,11 @@ void main() {
       expect(described.title, 'Cerrado → Despachado');
     });
 
-    test('a milestone this version does not know still reads', () {
+    test('a milestone this version does not know still reads', () async {
+      final l10n = await spanish();
       // El vocabulario del backend puede crecer, y un envío no puede perder un
       // paso de su recorrido porque el teléfono sea viejo.
-      expect(milestoneLabel('LOADED_ON_SHIP'), 'LOADED_ON_SHIP');
+      expect(milestoneLabel(l10n, 'LOADED_ON_SHIP'), 'LOADED_ON_SHIP');
     });
   });
 }

@@ -72,14 +72,7 @@ class IntakeQueuedView extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.all(12),
                 child: Text(
-                  withoutCode == 1
-                      ? 'Una caja quedó sin código: el bloque reservado se '
-                            'agotó. Recibirá el suyo cuando la captura llegue '
-                            'al servidor, y habrá que etiquetarla entonces.'
-                      : '$withoutCode cajas quedaron sin código porque el '
-                            'bloque reservado se agotó. Recibirán el suyo '
-                            'cuando la captura llegue al servidor, y habrá que '
-                            'etiquetarlas entonces.',
+                  context.l10n.boxesWithoutCode(withoutCode),
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
               ),

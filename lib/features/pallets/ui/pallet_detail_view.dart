@@ -42,11 +42,11 @@ class PalletDetailView extends ConsumerWidget {
     await Navigator.of(context).push(
       ContinuousScanView.route(
         title: context.l10n.palletAddBoxes,
-        hint: 'Apunta a la etiqueta de cada caja sellada.',
+        hint: l10n.palletScanBoxesHint,
         onScanned: (payload) async {
           final scanned = parseScannedCode(payload);
           if (scanned is! BoxCode) {
-            return const ScanFeedback.rejected('Ese código no es de una caja.');
+            return ScanFeedback.rejected(l10n.scannedCodeIsNotABox);
           }
 
           final outcome = await repository.addBox(
@@ -56,7 +56,7 @@ class PalletDetailView extends ConsumerWidget {
 
           return switch (outcome) {
             PalletChanged(:final value) => ScanFeedback.accepted(
-              '${scanned.code} · ${value.boxes.length} en la tarima',
+              l10n.palletBoxAdded(scanned.code, value.boxes.length),
             ),
             // El motivo es del servidor: que la caja no está sellada, que ya
             // está en otra tarima, que es de otro centro. Traducirlo aquí sería
@@ -237,12 +237,9 @@ class _Actions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final reason = switch (true) {
-      _ when closed => 'Esta tarima ya está cerrada.',
-      _ when !canOperate =>
-        'Armar tarimas es cosa de la coordinación del centro.',
-      _ when offline =>
-        'Armar una tarima necesita conexión: otra persona puede estar '
-            'poniendo cajas en esta misma ahora mismo.',
+      _ when closed => context.l10n.palletAlreadyClosed,
+      _ when !canOperate => context.l10n.palletNeedsCoordinator,
+      _ when offline => context.l10n.palletNeedsConnection,
       _ => null,
     };
 

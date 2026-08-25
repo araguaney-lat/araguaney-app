@@ -183,7 +183,7 @@ class _PublicBox extends StatelessWidget {
         Text(
           [
             '${box.quantity} ${box.unit}',
-            categoryLabel(box.category),
+            categoryLabel(context.l10n, box.category),
             if (box.expiryDate case final expiry?)
               'vence ${formatShortDate(expiry)}',
           ].join(' · '),

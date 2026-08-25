@@ -58,12 +58,8 @@ class UpdateAvailableView extends ConsumerWidget {
                   const SizedBox(height: 12),
                   Text(
                     latest == null
-                        ? 'Actualizar te trae las mejoras y los arreglos más '
-                              'recientes. Las capturas que tengas guardadas sin '
-                              'enviar siguen en el teléfono.'
-                        : 'La versión $latest ya está publicada. Las capturas '
-                              'que tengas guardadas sin enviar siguen en el '
-                              'teléfono.',
+                        ? context.l10n.updateAvailableGeneric
+                        : context.l10n.updateAvailableNamed(latest!),
                     style: text.bodyMedium,
                     textAlign: TextAlign.center,
                   ),

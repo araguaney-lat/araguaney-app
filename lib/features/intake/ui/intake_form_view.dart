@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/api/generated/models/campaign_out.dart';
 import '../../../core/connectivity/connectivity_controller.dart';
+import '../../../core/i18n/generated/app_localizations.dart';
 import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/ui/confirm_button.dart';
 import '../../../core/ui/record_field.dart';
@@ -211,7 +212,11 @@ class _IntakeFormViewState extends ConsumerState<IntakeFormView> {
     return Scaffold(
       appBar: AppBar(
         title: _CampaignHeader(
-          label: _campaignLabel(campaigns.valueOrNull, draft.campaignId),
+          label: _campaignLabel(
+            context.l10n,
+            campaigns.valueOrNull,
+            draft.campaignId,
+          ),
           onTap: () => _pickCampaign(campaigns.valueOrNull ?? const []),
         ),
       ),
@@ -258,13 +263,17 @@ class _IntakeFormViewState extends ConsumerState<IntakeFormView> {
   /// Nombre de la campaña activa. Mientras la lista no llega no se puede
   /// resolver un identificador a un nombre, y decir «general» sin saberlo sería
   /// afirmar algo falso justo en la línea que da el contexto.
-  static String _campaignLabel(List<CampaignOut>? campaigns, String? id) {
-    if (id == null) return 'Campaña general';
-    if (campaigns == null) return 'Campaña…';
+  static String _campaignLabel(
+    AppLocalizations l10n,
+    List<CampaignOut>? campaigns,
+    String? id,
+  ) {
+    if (id == null) return l10n.generalCampaign;
+    if (campaigns == null) return l10n.campaignPlaceholder;
     for (final campaign in campaigns) {
       if (campaign.id == id) return campaign.name;
     }
-    return 'Campaña general';
+    return l10n.generalCampaign;
   }
 }
 
@@ -449,7 +458,7 @@ class _BoxesCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Cajas en la entrada · ${boxes.length}',
+              context.l10n.boxesInIntake(boxes.length),
               style: theme.textTheme.titleMedium,
             ),
             if (boxes.isEmpty)

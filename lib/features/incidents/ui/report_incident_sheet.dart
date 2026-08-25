@@ -68,7 +68,7 @@ class _ReportIncidentSheetState extends State<ReportIncidentSheet> {
               for (final type in IncidentType.all)
                 DropdownMenuItem(
                   value: type,
-                  child: Text(incidentTypeLabel(type)),
+                  child: Text(incidentTypeLabel(context.l10n, type)),
                 ),
             ],
             onChanged: (value) =>
@@ -84,7 +84,7 @@ class _ReportIncidentSheetState extends State<ReportIncidentSheet> {
               helperText: context.l10n.incidentDescriptionHint,
             ),
             validator: (value) => (value == null || value.trim().isEmpty)
-                ? 'Describe lo que pasó'
+                ? context.l10n.incidentDescriptionRequired
                 : null,
           ),
           const SizedBox(height: 12),

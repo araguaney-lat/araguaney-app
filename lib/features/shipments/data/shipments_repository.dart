@@ -6,6 +6,7 @@ import '../../../core/api/generated/models/qr_event_out.dart';
 import '../../../core/api/generated/models/shipment_create.dart';
 import '../../../core/api/generated/models/shipment_detail_out.dart';
 import '../../../core/api/generated/models/shipment_out.dart';
+import '../../../core/i18n/generated/app_localizations.dart';
 
 /// Hitos logísticos que reconoce el backend.
 ///
@@ -13,16 +14,17 @@ import '../../../core/api/generated/models/shipment_out.dart';
 /// pasó sin inventar estados intermedios, para que la máquina no crezca con
 /// cada aeropuerto. **Anotarlos exige administración nacional**, así que desde
 /// aquí solo se leen.
-String milestoneLabel(String milestone) => switch (milestone) {
-  'DEPARTED_WAREHOUSE' => 'Salió del almacén',
-  'ARRIVED_AIRPORT' => 'Llegó al aeropuerto',
-  'LOADED_AIRCRAFT' => 'Cargado en el avión',
-  'DEPARTED_FLIGHT' => 'Despegó',
-  'ARRIVED_DESTINATION' => 'Llegó a destino',
-  'CUSTOMS_CLEARED' => 'Liberado de aduana',
-  'DELIVERED_CONSIGNEE' => 'Entregado al consignatario',
-  _ => milestone,
-};
+String milestoneLabel(AppLocalizations l10n, String milestone) =>
+    switch (milestone) {
+      'DEPARTED_WAREHOUSE' => l10n.milestoneLeftWarehouse,
+      'ARRIVED_AIRPORT' => l10n.milestoneReachedAirport,
+      'LOADED_AIRCRAFT' => l10n.milestoneLoadedOnPlane,
+      'DEPARTED_FLIGHT' => l10n.milestoneDeparted,
+      'ARRIVED_DESTINATION' => l10n.milestoneArrived,
+      'CUSTOMS_CLEARED' => l10n.milestoneCustomsCleared,
+      'DELIVERED_CONSIGNEE' => 'Entregado al consignatario',
+      _ => milestone,
+    };
 
 /// Cómo terminó pedir un manifiesto.
 sealed class ManifestOutcome {
@@ -198,13 +200,14 @@ class ShipmentsRepository {
 /// esta función pintaba la clave cruda —«OPEN → CLOSED»— en la única pantalla
 /// que la usaba, que es la octava vez que este repositorio paga lo mismo.
 ({String title, String? note, DateTime at}) describeEvent(
+  AppLocalizations l10n,
   QrEventOut event, {
   required String Function(String) statusLabel,
 }) {
   final milestone = event.milestone;
   final from = event.fromStatus;
   final title = milestone != null
-      ? milestoneLabel(milestone)
+      ? milestoneLabel(l10n, milestone)
       : '${from == null ? '—' : statusLabel(from)} → '
             '${statusLabel(event.toStatus)}';
 
