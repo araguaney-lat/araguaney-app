@@ -34,7 +34,7 @@ class AppDatabase extends _$AppDatabase {
     : super(executor ?? driftDatabase(name: 'araguaney'));
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   /// Las fechas se guardan como texto ISO-8601 con desfase horario.
   ///
@@ -56,6 +56,12 @@ class AppDatabase extends _$AppDatabase {
       if (from < 2) {
         await m.createTable(queuedCaptures);
         await m.createTable(boxCodeReservations);
+      }
+      // v3 records which centre a reserved block belongs to. Existing rows
+      // keep a null centre and stay spendable: reserving has always required
+      // belonging to a centre, so those codes can only be from one.
+      if (from < 3) {
+        await m.addColumn(boxCodeReservations, boxCodeReservations.centerId);
       }
     },
   );

@@ -3,9 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/api/api_error_mapper.dart';
 import '../../../core/api/generated/models/shipment_out.dart';
+import '../../../core/center/center_providers.dart';
 import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/ui/record_field.dart';
 import '../../../core/ui/status_labels.dart';
+import '../../../core/ui/working_center_banner.dart';
 import '../data/shipments_providers.dart';
 import '../data/shipments_repository.dart';
 import 'create_shipment_sheet.dart';
@@ -43,7 +45,9 @@ class _ShipmentsListViewState extends ConsumerState<ShipmentsListView> {
     final draft = await CreateShipmentSheet.show(context);
     if (draft == null || !mounted) return;
 
-    final outcome = await ref.read(shipmentsRepositoryProvider).create(draft);
+    final outcome = await ref
+        .read(shipmentsRepositoryProvider)
+        .create(draft, centerId: ref.read(writeCenterIdProvider));
     if (!mounted) return;
 
     switch (outcome) {
@@ -71,19 +75,26 @@ class _ShipmentsListViewState extends ConsumerState<ShipmentsListView> {
         icon: const Icon(Icons.add),
         label: Text(context.l10n.shipmentNewTitle),
       ),
-      body: RefreshIndicator(
-        onRefresh: () async => ref.invalidate(shipmentsProvider),
-        child: switch (shipments) {
-          AsyncData(:final value) => _Loaded(
-            shipments: value,
-            status: _status,
-            onStatus: (status) => setState(() => _status = status),
+      body: Column(
+        children: [
+          const WorkingCenterBanner(),
+          Expanded(
+            child: RefreshIndicator(
+              onRefresh: () async => ref.invalidate(shipmentsProvider),
+              child: switch (shipments) {
+                AsyncData(:final value) => _Loaded(
+                  shipments: value,
+                  status: _status,
+                  onStatus: (status) => setState(() => _status = status),
+                ),
+                AsyncError(:final error) => _Message(
+                  ApiErrorMapper.fromAny(error).operatorMessage(context.l10n),
+                ),
+                _ => const Center(child: CircularProgressIndicator()),
+              },
+            ),
           ),
-          AsyncError(:final error) => _Message(
-            ApiErrorMapper.fromAny(error).operatorMessage(context.l10n),
-          ),
-          _ => const Center(child: CircularProgressIndicator()),
-        },
+        ],
       ),
     );
   }

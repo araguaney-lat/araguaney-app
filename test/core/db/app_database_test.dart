@@ -11,8 +11,8 @@ void main() {
   setUp(() => db = openTestDatabase());
   tearDown(() => db.close());
 
-  test('opens at schema version 2', () {
-    expect(db.schemaVersion, 2);
+  test('opens at schema version 3', () {
+    expect(db.schemaVersion, 3);
   });
 
   test(

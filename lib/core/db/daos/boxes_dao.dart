@@ -24,7 +24,11 @@ class BoxesDao extends DatabaseAccessor<AppDatabase> with _$BoxesDaoMixin {
   BoxesDao(super.db);
 
   /// Cajas cacheadas, las más recientes primero.
-  Stream<List<BoxWithProduct>> watchAll() {
+  ///
+  /// [centerId] narrows them to one centre. The cache holds whatever the server
+  /// served, and for a national administrator that is every centre's boxes —
+  /// a list that cannot be checked against the shelf in front of anybody.
+  Stream<List<BoxWithProduct>> watchAll({String? centerId}) {
     final query =
         select(boxes).join([
           leftOuterJoin(
@@ -34,6 +38,7 @@ class BoxesDao extends DatabaseAccessor<AppDatabase> with _$BoxesDaoMixin {
         ])..orderBy([
           OrderingTerm(expression: boxes.createdAt, mode: OrderingMode.desc),
         ]);
+    if (centerId != null) query.where(boxes.centerId.equals(centerId));
 
     return query.watch().map(
       (rows) => rows

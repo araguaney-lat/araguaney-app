@@ -1,5 +1,6 @@
 import 'package:araguaney_app/core/api/generated/clients/intakes_api.dart';
 import 'package:araguaney_app/core/api/generated/clients/product_types_api.dart';
+import 'package:araguaney_app/core/center/center_providers.dart';
 import 'package:araguaney_app/core/connectivity/connectivity_controller.dart';
 import 'package:araguaney_app/core/db/app_database.dart';
 import 'package:araguaney_app/core/i18n/generated/app_localizations.dart';
@@ -48,6 +49,7 @@ void main() {
     final dio = fakeDio(adapter);
     final container = ProviderContainer(
       overrides: [
+        writeCenterIdProvider.overrideWithValue(null),
         captureIdGeneratorProvider.overrideWithValue(() => 'capture-fixed'),
         currentUserIdProvider.overrideWithValue('user-1'),
         connectivityProbeProvider.overrideWithValue(probe),

@@ -45,12 +45,20 @@ class PalletsRepository {
   Future<PalletDetailOut> detail(String palletId) =>
       _pallets.getPalletV1PalletsPalletIdGet(palletId: palletId);
 
+  /// [centerId] names where the pallet is being built, and is only ever set by
+  /// a session with no centre of its own. The server takes it from the token
+  /// for everybody else.
   Future<PalletOutcome<PalletOut>> create({
     String? tareWeightKg,
     String? notes,
+    String? centerId,
   }) => _guard(
     () => _pallets.createPalletV1PalletsPost(
-      body: PalletCreate(tareWeightKg: tareWeightKg, notes: notes),
+      body: PalletCreate(
+        tareWeightKg: tareWeightKg,
+        notes: notes,
+        centerId: centerId,
+      ),
     ),
   );
 

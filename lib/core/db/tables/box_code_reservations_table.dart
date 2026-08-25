@@ -18,6 +18,19 @@ class BoxCodeReservations extends Table {
   /// Quién lo reservó. La cola es por persona y los códigos también: en un
   /// dispositivo compartido, dos turnos no pueden repartirse el mismo bloque.
   TextColumn get userId => text()();
+
+  /// Which centre the block was reserved for.
+  ///
+  /// The server hands out codes **for a centre**, so spending them in another
+  /// one puts the wrong centre's label on a physical box. A national
+  /// administrator can change working centre with a block half spent, and
+  /// without this column the rest of it would be spent there.
+  ///
+  /// Null in rows written before this column existed, and those are spendable
+  /// anywhere. That is not a convenient exception: reserving has always
+  /// required belonging to a centre — the server refuses anybody who has none —
+  /// so a row without one can only belong to somebody who had exactly one.
+  TextColumn get centerId => text().nullable()();
   DateTimeColumn get reservedAt => dateTime()();
   DateTimeColumn get spentAt => dateTime().nullable()();
 

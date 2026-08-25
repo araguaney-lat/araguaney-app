@@ -3,10 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/api/api_error_mapper.dart';
 import '../../../core/api/generated/models/pallet_out.dart';
+import '../../../core/center/center_providers.dart';
 import '../../../core/connectivity/connectivity_controller.dart';
 import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/ui/record_field.dart';
 import '../../../core/ui/status_labels.dart';
+import '../../../core/ui/working_center_banner.dart';
 import '../data/pallets_providers.dart';
 import '../data/pallets_repository.dart';
 import 'close_pallet_sheet.dart';
@@ -34,7 +36,9 @@ class _PalletsListViewState extends ConsumerState<PalletsListView> {
   String? _status;
 
   Future<void> _create() async {
-    final outcome = await ref.read(palletsRepositoryProvider).create();
+    final outcome = await ref
+        .read(palletsRepositoryProvider)
+        .create(centerId: ref.read(writeCenterIdProvider));
     if (!mounted) return;
 
     switch (outcome) {
@@ -91,22 +95,29 @@ class _PalletsListViewState extends ConsumerState<PalletsListView> {
               label: Text(context.l10n.palletNewAction),
             )
           : null,
-      body: RefreshIndicator(
-        onRefresh: () async => ref.invalidate(palletsProvider),
-        child: switch (pallets) {
-          AsyncData(:final value) => _Loaded(
-            pallets: value,
-            status: _status,
-            onStatus: (status) => setState(() => _status = status),
-            // Cerrar decide sobre estado compartido: exige conexión, igual que
-            // sellar una caja.
-            onClose: canOperate && !offline ? _close : null,
+      body: Column(
+        children: [
+          const WorkingCenterBanner(),
+          Expanded(
+            child: RefreshIndicator(
+              onRefresh: () async => ref.invalidate(palletsProvider),
+              child: switch (pallets) {
+                AsyncData(:final value) => _Loaded(
+                  pallets: value,
+                  status: _status,
+                  onStatus: (status) => setState(() => _status = status),
+                  // Cerrar decide sobre estado compartido: exige conexión, igual que
+                  // sellar una caja.
+                  onClose: canOperate && !offline ? _close : null,
+                ),
+                AsyncError(:final error) => _Message(
+                  ApiErrorMapper.fromAny(error).operatorMessage(context.l10n),
+                ),
+                _ => const Center(child: CircularProgressIndicator()),
+              },
+            ),
           ),
-          AsyncError(:final error) => _Message(
-            ApiErrorMapper.fromAny(error).operatorMessage(context.l10n),
-          ),
-          _ => const Center(child: CircularProgressIndicator()),
-        },
+        ],
       ),
     );
   }

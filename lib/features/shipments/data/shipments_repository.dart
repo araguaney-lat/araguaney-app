@@ -99,8 +99,28 @@ class ShipmentsRepository {
   Future<ShipmentDetailOut> detail(String shipmentId) =>
       _shipmentsApi.getShipmentV1ShipmentsShipmentIdGet(shipmentId: shipmentId);
 
-  Future<ShipmentOutcome<ShipmentOut>> create(ShipmentCreate data) =>
-      _guard(() => _shipmentsApi.createShipmentV1ShipmentsPost(body: data));
+  /// [centerId] names the centre the shipment leaves from, and only a session
+  /// without one of its own sets it. It is stamped here rather than in the
+  /// sheet that collects the fields, so no screen can forget it.
+  Future<ShipmentOutcome<ShipmentOut>> create(
+    ShipmentCreate data, {
+    String? centerId,
+  }) => _guard(
+    () => _shipmentsApi.createShipmentV1ShipmentsPost(
+      body: centerId == null ? data : _withCenter(data, centerId),
+    ),
+  );
+
+  static ShipmentCreate _withCenter(ShipmentCreate data, String centerId) =>
+      ShipmentCreate(
+        destination: data.destination,
+        campaignId: data.campaignId,
+        carrier: data.carrier,
+        centerId: centerId,
+        heightProfile: data.heightProfile,
+        notes: data.notes,
+        reference: data.reference,
+      );
 
   /// El contrato declara este cuerpo sin tipo, así que el mapa se escribe aquí
   /// y en un solo sitio. Es la petición 4 de `backend-requests.md`.

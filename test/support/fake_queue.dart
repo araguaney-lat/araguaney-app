@@ -39,7 +39,11 @@ class FakeBoxCodes extends BoxCodeRepository {
   final List<String> pool;
 
   @override
-  Future<List<String>> take(int count, {required String userId}) async {
+  Future<List<String>> take(
+    int count, {
+    required String userId,
+    String? centerId,
+  }) async {
     final taken = pool.take(count).toList(growable: false);
     pool.removeRange(0, taken.length);
     return taken;

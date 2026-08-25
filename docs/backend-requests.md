@@ -228,6 +228,33 @@ routes that Phase 10 listed as unused for months.
 
 ---
 
+## 9. A `center_id` filter on the list endpoints
+
+**What we need.** `GET /v1/boxes`, `/v1/pallets`, `/v1/shipments` and
+`/v1/intakes` accept an optional `center_id` query parameter, scoped the way
+`/v1/transfers` already scopes `from_center_id`: a national administrator may
+name any centre, everybody else is ignored as they are today.
+
+**Why.** `tenant_scope` returns `None` for a `national_admin`, so those
+endpoints answer with every centre's rows. Since [Phase
+30](roadmap/phase-30-writing-as-national-admin.md) the application writes into a
+chosen working centre, and it narrows the lists to that centre **after** the
+response arrives. That is correct on screen and wrong on the wire:
+
+- The cached box window is the first 500 rows the server returns, in its order.
+  For a national session those 500 are spread across the country, so the working
+  centre's offline window is a fraction of what a coordinator gets on the same
+  device — and offline reading of the boxes is the point of the cache.
+- Rows for centres nobody asked about travel over a phone connection in a
+  warehouse.
+
+**What we do meanwhile.** Filter client-side. Every one of those read models
+already carries its centre, so nothing is guessed; it is only wasteful.
+
+**Not urgent.** It costs bandwidth and offline depth, not correctness.
+
+---
+
 ## Not requests
 
 Recorded here so they are not mistaken for gaps:

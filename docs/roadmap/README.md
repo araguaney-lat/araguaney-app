@@ -75,10 +75,10 @@ pie title Tasks completed (239 tasks, backlog aside)
 | 27 | [Creating a transfer](phase-27-create-a-transfer.md) | 0 | 5 | ⬜ 0% |
 | 28 | [The requests board](phase-28-the-requests-board.md) | 1 | 3 | 🟨 25% |
 | 29 | [The minimum version gate](phase-29-the-version-gate.md) | 7 | 2 | 🟨 78% |
-| 30 | [Writing as a national administrator](phase-30-writing-as-national-admin.md) | 1 | 6 | 🟨 14% |
+| 30 | [Writing as a national administrator](phase-30-writing-as-national-admin.md) | 8 | 1 | 🟨 89% |
 | 31 | [Speaking more than one language](phase-31-internationalisation.md) | 5 | 5 | 🟨 50% |
 | 32 | [The commentary in English](phase-32-comments-in-english.md) | 1 | 5 | 🟨 17% |
-| **Total** (Phase 10 aside) | | **149** | **90** | **🟢 62%** |
+| **Total** (Phase 10 aside) | | **156** | **85** | **🟢 65%** |
 
 ## What is missing, and how that is kept honest
 

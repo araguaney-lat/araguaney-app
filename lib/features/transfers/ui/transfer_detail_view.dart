@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/api/api_error_mapper.dart';
 import '../../../core/api/generated/models/transfer_detail_out.dart';
 import '../../../core/auth/auth_providers.dart';
+import '../../../core/center/center_providers.dart';
 import '../../../core/connectivity/connectivity_controller.dart';
 import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/ui/record_field.dart';
@@ -84,7 +85,7 @@ class TransferDetailView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final transfer = ref.watch(transferDetailProvider(transferId));
-    final myCenterId = ref.watch(myCenterIdProvider);
+    final myCenterId = ref.watch(actingCenterIdProvider);
     final isNationalAdmin = ref.watch(isNationalAdminProvider);
     final offline =
         ref.watch(connectivityControllerProvider) == ConnectivityStatus.offline;
