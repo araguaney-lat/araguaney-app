@@ -160,10 +160,15 @@ class _Loaded extends StatelessWidget {
           ),
         ),
         if (shown.isEmpty)
-          const Padding(
-            padding: EdgeInsets.all(32),
+          Padding(
+            padding: const EdgeInsets.all(32),
             child: Text(
-              'Este centro no participa en ninguna transferencia.',
+              // Una administración nacional no pertenece a ningún centro, así
+              // que hablarle de «este centro» describe algo que no existe. Lo
+              // encontró mirar la pantalla con esa sesión, no un test.
+              myCenterId == null
+                  ? 'No hay transferencias registradas.'
+                  : 'Este centro no participa en ninguna transferencia.',
               textAlign: TextAlign.center,
             ),
           ),
