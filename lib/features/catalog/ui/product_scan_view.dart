@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
+import '../../../core/api/generated/models/barcode_prefill.dart';
 import '../../../core/db/app_database.dart';
 import '../../../core/i18n/l10n_extension.dart';
 import '../../scanning/domain/scan_throttle.dart';
@@ -11,6 +12,8 @@ import '../../scanning/ui/scanner_camera.dart';
 import '../../scanning/ui/scanner_viewfinder.dart';
 import '../data/barcode_lookup.dart';
 import '../data/catalog_providers.dart';
+import '../domain/gtin.dart';
+import 'missing_product_sheet.dart';
 
 /// Encontrar un producto apuntando al código de barras de su envase.
 ///
@@ -76,11 +79,31 @@ class _ProductScanViewState extends ConsumerState<ProductScanView> {
     switch (outcome) {
       case BarcodeProductFound(:final product):
         Navigator.of(context).pop(product);
+      // No está y alguien lo tiene en la mano: es el único momento en que se
+      // sabe qué falta. Antes esto era un aviso y el camino terminaba aquí.
       case BarcodeOnlyDescribed(:final prefill):
-        _say(context.l10n.productNotInCatalogue(prefill.displayName));
+        await _offerToAdd(prefill.gtin, prefill: prefill);
+      case BarcodeUnresolved(:final failure)
+          when failure.code == BarcodeLookup.notFoundCode:
+        await _offerToAdd(
+          gtinFromScan(
+                barcode.rawValue!,
+                compressed: barcode.format == BarcodeFormat.upcE,
+              ) ??
+              barcode.rawValue!,
+        );
       case BarcodeUnresolved(:final failure):
         _say(failure.operatorMessage(context.l10n));
     }
+  }
+
+  Future<void> _offerToAdd(String gtin, {BarcodePrefill? prefill}) async {
+    await MissingProductSheet.show(context, gtin: gtin, prefill: prefill);
+    if (!mounted) return;
+    // La cámara sigue viva detrás de la hoja: al cerrarla se vuelve a apuntar,
+    // y el mismo código tiene que poder leerse otra vez.
+    _throttle.reset();
+    _resolving = false;
   }
 
   void _explainQr(String raw) => _say(switch (parseScannedCode(raw)) {

@@ -21,12 +21,14 @@ void main() {
     WidgetTester tester, {
     required bool coordinator,
     int unread = 0,
+    bool national = false,
   }) async {
     final adapter = FakeHttpAdapter((_) => FakeResponse(200, const []));
     final container = ProviderContainer(
       overrides: [
         restClientProvider.overrideWithValue(RestClient(fakeDio(adapter))),
         isCenterCoordinatorProvider.overrideWithValue(coordinator),
+        isNationalAdminProvider.overrideWithValue(national),
         unreadMessagesProvider.overrideWith((ref) async => unread),
         pushServiceProvider.overrideWithValue(FakePushService(token: 'fcm-1')),
         appVersionProvider.overrideWithValue('1.0.0+1'),
@@ -136,7 +138,68 @@ void main() {
     await tester.tap(find.text('Menú'));
     await tester.pumpAndSettle();
 
+    // El menú ya no cabe entero: hay que desplazarlo. Es la señal de que
+    // necesita agruparse, anotada en la fase 11.
+    await tester.dragUntilVisible(
+      find.text('Revisiones de riesgo'),
+      find.byType(ListView).last,
+      const Offset(0, -80),
+    );
+    await tester.pumpAndSettle();
+
     expect(find.text('Revisiones de riesgo'), findsOneWidget);
+  });
+
+  group('the menu is grouped, and a group that is empty is not drawn', () {
+    testWidgets('somebody who captures is shown no desk work', (tester) async {
+      await pumpShell(tester, coordinator: false);
+      await tester.tap(find.text('Menú'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('La jornada'), findsOneWidget);
+      expect(find.text('El centro'), findsOneWidget);
+      // A heading with nothing under it is worse than no heading.
+      expect(find.text('Administración'), findsNothing);
+
+      await tester.dragUntilVisible(
+        find.text('Tu cuenta'),
+        find.byType(ListView).last,
+        const Offset(0, -80),
+      );
+      expect(find.text('Tu cuenta'), findsOneWidget);
+    });
+
+    testWidgets('administration keeps its own group, at the end', (
+      tester,
+    ) async {
+      await pumpShell(tester, coordinator: true, national: true);
+      await tester.tap(find.text('Menú'));
+      await tester.pumpAndSettle();
+
+      await tester.dragUntilVisible(
+        find.text('Administración'),
+        find.byType(ListView).last,
+        const Offset(0, -80),
+      );
+      expect(find.text('Administración'), findsOneWidget);
+      expect(find.text('Centros'), findsOneWidget);
+    });
+
+    testWidgets('the account is one group and not two ends of a list', (
+      tester,
+    ) async {
+      await pumpShell(tester, coordinator: false);
+      await tester.tap(find.text('Menú'));
+      await tester.pumpAndSettle();
+
+      // Hasta el fondo: la cuenta es el último grupo.
+      await tester.drag(find.byType(ListView).last, const Offset(0, -1200));
+      await tester.pumpAndSettle();
+      // Los dos bajo el mismo encabezado, y no en extremos opuestos de la
+      // lista, que es donde estaban.
+      expect(find.text('Perfil y seguridad'), findsOneWidget);
+      expect(find.text('Cerrar sesión'), findsOneWidget);
+    });
   });
 
   testWidgets('the role decides the action, not the screen', (tester) async {

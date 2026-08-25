@@ -6,9 +6,13 @@ import '../../../core/api/generated/models/transfer_out.dart';
 import '../../../core/center/center_providers.dart';
 import 'transfers_repository.dart';
 
-final transfersRepositoryProvider = Provider<TransfersRepository>(
-  (ref) => TransfersRepository(ref.watch(restClientProvider).transfers),
-);
+final transfersRepositoryProvider = Provider<TransfersRepository>((ref) {
+  final client = ref.watch(restClientProvider);
+  return TransfersRepository(
+    transfers: client.transfers,
+    exports: client.exports,
+  );
+});
 
 /// The transfers that touch the working centre, in either direction.
 ///

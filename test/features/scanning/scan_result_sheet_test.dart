@@ -109,7 +109,7 @@ void main() {
     expect(find.text('REGISTERED'), findsNothing);
   });
 
-  testWidgets('a donation offers to capture what actually arrived', (
+  testWidgets('a donation leads to its record, where it is received', (
     tester,
   ) async {
     await pumpResult(
@@ -119,7 +119,8 @@ void main() {
 
     expect(find.text('DN-0001'), findsOneWidget);
     expect(find.textContaining('3 caja'), findsOneWidget);
-    expect(find.text('Capturar esta donación'), findsOneWidget);
+    // Antes llevaba directo a capturar, que se salta registrar que llegó.
+    expect(find.text('Abrir la donación'), findsOneWidget);
     // Lo declarado por quien donó no se convierte en cajas solo.
     expect(
       find.textContaining('no se convierten en cajas solos'),

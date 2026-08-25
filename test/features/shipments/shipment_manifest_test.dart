@@ -1,3 +1,4 @@
+import 'package:araguaney_app/core/api/export_job.dart';
 import 'package:araguaney_app/core/api/generated/clients/exports_api.dart';
 import 'package:araguaney_app/core/api/generated/clients/shipments_api.dart';
 import 'package:araguaney_app/core/api/generated/models/qr_event_out.dart';
@@ -43,7 +44,7 @@ void main() {
       ).manifest('shipment-1', wait: noWait);
 
       expect(
-        (outcome as ManifestReady).downloadUrl,
+        (outcome as DocumentReady).downloadUrl,
         'https://files.test/manifiesto.pdf',
       );
     });
@@ -79,7 +80,7 @@ void main() {
       // El trabajo terminó en error y el servidor dijo por qué: sus palabras
       // viajan tal cual, como cualquier rechazo de regla de negocio.
       expect(
-        (outcome as ManifestFailed).serverError,
+        (outcome as DocumentFailed).serverError,
         'El envío no tiene tarimas',
       );
     });
@@ -97,7 +98,7 @@ void main() {
           adapter,
         ).manifest('shipment-1', wait: noWait);
 
-        expect(outcome, isA<ManifestStillWorking>());
+        expect(outcome, isA<DocumentStillWorking>());
         expect(adapter.requests.length, lessThan(20));
       },
     );
@@ -111,7 +112,7 @@ void main() {
         adapter,
       ).manifest('shipment-1', wait: noWait);
 
-      expect(outcome, isA<ManifestFailed>());
+      expect(outcome, isA<DocumentFailed>());
     });
 
     test('no signal is reported as a failure with its reason', () async {
@@ -120,7 +121,7 @@ void main() {
       ).manifest('shipment-1', wait: noWait);
 
       expect(
-        (outcome as ManifestFailed).failure!.operatorMessage(await spanish()),
+        (outcome as DocumentFailed).failure!.operatorMessage(await spanish()),
         contains('No hay conexión'),
       );
     });

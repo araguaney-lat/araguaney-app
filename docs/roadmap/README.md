@@ -62,8 +62,8 @@ pie title Tasks completed (239 tasks, backlog aside)
 | 14 | [The account: profile, password and second factor](phase-14-account-and-security.md) | 5 | 1 | 🟨 83% |
 | 15 | [The shipment, from opening to dispatch](phase-15-shipment-workflow.md) | 5 | 1 | 🟨 83% |
 | 16 | [The screens phase 11 never reached](phase-16-session-screens.md) | 11 | 1 | 🟨 92% |
-| 17 | [The product catalogue](phase-17-product-catalogue.md) | 0 | 8 | ⬜ 0% |
-| 18 | [Pre-registered donations](phase-18-preregistered-donations.md) | 0 | 8 | ⬜ 0% |
+| 17 | [The product catalogue](phase-17-product-catalogue.md) | 7 | 1 | 🟨 88% |
+| 18 | [Pre-registered donations](phase-18-preregistered-donations.md) | 6 | 2 | 🟨 75% |
 | 19 | [Reports for the centre](phase-19-center-reports.md) | 0 | 8 | ⬜ 0% |
 | 20 | [Campaigns](phase-20-campaigns.md) | 0 | 5 | ⬜ 0% |
 | 21 | [Centres](phase-21-centers.md) | 4 | 1 | 🟨 80% |
@@ -72,13 +72,13 @@ pie title Tasks completed (239 tasks, backlog aside)
 | 24 | [Users beyond one centre](phase-24-users-beyond-a-center.md) | 0 | 6 | ⬜ 0% |
 | 25 | [The studio](phase-25-the-studio.md) | 1 | 2 | 🟨 33% |
 | 26 | [The shipment, from dispatch to delivery](phase-26-shipment-to-delivery.md) | 0 | 6 | ⬜ 0% |
-| 27 | [Creating a transfer](phase-27-create-a-transfer.md) | 0 | 5 | ⬜ 0% |
+| 27 | [Creating a transfer](phase-27-create-a-transfer.md) | 4 | 1 | 🟨 80% |
 | 28 | [The requests board](phase-28-the-requests-board.md) | 1 | 3 | 🟨 25% |
 | 29 | [The minimum version gate](phase-29-the-version-gate.md) | 7 | 2 | 🟨 78% |
 | 30 | [Writing as a national administrator](phase-30-writing-as-national-admin.md) | 8 | 1 | 🟨 89% |
 | 31 | [Speaking more than one language](phase-31-internationalisation.md) | 5 | 5 | 🟨 50% |
 | 32 | [The commentary in English](phase-32-comments-in-english.md) | 1 | 5 | 🟨 17% |
-| **Total** (Phase 10 aside) | | **156** | **85** | **🟢 65%** |
+| **Total** (Phase 10 aside) | | **173** | **68** | **🟢 72%** |
 
 ## What is missing, and how that is kept honest
 

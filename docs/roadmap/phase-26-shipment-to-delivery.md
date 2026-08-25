@@ -18,16 +18,27 @@ delivered. The application already reads a reception —
 
 ## The four operations, and who each belongs to
 
+**Corrected on 2026-08-25 against `app/routers/shipment.py`.** The table below
+said «coordinator» for three of these four and was wrong; the roles are what the
+router actually requires:
+
 | Route | Role | What it is |
 |---|---|---|
-| `POST .../milestones` | coordinator | «It crossed», «it stopped», «it is held». Written from the road. |
-| `POST .../reception` | coordinator | What actually arrived, against what was sent. |
-| `POST .../delivered` | national_admin | The last state. Not a centre's to declare. |
-| `POST .../declaracion.json` / `.xlsx`, `.../manifest.xlsx` | coordinator | Documents, produced by the server. |
+| `POST .../milestones` | **`require_national_admin`** | «It crossed», «it stopped», «it is held». Written from the road. |
+| `POST .../reception` | **`require_national_admin`** | What actually arrived, box by box. It is the reconcile, and it leaves the shipment in `RECONCILED`. |
+| `POST .../delivered` | **`require_national_admin`** | The last state. Not a centre's to declare. |
+| `POST .../declaracion.json` / `.xlsx`, `.../manifest.xlsx` | `require_coordinator` | Documents, produced by the server. |
 
-Milestones are the one with the clearest mobile case, and it is not close.
-Somebody is beside a truck, at a checkpoint, without a desk. That is the whole
-argument for this application existing.
+That changes what this phase is. It is **not** the coordinator's missing half of
+the shipment; it is national administration's, plus two documents a coordinator
+can ask for. The mobile argument survives intact — somebody beside a truck at a
+checkpoint has a phone and not a desk, whatever their role — but the phase no
+longer belongs where a «serve the people who operate» ordering would put it.
+
+The old table also contradicted this file's own non-objectives, which already
+said reconciling a reception requires `national_admin` and is out of scope.
+There is only one reception route, so «registering» and «reconciling» were the
+same call under two names.
 
 ## Reception is where shrinkage is discovered
 

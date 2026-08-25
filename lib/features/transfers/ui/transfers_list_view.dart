@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/api/api_error_mapper.dart';
 import '../../../core/api/generated/models/transfer_out.dart';
+import '../../../core/auth/auth_providers.dart';
 import '../../../core/center/center_providers.dart';
 import '../../../core/i18n/generated/app_localizations.dart';
 import '../../../core/i18n/l10n_extension.dart';
@@ -11,6 +12,7 @@ import '../../../core/ui/status_labels.dart';
 import '../../centers/data/centers_providers.dart';
 import '../data/transfers_providers.dart';
 import '../domain/transfer_actions.dart';
+import 'create_transfer_view.dart';
 import 'transfer_detail_view.dart';
 
 /// Transferencias en las que participa este centro.
@@ -53,6 +55,17 @@ class _TransfersListViewState extends ConsumerState<TransfersListView> {
           myCenterId: myCenterId,
         ),
       ),
+      // Proponer exige coordinación —`require_coordinator`— y un centro desde
+      // el que salir: quien no tiene ninguno de los dos no ve el botón.
+      floatingActionButton:
+          ref.watch(isCenterCoordinatorProvider) && myCenterId != null
+          ? FloatingActionButton.extended(
+              onPressed: () =>
+                  Navigator.of(context).push(CreateTransferView.route()),
+              icon: const Icon(Icons.add),
+              label: Text(context.l10n.transferNewTitle),
+            )
+          : null,
       body: RefreshIndicator(
         onRefresh: () async => ref.invalidate(transfersProvider),
         child: switch (transfers) {

@@ -63,6 +63,17 @@ void main() {
         // safely: the worst case is checking less of the line.
         final code = line.contains('//') ? line.split('//').first : line;
 
+        // An accent anywhere in a line of code is Spanish, full stop:
+        // identifiers are English and comments are already gone. This catches
+        // what the literal patterns cannot see — a quoted string **inside** an
+        // interpolation, where the outer quotes swallow the boundaries and the
+        // inner text falls between two matches. That is exactly how
+        // `${item.freeText ?? 'Artículo'}` survived the first sweep.
+        if (accents.hasMatch(code)) {
+          offenders.add('${entity.path}:$lineNumber → ${code.trim()}');
+          continue;
+        }
+
         for (final pattern in [singleQuoted, doubleQuoted]) {
           for (final match in pattern.allMatches(code)) {
             final value = match.group(1) ?? '';

@@ -81,14 +81,33 @@ makes Phase 13 trustworthy over time.
 
 | # | Task | Description | Complexity | Status |
 |---|------|-------------|------------|--------|
-| 1 | Catalogue repository | `GET /v1/product-types`, `/search`, `/{id}`, `/{id}/gtins` behind a sealed outcome, with the local Drift cache still answering reads. | 🟠 Medium | ⬜ Pending |
-| 2 | Product record | Name, category, unit, presentation, its barcodes, and whether it is proposed or accepted. Reachable from the picker and from a scan. | 🟠 Medium | ⬜ Pending |
-| 3 | Search that asks the server | `GET /v1/product-types/search` and `GET /v1/catalog/search`, which exist and nothing calls: the local cache answers what is cached and the server answers the rest. Closes block 14 of Phase 10. | 🟠 Medium | ⬜ Pending |
-| 4 | Create a product | The form, for `national_admin` only, reachable from a failed barcode lookup so it lands where the gap was found. | 🔴 High | ⬜ Pending |
-| 5 | Edit and promote | `PATCH` for the fields, `promote` as its own action with its own words, because accepting a proposal is a decision and not a save. | 🟠 Medium | ⬜ Pending |
-| 6 | Unlink a barcode | `DELETE /v1/product-types/{pt_id}/gtins/{gtin_id}`, which is how a wrong scan gets corrected. | 🟢 Low | ⬜ Pending |
-| 7 | The volunteer's path | Somebody without the role says what they are holding and it reaches whoever can create it. Needs a decision on the vehicle — a message thread already exists — and possibly a backend request. | 🟠 Medium | ⬜ Pending |
+| 1 | Catalogue repository | `GET /v1/product-types`, `/search`, `/{id}`, `/{id}/gtins` behind a sealed outcome, with the local Drift cache still answering reads. | 🟠 Medium | ✅ Done |
+| 2 | Product record | Name, category, unit, presentation, its barcodes, and whether it is proposed or accepted. Reachable from the catalogue and from a scan. | 🟠 Medium | ✅ Done |
+| 3 | Search that asks the server | The cache answers while typing; the server answers on request, once. Closes half of block 14 of Phase 10. | 🟠 Medium | ✅ Done |
+| 4 | Create a product | The form, for `national_admin` only, reachable from a failed barcode lookup so it lands where the gap was found. | 🔴 High | ✅ Done |
+| 5 | Edit and promote | `PATCH` for the fields, `promote` as its own action with its own confirmation. | 🟠 Medium | ✅ Done |
+| 6 | Unlink a barcode | `DELETE /v1/product-types/{pt_id}/gtins/{gtin_id}`, which is how a wrong scan gets corrected. | 🟢 Low | ✅ Done |
+| 7 | The volunteer's path | A campaign thread, opened with the barcode already written. No backend change was needed. | 🟠 Medium | ✅ Done |
 | 8 | Verify on a device | Scanning a package the catalogue does not know, and going from that dead end to a created product. | 🟢 Low | ⬜ Pending |
+
+## What the work turned up
+
+**Writing a single row into the cache is not `insertOnConflictUpdate`.** That
+call leaves out the columns that arrive null, so a promoted product — which the
+server promotes precisely **by** clearing its campaign — would have kept its old
+campaign on the device and gone on looking like a proposal. A test caught it;
+nothing about the screen would have.
+
+**Six category names were still Spanish literals** beside two that already had
+keys, in the one table the whole catalogue reads. The check from the previous
+pull request had missed them: they carry no accent and none of them is a word
+that cannot be anything else. The eight-key list moved next to that table, since
+it is the server's vocabulary rather than one form's.
+
+**The search the panel offers is `/v1/catalog/search`; this uses
+`/v1/product-types/search`.** Both exist and return the same shape. The second
+is the one whose scope is «the catalogue», while the first also filters by
+campaign — which is a capture-time question, not a browsing one.
 
 ## Recorded for the other repository
 

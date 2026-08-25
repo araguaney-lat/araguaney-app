@@ -6,7 +6,7 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import '../../../core/i18n/l10n_extension.dart';
 import '../../boxes/ui/box_detail_view.dart';
 import '../../catalog/data/catalog_providers.dart';
-import '../../intake/ui/intake_form_view.dart';
+import '../../donations/ui/donation_record_view.dart';
 import '../data/scan_resolution.dart';
 import '../data/scanning_providers.dart';
 import '../domain/scan_throttle.dart';
@@ -97,10 +97,12 @@ class _ScannerViewState extends ConsumerState<ScannerView> {
         ..pop()
         ..push(BoxDetailView.route(boxId: box.id, code: box.code));
     },
+    // Antes terminaba en la captura, saltándose la recepción: identificar una
+    // donación y ponerse a capturar deja sin registrar que llegó.
     DonationFound(:final donation) => () {
       Navigator.of(context)
         ..pop()
-        ..push(IntakeFormView.route(donationId: donation.id));
+        ..push(DonationRecordView.route(donation.code));
     },
     _ => null,
   };

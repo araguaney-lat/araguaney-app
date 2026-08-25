@@ -74,6 +74,19 @@ String donationStatusLabel(AppLocalizations l10n, String status) =>
       _ => status,
     };
 
+/// Cómo terminó una línea de una donación al recibirla.
+///
+/// Tres estados del backend, y solo dos se mandan: lo que no viaja marcado el
+/// servidor lo da por recibido. Tabla propia y no compartida con las cajas
+/// porque son objetos distintos y solo coinciden en español.
+String receptionResultLabel(AppLocalizations l10n, String result) =>
+    switch (result) {
+      'RECEIVED' => l10n.receptionReceived,
+      'MISSING' => l10n.receptionMissing,
+      'REJECTED' => l10n.receptionRejected,
+      _ => result,
+    };
+
 String incidentStatusLabel(AppLocalizations l10n, String status) =>
     switch (status) {
       'OPEN' => l10n.incidentStatusOpen,

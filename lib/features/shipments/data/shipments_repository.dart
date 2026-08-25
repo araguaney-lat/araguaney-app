@@ -1,5 +1,6 @@
 import '../../../core/api/api_error_mapper.dart';
 import '../../../core/api/api_failure.dart';
+import '../../../core/api/export_job.dart';
 import '../../../core/api/generated/clients/exports_api.dart';
 import '../../../core/api/generated/clients/shipments_api.dart';
 import '../../../core/api/generated/models/qr_event_out.dart';
@@ -25,37 +26,6 @@ String milestoneLabel(AppLocalizations l10n, String milestone) =>
       'DELIVERED_CONSIGNEE' => l10n.milestoneDeliveredToConsignee,
       _ => milestone,
     };
-
-/// Cómo terminó pedir un manifiesto.
-sealed class ManifestOutcome {
-  const ManifestOutcome();
-}
-
-final class ManifestReady extends ManifestOutcome {
-  const ManifestReady(this.downloadUrl);
-
-  final String downloadUrl;
-}
-
-/// El servidor sigue trabajando. No es un fallo: un manifiesto de un envío
-/// grande tarda, y quien lo pidió puede volver a pedirlo.
-final class ManifestStillWorking extends ManifestOutcome {
-  const ManifestStillWorking();
-}
-
-final class ManifestFailed extends ManifestOutcome {
-  const ManifestFailed({this.failure, this.serverError});
-
-  /// El fallo de la llamada, cuando lo hubo.
-  ///
-  /// Se lleva el fallo y no una frase: redactar en la capa de datos elegiría
-  /// un idioma sin saber en cuál se está mirando.
-  final ApiFailure? failure;
-
-  /// Lo que dijo el servidor cuando el trabajo terminó en error. Son sus
-  /// palabras y viajan tal cual, como cualquier rechazo de regla de negocio.
-  final String? serverError;
-}
 
 /// Cómo terminó una operación sobre un envío.
 sealed class ShipmentOutcome<T> {
@@ -86,8 +56,6 @@ class ShipmentsRepository {
   /// Sondear tiene que terminar: dejar a alguien mirando una rueda para siempre
   /// es peor que decirle que vuelva a intentarlo. Si se acaba el margen, el
   /// trabajo sigue vivo en el servidor y pedirlo otra vez lo recoge.
-  static const _maxPolls = 10;
-  static const _pollInterval = Duration(seconds: 2);
 
   final ShipmentsApi _shipmentsApi;
   final ExportsApi _exportsApi;
@@ -172,40 +140,17 @@ class ShipmentsRepository {
       .listShipmentEventsV1ShipmentsShipmentIdEventsGet(shipmentId: shipmentId);
 
   /// Pide el manifiesto y espera a que el servidor lo genere.
-  ///
-  /// El endpoint no devuelve un PDF sino un trabajo: el documento se arma
-  /// aparte y aquí se pregunta por él hasta que esté.
-  Future<ManifestOutcome> manifest(
+  Future<DocumentOutcome> manifest(
     String shipmentId, {
     Future<void> Function(Duration) wait = Future.delayed,
-  }) async {
-    try {
-      final job = await _shipmentsApi
-          .downloadManifestV1ShipmentsShipmentIdManifestPdfPost(
-            shipmentId: shipmentId,
-          );
-
-      var current = job;
-      for (var attempt = 0; attempt < _maxPolls; attempt++) {
-        switch (current.status) {
-          case 'DONE':
-            final url = current.downloadUrl;
-            return url == null ? const ManifestFailed() : ManifestReady(url);
-          case 'FAILED':
-            return ManifestFailed(serverError: current.error);
-        }
-
-        await wait(_pollInterval);
-        current = await _exportsApi.getExportJobV1ExportsJobIdGet(
-          jobId: current.id,
-        );
-      }
-
-      return const ManifestStillWorking();
-    } on Object catch (error) {
-      return ManifestFailed(failure: ApiErrorMapper.fromAny(error));
-    }
-  }
+  }) => awaitDocument(
+    start: () =>
+        _shipmentsApi.downloadManifestV1ShipmentsShipmentIdManifestPdfPost(
+          shipmentId: shipmentId,
+        ),
+    exports: _exportsApi,
+    wait: wait,
+  );
 }
 
 /// Un evento del envío, ya interpretado para leerse.

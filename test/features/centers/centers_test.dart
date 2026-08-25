@@ -153,6 +153,9 @@ void main() {
           restClientProvider.overrideWithValue(RestClient(fakeDio(adapter))),
           myCenterIdProvider.overrideWithValue('c-1'),
           isNationalAdminProvider.overrideWithValue(canListCentres),
+          // La lista ofrece proponer una transferencia, y eso pregunta por el
+          // rol: sin esto la pantalla arrastra la sesión entera a la prueba.
+          isCenterCoordinatorProvider.overrideWithValue(false),
         ],
       );
       addTearDown(container.dispose);

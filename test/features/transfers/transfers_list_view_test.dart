@@ -1,5 +1,6 @@
 import 'package:araguaney_app/core/api/api_providers.dart';
 import 'package:araguaney_app/core/api/generated/rest_client.dart';
+import 'package:araguaney_app/core/auth/auth_providers.dart';
 import 'package:araguaney_app/core/center/center_providers.dart';
 import 'package:araguaney_app/core/i18n/generated/app_localizations.dart';
 import 'package:araguaney_app/features/transfers/ui/transfers_list_view.dart';
@@ -21,6 +22,7 @@ void main() {
     final container = ProviderContainer(
       overrides: [
         restClientProvider.overrideWithValue(RestClient(fakeDio(adapter))),
+        isCenterCoordinatorProvider.overrideWithValue(false),
         actingCenterIdProvider.overrideWithValue(myCenterId),
         writeCenterIdProvider.overrideWithValue(null),
       ],

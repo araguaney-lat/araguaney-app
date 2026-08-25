@@ -6,12 +6,14 @@ import '../../../core/center/center_providers.dart';
 import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/ui/sheet_insets.dart';
 import '../../account/ui/profile_view.dart';
+import '../../catalog/ui/catalog_list_view.dart';
 import '../../center_applications/data/center_applications_providers.dart';
 import '../../center_applications/ui/application_queue_view.dart';
 import '../../centers/data/centers_providers.dart';
 import '../../centers/ui/centers_list_view.dart';
 import '../../centers/ui/choose_center_view.dart';
 import '../../dashboard/ui/stock_by_category_view.dart';
+import '../../donations/ui/donations_list_view.dart';
 import '../../incidents/ui/incidents_list_view.dart';
 import '../../intake/data/intake_providers.dart';
 import '../../intake/ui/intake_list_view.dart';
@@ -27,6 +29,16 @@ import '../../transfers/ui/transfers_list_view.dart';
 /// Se abre desde el cuarto destino. Lo que entra aquí es lo que se consulta
 /// cada varios días —tarimas, transferencias, el equipo— frente a lo que se
 /// toca cada pocos minutos, que es lo que gana un sitio en la barra.
+///
+/// **Va en grupos porque dejó de caber.** Con dieciséis entradas seguidas hasta
+/// una prueba tuvo que empezar a desplazarse para encontrar una, y una lista
+/// larga sin agrupar se lee peor que la misma lista repartida: «Perfil» y
+/// «Cerrar sesión» son la cuenta y estaban en extremos opuestos.
+///
+/// Los grupos son por **quién hace ese trabajo y dónde**: la jornada de quien
+/// captura, lo que se coordina en el centro, y lo que se administra —que casi
+/// siempre se hace desde un escritorio y va al final por eso—. Un grupo sin
+/// entradas no se dibuja, así que quien es voluntariado ve dos.
 class MoreMenuSheet extends ConsumerWidget {
   const MoreMenuSheet({super.key});
 
@@ -55,28 +67,15 @@ class MoreMenuSheet extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final coordinates = ref.watch(isCenterCoordinatorProvider);
     final pending = ref.watch(pendingCaptureCountProvider).valueOrNull ?? 0;
+    final reviewsApplications = ref.watch(canReviewApplicationsProvider);
+    final listsCenters = ref.watch(canListCentersProvider);
 
     return ListView(
       padding: EdgeInsets.only(bottom: sheetBottomInset(context, base: 8)),
       shrinkWrap: true,
       children: [
-        // Siempre, no solo con la cola llena: aquí se reponen los códigos de
-        // caja, y hacerlo hace falta **antes** de quedarse sin señal. Estaba
-        // condicionado a `pending > 0`, así que la única puerta a reservar se
-        // abría cuando ya era tarde.
-        ListTile(
-          leading: pending > 0
-              ? Badge(
-                  label: Text('$pending'),
-                  child: const Icon(Icons.cloud_upload_outlined),
-                )
-              : const Icon(Icons.cloud_upload_outlined),
-          title: Text(context.l10n.pendingCapturesTitle),
-          onTap: () => _go(context, PendingCapturesView.route()),
-        ),
-        // Only for a session with no centre of its own. It sits high because
-        // it is where somebody checks what they are about to write into, not
-        // only where they change it.
+        // El centro de trabajo va antes que cualquier grupo y sin encabezado:
+        // no es un destino, es en dónde está escribiendo quien mira el menú.
         if (ref.watch(workingCenterProvider).valueOrNull case final center?)
           if (ref.watch(writeCenterIdProvider) != null)
             ListTile(
@@ -86,75 +85,153 @@ class MoreMenuSheet extends ConsumerWidget {
               trailing: Text(context.l10n.workingCenterChangeAction),
               onTap: () => _go(context, ChooseCenterView.route()),
             ),
-        ListTile(
-          leading: const Icon(Icons.person_outline),
-          title: Text(context.l10n.profileTitle),
-          onTap: () => _go(context, ProfileView.route()),
+        _Section(
+          title: context.l10n.menuSectionDay,
+          children: [
+            // Siempre, no solo con la cola llena: aquí se reponen los códigos
+            // de caja, y hacerlo hace falta **antes** de quedarse sin señal.
+            ListTile(
+              leading: pending > 0
+                  ? Badge(
+                      label: Text('$pending'),
+                      child: const Icon(Icons.cloud_upload_outlined),
+                    )
+                  : const Icon(Icons.cloud_upload_outlined),
+              title: Text(context.l10n.pendingCapturesTitle),
+              onTap: () => _go(context, PendingCapturesView.route()),
+            ),
+            ListTile(
+              leading: const Icon(Icons.list_alt_outlined),
+              title: Text(context.l10n.navCaptures),
+              onTap: () => _go(context, IntakeListView.route()),
+            ),
+            ListTile(
+              leading: const Icon(Icons.volunteer_activism_outlined),
+              title: Text(context.l10n.donationsTitle),
+              onTap: () => _go(context, DonationsListView.route()),
+            ),
+            // Para todo el mundo: buscar un producto es de quien captura, y
+            // dar de alta uno es lo único que la pantalla reserva por rol.
+            ListTile(
+              leading: const Icon(Icons.inventory_outlined),
+              title: Text(context.l10n.catalogTitle),
+              onTap: () => _go(context, CatalogListView.route()),
+            ),
+          ],
         ),
-        ListTile(
-          leading: const Icon(Icons.list_alt_outlined),
-          title: Text(context.l10n.navCaptures),
-          onTap: () => _go(context, IntakeListView.route()),
+        _Section(
+          title: context.l10n.menuSectionCenter,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.donut_small_outlined),
+              title: Text(context.l10n.stockByCategoryTitle),
+              onTap: () => _go(context, StockByCategoryView.route()),
+            ),
+            ListTile(
+              leading: const Icon(Icons.pallet),
+              title: Text(context.l10n.palletsTitle),
+              onTap: () => _go(context, PalletsListView.route()),
+            ),
+            if (coordinates)
+              ListTile(
+                leading: const Icon(Icons.local_shipping_outlined),
+                title: Text(context.l10n.navShipments),
+                onTap: () => _go(context, ShipmentsListView.route()),
+              ),
+            ListTile(
+              leading: const Icon(Icons.swap_horiz),
+              title: Text(context.l10n.navTransfers),
+              onTap: () => _go(context, TransfersListView.route()),
+            ),
+            if (coordinates)
+              ListTile(
+                leading: const Icon(Icons.flag_outlined),
+                title: Text(context.l10n.navRiskReviews),
+                onTap: () => _go(context, RiskReviewsView.route()),
+              ),
+            if (coordinates)
+              ListTile(
+                leading: const Icon(Icons.report_gmailerrorred_outlined),
+                title: Text(context.l10n.incidentsTitle),
+                onTap: () => _go(context, IncidentsListView.route()),
+              ),
+            ListTile(
+              leading: const Icon(Icons.people_outline),
+              title: Text(context.l10n.navTeam),
+              onTap: () => _go(context, TeamDirectoryView.route()),
+            ),
+          ],
         ),
-        ListTile(
-          leading: const Icon(Icons.donut_small_outlined),
-          title: Text(context.l10n.stockByCategoryTitle),
-          onTap: () => _go(context, StockByCategoryView.route()),
+        // Trabajo de escritorio, y por eso va al final: se puede hacer desde
+        // aquí, pero casi nadie lo hace con el teléfono en la mano.
+        _Section(
+          title: context.l10n.menuSectionAdmin,
+          children: [
+            if (reviewsApplications)
+              ListTile(
+                leading: const Icon(Icons.inbox_outlined),
+                title: Text(context.l10n.applicationsTitle),
+                onTap: () => _go(context, ApplicationQueueView.route()),
+              ),
+            if (listsCenters)
+              ListTile(
+                leading: const Icon(Icons.apartment_outlined),
+                title: Text(context.l10n.centersTitle),
+                onTap: () => _go(context, CentersListView.route()),
+              ),
+          ],
         ),
-        ListTile(
-          leading: const Icon(Icons.pallet),
-          title: Text(context.l10n.palletsTitle),
-          onTap: () => _go(context, PalletsListView.route()),
+        _Section(
+          title: context.l10n.menuSectionAccount,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.person_outline),
+              title: Text(context.l10n.profileTitle),
+              onTap: () => _go(context, ProfileView.route()),
+            ),
+            ListTile(
+              leading: const Icon(Icons.logout),
+              title: Text(context.l10n.navSignOut),
+              onTap: () {
+                Navigator.of(context).pop();
+                ref.read(sessionControllerProvider.notifier).logOut();
+              },
+            ),
+          ],
         ),
-        if (coordinates)
-          ListTile(
-            leading: const Icon(Icons.local_shipping_outlined),
-            title: Text(context.l10n.navShipments),
-            onTap: () => _go(context, ShipmentsListView.route()),
+      ],
+    );
+  }
+}
+
+/// Un grupo del menú, que desaparece entero cuando el rol lo deja vacío.
+///
+/// Es lo que hace que agrupar no le cueste nada a quien es voluntariado: sin
+/// esto, «Administración» sería un encabezado con nada debajo, que es peor que
+/// no agrupar.
+class _Section extends StatelessWidget {
+  const _Section({required this.title, required this.children});
+
+  final String title;
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) {
+    if (children.isEmpty) return const SizedBox.shrink();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
+          child: Text(
+            title,
+            style: Theme.of(context).textTheme.labelMedium?.copyWith(
+              color: Theme.of(context).colorScheme.primary,
+            ),
           ),
-        ListTile(
-          leading: const Icon(Icons.swap_horiz),
-          title: Text(context.l10n.navTransfers),
-          onTap: () => _go(context, TransfersListView.route()),
         ),
-        if (coordinates)
-          ListTile(
-            leading: const Icon(Icons.flag_outlined),
-            title: Text(context.l10n.navRiskReviews),
-            onTap: () => _go(context, RiskReviewsView.route()),
-          ),
-        if (coordinates)
-          ListTile(
-            leading: const Icon(Icons.report_gmailerrorred_outlined),
-            title: Text(context.l10n.incidentsTitle),
-            onTap: () => _go(context, IncidentsListView.route()),
-          ),
-        if (ref.watch(canReviewApplicationsProvider))
-          ListTile(
-            leading: const Icon(Icons.inbox_outlined),
-            title: Text(context.l10n.applicationsTitle),
-            onTap: () => _go(context, ApplicationQueueView.route()),
-          ),
-        if (ref.watch(canListCentersProvider))
-          ListTile(
-            leading: const Icon(Icons.apartment_outlined),
-            title: Text(context.l10n.centersTitle),
-            onTap: () => _go(context, CentersListView.route()),
-          ),
-        ListTile(
-          leading: const Icon(Icons.people_outline),
-          title: Text(context.l10n.navTeam),
-          onTap: () => _go(context, TeamDirectoryView.route()),
-        ),
-        const Divider(),
-        ListTile(
-          leading: const Icon(Icons.logout),
-          title: Text(context.l10n.navSignOut),
-          onTap: () {
-            Navigator.of(context).pop();
-            ref.read(sessionControllerProvider.notifier).logOut();
-          },
-        ),
+        ...children,
       ],
     );
   }

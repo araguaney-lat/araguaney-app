@@ -1,5 +1,24 @@
 import '../i18n/generated/app_localizations.dart';
 
+/// Las ocho categorías de `PRODUCT_CATEGORIES` en el backend, en su orden.
+///
+/// The list is here and not in the form that offers it because it is the
+/// server's vocabulary, not one screen's: the same eight keys name a category
+/// on a record, in a filter and in a dropdown. A ninth one added by the backend
+/// still renders wherever it is read — see [categoryLabel] — but it cannot be
+/// **chosen** until this list learns it, which is the honest trade: offering a
+/// key this build has never seen would be guessing.
+const productCategories = [
+  'MEDICINE',
+  'MEDICAL_SUPPLY',
+  'FOOD',
+  'WATER',
+  'HYGIENE',
+  'TOOL',
+  'RESCUE_GEAR',
+  'OTHER',
+];
+
 /// Cómo se lee una categoría del catálogo.
 ///
 /// Las ocho claves son las de `PRODUCT_CATEGORIES` en el backend. Una que esta
@@ -12,13 +31,13 @@ import '../i18n/generated/app_localizations.dart';
 /// selector de producto llevaba meses mostrando `MEDICAL_SUPPLY`.
 String categoryLabel(AppLocalizations l10n, String category) =>
     switch (category) {
-      'MEDICINE' => 'Medicamentos',
+      'MEDICINE' => l10n.categoryMedicine,
       'MEDICAL_SUPPLY' => l10n.categoryMedicalSupply,
-      'FOOD' => 'Alimentos',
-      'WATER' => 'Agua',
-      'HYGIENE' => 'Higiene',
-      'TOOL' => 'Herramientas',
+      'FOOD' => l10n.categoryFood,
+      'WATER' => l10n.categoryWater,
+      'HYGIENE' => l10n.categoryHygiene,
+      'TOOL' => l10n.categoryTool,
       'RESCUE_GEAR' => l10n.categoryRescueGear,
-      'OTHER' => 'Otros',
+      'OTHER' => l10n.categoryOther,
       _ => category,
     };

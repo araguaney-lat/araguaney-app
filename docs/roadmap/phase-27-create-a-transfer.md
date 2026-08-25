@@ -50,10 +50,34 @@ in your hand.
 
 | # | Task | Description | Complexity | Status |
 |---|------|-------------|------------|--------|
-| 1 | The destination | Needs [Phase 21](phase-21-centers.md): a centre cannot be chosen from a list this application cannot read. | 🟠 Medium | ⬜ Pending |
-| 2 | Choosing the boxes | Scanning them, with the pattern the pallet screen already uses, and a running count. | 🟠 Medium | ⬜ Pending |
-| 3 | Creating it | `POST /v1/transfers` with the note, and the refusal shown as the server phrased it. | 🟠 Medium | ⬜ Pending |
-| 4 | The manifest | `POST /v1/transfers/{id}/manifest.pdf`, through the path the shipment manifest already uses. | 🟢 Low | ⬜ Pending |
+| 1 | The destination | The active centres, minus this one — the server refuses origin equal to destination, and offering it would be offering a refusal. | 🟠 Medium | ✅ Done |
+| 2 | Choosing the boxes | Scanning them, with the pattern the pallet screen already uses, and a running count. | 🟠 Medium | ✅ Done |
+| 3 | Creating it | `POST /v1/transfers` with the note, and the refusal shown as the server phrased it. | 🟠 Medium | ✅ Done |
+| 4 | The manifest | `POST /v1/transfers/{id}/manifest.pdf`, through the path the shipment manifest already uses — now shared rather than copied. | 🟢 Low | ✅ Done |
 | 5 | Verify on a device | A transfer proposed from a phone and answered from the panel. | 🟢 Low | ⬜ Pending |
+
+## Reading a box's state is not duplicating a rule
+
+Creating a transfer is **one call with the whole list inside it**, so a single
+box the server refuses takes the other nineteen with it — and finding that out
+at the end means scanning them all again. So a scan that hits a box the cached
+copy says is unsealed, on a pallet, or already in the list stops there and says
+which of those it is.
+
+That is reading what the server served, not deciding it: the rule still lives in
+`transfer_service.py` and still decides at creation. The line worth holding is
+that the screen never says **why the rule exists**, only what the box currently
+is.
+
+A box that is not in the local cache is refused too, with that as the reason.
+Nothing can be said about it, and adding it blind is exactly what would refuse
+the list at the end.
+
+## The document waiting moved to `core`
+
+Asking for a manifest is «start a job, then ask until it is done», and the
+shipment had it written inside its repository because it was the only one that
+needed it. The transfer is the second, so it became `awaitDocument` — the same
+thirty lines, now in one place instead of two.
 
 This completes block 3 of [Phase 10](phase-10-operational-parity.md).

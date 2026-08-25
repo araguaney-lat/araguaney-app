@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/api/api_error_mapper.dart';
 import '../../../core/api/api_providers.dart';
+import '../../../core/api/export_job.dart';
 import '../../../core/api/generated/models/incident_out.dart';
 import '../../../core/api/generated/models/pallet_detail_out.dart';
 import '../../../core/api/generated/models/qr_event_out.dart';
@@ -89,18 +90,18 @@ class ShipmentRecordView extends ConsumerWidget {
     messenger.hideCurrentSnackBar();
 
     switch (outcome) {
-      case ManifestReady(:final downloadUrl):
+      case DocumentReady(:final downloadUrl):
         final opened = await ref.read(openLinkProvider)(downloadUrl);
         if (!opened) {
           messenger.showSnackBar(
             SnackBar(content: Text(l10n.manifestOpenFailed)),
           );
         }
-      case ManifestStillWorking():
+      case DocumentStillWorking():
         messenger.showSnackBar(
           SnackBar(content: Text(l10n.manifestStillWorking)),
         );
-      case ManifestFailed(:final failure, :final serverError):
+      case DocumentFailed(:final failure, :final serverError):
         // El fallo de la llamada manda; si no lo hubo, las palabras del
         // servidor; y si tampoco, lo único que se puede decir con certeza.
         messenger.showSnackBar(

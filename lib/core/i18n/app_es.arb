@@ -2404,5 +2404,464 @@
   "threadTypePrivate": "Privado",
   "@threadTypePrivate": {
     "description": "A conversation that is not tied to a campaign."
+  },
+  "categoryMedicine": "Medicamentos",
+  "@categoryMedicine": {
+    "description": "Catalogue category MEDICINE."
+  },
+  "categoryFood": "Alimentos",
+  "@categoryFood": {
+    "description": "Catalogue category FOOD."
+  },
+  "categoryWater": "Agua",
+  "@categoryWater": {
+    "description": "Catalogue category WATER."
+  },
+  "categoryHygiene": "Higiene",
+  "@categoryHygiene": {
+    "description": "Catalogue category HYGIENE."
+  },
+  "categoryTool": "Herramientas",
+  "@categoryTool": {
+    "description": "Catalogue category TOOL."
+  },
+  "categoryOther": "Otros",
+  "@categoryOther": {
+    "description": "Catalogue category OTHER."
+  },
+  "catalogTitle": "Catálogo",
+  "@catalogTitle": {
+    "description": "The product catalogue, as a screen title and a menu entry."
+  },
+  "catalogSearchLabel": "Buscar un producto",
+  "@catalogSearchLabel": {
+    "description": "Search field over the catalogue."
+  },
+  "catalogEmpty": "El catálogo no está descargado en este dispositivo todavía.",
+  "@catalogEmpty": {
+    "description": "Nothing cached and nothing typed: the device has never synced the catalogue."
+  },
+  "catalogNothingCachedFor": "Nada descargado que coincida con «{query}».",
+  "@catalogNothingCachedFor": {
+    "description": "The cached catalogue has no match for what was typed. The server may still have one.",
+    "placeholders": {
+      "query": {
+        "type": "String"
+      }
+    }
+  },
+  "catalogSearchServerAction": "Buscar en el servidor",
+  "@catalogSearchServerAction": {
+    "description": "Asks the server for what the device does not have. One request per search, on purpose."
+  },
+  "catalogFoundOnServer": "En el servidor",
+  "@catalogFoundOnServer": {
+    "description": "Heading over the results the server returned."
+  },
+  "catalogNotOnServerEither": "El servidor tampoco lo tiene.",
+  "@catalogNotOnServerEither": {
+    "description": "The search reached the server and there is no such product, which is the answer the cache cannot give."
+  },
+  "productRecordTitle": "Producto",
+  "@productRecordTitle": {
+    "description": "Title of a product's record."
+  },
+  "productNewTitle": "Nuevo producto",
+  "@productNewTitle": {
+    "description": "Title of the form that creates a product."
+  },
+  "productEditTitle": "Editar producto",
+  "@productEditTitle": {
+    "description": "Title of the same form when correcting one."
+  },
+  "productCreateAction": "Crear producto",
+  "@productCreateAction": {
+    "description": "Submits the new-product form."
+  },
+  "productProposed": "Propuesto",
+  "@productProposed": {
+    "description": "A product that belongs to one campaign and has not been accepted platform-wide."
+  },
+  "productProposedExplanation": "Existe dentro de una campaña. Aceptarlo lo deja disponible para toda la plataforma.",
+  "@productProposedExplanation": {
+    "description": "Explains what «proposed» means, next to the action that accepts it."
+  },
+  "productGlobal": "En el catálogo",
+  "@productGlobal": {
+    "description": "A product accepted platform-wide."
+  },
+  "productGlobalExplanation": "Disponible para cualquier campaña.",
+  "@productGlobalExplanation": {
+    "description": "Explains what an accepted product means."
+  },
+  "productPromoteAction": "Aceptar en el catálogo",
+  "@productPromoteAction": {
+    "description": "Promotes a campaign product to the platform catalogue."
+  },
+  "productPromoteTitle": "Aceptar este producto",
+  "@productPromoteTitle": {
+    "description": "Title of the confirmation before promoting."
+  },
+  "productPromoteExplanation": "Deja de pertenecer a una campaña y queda disponible para todas. No se deshace desde aquí.",
+  "@productPromoteExplanation": {
+    "description": "What promoting does, before it is done. It is a decision, not a save."
+  },
+  "gtinsTitle": "Códigos de barras",
+  "@gtinsTitle": {
+    "description": "The barcodes that point at a product."
+  },
+  "gtinsExplanation": "Un producto puede llevar varios: la misma lata en dos presentaciones, o un importado reetiquetado.",
+  "@gtinsExplanation": {
+    "description": "Why a product carries more than one barcode."
+  },
+  "gtinsEmpty": "Ninguno todavía. Se aprenden al escanear en captura.",
+  "@gtinsEmpty": {
+    "description": "No barcode is linked yet, and how they get linked."
+  },
+  "gtinLabel": "Código de barras",
+  "@gtinLabel": {
+    "description": "A single barcode, as a form field."
+  },
+  "gtinUnlinkAction": "Desligar",
+  "@gtinUnlinkAction": {
+    "description": "Removes the link between a barcode and a product."
+  },
+  "gtinUnlinkTitle": "Desligar el código",
+  "@gtinUnlinkTitle": {
+    "description": "Title of the confirmation before unlinking."
+  },
+  "gtinUnlinkExplanation": "{gtin} deja de apuntar a este producto. Es como se corrige un escaneo que llevaba a lo que no era.",
+  "@gtinUnlinkExplanation": {
+    "description": "What unlinking does, and why somebody would.",
+    "placeholders": {
+      "gtin": {
+        "type": "String"
+      }
+    }
+  },
+  "brandLabel": "Marca",
+  "@brandLabel": {
+    "description": "A product's brand."
+  },
+  "formLabel": "Presentación",
+  "@formLabel": {
+    "description": "A product's form: tablet, syrup, box."
+  },
+  "strengthLabel": "Concentración",
+  "@strengthLabel": {
+    "description": "A medicine's strength."
+  },
+  "innLabel": "Nombre genérico",
+  "@innLabel": {
+    "description": "A medicine's international non-proprietary name."
+  },
+  "unitWeightLabel": "Peso por unidad",
+  "@unitWeightLabel": {
+    "description": "How much one unit of the product weighs."
+  },
+  "minShelfLifeLabel": "Vida útil mínima",
+  "@minShelfLifeLabel": {
+    "description": "The minimum shelf life a box of this product must have left."
+  },
+  "controlledLabel": "Producto controlado",
+  "@controlledLabel": {
+    "description": "Whether the product is legally controlled."
+  },
+  "controlledYes": "Sí",
+  "@controlledYes": {
+    "description": "Affirmative answer for a yes-or-no field on a record."
+  },
+  "controlledExplanation": "Requiere manejo y registro especiales.",
+  "@controlledExplanation": {
+    "description": "What marking a product as controlled means."
+  },
+  "dayCount": "{count, plural, =1{1 día} other{{count} días}}",
+  "@dayCount": {
+    "description": "A number of days, on its own.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "categoryFieldLabel": "Categoría",
+  "@categoryFieldLabel": {
+    "description": "The category field on a product record and in its form."
+  },
+  "missingProductTitle": "Este producto no está en el catálogo",
+  "@missingProductTitle": {
+    "description": "Heading of the sheet that opens when a scanned package is not in the catalogue."
+  },
+  "missingProductUnknown": "Nadie lo reconoce por su código {gtin}.",
+  "@missingProductUnknown": {
+    "description": "Neither the platform nor the barcode database knows the package.",
+    "placeholders": {
+      "gtin": {
+        "type": "String"
+      }
+    }
+  },
+  "missingProductDescribed": "El código {gtin} lo describe como «{name}», pero la plataforma no lo tiene.",
+  "@missingProductDescribed": {
+    "description": "The barcode database knows the package and the platform does not. What it says is a draft, not a product.",
+    "placeholders": {
+      "gtin": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "missingProductAskAction": "Pedir que lo agreguen",
+  "@missingProductAskAction": {
+    "description": "A volunteer's way out: say what they are holding so somebody with the role creates it."
+  },
+  "missingProductAskHint": "Se abre un hilo en la campaña con el código ya escrito.",
+  "@missingProductAskHint": {
+    "description": "What asking actually does, so nobody wonders where the request went."
+  },
+  "missingProductCreateHint": "Lo que se sepa del envase llega como borrador: confírmalo antes de guardar.",
+  "@missingProductCreateHint": {
+    "description": "The prefill comes from a third party and is confirmed by whoever holds the package."
+  },
+  "missingProductThreadTitle": "Falta un producto en el catálogo",
+  "@missingProductThreadTitle": {
+    "description": "Subject of the thread a volunteer opens to ask for a product."
+  },
+  "missingProductThreadBody": "Estoy recibiendo un producto que no está en el catálogo. Su código de barras es {gtin}.",
+  "@missingProductThreadBody": {
+    "description": "Body of that thread when nothing is known about the package beyond its barcode.",
+    "placeholders": {
+      "gtin": {
+        "type": "String"
+      }
+    }
+  },
+  "missingProductThreadBodyNamed": "Estoy recibiendo un producto que no está en el catálogo. Su código de barras es {gtin} y el envase dice «{name}».",
+  "@missingProductThreadBodyNamed": {
+    "description": "Body of that thread when the barcode database described the package.",
+    "placeholders": {
+      "gtin": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "donationsTitle": "Donaciones anunciadas",
+  "@donationsTitle": {
+    "description": "Pre-registered donations, as a screen title and a menu entry."
+  },
+  "donationsIncomingTab": "En camino",
+  "@donationsIncomingTab": {
+    "description": "Donations heading for this centre."
+  },
+  "donationsReceivedTab": "Recibidas",
+  "@donationsReceivedTab": {
+    "description": "Donations this centre already received."
+  },
+  "donationsIncomingEmpty": "Nada anunciado en camino a este centro.",
+  "@donationsIncomingEmpty": {
+    "description": "No incoming donation."
+  },
+  "donationsReceivedEmpty": "Todavía no se recibió ninguna donación anunciada.",
+  "@donationsReceivedEmpty": {
+    "description": "No received donation."
+  },
+  "donationLineCount": "{count, plural, =1{1 renglón} other{{count} renglones}}",
+  "@donationLineCount": {
+    "description": "How many lines the donor declared.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "donationDeclaredTitle": "Lo que anunció quien dona",
+  "@donationDeclaredTitle": {
+    "description": "Heading over the declared contents."
+  },
+  "donationDeclaredExplanation": "Marca solo lo que no llegó o no se acepta. El resto se da por recibido.",
+  "@donationDeclaredExplanation": {
+    "description": "How receiving works: exceptions are marked, everything else counts as received."
+  },
+  "donationItemFromCatalogue": "Producto del catálogo",
+  "@donationItemFromCatalogue": {
+    "description": "A declared line that points at a catalogue product instead of free text."
+  },
+  "donationItemAddedByCenter": "agregado por el centro",
+  "@donationItemAddedByCenter": {
+    "description": "A line the centre added while receiving, not the donor."
+  },
+  "donationSuggestionsTitle": "Se parece a",
+  "@donationSuggestionsTitle": {
+    "description": "Heading over the catalogue matches suggested for a free-text line."
+  },
+  "donationPhotosTitle": "Fotos",
+  "@donationPhotosTitle": {
+    "description": "Heading over the photos the donor uploaded."
+  },
+  "donationPhotoTitle": "Foto de la donación",
+  "@donationPhotoTitle": {
+    "description": "Title of the screen that shows one photo."
+  },
+  "donationPhotoUnavailable": "No se pudo abrir la foto.",
+  "@donationPhotoUnavailable": {
+    "description": "The signed link did not work or expired."
+  },
+  "donationReadLabelAction": "Leer la etiqueta",
+  "@donationReadLabelAction": {
+    "description": "Asks the server to read a label out of the photo."
+  },
+  "donationLabelUnread": "No se pudo leer nada de esta foto. Se teclea como siempre.",
+  "@donationLabelUnread": {
+    "description": "The label reader returned nothing, which is a normal answer and not a failure."
+  },
+  "donationLabelSuggestions": "Lo que se leyó llega como sugerencia: confírmalo con el envase delante.",
+  "@donationLabelSuggestions": {
+    "description": "What the label reader returns is a draft for a person to confirm."
+  },
+  "donationReceiveAction": "Recibir la donación",
+  "@donationReceiveAction": {
+    "description": "Registers the reception, at the door."
+  },
+  "donationReceiveNeedsConnection": "Recibir necesita conexión: otra persona puede estar recibiendo esta misma donación ahora.",
+  "@donationReceiveNeedsConnection": {
+    "description": "Why receiving is not available offline. Same reasoning as sealing a box."
+  },
+  "donationAlreadyReceived": "Esta donación ya se recibió.",
+  "@donationAlreadyReceived": {
+    "description": "The donation is in RECEIVED and there is nothing to do here."
+  },
+  "donationAtypicalTitle": "Volumen atípico",
+  "@donationAtypicalTitle": {
+    "description": "The server flagged this donation as unusually large."
+  },
+  "donationAtypicalExplanation": "Revísala con calma antes de recibirla.",
+  "@donationAtypicalExplanation": {
+    "description": "What to do about it. It deliberately does not say what the threshold is."
+  },
+  "receptionMissing": "Falta",
+  "@receptionMissing": {
+    "description": "A declared line that did not arrive."
+  },
+  "receptionRejected": "No se acepta",
+  "@receptionRejected": {
+    "description": "A declared line that arrived and is not accepted."
+  },
+  "receptionReceived": "Recibido",
+  "@receptionReceived": {
+    "description": "A declared line that arrived as announced."
+  },
+  "registeredOnLabel": "Anunciada el",
+  "@registeredOnLabel": {
+    "description": "When the donation was registered from the website."
+  },
+  "scanOpenDonation": "Abrir la donación",
+  "@scanOpenDonation": {
+    "description": "Opens the record of a scanned donation, where it can be received."
+  },
+  "donationCaptureAction": "Capturar esta donación",
+  "@donationCaptureAction": {
+    "description": "Goes from a received donation to the capture it belongs to."
+  },
+  "menuSectionDay": "La jornada",
+  "@menuSectionDay": {
+    "description": "Menu group: what somebody capturing touches every few minutes."
+  },
+  "menuSectionCenter": "El centro",
+  "@menuSectionCenter": {
+    "description": "Menu group: what is coordinated about this centre's stock and shipments."
+  },
+  "menuSectionAdmin": "Administración",
+  "@menuSectionAdmin": {
+    "description": "Menu group: desk work, last because almost nobody does it from a phone."
+  },
+  "menuSectionAccount": "Tu cuenta",
+  "@menuSectionAccount": {
+    "description": "Menu group: the person's own account."
+  },
+  "transferNewTitle": "Proponer una transferencia",
+  "@transferNewTitle": {
+    "description": "Title of the screen that starts a transfer to another centre."
+  },
+  "transferNewExplanation": "Se mueven cajas concretas: elígelas escaneándolas. El otro centro decide si la acepta.",
+  "@transferNewExplanation": {
+    "description": "What a transfer is and who decides, said before anything is filled in."
+  },
+  "transferDestinationLabel": "Centro de destino",
+  "@transferDestinationLabel": {
+    "description": "Which centre the boxes would go to."
+  },
+  "transferNoDestinations": "No hay otros centros activos a los que transferir.",
+  "@transferNoDestinations": {
+    "description": "There is no other active centre, so there is nowhere to send anything."
+  },
+  "transferChooseBoxesTitle": "Escanear cajas",
+  "@transferChooseBoxesTitle": {
+    "description": "Opens the continuous scanner to choose the boxes."
+  },
+  "transferScanBoxesHint": "Apunta a la etiqueta de cada caja sellada.",
+  "@transferScanBoxesHint": {
+    "description": "Hint inside the scanner."
+  },
+  "transferNoBoxesYet": "Todavía no elegiste ninguna caja.",
+  "@transferNoBoxesYet": {
+    "description": "No box has been scanned yet."
+  },
+  "transferBoxAdded": "{code} · {count} en la lista",
+  "@transferBoxAdded": {
+    "description": "A box was added, with the running count.",
+    "placeholders": {
+      "code": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "transferBoxAlreadyChosen": "ya está en la lista",
+  "@transferBoxAlreadyChosen": {
+    "description": "The same box was scanned twice."
+  },
+  "transferBoxNotSealed": "está {status}, y solo viajan las selladas",
+  "@transferBoxNotSealed": {
+    "description": "The box is not sealed. Its state is read from what the server served, not decided here.",
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "transferBoxInPallet": "está en una tarima",
+  "@transferBoxInPallet": {
+    "description": "The box is on a pallet and cannot travel on its own."
+  },
+  "transferBoxNotCached": "no está descargada en el dispositivo",
+  "@transferBoxNotCached": {
+    "description": "The scanned box is not in the local cache, so nothing can be said about it."
+  },
+  "transferBoxRemove": "Quitar de la lista",
+  "@transferBoxRemove": {
+    "description": "Removes a scanned box from the proposal."
+  },
+  "transferReasonLabel": "Por qué",
+  "@transferReasonLabel": {
+    "description": "The note explaining the transfer."
+  },
+  "transferReasonHelper": "Lo lee quien decide en el otro centro.",
+  "@transferReasonHelper": {
+    "description": "Who reads the note."
+  },
+  "transferProposeAction": "Proponer la transferencia",
+  "@transferProposeAction": {
+    "description": "Sends the proposal."
+  },
+  "transferManifestAction": "Manifiesto",
+  "@transferManifestAction": {
+    "description": "Asks the server for the transfer's manifest."
   }
 }
