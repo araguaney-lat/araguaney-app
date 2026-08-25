@@ -72,13 +72,13 @@ pie title Tasks completed (239 tasks, backlog aside)
 | 24 | [Users beyond one centre](phase-24-users-beyond-a-center.md) | 0 | 6 | ⬜ 0% |
 | 25 | [The studio](phase-25-the-studio.md) | 1 | 2 | 🟨 33% |
 | 26 | [The shipment, from dispatch to delivery](phase-26-shipment-to-delivery.md) | 0 | 6 | ⬜ 0% |
-| 27 | [Creating a transfer](phase-27-create-a-transfer.md) | 0 | 5 | ⬜ 0% |
+| 27 | [Creating a transfer](phase-27-create-a-transfer.md) | 4 | 1 | 🟨 80% |
 | 28 | [The requests board](phase-28-the-requests-board.md) | 1 | 3 | 🟨 25% |
 | 29 | [The minimum version gate](phase-29-the-version-gate.md) | 7 | 2 | 🟨 78% |
 | 30 | [Writing as a national administrator](phase-30-writing-as-national-admin.md) | 8 | 1 | 🟨 89% |
 | 31 | [Speaking more than one language](phase-31-internationalisation.md) | 5 | 5 | 🟨 50% |
 | 32 | [The commentary in English](phase-32-comments-in-english.md) | 1 | 5 | 🟨 17% |
-| **Total** (Phase 10 aside) | | **169** | **72** | **🟢 70%** |
+| **Total** (Phase 10 aside) | | **173** | **68** | **🟢 72%** |
 
 ## What is missing, and how that is kept honest
 

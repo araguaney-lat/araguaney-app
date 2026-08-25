@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/api/api_error_mapper.dart';
+import '../../../core/api/export_job.dart';
 import '../../../core/api/generated/models/transfer_detail_out.dart';
 import '../../../core/auth/auth_providers.dart';
 import '../../../core/center/center_providers.dart';
 import '../../../core/connectivity/connectivity_controller.dart';
 import '../../../core/i18n/l10n_extension.dart';
+import '../../../core/platform/open_link.dart';
 import '../../../core/ui/record_field.dart';
 import '../../../core/ui/status_labels.dart';
 import '../data/transfers_providers.dart';
@@ -82,6 +84,44 @@ class TransferDetailView extends ConsumerWidget {
     );
   }
 
+  /// Pide el manifiesto y lo abre. Mismo camino que el del envío: el servidor
+  /// arma el documento y el visor del sistema lo enseña.
+  Future<void> _manifest(BuildContext context, WidgetRef ref) async {
+    final l10n = context.l10n;
+    final messenger = ScaffoldMessenger.of(context)
+      ..showSnackBar(SnackBar(content: Text(l10n.manifestPreparing)));
+
+    final outcome = await ref
+        .read(transfersRepositoryProvider)
+        .manifest(transferId);
+    if (!context.mounted) return;
+
+    messenger.hideCurrentSnackBar();
+    switch (outcome) {
+      case DocumentReady(:final downloadUrl):
+        final opened = await ref.read(openLinkProvider)(downloadUrl);
+        if (!opened) {
+          messenger.showSnackBar(
+            SnackBar(content: Text(l10n.manifestOpenFailed)),
+          );
+        }
+      case DocumentStillWorking():
+        messenger.showSnackBar(
+          SnackBar(content: Text(l10n.manifestStillWorking)),
+        );
+      case DocumentFailed(:final failure, :final serverError):
+        messenger.showSnackBar(
+          SnackBar(
+            content: Text(
+              failure?.operatorMessage(l10n) ??
+                  serverError ??
+                  l10n.manifestFailed,
+            ),
+          ),
+        );
+    }
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final transfer = ref.watch(transferDetailProvider(transferId));
@@ -104,7 +144,16 @@ class TransferDetailView extends ConsumerWidget {
     };
 
     return Scaffold(
-      appBar: AppBar(title: Text(context.l10n.transferRecordTitle)),
+      appBar: AppBar(
+        title: Text(context.l10n.transferRecordTitle),
+        actions: [
+          IconButton(
+            tooltip: context.l10n.transferManifestAction,
+            icon: const Icon(Icons.description_outlined),
+            onPressed: () => _manifest(context, ref),
+          ),
+        ],
+      ),
       body: switch (transfer) {
         AsyncData(:final value) => _Fields(
           transfer: value,

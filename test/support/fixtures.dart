@@ -1,4 +1,5 @@
 import 'package:araguaney_app/core/api/generated/models/campaign_out.dart';
+import 'package:araguaney_app/core/api/generated/models/center_out.dart';
 import 'package:araguaney_app/core/db/app_database.dart';
 
 /// Momento fijo para que las pruebas no dependan del reloj de quien las corre.
@@ -473,3 +474,21 @@ Map<String, Object?> donationPhotoJson({String id = 'photo-1'}) => {
   'size_bytes': 1024,
   'created_at': testNow.toIso8601String(),
 };
+
+/// Un centro del contrato, para pantallas que eligen uno.
+CenterOut centerOut({
+  required String id,
+  required String name,
+  bool isActive = true,
+}) => CenterOut(
+  id: id,
+  name: name,
+  isActive: isActive,
+  address: null,
+  contactEmail: null,
+  contactName: null,
+  contactPhone: null,
+  countryCode: 'VE',
+  createdAt: testNow,
+  stateName: 'Miranda',
+);

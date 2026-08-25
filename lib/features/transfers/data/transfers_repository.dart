@@ -1,6 +1,9 @@
 import '../../../core/api/api_error_mapper.dart';
 import '../../../core/api/api_failure.dart';
+import '../../../core/api/export_job.dart';
+import '../../../core/api/generated/clients/exports_api.dart';
 import '../../../core/api/generated/clients/transfers_api.dart';
+import '../../../core/api/generated/models/transfer_create.dart';
 import '../../../core/api/generated/models/transfer_detail_out.dart';
 import '../../../core/api/generated/models/transfer_out.dart';
 import '../../../core/api/generated/models/transfer_reject.dart';
@@ -28,18 +31,68 @@ final class TransferRefused extends TransferOutcome {
 /// una transferencia la mueven dos centros a la vez, y decidir sin señal
 /// dejaría dos versiones del mismo movimiento.
 ///
-/// Crear una transferencia no está aquí. Elegir centro de destino y marcar
-/// cajas selladas es trabajo de escritorio, y además nombrar centros exige un
-/// permiso que esta aplicación no tiene — ver el hueco anotado en la fase 10.
+/// **Crear una transferencia sí está aquí desde la fase 27.** Estuvo fuera
+/// mientras esta aplicación no podía leer la lista de centros, que era el único
+/// bloqueo real: elegir cajas selladas escaneándolas no es trabajo de
+/// escritorio, es lo que mejor hace un teléfono.
 class TransfersRepository {
-  TransfersRepository(this._transfers);
+  TransfersRepository({
+    required TransfersApi transfers,
+    required ExportsApi exports,
+  }) : _transfersApi = transfers,
+       _exportsApi = exports;
 
-  final TransfersApi _transfers;
+  final TransfersApi _transfersApi;
+  final ExportsApi _exportsApi;
 
-  Future<List<TransferOut>> list() => _transfers.listTransfersV1TransfersGet();
+  Future<List<TransferOut>> list() =>
+      _transfersApi.listTransfersV1TransfersGet();
+
+  /// Propone mover **estas cajas** a otro centro.
+  ///
+  /// `box_ids` y no cantidades: una transferencia mueve bultos concretos, y el
+  /// servidor comprueba uno por uno que estén sellados, sin tarima, en el
+  /// centro de origen y libres de otra transferencia. Nada de eso se repite
+  /// aquí; lo que sí hace la pantalla es no dejar armar una lista que ya se
+  /// sabe que va a ser rechazada entera.
+  Future<TransferOutcome> create({
+    required String fromCenterId,
+    required String toCenterId,
+    required List<String> boxIds,
+    String? notes,
+  }) async {
+    try {
+      return TransferAdvanced(
+        await _transfersApi.createTransferV1TransfersPost(
+          body: TransferCreate(
+            fromCenterId: fromCenterId,
+            toCenterId: toCenterId,
+            boxIds: boxIds,
+            notes: notes,
+          ),
+        ),
+      );
+    } on Object catch (error) {
+      return TransferRefused(ApiErrorMapper.fromAny(error));
+    }
+  }
+
+  /// Pide el manifiesto de la transferencia. Mismo camino que el del envío: el
+  /// servidor arma el documento aparte y aquí se espera a que esté.
+  Future<DocumentOutcome> manifest(
+    String transferId, {
+    Future<void> Function(Duration) wait = Future.delayed,
+  }) => awaitDocument(
+    start: () => _transfersApi
+        .downloadTransferManifestV1TransfersTransferIdManifestPdfPost(
+          transferId: transferId,
+        ),
+    exports: _exportsApi,
+    wait: wait,
+  );
 
   Future<TransferDetailOut> detail(String transferId) =>
-      _transfers.getTransferV1TransfersTransferIdGet(transferId: transferId);
+      _transfersApi.getTransferV1TransfersTransferIdGet(transferId: transferId);
 
   /// Ejecuta la transición que corresponda.
   ///
@@ -54,20 +107,20 @@ class TransfersRepository {
     try {
       final transfer = switch (action) {
         TransferAction.approve =>
-          await _transfers.approveTransferV1TransfersTransferIdApprovePost(
+          await _transfersApi.approveTransferV1TransfersTransferIdApprovePost(
             transferId: transferId,
           ),
         TransferAction.reject =>
-          await _transfers.rejectTransferV1TransfersTransferIdRejectPost(
+          await _transfersApi.rejectTransferV1TransfersTransferIdRejectPost(
             transferId: transferId,
             body: TransferReject(reason: reason),
           ),
         TransferAction.dispatch =>
-          await _transfers.dispatchTransferV1TransfersTransferIdDispatchPost(
+          await _transfersApi.dispatchTransferV1TransfersTransferIdDispatchPost(
             transferId: transferId,
           ),
         TransferAction.receive =>
-          await _transfers.receiveTransferV1TransfersTransferIdReceivePost(
+          await _transfersApi.receiveTransferV1TransfersTransferIdReceivePost(
             transferId: transferId,
           ),
       };

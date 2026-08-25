@@ -2782,5 +2782,86 @@
   "menuSectionAccount": "Tu cuenta",
   "@menuSectionAccount": {
     "description": "Menu group: the person's own account."
+  },
+  "transferNewTitle": "Proponer una transferencia",
+  "@transferNewTitle": {
+    "description": "Title of the screen that starts a transfer to another centre."
+  },
+  "transferNewExplanation": "Se mueven cajas concretas: elígelas escaneándolas. El otro centro decide si la acepta.",
+  "@transferNewExplanation": {
+    "description": "What a transfer is and who decides, said before anything is filled in."
+  },
+  "transferDestinationLabel": "Centro de destino",
+  "@transferDestinationLabel": {
+    "description": "Which centre the boxes would go to."
+  },
+  "transferNoDestinations": "No hay otros centros activos a los que transferir.",
+  "@transferNoDestinations": {
+    "description": "There is no other active centre, so there is nowhere to send anything."
+  },
+  "transferChooseBoxesTitle": "Escanear cajas",
+  "@transferChooseBoxesTitle": {
+    "description": "Opens the continuous scanner to choose the boxes."
+  },
+  "transferScanBoxesHint": "Apunta a la etiqueta de cada caja sellada.",
+  "@transferScanBoxesHint": {
+    "description": "Hint inside the scanner."
+  },
+  "transferNoBoxesYet": "Todavía no elegiste ninguna caja.",
+  "@transferNoBoxesYet": {
+    "description": "No box has been scanned yet."
+  },
+  "transferBoxAdded": "{code} · {count} en la lista",
+  "@transferBoxAdded": {
+    "description": "A box was added, with the running count.",
+    "placeholders": {
+      "code": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "transferBoxAlreadyChosen": "ya está en la lista",
+  "@transferBoxAlreadyChosen": {
+    "description": "The same box was scanned twice."
+  },
+  "transferBoxNotSealed": "está {status}, y solo viajan las selladas",
+  "@transferBoxNotSealed": {
+    "description": "The box is not sealed. Its state is read from what the server served, not decided here.",
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "transferBoxInPallet": "está en una tarima",
+  "@transferBoxInPallet": {
+    "description": "The box is on a pallet and cannot travel on its own."
+  },
+  "transferBoxNotCached": "no está descargada en el dispositivo",
+  "@transferBoxNotCached": {
+    "description": "The scanned box is not in the local cache, so nothing can be said about it."
+  },
+  "transferBoxRemove": "Quitar de la lista",
+  "@transferBoxRemove": {
+    "description": "Removes a scanned box from the proposal."
+  },
+  "transferReasonLabel": "Por qué",
+  "@transferReasonLabel": {
+    "description": "The note explaining the transfer."
+  },
+  "transferReasonHelper": "Lo lee quien decide en el otro centro.",
+  "@transferReasonHelper": {
+    "description": "Who reads the note."
+  },
+  "transferProposeAction": "Proponer la transferencia",
+  "@transferProposeAction": {
+    "description": "Sends the proposal."
+  },
+  "transferManifestAction": "Manifiesto",
+  "@transferManifestAction": {
+    "description": "Asks the server for the transfer's manifest."
   }
 }
