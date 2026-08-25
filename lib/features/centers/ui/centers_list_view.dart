@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/api/generated/models/center_out.dart';
 import '../data/centers_providers.dart';
 import '../data/centers_repository.dart';
+import 'center_form_view.dart';
 import 'center_record_view.dart';
 
 /// Los centros de la plataforma.
@@ -23,6 +24,14 @@ class CentersListView extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(title: const Text('Centros')),
+      floatingActionButton: ref.watch(canListCentersProvider)
+          ? FloatingActionButton(
+              onPressed: () =>
+                  Navigator.of(context).push(CenterFormView.route()),
+              tooltip: 'Nuevo centro',
+              child: const Icon(Icons.add),
+            )
+          : null,
       body: switch (centers) {
         AsyncData(value: CentersRead(:final value)) when value.isEmpty =>
           const _Message('No hay centros registrados todavía.'),

@@ -57,6 +57,33 @@ The list is also asked for **once** and reused. It is short, changes rarely, and
 whoever looks at it is usually resolving several identifiers in a row — the rows
 of a transfers list, for instance.
 
+### The form, and what it deliberately does not do
+
+**Only the name is required**, because that is all `CenterCreate` requires.
+Adding obligations the contract does not have would be a business rule of this
+client's own, which is exactly what it does not carry: if a centre needs more
+than a name to be useful, the server is where that is decided and said. What is
+left blank travels absent rather than as an empty string.
+
+The fields are in the same order the panel asks for them. That matters little on
+its own; what matters is that somebody who has registered a centre on the web
+recognises the form without rereading it.
+
+**Deactivating is not offered here, and the panel does offer it.** On the web it
+is a toggle on a list row; on a phone a tappable chip that takes a centre out of
+the public list is an accidental tap waiting to happen. What deactivating
+actually does — removes it from the centres a donor can choose and from the
+active listings — was read in the backend rather than assumed, and it is not
+obviously a thing to do between two pallets. If it turns out to be needed, it
+belongs behind a confirmation on the record and not on a row.
+
+### Approving an application now leads to what it created
+
+`approve` answers with `created_center_id`, and the queue offers it: after
+approving, the confirmation carries «Ver centro». That is what closes the half
+flow this phase named — creating something you cannot then look at — and it is
+the moment the correction is most likely, with the application still in mind.
+
 ---
 
 ## Objectives
@@ -82,5 +109,5 @@ of a transfers list, for instance.
 | 1 | Centres repository | `GET /v1/centers` and `GET /v1/centers/{id}` behind a sealed outcome that treats a 403 as an answer and not a failure, since that is what a coordinator gets every time. | 🟠 Medium | ✅ Done |
 | 2 | The record and the list | Name, place, address and contact, omitting what the response does not carry. Deactivated centres last, and said so. Reached from the menu, for whoever can list them. | 🟠 Medium | ✅ Done |
 | 3 | Name the other centre when possible | The transfer row names it for a session that can resolve it. The silence stays for everybody else, without a dangling separator. | 🟠 Medium | ✅ Done |
-| 4 | Create and edit | `national_admin` only; the destination of an approved application. Waits for [Phase 22](phase-22-center-applications.md), which is what gives it a case. | 🟠 Medium | ⬜ Pending |
+| 4 | Create and edit | One form for both, with only the name required because that is all the contract asks. Reached from the list and from the record, and from the confirmation of an approved application. | 🟠 Medium | ✅ Done |
 | 5 | Verify on a device | Against a transfer between two real centres. | 🟢 Low | ⬜ Pending |
