@@ -88,7 +88,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
                       ),
                       validator: (value) =>
                           (value == null || value.trim().isEmpty)
-                          ? 'Escribe tu correo o usuario'
+                          ? context.l10n.loginIdentifierRequired
                           : null,
                     ),
                     const SizedBox(height: 16),

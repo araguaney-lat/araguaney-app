@@ -244,7 +244,7 @@ class _Body extends ConsumerWidget {
         // umbral es suyo y aquí no se interpreta.
         for (final warning in shipment.heightWarnings) _Note(warning),
         const Divider(),
-        _SectionTitle('Tarimas'),
+        _SectionTitle(context.l10n.palletsTitle),
         if (shipment.pallets.isEmpty) _Note(context.l10n.shipmentNoPallets),
         for (final pallet in shipment.pallets)
           _PalletRow(
@@ -282,7 +282,7 @@ class _Body extends ConsumerWidget {
           _ => const _Note('Consultando…'),
         },
         const Divider(),
-        _SectionTitle('Incidencias'),
+        _SectionTitle(context.l10n.incidentsTitle),
         switch (incidents) {
           AsyncData(:final value) when value.isEmpty => _Note(
             context.l10n.incidentsEmptyForShipment,
@@ -373,7 +373,7 @@ class _AdvanceState extends ConsumerState<_Advance> {
   Widget build(BuildContext context) {
     final label = switch (widget.shipment.status) {
       'OPEN' => context.l10n.shipmentCloseAction,
-      'CLOSED' => 'Despachar',
+      'CLOSED' => context.l10n.shipmentDispatchAction,
       _ => null,
     };
     if (label == null) return const SizedBox.shrink();
@@ -423,7 +423,11 @@ class _AdvanceState extends ConsumerState<_Advance> {
           ),
           FilledButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: Text(closing ? 'Cerrar' : 'Despachar'),
+            child: Text(
+              closing
+                  ? context.l10n.actionClose
+                  : context.l10n.shipmentDispatchAction,
+            ),
           ),
         ],
       ),
@@ -481,7 +485,9 @@ class _Reception extends StatelessWidget {
         // cuánta merma es demasiada es un criterio de la coordinación.
         RecordField(
           label: context.l10n.shrinkageLabel,
-          value: '${shrinkage.shrinkagePct}% · ${shrinkage.notReceived} cajas',
+          value:
+              '${shrinkage.shrinkagePct}% · '
+              '${context.l10n.boxCount(shrinkage.notReceived)}',
         ),
         if (reception.notes case final notes?)
           RecordField(label: context.l10n.receptionNotesLabel, value: notes),

@@ -66,7 +66,7 @@ class _ResolveIncidentSheetState extends State<ResolveIncidentSheet> {
           const SizedBox(height: 8),
           // Las palabras de quien la reportó, citadas: cerrar sin releerlas es
           // como se cierra la equivocada.
-          Text('«${widget.description}»', style: text.bodyMedium),
+          Text(context.l10n.quoted(widget.description), style: text.bodyMedium),
           const SizedBox(height: 16),
           TextField(
             controller: _note,

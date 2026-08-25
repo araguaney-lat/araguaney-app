@@ -64,15 +64,15 @@ class CaptureQueueRepository {
 }
 
 /// Cómo se nombra una captura encolada en la pantalla de pendientes.
-String describeDraft(IntakeDraft draft) {
-  final boxes = draft.boxes.length;
-  final parts = [
-    '$boxes ${boxes == 1 ? 'caja' : 'cajas'}',
-    if (draft.boxes.isNotEmpty) draft.boxes.first.productType.displayName,
-    ?_donorLabel(draft),
-  ];
-  return parts.join(' · ');
-}
+///
+/// **It carries no count and no sentence.** A queued capture is read days
+/// later, possibly with the application in another language, and a rendered
+/// «3 cajas» written into the row would freeze today's language in there. The
+/// number is already a column of its own; the screen puts the two together.
+String describeDraft(IntakeDraft draft) => [
+  if (draft.boxes.isNotEmpty) draft.boxes.first.productType.displayName,
+  ?_donorLabel(draft),
+].join(' · ');
 
 String? _donorLabel(IntakeDraft draft) {
   if (draft.donor case final donor?) {

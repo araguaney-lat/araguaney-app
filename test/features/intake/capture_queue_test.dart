@@ -394,15 +394,19 @@ void main() {
     });
   });
 
-  group('the summary shown while it waits', () {
-    test('names how much and of what', () async {
+  group('the summary stored while it waits', () {
+    test('names what and for whom, and counts nothing', () async {
+      // The count is a column of its own, and the words for it are rendered
+      // when the screen is drawn. Writing «1 caja» into the row would freeze
+      // today's language into something read days later.
       await queue.enqueue(
         draft: draftWith(donanteLibre: 'Vecinos del barrio'),
         userId: 'user-1',
       );
 
       final row = await db.captureQueueDao.findById('capture-1');
-      expect(row?.summary, '1 caja · Paracetamol 500 mg · Vecinos del barrio');
+      expect(row?.summary, 'Paracetamol 500 mg · Vecinos del barrio');
+      expect(row?.boxCount, 1);
     });
   });
 }

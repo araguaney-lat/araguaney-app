@@ -168,7 +168,7 @@ class _BoxFields extends StatelessWidget {
         ),
         RecordField(
           label: context.l10n.productLabel,
-          value: item.productName ?? 'No descargado en este dispositivo',
+          value: item.productName ?? context.l10n.productNotOnThisDevice,
         ),
         RecordField(
           label: context.l10n.quantityLabel,
@@ -249,7 +249,7 @@ class _NotCachedView extends ConsumerWidget {
             Text(
               offline
                   ? context.l10n.boxNotCachedNeedsConnection
-                  : 'No encontramos esta caja.',
+                  : context.l10n.boxNotFound,
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodyMedium,
             ),

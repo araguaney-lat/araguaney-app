@@ -12,12 +12,8 @@ String describeAge(AppLocalizations l10n, DateTime moment, DateTime now) {
 
   return switch (elapsed) {
     _ when elapsed.inSeconds < 60 => l10n.relativeJustNow,
-    _ when elapsed.inMinutes < 60 =>
-      'hace ${_plural(elapsed.inMinutes, 'minuto')}',
-    _ when elapsed.inHours < 24 => 'hace ${_plural(elapsed.inHours, 'hora')}',
-    _ => 'hace ${_plural(elapsed.inDays, 'día')}',
+    _ when elapsed.inMinutes < 60 => l10n.relativeMinutesAgo(elapsed.inMinutes),
+    _ when elapsed.inHours < 24 => l10n.relativeHoursAgo(elapsed.inHours),
+    _ => l10n.relativeDaysAgo(elapsed.inDays),
   };
 }
-
-String _plural(int amount, String singular) =>
-    amount == 1 ? '1 $singular' : '$amount ${singular}s';

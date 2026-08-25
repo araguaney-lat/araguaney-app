@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/api/api_error_mapper.dart';
 import '../../../core/api/generated/models/transfer_out.dart';
 import '../../../core/center/center_providers.dart';
+import '../../../core/i18n/generated/app_localizations.dart';
 import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/ui/record_field.dart';
 import '../../../core/ui/status_labels.dart';
@@ -149,7 +150,9 @@ class _Loaded extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(right: 8),
                     child: ChoiceChip(
-                      label: Text('${_directionLabel(value)} · $count'),
+                      label: Text(
+                        '${_directionLabel(context.l10n, value)} · $count',
+                      ),
                       selected: direction == value,
                       onSelected: (chosen) =>
                           onDirection(chosen ? value : null),
@@ -166,7 +169,7 @@ class _Loaded extends StatelessWidget {
               // que hablarle de «este centro» describe algo que no existe. Lo
               // encontró mirar la pantalla con esa sesión, no un test.
               myCenterId == null
-                  ? 'No hay transferencias registradas.'
+                  ? context.l10n.transfersEmpty
                   : context.l10n.transfersEmptyForCenter,
               textAlign: TextAlign.center,
             ),
@@ -178,11 +181,12 @@ class _Loaded extends StatelessWidget {
   }
 }
 
-String _directionLabel(TransferDirection direction) => switch (direction) {
-  TransferDirection.incoming => 'Entrantes',
-  TransferDirection.outgoing => 'Salientes',
-  TransferDirection.other => 'De otros centros',
-};
+String _directionLabel(AppLocalizations l10n, TransferDirection direction) =>
+    switch (direction) {
+      TransferDirection.incoming => l10n.transferDirectionIncomingPlural,
+      TransferDirection.outgoing => l10n.transferDirectionOutgoingPlural,
+      TransferDirection.other => l10n.transferDirectionOtherPlural,
+    };
 
 class _TransferRow extends ConsumerWidget {
   const _TransferRow({required this.transfer, required this.direction});
@@ -214,9 +218,9 @@ class _TransferRow extends ConsumerWidget {
         TransferDirection.other => Icons.swap_horiz,
       }),
       title: Text(switch (direction) {
-        TransferDirection.incoming => 'Entrante',
-        TransferDirection.outgoing => 'Saliente',
-        TransferDirection.other => 'Entre otros centros',
+        TransferDirection.incoming => context.l10n.transferDirectionIncoming,
+        TransferDirection.outgoing => context.l10n.transferDirectionOutgoing,
+        TransferDirection.other => context.l10n.transferDirectionOther,
       }),
       subtitle: Text(other == null ? date : '$other · $date'),
       trailing: Chip(

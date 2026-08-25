@@ -12,7 +12,7 @@ import 'token_storage.dart';
 /// real del paquete; existe como provider para que las pruebas no necesiten
 /// canales de plataforma.
 final appVersionProvider = Provider<String>(
-  (ref) => throw UnimplementedError('appVersionProvider debe sobrescribirse'),
+  (ref) => throw UnimplementedError('appVersionProvider must be overridden'),
 );
 
 /// El número de compilación (`+3` de `1.0.0+3`).
@@ -26,7 +26,7 @@ final appBuildNumberProvider = Provider<String>((ref) => '');
 /// El identificador del paquete, para abrir su ficha en la tienda.
 final appPackageNameProvider = Provider<String>(
   (ref) =>
-      throw UnimplementedError('appPackageNameProvider debe sobrescribirse'),
+      throw UnimplementedError('appPackageNameProvider must be overridden'),
 );
 
 final tokenStorageProvider = Provider<TokenStorage>(

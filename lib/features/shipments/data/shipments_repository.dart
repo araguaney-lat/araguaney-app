@@ -22,7 +22,7 @@ String milestoneLabel(AppLocalizations l10n, String milestone) =>
       'DEPARTED_FLIGHT' => l10n.milestoneDeparted,
       'ARRIVED_DESTINATION' => l10n.milestoneArrived,
       'CUSTOMS_CLEARED' => l10n.milestoneCustomsCleared,
-      'DELIVERED_CONSIGNEE' => 'Entregado al consignatario',
+      'DELIVERED_CONSIGNEE' => l10n.milestoneDeliveredToConsignee,
       _ => milestone,
     };
 

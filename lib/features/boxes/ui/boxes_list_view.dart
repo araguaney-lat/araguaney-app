@@ -200,7 +200,9 @@ class _NoneInFilter extends StatelessWidget {
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 64),
         child: Text(
-          'Ninguna caja en estado «${boxStatusLabel(context.l10n, status)}».',
+          context.l10n.boxesEmptyForStatus(
+            boxStatusLabel(context.l10n, status),
+          ),
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.bodyMedium,
         ),

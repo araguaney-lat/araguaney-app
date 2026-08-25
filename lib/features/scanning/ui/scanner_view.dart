@@ -119,7 +119,9 @@ class _ScannerViewState extends ConsumerState<ScannerView> {
         title: Text(context.l10n.scanTitle),
         actions: [
           IconButton(
-            tooltip: _torchOn ? 'Apagar linterna' : 'Linterna',
+            tooltip: _torchOn
+                ? context.l10n.scanTorchOff
+                : context.l10n.scanTorch,
             icon: Icon(
               _torchOn ? Icons.flashlight_on : Icons.flashlight_on_outlined,
             ),

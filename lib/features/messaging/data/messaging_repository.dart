@@ -19,7 +19,7 @@ abstract final class ThreadType {
 
 String threadTypeLabel(AppLocalizations l10n, String type) => switch (type) {
   ThreadType.public => l10n.threadTypeCampaign,
-  ThreadType.private => 'Privado',
+  ThreadType.private => l10n.threadTypePrivate,
   _ => type,
 };
 

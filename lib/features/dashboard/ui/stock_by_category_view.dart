@@ -77,7 +77,7 @@ class _Row extends StatelessWidget {
   @override
   Widget build(BuildContext context) => ListTile(
     title: Text(categoryLabel(context.l10n, row.category)),
-    subtitle: Text('${row.boxCount} cajas'),
+    subtitle: Text(context.l10n.boxCount(row.boxCount)),
     trailing: Text(
       '${row.totalUnits}',
       style: Theme.of(context).textTheme.titleMedium,
