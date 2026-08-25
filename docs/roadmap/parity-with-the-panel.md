@@ -78,7 +78,7 @@ Roles are the panel's own, from `nav-config.ts`.
 | Panel module | Here |
 |---|---|
 | Campañas | ❌ [Phase 20](phase-20-campaigns.md) |
-| Centros | 🟡 read; creating and editing pending — [Phase 21](phase-21-centers.md) |
+| Centros | 🟡 read, created and edited; deactivating stays on the panel — [Phase 21](phase-21-centers.md) |
 | Usuarios | ❌ [Phase 24](phase-24-users-beyond-a-center.md) |
 | Postulaciones de centro | ✅ [Phase 22](phase-22-center-applications.md) |
 | Incidencias | ❌ [Phase 23](phase-23-incidents-and-audit.md) |

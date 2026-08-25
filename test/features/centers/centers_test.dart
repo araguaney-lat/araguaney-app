@@ -1,8 +1,12 @@
 import 'package:araguaney_app/core/api/api_providers.dart';
+import 'package:araguaney_app/core/api/generated/models/center_out.dart';
 import 'package:araguaney_app/core/api/generated/rest_client.dart';
 import 'package:araguaney_app/core/auth/auth_providers.dart';
+import 'package:araguaney_app/features/centers/data/centers_providers.dart';
+import 'package:araguaney_app/features/centers/ui/center_form_view.dart';
 import 'package:araguaney_app/features/centers/ui/centers_list_view.dart';
 import 'package:araguaney_app/features/transfers/ui/transfers_list_view.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -47,9 +51,11 @@ void main() {
   Future<void> pumpCenters(
     WidgetTester tester, {
     required FakeResponse Function(String path) respond,
+    bool canList = true,
   }) async {
     final container = ProviderContainer(
       overrides: [
+        canListCentersProvider.overrideWithValue(canList),
         restClientProvider.overrideWithValue(
           RestClient(
             fakeDio(FakeHttpAdapter((options) => respond(options.path))),
@@ -180,6 +186,113 @@ void main() {
         ),
       );
       expect((row.subtitle! as Text).data, isNot(contains('·')));
+    });
+  });
+
+  group('the centre form', () {
+    Future<List<RequestOptions>> pumpForm(
+      WidgetTester tester, {
+      Map<String, Object?>? existing,
+      FakeResponse? saveResponse,
+    }) async {
+      // Nueve campos y un botón no caben en la ventana por defecto del arnés,
+      // y desplazarse en cada test añade ruido a lo que se quiere probar.
+      tester.view.physicalSize = const Size(1080, 3600);
+      tester.view.devicePixelRatio = 3;
+      addTearDown(tester.view.reset);
+
+      final sent = <RequestOptions>[];
+      final adapter = FakeHttpAdapter((options) {
+        sent.add(options);
+        if (options.method == 'GET') return FakeResponse(200, <Object?>[]);
+        return saveResponse ??
+            FakeResponse(200, centerJson(id: 'c-9', name: 'Nuevo'));
+      });
+
+      final container = ProviderContainer(
+        overrides: [
+          canListCentersProvider.overrideWithValue(true),
+          restClientProvider.overrideWithValue(RestClient(fakeDio(adapter))),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: MaterialApp(
+            home: CenterFormView(
+              existing: existing == null ? null : CenterOut.fromJson(existing),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      return sent;
+    }
+
+    Future<void> tapSave(WidgetTester tester, String label) async {
+      await tester.tap(find.text(label));
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets(
+      'only the name is required, because that is all the server asks',
+      (tester) async {
+        // Inventar obligatorios que el contrato no tiene seria una regla de
+        // negocio propia, que es justo lo que este cliente no lleva.
+        final sent = await pumpForm(tester);
+
+        await tester.tap(find.text('Crear centro'));
+        await tester.pumpAndSettle();
+
+        expect(find.text('Escribe nombre'), findsOneWidget);
+        expect(sent.where((r) => r.method == 'POST'), isEmpty);
+      },
+    );
+
+    testWidgets('a name alone is enough to create one', (tester) async {
+      final sent = await pumpForm(tester);
+
+      await tester.enterText(find.byType(TextFormField).first, 'Centro Nuevo');
+      await tapSave(tester, 'Crear centro');
+
+      final post = sent.firstWhere((r) => r.method == 'POST');
+      final body = post.data! as Map;
+      expect(body['name'], 'Centro Nuevo');
+      // Lo vacio no viaja como cadena vacia: viaja ausente.
+      expect(body['address'], isNull);
+      expect(body['legal_name'], isNull);
+    });
+
+    testWidgets('editing arrives filled in', (tester) async {
+      await pumpForm(
+        tester,
+        existing: centerJson(id: 'c-1', name: 'Zulia'),
+      );
+
+      expect(find.text('Editar centro'), findsOneWidget);
+      expect(find.text('Zulia'), findsOneWidget);
+      expect(find.text('Guardar'), findsOneWidget);
+    });
+
+    testWidgets('a refusal is shown as the server phrased it', (tester) async {
+      // Describe algo que quien escribe puede corregir, como un correo mal
+      // formado, y por eso llega entero a la pantalla.
+      await pumpForm(
+        tester,
+        saveResponse: FakeResponse(422, {
+          'error': {
+            'code': 'VALIDATION_ERROR',
+            'message': 'El correo del contacto no es válido',
+          },
+        }),
+      );
+
+      await tester.enterText(find.byType(TextFormField).first, 'Centro Nuevo');
+      await tapSave(tester, 'Crear centro');
+
+      expect(find.text('El correo del contacto no es válido'), findsOneWidget);
     });
   });
 }

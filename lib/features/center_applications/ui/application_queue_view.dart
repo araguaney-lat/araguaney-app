@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/api/generated/models/center_application_out.dart';
 import '../../../core/ui/record_field.dart';
 import '../../../core/ui/relative_time.dart';
+import '../../centers/data/centers_providers.dart';
+import '../../centers/ui/center_record_view.dart';
 import '../data/center_applications_providers.dart';
 import '../data/center_applications_repository.dart';
 import 'reject_application_sheet.dart';
@@ -65,6 +67,15 @@ class _ApplicationQueueViewState extends ConsumerState<ApplicationQueueView> {
           .read(centerApplicationsRepositoryProvider)
           .approve(application.id),
       done: '${application.centerName} quedó aprobado.',
+      // Aprobar crea un centro, y `created_center_id` viene en la respuesta.
+      // Ofrecerlo cierra el paso siguiente real: quien acaba de aprobar suele
+      // querer mirar —o corregir— lo que se acaba de crear, con la postulación
+      // todavía en la cabeza.
+      onCreated: (resolved) {
+        final id = resolved.createdCenterId;
+        if (id == null) return null;
+        return (label: 'Ver centro', route: CenterRecordView.route(id));
+      },
     );
   }
 
@@ -88,6 +99,8 @@ class _ApplicationQueueViewState extends ConsumerState<ApplicationQueueView> {
     String id,
     Future<ApplicationsOutcome<CenterApplicationOut>> Function() run, {
     required String done,
+    ({String label, Route<void> route})? Function(CenterApplicationOut)?
+    onCreated,
   }) async {
     setState(() => _deciding = id);
     final outcome = await run();
@@ -95,10 +108,24 @@ class _ApplicationQueueViewState extends ConsumerState<ApplicationQueueView> {
     setState(() => _deciding = null);
 
     final messenger = ScaffoldMessenger.of(context);
+    final navigator = Navigator.of(context);
     switch (outcome) {
-      case ApplicationsRead():
+      case ApplicationsRead(:final value):
         ref.invalidate(applicationQueueProvider);
-        messenger.showSnackBar(SnackBar(content: Text(done)));
+        // El centro nuevo también: la lista de centros tiene que tenerlo.
+        ref.invalidate(centersProvider);
+        final next = onCreated?.call(value);
+        messenger.showSnackBar(
+          SnackBar(
+            content: Text(done),
+            action: next == null
+                ? null
+                : SnackBarAction(
+                    label: next.label,
+                    onPressed: () => navigator.push(next.route),
+                  ),
+          ),
+        );
       case ApplicationsRefused(:final failure):
         messenger.showSnackBar(
           SnackBar(content: Text(failure.operatorMessage)),

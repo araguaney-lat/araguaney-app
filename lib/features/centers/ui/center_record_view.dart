@@ -5,6 +5,7 @@ import '../../../core/api/generated/models/center_out.dart';
 import '../../../core/ui/record_field.dart';
 import '../data/centers_providers.dart';
 import '../data/centers_repository.dart';
+import 'center_form_view.dart';
 
 /// La ficha de un centro.
 ///
@@ -27,8 +28,25 @@ class CenterRecordView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final center = ref.watch(centerRecordProvider(centerId));
 
+    final editable = switch (center) {
+      AsyncData(value: CentersRead(:final value)) => value,
+      _ => null,
+    };
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Centro')),
+      appBar: AppBar(
+        title: const Text('Centro'),
+        actions: [
+          if (editable != null)
+            IconButton(
+              onPressed: () => Navigator.of(
+                context,
+              ).push(CenterFormView.route(existing: editable)),
+              icon: const Icon(Icons.edit_outlined),
+              tooltip: 'Editar',
+            ),
+        ],
+      ),
       body: switch (center) {
         AsyncData(value: CentersRead(:final value)) => _Body(center: value),
         AsyncData(value: CentersRefused(:final isForbidden, :final failure)) =>
