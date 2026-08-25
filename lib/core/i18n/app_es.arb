@@ -2766,5 +2766,21 @@
   "donationCaptureAction": "Capturar esta donación",
   "@donationCaptureAction": {
     "description": "Goes from a received donation to the capture it belongs to."
+  },
+  "menuSectionDay": "La jornada",
+  "@menuSectionDay": {
+    "description": "Menu group: what somebody capturing touches every few minutes."
+  },
+  "menuSectionCenter": "El centro",
+  "@menuSectionCenter": {
+    "description": "Menu group: what is coordinated about this centre's stock and shipments."
+  },
+  "menuSectionAdmin": "Administración",
+  "@menuSectionAdmin": {
+    "description": "Menu group: desk work, last because almost nobody does it from a phone."
+  },
+  "menuSectionAccount": "Tu cuenta",
+  "@menuSectionAccount": {
+    "description": "Menu group: the person's own account."
   }
 }
