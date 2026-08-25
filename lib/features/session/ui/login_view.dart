@@ -5,6 +5,7 @@ import '../../../core/auth/auth_providers.dart';
 import '../../../core/auth/session.dart';
 import '../../../core/config/app_config.dart';
 import '../../../core/platform/open_link.dart';
+import 'app_version_footer.dart';
 import 'forgot_password_view.dart';
 
 /// Inicio de sesión. Las credenciales las valida el servidor: aquí solo se
@@ -136,6 +137,8 @@ class _LoginViewState extends ConsumerState<LoginView> {
                       child: const Text('¿Olvidaste tu contraseña?'),
                     ),
                     const _RegisterCenterLink(),
+                    const SizedBox(height: 24),
+                    const AppVersionFooter(),
                   ],
                 ),
               ),

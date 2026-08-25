@@ -1,3 +1,5 @@
+import 'package:araguaney_app/core/api/client_version_gate.dart';
+import 'package:araguaney_app/core/api/client_version_providers.dart';
 import 'package:araguaney_app/core/auth/auth_providers.dart';
 import 'package:araguaney_app/core/db/db_providers.dart';
 import 'package:araguaney_app/core/platform/open_link.dart';
@@ -16,9 +18,15 @@ void main() {
     bool disableAnimations = false,
     List<String>? opened,
     List<LinkTarget>? targets,
+    ClientVersionStatus versionStatus = ClientVersionStatus.current,
   }) async {
     final container = ProviderContainer(
       overrides: [
+        appVersionProvider.overrideWithValue('1.2.3'),
+        appBuildNumberProvider.overrideWithValue('7'),
+        clientVersionStatusProvider.overrideWith(
+          (ref) async => (status: versionStatus, latest: '9.9.9'),
+        ),
         openLinkProvider.overrideWithValue((
           url, {
           target = LinkTarget.systemApp,
@@ -191,5 +199,37 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('¿Olvidaste tu contraseña?'), findsOneWidget);
+  });
+
+  group('the installed version, at the foot', () {
+    testWidgets('it names the build, not only the version', (tester) async {
+      // El nombre se repite entre publicaciones; el que identifica un binario
+      // es el numero de compilacion, que es el que hace falta para saber que
+      // se esta mirando cuando alguien reporta algo.
+      await pumpLogin(tester);
+      await tester.pumpAndSettle();
+
+      expect(find.text('Versión 1.2.3 (7)'), findsOneWidget);
+    });
+
+    testWidgets('a newer version is mentioned, not imposed', (tester) async {
+      // Hay una nueva y no pasa nada por seguir: una interrupcion seria
+      // desproporcionada. El muro es otra cosa y tiene su propia pantalla.
+      await pumpLogin(
+        tester,
+        versionStatus: ClientVersionStatus.updateAvailable,
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.textContaining('más nueva'), findsOneWidget);
+      expect(find.widgetWithText(TextFormField, 'Contraseña'), findsOneWidget);
+    });
+
+    testWidgets('a current version says nothing extra', (tester) async {
+      await pumpLogin(tester);
+      await tester.pumpAndSettle();
+
+      expect(find.textContaining('más nueva'), findsNothing);
+    });
   });
 }

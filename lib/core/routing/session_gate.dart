@@ -4,7 +4,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../features/session/ui/change_password_view.dart';
 import '../../features/session/ui/login_view.dart';
 import '../../features/session/ui/totp_challenge_view.dart';
+import '../../features/session/ui/update_available_view.dart';
+import '../../features/session/ui/update_required_view.dart';
 import '../../features/shell/ui/app_shell.dart';
+import '../api/client_version_gate.dart';
+import '../api/client_version_providers.dart';
 import '../auth/auth_providers.dart';
 import '../auth/session.dart';
 import '../ui/brand_splash.dart';
@@ -20,6 +24,31 @@ class SessionGate extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Se interpone antes que la sesión, y solo cuando el servidor lo dijo:
+    // mientras la consulta está en vuelo, o si falló, esto no vale
+    // `updateRequired` y no se ve nada distinto. Nadie se queda fuera por una
+    // petición que no llegó.
+    // `valueOrNull` y no `value`: en un `AsyncError` el segundo **relanza**, y
+    // eso convertiría un fallo de la comprobación en una pantalla de error —
+    // exactamente lo que esta compuerta promete no hacer.
+    final version = ref.watch(clientVersionStatusProvider).valueOrNull;
+
+    // El muro va primero y no admite nada por delante: por debajo del mínimo el
+    // contrato ya no garantiza que esta compilación se entienda.
+    if (version?.status == ClientVersionStatus.updateRequired) {
+      return const UpdateRequiredView();
+    }
+
+    // El aviso va después, y solo en el arranque. Se descarta para el resto de
+    // la vida del proceso en cuanto alguien lo ve, así que un cambio de sesión
+    // —entrar, cambiar una contraseña obligada— no lo trae de vuelta a mitad de
+    // un turno.
+    if (version?.status == ClientVersionStatus.updateAvailable &&
+        !ref.watch(updatePromptDismissedProvider) &&
+        !(ref.watch(updateSnoozedProvider).valueOrNull ?? true)) {
+      return UpdateAvailableView(latest: version?.latest);
+    }
+
     final state = ref.watch(sessionControllerProvider);
 
     return switch (state) {

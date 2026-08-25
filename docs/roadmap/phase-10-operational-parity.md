@@ -6,6 +6,23 @@
 > into its own phase with proper tasks, following the same rule the backend
 > roadmap uses. Every item is online-only by the Phase 06 boundary.
 
+
+> **Seven of these blocks graduated on 2026-08-24.** The backlog's own rule is
+> that a block becomes its own phase when it is scheduled, and the parity review
+> scheduled them: block 2 and 4 into [Phase 26](phase-26-shipment-to-delivery.md),
+> block 3 into [Phase 27](phase-27-create-a-transfer.md), block 9 into
+> [Phase 18](phase-18-preregistered-donations.md), block 12 into
+> [Phase 19](phase-19-center-reports.md), block 13 into
+> [Phase 23](phase-23-incidents-and-audit.md), and block 14 into
+> [Phase 17](phase-17-product-catalogue.md).
+>
+> The rows stay here so the surface remains visible, and because the review also
+> showed what this list never contained: the catalogue, campaigns, centres, the
+> application queue, the audit log and the studio were absent from it entirely.
+> See [parity with the panel](parity-with-the-panel.md).
+
+---
+
 ---
 
 ## Objectives
