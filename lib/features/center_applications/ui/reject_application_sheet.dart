@@ -61,7 +61,7 @@ class _RejectApplicationSheetState extends State<RejectApplicationSheet> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            'Rechazar ${widget.centerName}',
+            context.l10n.applicationRejectTitle(widget.centerName),
             style: Theme.of(context).textTheme.titleMedium,
           ),
           const SizedBox(height: 8),

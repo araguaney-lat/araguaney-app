@@ -190,7 +190,13 @@ class _ReviewCard extends StatelessWidget {
             const SizedBox(height: 3),
             Text(
               [
-                if (review.boxes case final boxes?) '$boxes cajas',
+                // El contrato lo declara como texto, así que solo se lee
+                // como una cuenta cuando de verdad lo es.
+                if (review.boxes case final boxes?)
+                  switch (int.tryParse(boxes)) {
+                    final count? => context.l10n.boxCount(count),
+                    _ => boxes,
+                  },
                 formatShortDate(review.createdAt),
               ].join(' · '),
               style: theme.textTheme.bodySmall,
@@ -200,11 +206,17 @@ class _ReviewCard extends StatelessWidget {
             // sería opinar sobre una regla que no es nuestra.
             if (review.reason case final reason?) ...[
               const SizedBox(height: 10),
-              Text('«$reason»', style: theme.textTheme.bodyMedium),
+              Text(
+                context.l10n.quoted(reason),
+                style: theme.textTheme.bodyMedium,
+              ),
             ],
             if (review.reviewNote case final note?) ...[
               const SizedBox(height: 8),
-              Text('Nota: $note', style: theme.textTheme.bodySmall),
+              Text(
+                context.l10n.reviewNoteLine(note),
+                style: theme.textTheme.bodySmall,
+              ),
             ],
             if (onResolve case final onResolve?) ...[
               const SizedBox(height: 14),

@@ -134,6 +134,33 @@ none: it reads like a product that does not know why it says what it says.
 **Have somebody who speaks Portuguese read it before it ships** — it is the
 language furthest from whoever is likely to write it here.
 
+## What the sweep missed, and what now catches it
+
+Sixty-two strings survived the extraction and were found weeks later by reading
+the code, not by using the application. They were the ones a sweep is worst at:
+single words in a `switch` beside keys that were already extracted
+(`'Despachar'`, `'Privado'`, `'Sin rol'`), Spanish grammar written as Dart
+(`boxes == 1 ? 'caja' : 'cajas'`, in six places), and text built by joining
+details — `'lote $batch'`, `'vence ${date}'`, `'cerrada ${date}'`.
+
+**A missed string looks perfectly correct in Spanish.** It only breaks the day a
+second language exists, which is after the moment anybody would go looking. So
+the rule stopped being remembered and became a test: `no_spanish_literals_test`
+scans `lib/` for accents, Spanish punctuation and words that cannot be anything
+else. It is deliberately narrow — it gives up some recall to raise no false
+alarms, because a check that cries wolf gets an exception added to it and then
+it is not a check. It found two more while it was being written.
+
+Two things came out of the same pass:
+
+- **The queue stored a rendered count.** `'3 cajas'` went into the row and is
+  read days later, possibly with the application in another language. The number
+  was already a column of its own; the words are rendered when the screen is
+  drawn.
+- **Four exception messages were in Spanish.** Diagnostics are English by the
+  rule above — nobody operating reads them, and Sentry is read by whoever wrote
+  them.
+
 ## Recorded for the other repository
 
 `docs/backend-requests.md` request 6 asked for named codes and Spanish messages.

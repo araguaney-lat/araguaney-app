@@ -70,7 +70,7 @@ class _IncidentsListViewState extends ConsumerState<IncidentsListView> {
       appBar: AppBar(title: Text(context.l10n.incidentsTitle)),
       body: switch (incidents) {
         AsyncData(value: IncidentsRead(:final value)) when value.isEmpty =>
-          const _Message('No hay incidencias registradas.'),
+          _Message(context.l10n.incidentsEmpty),
         AsyncData(value: IncidentsRead(:final value)) => _List(
           incidents: value,
           canResolve: canResolve,
@@ -153,11 +153,12 @@ class _Header extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Padding(
     padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-    child: Text(switch (open) {
-      0 => context.l10n.nothingAwaitsDecision,
-      1 => 'Una incidencia abierta',
-      _ => '$open incidencias abiertas',
-    }, style: Theme.of(context).textTheme.bodyMedium),
+    child: Text(
+      open == 0
+          ? context.l10n.nothingAwaitsDecision
+          : context.l10n.incidentsOpenCount(open),
+      style: Theme.of(context).textTheme.bodyMedium,
+    ),
   );
 }
 
@@ -202,11 +203,17 @@ class _IncidentCard extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             // Citada: son las palabras de quien la reportó.
-            Text('«${incident.description}»', style: text.bodyMedium),
+            Text(
+              context.l10n.quoted(incident.description),
+              style: text.bodyMedium,
+            ),
             if (incident.resolutionNote case final note? when note.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.only(top: 8),
-                child: Text('Cerrada: $note', style: text.bodySmall),
+                child: Text(
+                  context.l10n.incidentClosedWithNote(note),
+                  style: text.bodySmall,
+                ),
               ),
             const SizedBox(height: 12),
             Row(

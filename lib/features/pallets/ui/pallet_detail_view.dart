@@ -125,7 +125,9 @@ class PalletDetailView extends ConsumerWidget {
     final actionable = canOperate && open && !offline;
 
     return Scaffold(
-      appBar: AppBar(title: Text(pallet.valueOrNull?.code ?? 'Tarima')),
+      appBar: AppBar(
+        title: Text(pallet.valueOrNull?.code ?? context.l10n.palletTitle),
+      ),
       body: switch (pallet) {
         AsyncData(:final value) => _Fields(
           pallet: value,

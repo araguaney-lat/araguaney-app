@@ -149,7 +149,7 @@ class _Person extends StatelessWidget {
       [
         centerRoleLabel(context.l10n, person.centerRole),
         person.username,
-        if (!person.isActive) 'cuenta desactivada',
+        if (!person.isActive) context.l10n.accountDisabledTag,
       ].join(' · '),
     ),
     // Reenviar el acceso no se ofrece sobre una cuenta desactivada: el

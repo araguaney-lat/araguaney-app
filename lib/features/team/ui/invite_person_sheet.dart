@@ -91,7 +91,7 @@ class _InvitePersonSheetState extends State<InvitePersonSheet> {
               if (text.isEmpty) return context.l10n.emailRequired;
               // Comprobación mínima: quien valida de verdad es el servidor, y
               // una expresión regular más lista rechazaría correos válidos.
-              return text.contains('@') ? null : 'Ese correo no parece válido';
+              return text.contains('@') ? null : context.l10n.emailLooksInvalid;
             },
           ),
           const SizedBox(height: 12),

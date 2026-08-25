@@ -109,7 +109,11 @@ class _BoxDraftSheetState extends State<BoxDraftSheet> {
     heightFactor: 0.9,
     child: Scaffold(
       appBar: AppBar(
-        title: Text(widget.initial == null ? 'Agregar caja' : 'Editar caja'),
+        title: Text(
+          widget.initial == null
+              ? context.l10n.boxDraftAddTitle
+              : context.l10n.boxDraftEditTitle,
+        ),
       ),
       // Guardar confirma, y confirmar es dorado. Estaba en azul arriba, que es
       // el color de navegar: la misma hoja enseñaba lo contrario de lo que
@@ -202,7 +206,9 @@ class _BoxDraftSheetState extends State<BoxDraftSheet> {
               contentPadding: EdgeInsets.zero,
               title: Text(context.l10n.expiryLabel),
               subtitle: Text(
-                _expiry == null ? 'Sin fecha' : formatShortDate(_expiry!),
+                _expiry == null
+                    ? context.l10n.expiryNone
+                    : formatShortDate(_expiry!),
               ),
               trailing: const Icon(Icons.event),
               onTap: _pickExpiry,

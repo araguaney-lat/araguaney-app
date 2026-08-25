@@ -156,9 +156,11 @@ class _Fields extends StatelessWidget {
         RecordField(
           label: context.l10n.addressLabel,
           value: switch (direction) {
-            TransferDirection.incoming => 'Entrante, hacia este centro',
-            TransferDirection.outgoing => 'Saliente, desde este centro',
-            TransferDirection.other => 'Entre otros centros',
+            TransferDirection.incoming =>
+              context.l10n.transferDirectionIncomingLong,
+            TransferDirection.outgoing =>
+              context.l10n.transferDirectionOutgoingLong,
+            TransferDirection.other => context.l10n.transferDirectionOther,
           },
         ),
         RecordField(
@@ -240,11 +242,15 @@ class _Actions extends StatelessWidget {
                   child: action == TransferAction.reject
                       ? OutlinedButton(
                           onPressed: offline ? null : () => onAction(action),
-                          child: Text(transferActionLabel(action)),
+                          child: Text(
+                            transferActionLabel(context.l10n, action),
+                          ),
                         )
                       : FilledButton(
                           onPressed: offline ? null : () => onAction(action),
-                          child: Text(transferActionLabel(action)),
+                          child: Text(
+                            transferActionLabel(context.l10n, action),
+                          ),
                         ),
                 ),
                 const SizedBox(width: 12),

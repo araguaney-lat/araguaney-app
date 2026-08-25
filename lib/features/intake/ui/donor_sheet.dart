@@ -110,7 +110,7 @@ class _DonorSheetState extends State<DonorSheet> {
               controller: _firstName,
               decoration: InputDecoration(labelText: context.l10n.nameLabel),
               textCapitalization: TextCapitalization.words,
-              validator: _required,
+              validator: (value) => _required(context, value),
             ),
             const SizedBox(height: 12),
             TextFormField(
@@ -119,7 +119,7 @@ class _DonorSheetState extends State<DonorSheet> {
                 labelText: context.l10n.lastNameLabel,
               ),
               textCapitalization: TextCapitalization.words,
-              validator: _required,
+              validator: (value) => _required(context, value),
             ),
             if (_type == DonorType.legal) ...[
               const SizedBox(height: 12),
@@ -162,8 +162,10 @@ class _DonorSheetState extends State<DonorSheet> {
     ),
   );
 
-  static String? _required(String? value) =>
-      (value == null || value.trim().isEmpty) ? 'Este campo hace falta' : null;
+  static String? _required(BuildContext context, String? value) =>
+      (value == null || value.trim().isEmpty)
+      ? context.l10n.fieldRequiredGeneric
+      : null;
 
   static String? _emptyToNull(String value) {
     final trimmed = value.trim();

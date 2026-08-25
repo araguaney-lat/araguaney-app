@@ -59,9 +59,9 @@ class _PendingCapturesViewState extends ConsumerState<PendingCapturesView> {
       return failure.operatorMessage(l10n);
     }
     if (report.sent > 0 && report.remaining == 0) {
-      return 'Se enviaron ${report.sent}. No queda nada pendiente.';
+      return l10n.queueSentAllDone(report.sent);
     }
-    if (report.sent > 0) return 'Se enviaron ${report.sent}.';
+    if (report.sent > 0) return l10n.queueSent(report.sent);
     if (report.parked > 0) {
       return l10n.queueParkedByServer(report.parked);
     }
@@ -73,7 +73,9 @@ class _PendingCapturesViewState extends ConsumerState<PendingCapturesView> {
       context: context,
       builder: (context) => AlertDialog(
         title: Text(context.l10n.discardCaptureConfirmTitle),
-        content: Text(context.l10n.discardCaptureExplanation(row.summary)),
+        content: Text(
+          context.l10n.discardCaptureExplanation(_summary(context.l10n, row)),
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
@@ -316,6 +318,16 @@ class _ActionsState extends ConsumerState<_Actions> {
   );
 }
 
+/// Cómo se nombra una captura encolada.
+///
+/// The count is rendered here and not stored: the row keeps the number, and the
+/// words for it belong to whatever language the application is in when somebody
+/// opens this screen.
+String _summary(AppLocalizations l10n, QueuedCaptureRow row) {
+  final boxes = l10n.boxCount(row.boxCount);
+  return row.summary.isEmpty ? boxes : '$boxes · ${row.summary}';
+}
+
 class _QueuedCard extends StatelessWidget {
   const _QueuedCard({
     required this.row,
@@ -347,7 +359,10 @@ class _QueuedCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(row.summary, style: theme.textTheme.titleMedium),
+                      Text(
+                        _summary(context.l10n, row),
+                        style: theme.textTheme.titleMedium,
+                      ),
                       const SizedBox(height: 3),
                       Text(
                         _when(context.l10n, row),
@@ -430,7 +445,9 @@ class _StatusChip extends StatelessWidget {
         borderRadius: BorderRadius.circular(6),
       ),
       child: Text(
-        rejected ? 'Rechazada' : 'Pendiente',
+        rejected
+            ? context.l10n.queueStatusRejected
+            : context.l10n.queueStatusPending,
         style: Theme.of(context).textTheme.labelSmall?.copyWith(
           color: rejected ? palette.alertInk : palette.noticeInk,
         ),

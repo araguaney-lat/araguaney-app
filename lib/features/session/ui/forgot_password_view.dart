@@ -93,7 +93,7 @@ class _ForgotPasswordViewState extends ConsumerState<ForgotPasswordView> {
           onFieldSubmitted: (_) => _submit(),
           decoration: InputDecoration(labelText: context.l10n.emailLabel),
           validator: (value) => (value == null || value.trim().isEmpty)
-              ? 'Escribe tu correo'
+              ? context.l10n.emailRequired
               : null,
         ),
         if (_failure case final message?) ...[

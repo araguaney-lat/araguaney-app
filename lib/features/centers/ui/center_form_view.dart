@@ -134,7 +134,11 @@ class _CenterFormViewState extends ConsumerState<CenterFormView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(_isEdit ? 'Editar centro' : 'Nuevo centro')),
+      appBar: AppBar(
+        title: Text(
+          _isEdit ? context.l10n.centerEditTitle : context.l10n.centerNewTitle,
+        ),
+      ),
       body: Form(
         key: _formKey,
         child: ListView(
@@ -175,7 +179,11 @@ class _CenterFormViewState extends ConsumerState<CenterFormView> {
                       dimension: 20,
                       child: CircularProgressIndicator(strokeWidth: 2),
                     )
-                  : Text(_isEdit ? 'Guardar' : 'Crear centro'),
+                  : Text(
+                      _isEdit
+                          ? context.l10n.actionSave
+                          : context.l10n.centerCreateAction,
+                    ),
             ),
           ],
         ),

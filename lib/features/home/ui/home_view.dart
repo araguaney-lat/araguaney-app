@@ -201,10 +201,12 @@ class _CenterWeight extends ConsumerWidget {
       margin: const EdgeInsets.only(bottom: 8),
       child: ListTile(
         leading: const Icon(Icons.scale_outlined),
-        title: Text('${totals.totalWeightKg} kg sellados'),
+        title: Text(context.l10n.homeSealedWeight('${totals.totalWeightKg}')),
         subtitle: Text(
-          '${totals.totalBoxesSealed} cajas · ${totals.totalUnitsSealed} '
-          'unidades',
+          context.l10n.homeSealedCounts(
+            totals.totalBoxesSealed,
+            totals.totalUnitsSealed,
+          ),
         ),
       ),
     );

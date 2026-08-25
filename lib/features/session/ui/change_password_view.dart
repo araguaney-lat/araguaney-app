@@ -156,7 +156,9 @@ class _ChangePasswordViewState extends ConsumerState<ChangePasswordView> {
                               child: CircularProgressIndicator(strokeWidth: 2),
                             )
                           : Text(
-                              widget.forced ? 'Guardar y continuar' : 'Guardar',
+                              widget.forced
+                                  ? context.l10n.actionSaveAndContinue
+                                  : context.l10n.actionSave,
                             ),
                     ),
                   ],

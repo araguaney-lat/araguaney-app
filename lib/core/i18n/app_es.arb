@@ -2087,5 +2087,322 @@
   "refusalCenterRequired": "Elige primero el centro en el que vas a registrar. Se cambia desde el menú.",
   "@refusalCenterRequired": {
     "description": "The server refuses a create because the session belongs to no centre and named none (CENTER_REQUIRED). Only a national administrator can see this."
+  },
+  "boxCount": "{count, plural, =1{1 caja} other{{count} cajas}}",
+  "@boxCount": {
+    "description": "A number of boxes on its own, used wherever a count is one item in a list of details.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "batchOf": "lote {batch}",
+  "@batchOf": {
+    "description": "The batch a box carries, as one detail among others.",
+    "placeholders": {
+      "batch": {
+        "type": "String"
+      }
+    }
+  },
+  "expiresOn": "vence {date}",
+  "@expiresOn": {
+    "description": "The expiry date of a box, as one detail among others.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "palletClosedOn": "cerrada {date}",
+  "@palletClosedOn": {
+    "description": "When a pallet was closed. Feminine in Spanish because it agrees with «tarima».",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "palletDeliveredOn": "entregada {date}",
+  "@palletDeliveredOn": {
+    "description": "When a pallet was delivered. Agrees with «tarima».",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "quoted": "«{text}»",
+  "@quoted": {
+    "description": "Wraps somebody else's words: an incident report, an application message, the reason for a review. The quotation marks are language-specific.",
+    "placeholders": {
+      "text": {
+        "type": "String"
+      }
+    }
+  },
+  "relativeMinutesAgo": "hace {count, plural, =1{1 minuto} other{{count} minutos}}",
+  "@relativeMinutesAgo": {
+    "description": "How old a cached piece of data is, in minutes.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "relativeHoursAgo": "hace {count, plural, =1{1 hora} other{{count} horas}}",
+  "@relativeHoursAgo": {
+    "description": "How old a cached piece of data is, in hours.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "relativeDaysAgo": "hace {count, plural, =1{1 día} other{{count} días}}",
+  "@relativeDaysAgo": {
+    "description": "How old a cached piece of data is, in days.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "homeSealedWeight": "{weight} kg sellados",
+  "@homeSealedWeight": {
+    "description": "Total weight of this centre's sealed boxes. «Sealed» and not «total» because what is captured but unsealed does not count here.",
+    "placeholders": {
+      "weight": {
+        "type": "String"
+      }
+    }
+  },
+  "homeSealedCounts": "{boxes, plural, =1{1 caja} other{{boxes} cajas}} · {units} unidades",
+  "@homeSealedCounts": {
+    "description": "Boxes and units behind the sealed weight.",
+    "placeholders": {
+      "boxes": {
+        "type": "int"
+      },
+      "units": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewNoteLine": "Nota: {note}",
+  "@reviewNoteLine": {
+    "description": "The note coordination left when resolving a risk review.",
+    "placeholders": {
+      "note": {
+        "type": "String"
+      }
+    }
+  },
+  "emailLooksInvalid": "Ese correo no parece válido",
+  "@emailLooksInvalid": {
+    "description": "Minimal client-side check on an address. The server is what really validates it."
+  },
+  "accountDisabledTag": "cuenta desactivada",
+  "@accountDisabledTag": {
+    "description": "Marks a disabled account in the team directory, as one detail among others."
+  },
+  "roleNone": "Sin rol",
+  "@roleNone": {
+    "description": "Shown for somebody who carries no centre role."
+  },
+  "loginIdentifierRequired": "Escribe tu correo o usuario",
+  "@loginIdentifierRequired": {
+    "description": "Validation when the sign-in identifier is empty. It accepts either."
+  },
+  "actionSaveAndContinue": "Guardar y continuar",
+  "@actionSaveAndContinue": {
+    "description": "Saving a forced password change, which continues into the application."
+  },
+  "fieldRequiredGeneric": "Este campo hace falta",
+  "@fieldRequiredGeneric": {
+    "description": "Validation for a required field whose label is already beside it."
+  },
+  "boxDraftAddTitle": "Agregar caja",
+  "@boxDraftAddTitle": {
+    "description": "Title of the sheet that adds a box to a capture."
+  },
+  "boxDraftEditTitle": "Editar caja",
+  "@boxDraftEditTitle": {
+    "description": "Title of the same sheet when it is editing a box."
+  },
+  "expiryNone": "Sin fecha",
+  "@expiryNone": {
+    "description": "No expiry date chosen for a box."
+  },
+  "queueSentAllDone": "Se enviaron {count}. No queda nada pendiente.",
+  "@queueSentAllDone": {
+    "description": "Result of flushing the queue when everything went through.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "queueSent": "Se enviaron {count}.",
+  "@queueSent": {
+    "description": "Result of flushing the queue when something still waits.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "queueStatusPending": "Pendiente",
+  "@queueStatusPending": {
+    "description": "A queued capture still waiting for signal."
+  },
+  "queueStatusRejected": "Rechazada",
+  "@queueStatusRejected": {
+    "description": "A queued capture the server refused, waiting for a decision."
+  },
+  "scanTorchOff": "Apagar linterna",
+  "@scanTorchOff": {
+    "description": "Turns the camera light off."
+  },
+  "palletOpenClosedCounts": "{open, plural, =1{1 abierta} other{{open} abiertas}} · {closed, plural, =1{1 cerrada} other{{closed} cerradas}}",
+  "@palletOpenClosedCounts": {
+    "description": "The two pallet figures that decide what to do now: an open one takes boxes, a closed one waits for a shipment.",
+    "placeholders": {
+      "open": {
+        "type": "int"
+      },
+      "closed": {
+        "type": "int"
+      }
+    }
+  },
+  "palletTitle": "Tarima",
+  "@palletTitle": {
+    "description": "A single pallet, used as a screen title before its code is known."
+  },
+  "shipmentDispatchAction": "Despachar",
+  "@shipmentDispatchAction": {
+    "description": "Marks a closed shipment as gone."
+  },
+  "milestoneDeliveredToConsignee": "Entregado al consignatario",
+  "@milestoneDeliveredToConsignee": {
+    "description": "Logistics milestone: the shipment reached whoever receives it."
+  },
+  "transfersEmpty": "No hay transferencias registradas.",
+  "@transfersEmpty": {
+    "description": "No transfers at all, for a session that belongs to no centre and so cannot be told about «this centre»."
+  },
+  "transferDirectionIncomingPlural": "Entrantes",
+  "@transferDirectionIncomingPlural": {
+    "description": "Filter for transfers arriving at this centre."
+  },
+  "transferDirectionOutgoingPlural": "Salientes",
+  "@transferDirectionOutgoingPlural": {
+    "description": "Filter for transfers leaving this centre."
+  },
+  "transferDirectionOtherPlural": "De otros centros",
+  "@transferDirectionOtherPlural": {
+    "description": "Filter for transfers between two other centres."
+  },
+  "transferDirectionIncoming": "Entrante",
+  "@transferDirectionIncoming": {
+    "description": "A transfer arriving at this centre."
+  },
+  "transferDirectionOutgoing": "Saliente",
+  "@transferDirectionOutgoing": {
+    "description": "A transfer leaving this centre."
+  },
+  "transferDirectionOther": "Entre otros centros",
+  "@transferDirectionOther": {
+    "description": "A transfer between two other centres."
+  },
+  "transferDirectionIncomingLong": "Entrante, hacia este centro",
+  "@transferDirectionIncomingLong": {
+    "description": "Direction of a transfer, on its record."
+  },
+  "transferDirectionOutgoingLong": "Saliente, desde este centro",
+  "@transferDirectionOutgoingLong": {
+    "description": "Direction of a transfer, on its record."
+  },
+  "transferActionApprove": "Aprobar",
+  "@transferActionApprove": {
+    "description": "Origin centre accepts a requested transfer."
+  },
+  "transferActionReject": "Rechazar",
+  "@transferActionReject": {
+    "description": "Origin centre refuses a requested transfer."
+  },
+  "transferActionDispatch": "Despachar",
+  "@transferActionDispatch": {
+    "description": "Origin centre sends an approved transfer."
+  },
+  "transferActionReceive": "Recibir",
+  "@transferActionReceive": {
+    "description": "Destination centre confirms a transfer arrived."
+  },
+  "boxesEmptyForStatus": "Ninguna caja en estado «{status}».",
+  "@boxesEmptyForStatus": {
+    "description": "No cached box matches the status filter in use.",
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "productNotOnThisDevice": "No descargado en este dispositivo",
+  "@productNotOnThisDevice": {
+    "description": "The product name is missing because the catalogue and the boxes sync separately."
+  },
+  "boxNotFound": "No encontramos esta caja.",
+  "@boxNotFound": {
+    "description": "A box that is neither cached nor on the server, with a connection available."
+  },
+  "incidentsEmpty": "No hay incidencias registradas.",
+  "@incidentsEmpty": {
+    "description": "No incidents on this shipment or centre."
+  },
+  "incidentsOpenCount": "{count, plural, =1{Una incidencia abierta} other{{count} incidencias abiertas}}",
+  "@incidentsOpenCount": {
+    "description": "How many incidents are waiting for a decision.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "incidentClosedWithNote": "Cerrada: {note}",
+  "@incidentClosedWithNote": {
+    "description": "An incident that was resolved, with the note left when closing it.",
+    "placeholders": {
+      "note": {
+        "type": "String"
+      }
+    }
+  },
+  "applicationRejectTitle": "Rechazar {center}",
+  "@applicationRejectTitle": {
+    "description": "Heading of the sheet that refuses a centre application.",
+    "placeholders": {
+      "center": {
+        "type": "String"
+      }
+    }
+  },
+  "applicationsForbidden": "Solo quien revisa postulaciones puede ver esta cola.",
+  "@applicationsForbidden": {
+    "description": "The queue refused a session that cannot review applications."
+  },
+  "centerEditTitle": "Editar centro",
+  "@centerEditTitle": {
+    "description": "Title of the centre form when it edits an existing one."
+  },
+  "centerCreateAction": "Crear centro",
+  "@centerCreateAction": {
+    "description": "Submits the new-centre form."
+  },
+  "threadTypePrivate": "Privado",
+  "@threadTypePrivate": {
+    "description": "A conversation that is not tied to a campaign."
   }
 }

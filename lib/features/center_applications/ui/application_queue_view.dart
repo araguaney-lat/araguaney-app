@@ -173,7 +173,7 @@ class _ApplicationQueueViewState extends ConsumerState<ApplicationQueueView> {
         ) =>
           _Message(
             isForbidden
-                ? 'Solo quien revisa postulaciones puede ver esta cola.'
+                ? context.l10n.applicationsForbidden
                 : failure.operatorMessage(context.l10n),
           ),
         AsyncError(:final error) => _Message('$error'),
@@ -268,7 +268,7 @@ class _ApplicationCard extends StatelessWidget {
                 when message.isNotEmpty) ...[
               const SizedBox(height: 8),
               // Entre comillas y sin editar: son las palabras de quien postuló.
-              Text('«$message»', style: text.bodyMedium),
+              Text(context.l10n.quoted(message), style: text.bodyMedium),
             ],
             const SizedBox(height: 16),
             if (busy)

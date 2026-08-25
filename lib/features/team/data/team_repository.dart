@@ -13,7 +13,7 @@ String centerRoleLabel(AppLocalizations l10n, String? role) => switch (role) {
   'volunteer' => l10n.roleVolunteerLabel,
   'coordinator' => l10n.roleCoordinatorLabel,
   'national_admin' => l10n.roleNationalAdminLabel,
-  null => 'Sin rol',
+  null => l10n.roleNone,
   _ => role,
 };
 

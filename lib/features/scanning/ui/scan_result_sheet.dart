@@ -140,9 +140,9 @@ class _CachedBox extends StatelessWidget {
         Text(
           [
             '${box.quantity} ${box.unit}',
-            if (box.batch case final batch?) 'lote $batch',
+            if (box.batch case final batch?) context.l10n.batchOf(batch),
             if (box.expiryDate case final expiry?)
-              'vence ${formatShortDate(expiry)}',
+              context.l10n.expiresOn(formatShortDate(expiry)),
           ].join(' · '),
           style: theme.textTheme.bodySmall,
         ),
@@ -185,7 +185,7 @@ class _PublicBox extends StatelessWidget {
             '${box.quantity} ${box.unit}',
             categoryLabel(context.l10n, box.category),
             if (box.expiryDate case final expiry?)
-              'vence ${formatShortDate(expiry)}',
+              context.l10n.expiresOn(formatShortDate(expiry)),
           ].join(' · '),
           style: theme.textTheme.bodySmall,
         ),
@@ -216,11 +216,11 @@ class _Pallet extends StatelessWidget {
         Text(pallet.centerName, style: theme.textTheme.titleMedium),
         Text(
           [
-            '${pallet.boxCount} ${pallet.boxCount == 1 ? 'caja' : 'cajas'}',
+            context.l10n.boxCount(pallet.boxCount),
             if (pallet.closedAt case final closed?)
-              'cerrada ${formatShortDate(closed)}',
+              context.l10n.palletClosedOn(formatShortDate(closed)),
             if (pallet.deliveredAt case final delivered?)
-              'entregada ${formatShortDate(delivered)}',
+              context.l10n.palletDeliveredOn(formatShortDate(delivered)),
           ].join(' · '),
           style: theme.textTheme.bodySmall,
         ),

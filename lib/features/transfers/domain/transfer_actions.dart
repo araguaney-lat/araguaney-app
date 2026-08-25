@@ -1,3 +1,5 @@
+import '../../../core/i18n/generated/app_localizations.dart';
+
 /// Hacia dónde va una transferencia respecto del centro de quien mira.
 enum TransferDirection {
   /// Sale de este centro.
@@ -66,9 +68,10 @@ Set<TransferAction> availableTransferActions({
   };
 }
 
-String transferActionLabel(TransferAction action) => switch (action) {
-  TransferAction.approve => 'Aprobar',
-  TransferAction.reject => 'Rechazar',
-  TransferAction.dispatch => 'Despachar',
-  TransferAction.receive => 'Recibir',
-};
+String transferActionLabel(AppLocalizations l10n, TransferAction action) =>
+    switch (action) {
+      TransferAction.approve => l10n.transferActionApprove,
+      TransferAction.reject => l10n.transferActionReject,
+      TransferAction.dispatch => l10n.transferActionDispatch,
+      TransferAction.receive => l10n.transferActionReceive,
+    };

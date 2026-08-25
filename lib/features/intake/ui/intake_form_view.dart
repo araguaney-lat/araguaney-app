@@ -517,9 +517,9 @@ class _BoxRow extends StatelessWidget {
         // que la persona tiene delante.
         ?box.code,
         '${box.quantity} ${box.unit}',
-        if (box.batch case final batch?) 'lote $batch',
+        if (box.batch case final batch?) context.l10n.batchOf(batch),
         if (box.expiryDate case final expiry?)
-          'vence ${formatShortDate(expiry)}',
+          context.l10n.expiresOn(formatShortDate(expiry)),
       ].join(' · '),
     ),
     onTap: onEdit,

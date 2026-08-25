@@ -140,8 +140,7 @@ class _Header extends ConsumerWidget {
         // Abiertas y cerradas son las dos cifras que deciden qué hacer ahora:
         // una abierta admite cajas, una cerrada espera un envío.
         Text(
-          '$open ${open == 1 ? 'abierta' : 'abiertas'} · '
-          '$closed ${closed == 1 ? 'cerrada' : 'cerradas'}',
+          context.l10n.palletOpenClosedCounts(open, closed),
           style: Theme.of(context).textTheme.bodySmall,
         ),
       ],
@@ -229,7 +228,7 @@ class _PalletRow extends StatelessWidget {
       if (pallet.grossWeightKg case final weight?) '$weight kg',
       if (pallet.heightCm case final height?) '$height cm',
       if (pallet.closedAt case final closed?)
-        'cerrada ${formatShortDate(closed)}',
+        context.l10n.palletClosedOn(formatShortDate(closed)),
       if (pallet.shipmentId != null) context.l10n.palletInShipment,
     ];
 

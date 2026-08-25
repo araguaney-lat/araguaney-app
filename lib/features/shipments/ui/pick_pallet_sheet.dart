@@ -74,7 +74,7 @@ class _List extends StatelessWidget {
               [
                 palletStatusLabel(context.l10n, pallet.status),
                 if (pallet.closedAt case final closed?)
-                  'cerrada ${formatShortDate(closed)}',
+                  context.l10n.palletClosedOn(formatShortDate(closed)),
                 if (pallet.heightCm case final height?) '$height cm',
                 if (pallet.grossWeightKg case final weight?) '$weight kg',
               ].join(' · '),

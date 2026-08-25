@@ -68,7 +68,7 @@ class _IntakeList extends StatelessWidget {
       // lista daba «0 cajas» en todas las filas, que no es un dato que falte
       // sino uno falso. Mientras no exista la petición 2 no se cuenta nada.
       final parts = [
-        if (boxes > 0) '$boxes ${boxes == 1 ? 'caja' : 'cajas'}',
+        if (boxes > 0) context.l10n.boxCount(boxes),
         ?donorLabel(intake),
       ];
 

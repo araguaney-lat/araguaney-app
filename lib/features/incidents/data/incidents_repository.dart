@@ -32,10 +32,10 @@ abstract final class IncidentType {
 /// Nombre en español de un tipo. Traducción de interfaz, no interpretación.
 String incidentTypeLabel(AppLocalizations l10n, String type) => switch (type) {
   IncidentType.weightDifference => l10n.incidentTypeWeightDiff,
-  IncidentType.missingBox => 'Caja faltante',
+  IncidentType.missingBox => l10n.incidentTypeMissingBox,
   IncidentType.damage => l10n.incidentTypeDamage,
   IncidentType.customsRetention => l10n.incidentTypeCustoms,
-  IncidentType.other => 'Otra',
+  IncidentType.other => l10n.incidentTypeOther,
   _ => type,
 };
 
