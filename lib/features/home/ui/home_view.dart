@@ -95,7 +95,7 @@ class _PendingCaptures extends ConsumerWidget {
               ? '1 captura pendiente de enviar'
               : '$pending capturas pendientes de enviar',
         ),
-        subtitle: Text(context.l10n.homeDejaLaAplicacionAbiertaHasta),
+        subtitle: Text(context.l10n.homeKeepAppOpenWhileSending),
         trailing: const Icon(Icons.chevron_right),
         onTap: () => Navigator.of(context).push(PendingCapturesView.route()),
       ),
@@ -140,12 +140,12 @@ class _DayGrid extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) => _Grid(
     children: [
       _Tile(
-        label: context.l10n.homeCapturasHoy,
+        label: context.l10n.homeCapturesToday,
         value: '${ref.watch(todaysIntakeCountProvider)}',
         onTap: () => Navigator.of(context).push(IntakeListView.route()),
       ),
       _Tile(
-        label: context.l10n.homeStockDelCentro,
+        label: context.l10n.homeCenterStock,
         caption: 'por categoría',
         onTap: () => Navigator.of(context).push(StockByCategoryView.route()),
       ),
@@ -161,17 +161,17 @@ class _CoordinatorGrid extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) => _Grid(
     children: [
       _Tile(
-        label: context.l10n.homeCapturasHoy,
+        label: context.l10n.homeCapturesToday,
         value: '${ref.watch(todaysIntakeCountProvider)}',
         onTap: () => Navigator.of(context).push(IntakeListView.route()),
       ),
       _Tile(
-        label: context.l10n.homeTarimasAbiertas,
+        label: context.l10n.homeOpenPallets,
         value: '${ref.watch(openPalletCountProvider)}',
         onTap: () => Navigator.of(context).push(PalletsListView.route()),
       ),
       _Tile(
-        label: context.l10n.homeStockDelCentro,
+        label: context.l10n.homeCenterStock,
         caption: 'por categoría',
         onTap: () => Navigator.of(context).push(StockByCategoryView.route()),
       ),

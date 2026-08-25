@@ -26,16 +26,16 @@ class IntakeDetailView extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 8),
       children: [
         RecordField(
-          label: context.l10n.intakeDonante,
+          label: context.l10n.donorLabel,
           value: donorLabel(intake) ?? 'Anónimo',
         ),
         if (intake.notes case final notes?)
-          RecordField(label: context.l10n.intakeNotas, value: notes),
+          RecordField(label: context.l10n.notesLabel, value: notes),
         const Divider(),
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
           child: Text(
-            context.l10n.boxesCajas,
+            context.l10n.boxesTitle,
             style: Theme.of(context).textTheme.titleMedium,
           ),
         ),
@@ -46,7 +46,7 @@ class IntakeDetailView extends StatelessWidget {
         if (intake.boxes.isEmpty)
           Padding(
             padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
-            child: Text(context.l10n.intakeElHistorialNoTraeLas),
+            child: Text(context.l10n.captureBoxesNotInHistory),
           ),
         for (final box in intake.boxes)
           ListTile(

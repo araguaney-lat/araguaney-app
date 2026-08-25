@@ -77,9 +77,7 @@ class ShipmentRecordView extends ConsumerWidget {
     // haber dejado de estar montado.
     final l10n = context.l10n;
     final messenger = ScaffoldMessenger.of(context)
-      ..showSnackBar(
-        SnackBar(content: Text(l10n.shipmentsPreparandoElManifiesto)),
-      );
+      ..showSnackBar(SnackBar(content: Text(l10n.manifestPreparing)));
 
     final outcome = await ref
         .read(shipmentsRepositoryProvider)
@@ -95,14 +93,12 @@ class ShipmentRecordView extends ConsumerWidget {
         final opened = await ref.read(openLinkProvider)(downloadUrl);
         if (!opened) {
           messenger.showSnackBar(
-            SnackBar(content: Text(l10n.shipmentsNoSePudoAbrirEl)),
+            SnackBar(content: Text(l10n.manifestOpenFailed)),
           );
         }
       case ManifestStillWorking():
         messenger.showSnackBar(
-          SnackBar(
-            content: Text(l10n.shipmentsElManifiestoSigueArmandoseVuelve),
-          ),
+          SnackBar(content: Text(l10n.manifestStillWorking)),
         );
       case ManifestFailed(:final failure, :final serverError):
         // El fallo de la llamada manda; si no lo hubo, las palabras del
@@ -129,7 +125,7 @@ class ShipmentRecordView extends ConsumerWidget {
         title: Text(shipment.valueOrNull?.reference ?? 'Envío'),
         actions: [
           IconButton(
-            tooltip: context.l10n.shipmentsManifiesto,
+            tooltip: context.l10n.manifestLabel,
             icon: const Icon(Icons.description_outlined),
             onPressed: () => _manifest(context, ref),
           ),
@@ -139,7 +135,7 @@ class ShipmentRecordView extends ConsumerWidget {
           ? FloatingActionButton.extended(
               onPressed: () => _report(context, ref),
               icon: const Icon(Icons.report_outlined),
-              label: Text(context.l10n.shipmentsIncidencia),
+              label: Text(context.l10n.incidentLabel),
             )
           : null,
       bottomNavigationBar: switch (shipment) {
@@ -216,20 +212,17 @@ class _Body extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(vertical: 8),
       children: [
         RecordField(
-          label: context.l10n.boxesEstado,
+          label: context.l10n.statusLabel,
           value: shipmentStatusLabel(context.l10n, shipment.status),
         ),
         RecordField(
-          label: context.l10n.shipmentsDestino,
+          label: context.l10n.destinationLabel,
           value: shipment.destination,
         ),
         if (shipment.carrier case final carrier?)
-          RecordField(
-            label: context.l10n.shipmentsTransportista,
-            value: carrier,
-          ),
+          RecordField(label: context.l10n.carrierLabel, value: carrier),
         RecordField(
-          label: context.l10n.palletsTarimas,
+          label: context.l10n.palletsTitle,
           value: '${shipment.pallets.length}',
         ),
         if (shipment.shippedAt case final shipped?)
@@ -243,7 +236,7 @@ class _Body extends ConsumerWidget {
             value: formatShortDate(delivered),
           ),
         if (shipment.notes case final notes?)
-          RecordField(label: context.l10n.intakeNotas, value: notes),
+          RecordField(label: context.l10n.notesLabel, value: notes),
         // Los avisos de altura los calcula el servidor contra el perfil del
         // envío, y avisan sin bloquear. La aplicación los repite tal cual: el
         // umbral es suyo y aquí no se interpreta.
@@ -264,7 +257,7 @@ class _Body extends ConsumerWidget {
             child: OutlinedButton.icon(
               onPressed: () => _addPallet(context, ref, shipment),
               icon: const Icon(Icons.add),
-              label: Text(context.l10n.shipmentsAnadirTarima),
+              label: Text(context.l10n.shipmentAddPallet),
             ),
           ),
         const Divider(),
@@ -337,7 +330,7 @@ class _PalletRow extends ConsumerWidget {
     ),
     trailing: removable
         ? IconButton(
-            tooltip: context.l10n.shipmentsQuitarDelEnvio,
+            tooltip: context.l10n.shipmentRemovePalletTooltip,
             icon: const Icon(Icons.remove_circle_outline),
             onPressed: () => _remove(context, ref),
           )
@@ -420,7 +413,7 @@ class _AdvanceState extends ConsumerState<_Advance> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: Text(context.l10n.shipmentsTodaviaNo),
+            child: Text(context.l10n.notYetValue),
           ),
           FilledButton(
             onPressed: () => Navigator.of(context).pop(true),
@@ -470,23 +463,20 @@ class _Reception extends StatelessWidget {
           value: formatShortDate(reception.receivedAt),
         ),
         if (reception.consigneeName case final consignee?)
-          RecordField(label: context.l10n.shipmentsRecibio, value: consignee),
+          RecordField(label: context.l10n.receivedByLabel, value: consignee),
         RecordField(
-          label: context.l10n.boxesCajas,
+          label: context.l10n.boxesTitle,
           value:
               '${shrinkage.received} de ${shrinkage.totalBoxes} llegaron bien',
         ),
         // El porcentaje lo calcula el servidor y aquí se enseña sin adjetivos:
         // cuánta merma es demasiada es un criterio de la coordinación.
         RecordField(
-          label: context.l10n.shipmentsMerma,
+          label: context.l10n.shrinkageLabel,
           value: '${shrinkage.shrinkagePct}% · ${shrinkage.notReceived} cajas',
         ),
         if (reception.notes case final notes?)
-          RecordField(
-            label: context.l10n.shipmentsNotasDeLaRecepcion,
-            value: notes,
-          ),
+          RecordField(label: context.l10n.receptionNotesLabel, value: notes),
       ],
     );
   }

@@ -52,9 +52,7 @@ class _IncidentsListViewState extends ConsumerState<IncidentsListView> {
       case IncidentsRead():
         ref.invalidate(centerIncidentsProvider);
         messenger.showSnackBar(
-          SnackBar(
-            content: Text(context.l10n.incidentsLaIncidenciaQuedoCerrada),
-          ),
+          SnackBar(content: Text(context.l10n.incidentClosed)),
         );
       case IncidentsRefused(:final failure):
         messenger.showSnackBar(
@@ -69,7 +67,7 @@ class _IncidentsListViewState extends ConsumerState<IncidentsListView> {
     final canResolve = ref.watch(canResolveIncidentsProvider);
 
     return Scaffold(
-      appBar: AppBar(title: Text(context.l10n.incidentsIncidencias)),
+      appBar: AppBar(title: Text(context.l10n.incidentsTitle)),
       body: switch (incidents) {
         AsyncData(value: IncidentsRead(:final value)) when value.isEmpty =>
           const _Message('No hay incidencias registradas.'),
@@ -131,7 +129,7 @@ class _List extends ConsumerWidget {
           if (closed.isNotEmpty) ...[
             Padding(
               padding: EdgeInsets.fromLTRB(16, 24, 16, 8),
-              child: Text(context.l10n.incidentsYaCerradas),
+              child: Text(context.l10n.incidentsClosedHeading),
             ),
             for (final incident in closed)
               _IncidentCard(
@@ -224,7 +222,7 @@ class _IncidentCard extends StatelessWidget {
                   onPressed: () => Navigator.of(
                     context,
                   ).push(ShipmentRecordView.route(incident.shipmentId)),
-                  child: Text(context.l10n.incidentsVerEnvio),
+                  child: Text(context.l10n.incidentViewShipment),
                 ),
               ],
             ),

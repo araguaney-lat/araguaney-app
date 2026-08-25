@@ -66,7 +66,7 @@ class _RejectApplicationSheetState extends State<RejectApplicationSheet> {
           ),
           const SizedBox(height: 8),
           Text(
-            context.l10n.center_applicationsElMotivoSeLeEnvia,
+            context.l10n.applicationRejectReasonHint,
             style: Theme.of(context).textTheme.bodyMedium,
           ),
           const SizedBox(height: 16),
@@ -78,7 +78,7 @@ class _RejectApplicationSheetState extends State<RejectApplicationSheet> {
             textCapitalization: TextCapitalization.sentences,
             onChanged: (_) => setState(() {}),
             decoration: InputDecoration(
-              labelText: context.l10n.center_applicationsMotivo,
+              labelText: context.l10n.reasonLabel,
               errorText: empty ? 'Escribe el motivo del rechazo' : null,
             ),
           ),

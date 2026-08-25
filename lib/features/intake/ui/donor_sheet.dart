@@ -80,7 +80,7 @@ class _DonorSheetState extends State<DonorSheet> {
     heightFactor: 0.9,
     child: Scaffold(
       appBar: AppBar(
-        title: Text(context.l10n.intakeIdentificarDonante),
+        title: Text(context.l10n.identifyDonorTitle),
         actions: [
           TextButton(onPressed: _save, child: Text(context.l10n.actionSave)),
         ],
@@ -94,11 +94,11 @@ class _DonorSheetState extends State<DonorSheet> {
               segments: [
                 ButtonSegment(
                   value: DonorType.natural,
-                  label: Text(context.l10n.intakePersona),
+                  label: Text(context.l10n.personOption),
                 ),
                 ButtonSegment(
                   value: DonorType.legal,
-                  label: Text(context.l10n.intakeEmpresa),
+                  label: Text(context.l10n.companyOption),
                 ),
               ],
               selected: {_type},
@@ -108,9 +108,7 @@ class _DonorSheetState extends State<DonorSheet> {
             const SizedBox(height: 16),
             TextFormField(
               controller: _firstName,
-              decoration: InputDecoration(
-                labelText: context.l10n.accountNombre,
-              ),
+              decoration: InputDecoration(labelText: context.l10n.nameLabel),
               textCapitalization: TextCapitalization.words,
               validator: _required,
             ),
@@ -118,7 +116,7 @@ class _DonorSheetState extends State<DonorSheet> {
             TextFormField(
               controller: _lastName,
               decoration: InputDecoration(
-                labelText: context.l10n.intakeApellido,
+                labelText: context.l10n.lastNameLabel,
               ),
               textCapitalization: TextCapitalization.words,
               validator: _required,
@@ -128,8 +126,8 @@ class _DonorSheetState extends State<DonorSheet> {
               TextFormField(
                 controller: _legalName,
                 decoration: InputDecoration(
-                  labelText: context.l10n.centersRazonSocial,
-                  helperText: context.l10n.intakeElNombreConElQue,
+                  labelText: context.l10n.centerLegalNameLabel,
+                  helperText: context.l10n.companyDonorHint,
                 ),
                 textCapitalization: TextCapitalization.words,
               ),
@@ -138,7 +136,7 @@ class _DonorSheetState extends State<DonorSheet> {
             TextFormField(
               controller: _email,
               decoration: InputDecoration(
-                labelText: context.l10n.intakeCorreoOpcional,
+                labelText: context.l10n.emailOptionalLabel,
               ),
               keyboardType: TextInputType.emailAddress,
             ),
@@ -146,7 +144,7 @@ class _DonorSheetState extends State<DonorSheet> {
             TextFormField(
               controller: _phone,
               decoration: InputDecoration(
-                labelText: context.l10n.intakeTelefonoOpcional,
+                labelText: context.l10n.phoneOptionalLabel,
               ),
               keyboardType: TextInputType.phone,
             ),
@@ -154,8 +152,8 @@ class _DonorSheetState extends State<DonorSheet> {
             CheckboxListTile(
               value: _terms,
               onChanged: (value) => setState(() => _terms = value ?? false),
-              title: Text(context.l10n.intakeAceptaLosTerminosDeDonacion),
-              subtitle: Text(context.l10n.intakeQuienDonaANombreDe),
+              title: Text(context.l10n.donationTermsAccept),
+              subtitle: Text(context.l10n.companyTermsNotice),
               contentPadding: EdgeInsets.zero,
             ),
           ],

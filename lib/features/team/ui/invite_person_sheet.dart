@@ -72,12 +72,12 @@ class _InvitePersonSheetState extends State<InvitePersonSheet> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            context.l10n.teamSumarAAlguienAlCentro,
+            context.l10n.inviteToCenterTitle,
             style: Theme.of(context).textTheme.titleMedium,
           ),
           const SizedBox(height: 8),
           Text(
-            context.l10n.teamRecibiraUnCorreoConSu,
+            context.l10n.inviteExplanation,
             style: Theme.of(context).textTheme.bodySmall,
           ),
           const SizedBox(height: 16),
@@ -85,7 +85,7 @@ class _InvitePersonSheetState extends State<InvitePersonSheet> {
             controller: _email,
             keyboardType: TextInputType.emailAddress,
             autocorrect: false,
-            decoration: InputDecoration(labelText: context.l10n.sessionCorreo),
+            decoration: InputDecoration(labelText: context.l10n.emailLabel),
             validator: (value) {
               final text = value?.trim() ?? '';
               if (text.isEmpty) return 'Escribe el correo';
@@ -99,7 +99,7 @@ class _InvitePersonSheetState extends State<InvitePersonSheet> {
             controller: _username,
             autocorrect: false,
             decoration: InputDecoration(
-              labelText: context.l10n.teamNombreDeUsuario,
+              labelText: context.l10n.usernameFieldLabel,
             ),
             validator: (value) => (value == null || value.trim().isEmpty)
                 ? 'Escribe el nombre de usuario'
@@ -110,21 +110,21 @@ class _InvitePersonSheetState extends State<InvitePersonSheet> {
             controller: _fullName,
             textCapitalization: TextCapitalization.words,
             decoration: InputDecoration(
-              labelText: context.l10n.teamNombreYApellidoOpcional,
+              labelText: context.l10n.fullNameOptionalLabel,
             ),
           ),
           const SizedBox(height: 12),
           DropdownButtonFormField<String>(
             initialValue: _role,
-            decoration: InputDecoration(labelText: context.l10n.accountRol),
+            decoration: InputDecoration(labelText: context.l10n.roleLabel),
             items: [
               DropdownMenuItem(
                 value: 'volunteer',
-                child: Text(context.l10n.teamVoluntariado),
+                child: Text(context.l10n.roleVolunteer),
               ),
               DropdownMenuItem(
                 value: 'coordinator',
-                child: Text(context.l10n.teamCoordinacion),
+                child: Text(context.l10n.roleCoordinator),
               ),
             ],
             onChanged: (value) => setState(() => _role = value ?? 'volunteer'),
@@ -134,7 +134,7 @@ class _InvitePersonSheetState extends State<InvitePersonSheet> {
             alignment: Alignment.centerRight,
             child: FilledButton(
               onPressed: _submit,
-              child: Text(context.l10n.teamEnviarInvitacion),
+              child: Text(context.l10n.inviteSubmit),
             ),
           ),
         ],

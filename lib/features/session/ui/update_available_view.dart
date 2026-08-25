@@ -51,7 +51,7 @@ class UpdateAvailableView extends ConsumerWidget {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    context.l10n.sessionHayUnaVersionMasNueva2,
+                    context.l10n.updateAvailableTitle,
                     style: text.headlineSmall,
                     textAlign: TextAlign.center,
                   ),
@@ -70,12 +70,12 @@ class UpdateAvailableView extends ConsumerWidget {
                   const SizedBox(height: 24),
                   FilledButton(
                     onPressed: () => openStore(context, ref),
-                    child: Text(context.l10n.sessionActualizar),
+                    child: Text(context.l10n.updateAction),
                   ),
                   const SizedBox(height: 8),
                   TextButton(
                     onPressed: () => _later(ref),
-                    child: Text(context.l10n.sessionMasTarde),
+                    child: Text(context.l10n.updateLaterAction),
                   ),
                   const SizedBox(height: 24),
                   const AppVersionFooter(),

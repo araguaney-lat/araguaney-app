@@ -25,14 +25,14 @@ class IntakeListView extends ConsumerWidget {
     final intakes = ref.watch(intakesProvider);
 
     return Scaffold(
-      appBar: AppBar(title: Text(context.l10n.intakeCapturasDelCentro)),
+      appBar: AppBar(title: Text(context.l10n.capturesTitle)),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
           await Navigator.of(context).push(IntakeFormView.route());
           ref.invalidate(intakesProvider);
         },
         icon: const Icon(Icons.add),
-        label: Text(context.l10n.intakeNuevaCaptura),
+        label: Text(context.l10n.captureNewAction),
       ),
       body: RefreshIndicator(
         onRefresh: () async => ref.invalidate(intakesProvider),

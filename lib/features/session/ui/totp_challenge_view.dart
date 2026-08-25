@@ -46,10 +46,10 @@ class _TotpChallengeViewState extends ConsumerState<TotpChallengeView> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(context.l10n.sessionVerificacionEnDosPasos),
+        title: Text(context.l10n.totpChallengeTitle),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          tooltip: context.l10n.sessionVolverAlInicioDeSesion,
+          tooltip: context.l10n.backToLogin,
           onPressed: () =>
               ref.read(sessionControllerProvider.notifier).cancelTotp(),
         ),
@@ -65,7 +65,7 @@ class _TotpChallengeViewState extends ConsumerState<TotpChallengeView> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Text(
-                    context.l10n.sessionEscribeElCodigoDeTu,
+                    context.l10n.totpChallengeExplanation,
                     style: Theme.of(context).textTheme.bodyLarge,
                     textAlign: TextAlign.center,
                   ),
@@ -80,7 +80,7 @@ class _TotpChallengeViewState extends ConsumerState<TotpChallengeView> {
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     onSubmitted: (_) => _submit(),
                     decoration: InputDecoration(
-                      labelText: context.l10n.sessionCodigoDeDigitos,
+                      labelText: context.l10n.totpCodeLabel,
                       counterText: '',
                     ),
                   ),
@@ -96,7 +96,7 @@ class _TotpChallengeViewState extends ConsumerState<TotpChallengeView> {
                             dimension: 20,
                             child: CircularProgressIndicator(strokeWidth: 2),
                           )
-                        : Text(context.l10n.sessionVerificar),
+                        : Text(context.l10n.totpVerifySubmit),
                   ),
                 ],
               ),

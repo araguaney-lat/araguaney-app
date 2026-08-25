@@ -139,14 +139,14 @@ class _BoxDraftSheetState extends State<BoxDraftSheet> {
                 child: Column(
                   children: [
                     RecordField(
-                      label: context.l10n.boxesProducto,
+                      label: context.l10n.productLabel,
                       value: product.displayName,
                     ),
                     OverflowBar(
                       children: [
                         TextButton(
                           onPressed: _pickProduct,
-                          child: Text(context.l10n.intakeCambiar),
+                          child: Text(context.l10n.changeAction),
                         ),
                       ],
                     ),
@@ -161,13 +161,13 @@ class _BoxDraftSheetState extends State<BoxDraftSheet> {
               OutlinedButton.icon(
                 onPressed: _pickProduct,
                 icon: const Icon(Icons.search),
-                label: Text(context.l10n.intakeElegirProducto),
+                label: Text(context.l10n.productPickAction),
               ),
             const SizedBox(height: 16),
             TextFormField(
               controller: _quantity,
               decoration: InputDecoration(
-                labelText: context.l10n.boxesCantidad,
+                labelText: context.l10n.quantityLabel,
               ),
               keyboardType: TextInputType.number,
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
@@ -183,8 +183,8 @@ class _BoxDraftSheetState extends State<BoxDraftSheet> {
             TextFormField(
               controller: _unit,
               decoration: InputDecoration(
-                labelText: context.l10n.intakeUnidad,
-                helperText: context.l10n.intakeCajasFrascosSobres,
+                labelText: context.l10n.unitLabel,
+                helperText: context.l10n.unitHint,
               ),
               validator: (value) => (value == null || value.trim().isEmpty)
                   ? 'Indica la unidad'
@@ -194,13 +194,13 @@ class _BoxDraftSheetState extends State<BoxDraftSheet> {
             TextFormField(
               controller: _batch,
               decoration: InputDecoration(
-                labelText: context.l10n.intakeLoteOpcional,
+                labelText: context.l10n.batchOptionalLabel,
               ),
             ),
             const SizedBox(height: 12),
             ListTile(
               contentPadding: EdgeInsets.zero,
-              title: Text(context.l10n.boxesCaducidad),
+              title: Text(context.l10n.expiryLabel),
               subtitle: Text(
                 _expiry == null ? 'Sin fecha' : formatShortDate(_expiry!),
               ),
@@ -211,7 +211,7 @@ class _BoxDraftSheetState extends State<BoxDraftSheet> {
             TextFormField(
               controller: _weight,
               decoration: InputDecoration(
-                labelText: context.l10n.intakePesoEnKgOpcional,
+                labelText: context.l10n.weightKgOptionalLabel,
               ),
               keyboardType: const TextInputType.numberWithOptions(
                 decimal: true,
@@ -219,7 +219,7 @@ class _BoxDraftSheetState extends State<BoxDraftSheet> {
             ),
             const SizedBox(height: 8),
             Text(
-              context.l10n.intakeUnaCajaLlevaUnSolo,
+              context.l10n.boxHoldsOneProduct,
               style: Theme.of(context).textTheme.bodySmall,
             ),
           ],

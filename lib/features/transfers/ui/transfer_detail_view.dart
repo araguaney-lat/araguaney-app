@@ -57,14 +57,14 @@ class TransferDetailView extends ConsumerWidget {
     return showDialog<String>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(context.l10n.transfersPorQueSeRechaza),
+        title: Text(context.l10n.transferRejectReasonTitle),
         content: TextField(
           controller: controller,
           autofocus: true,
           maxLines: 3,
           decoration: InputDecoration(
-            labelText: context.l10n.center_applicationsMotivo,
-            helperText: context.l10n.transfersLoLeeraElCentroQue,
+            labelText: context.l10n.reasonLabel,
+            helperText: context.l10n.transferRejectReasonHint,
           ),
         ),
         actions: [
@@ -103,7 +103,7 @@ class TransferDetailView extends ConsumerWidget {
     };
 
     return Scaffold(
-      appBar: AppBar(title: Text(context.l10n.transfersTransferencia)),
+      appBar: AppBar(title: Text(context.l10n.transferRecordTitle)),
       body: switch (transfer) {
         AsyncData(:final value) => _Fields(
           transfer: value,
@@ -149,11 +149,11 @@ class _Fields extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 8),
       children: [
         RecordField(
-          label: context.l10n.boxesEstado,
+          label: context.l10n.statusLabel,
           value: transferStatusLabel(context.l10n, transfer.status),
         ),
         RecordField(
-          label: context.l10n.center_applicationsDireccion,
+          label: context.l10n.addressLabel,
           value: switch (direction) {
             TransferDirection.incoming => 'Entrante, hacia este centro',
             TransferDirection.outgoing => 'Saliente, desde este centro',
@@ -161,7 +161,7 @@ class _Fields extends StatelessWidget {
           },
         ),
         RecordField(
-          label: context.l10n.boxesCajas,
+          label: context.l10n.boxesTitle,
           value: '${transfer.boxes.length}',
         ),
         RecordField(
@@ -169,7 +169,7 @@ class _Fields extends StatelessWidget {
           value: formatShortDate(transfer.createdAt),
         ),
         if (transfer.notes case final notes?)
-          RecordField(label: context.l10n.intakeNotas, value: notes),
+          RecordField(label: context.l10n.notesLabel, value: notes),
         const Divider(),
         for (final box in transfer.boxes)
           ListTile(
@@ -184,7 +184,7 @@ class _Fields extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
             child: Text(
-              context.l10n.transfersHistorial,
+              context.l10n.transferHistoryHeading,
               style: Theme.of(context).textTheme.titleMedium,
             ),
           ),
@@ -227,7 +227,7 @@ class _Actions extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(bottom: 8),
               child: Text(
-                context.l10n.transfersMoverUnaTransferenciaNecesitaConexion,
+                context.l10n.transferNeedsConnection,
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodySmall,
               ),

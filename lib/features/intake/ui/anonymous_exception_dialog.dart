@@ -46,7 +46,7 @@ class _AnonymousExceptionDialogState extends State<AnonymousExceptionDialog> {
 
   @override
   Widget build(BuildContext context) => AlertDialog(
-    title: Text(context.l10n.intakeFaltaIdentificarAQuienDona),
+    title: Text(context.l10n.donorRequiredTitle),
     content: Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -62,8 +62,8 @@ class _AnonymousExceptionDialogState extends State<AnonymousExceptionDialog> {
             maxLines: 3,
             maxLength: 500,
             decoration: InputDecoration(
-              labelText: context.l10n.center_applicationsMotivo,
-              helperText: context.l10n.intakePorQueNoFuePosible,
+              labelText: context.l10n.reasonLabel,
+              helperText: context.l10n.anonymousReasonLabel,
             ),
             onChanged: (_) => setState(() {}),
           ),
@@ -74,7 +74,7 @@ class _AnonymousExceptionDialogState extends State<AnonymousExceptionDialog> {
         ? [
             TextButton(
               onPressed: () => setState(() => _writingReason = false),
-              child: Text(context.l10n.sessionVolver),
+              child: Text(context.l10n.backAction),
             ),
             FilledButton(
               onPressed: _reason.text.trim().isEmpty
@@ -83,19 +83,19 @@ class _AnonymousExceptionDialogState extends State<AnonymousExceptionDialog> {
                       outcome: DonorRequestOutcome.exception,
                       reason: _reason.text.trim(),
                     )),
-              child: Text(context.l10n.intakeRegistrarSinDonante),
+              child: Text(context.l10n.registerWithoutDonor),
             ),
           ]
         : [
             TextButton(
               onPressed: () => setState(() => _writingReason = true),
-              child: Text(context.l10n.intakeNoQuisoIdentificarse),
+              child: Text(context.l10n.donorDeclinedOption),
             ),
             FilledButton(
               onPressed: () => Navigator.of(
                 context,
               ).pop((outcome: DonorRequestOutcome.identify, reason: null)),
-              child: Text(context.l10n.intakeIdentificar),
+              child: Text(context.l10n.identifyAction),
             ),
           ],
   );

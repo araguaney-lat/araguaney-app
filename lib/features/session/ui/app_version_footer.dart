@@ -46,7 +46,7 @@ class AppVersionFooter extends ConsumerWidget {
         if (outdated) ...[
           const SizedBox(height: 4),
           Text(
-            context.l10n.sessionHayUnaVersionMasNueva,
+            context.l10n.updateAvailableFooter,
             style: theme.textTheme.bodySmall,
             textAlign: TextAlign.center,
           ),

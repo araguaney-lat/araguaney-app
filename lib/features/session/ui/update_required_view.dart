@@ -43,20 +43,20 @@ class UpdateRequiredView extends ConsumerWidget {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    context.l10n.sessionEstaVersionYaNoFunciona,
+                    context.l10n.updateRequiredTitle,
                     style: text.headlineSmall,
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    context.l10n.sessionActualizaAraguaneyParaSeguirOperando,
+                    context.l10n.updateRequiredExplanation,
                     style: text.bodyMedium,
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 24),
                   FilledButton(
                     onPressed: () => openStore(context, ref),
-                    child: Text(context.l10n.sessionActualizar),
+                    child: Text(context.l10n.updateAction),
                   ),
                   const SizedBox(height: 24),
                   const AppVersionFooter(),

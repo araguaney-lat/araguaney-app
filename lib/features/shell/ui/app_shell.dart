@@ -29,8 +29,8 @@ enum ShellTab { home, boxes, messages, menu }
   AppLocalizations l10n, {
   required bool coordinates,
 }) => coordinates
-    ? (icon: Icons.qr_code_scanner, label: l10n.shellEscanear)
-    : (icon: Icons.add_box_outlined, label: l10n.shellCapturar);
+    ? (icon: Icons.qr_code_scanner, label: l10n.navScan)
+    : (icon: Icons.add_box_outlined, label: l10n.navCapture);
 
 class AppShell extends ConsumerStatefulWidget {
   const AppShell({super.key});
@@ -103,20 +103,17 @@ class _AppShellState extends ConsumerState<AppShell> {
           context,
         ).push(coordinates ? ScannerView.route() : IntakeFormView.route()),
         items: [
-          BottomBarItem(
-            icon: Icons.home_outlined,
-            label: context.l10n.shellInicio,
-          ),
+          BottomBarItem(icon: Icons.home_outlined, label: context.l10n.navHome),
           BottomBarItem(
             icon: Icons.inventory_2_outlined,
-            label: context.l10n.boxesCajas,
+            label: context.l10n.boxesTitle,
           ),
           BottomBarItem(
             icon: Icons.chat_bubble_outline,
-            label: context.l10n.messagingMensajes,
+            label: context.l10n.messagesTitle,
             badge: unread,
           ),
-          BottomBarItem(icon: Icons.menu, label: context.l10n.shellMenu),
+          BottomBarItem(icon: Icons.menu, label: context.l10n.navMenu),
         ],
       ),
     );

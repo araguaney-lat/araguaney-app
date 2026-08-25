@@ -76,7 +76,7 @@ class _ApplicationQueueViewState extends ConsumerState<ApplicationQueueView> {
         final id = resolved.createdCenterId;
         if (id == null) return null;
         return (
-          label: context.l10n.center_applicationsVerCentro,
+          label: context.l10n.applicationViewCenter,
           route: CenterRecordView.route(id),
         );
       },
@@ -142,7 +142,7 @@ class _ApplicationQueueViewState extends ConsumerState<ApplicationQueueView> {
     final queue = ref.watch(applicationQueueProvider);
 
     return Scaffold(
-      appBar: AppBar(title: Text(context.l10n.center_applicationsSolicitudes)),
+      appBar: AppBar(title: Text(context.l10n.applicationsTitle)),
       body: switch (queue) {
         AsyncData(value: ApplicationsRead(:final value)) when value.isEmpty =>
           const _Message('Ninguna postulación espera una decisión.'),
@@ -243,30 +243,18 @@ class _ApplicationCard extends StatelessWidget {
             // una ficha para saber quién respalda un centro convierte una cola
             // de tres en tres navegaciones.
             RecordField(
-              label: context.l10n.center_applicationsContacto,
+              label: context.l10n.contactLabel,
               value: '${application.contactName} · ${application.contactEmail}',
             ),
             if (application.contactPhone case final phone?
                 when phone.isNotEmpty)
-              RecordField(
-                label: context.l10n.center_applicationsTelefono,
-                value: phone,
-              ),
+              RecordField(label: context.l10n.phoneLabel, value: phone),
             if (application.address case final address? when address.isNotEmpty)
-              RecordField(
-                label: context.l10n.center_applicationsDireccion,
-                value: address,
-              ),
+              RecordField(label: context.l10n.addressLabel, value: address),
             if (application.backingOrg case final org? when org.isNotEmpty)
-              RecordField(
-                label: context.l10n.center_applicationsRespaldo,
-                value: org,
-              ),
+              RecordField(label: context.l10n.backingOrgLabel, value: org),
             if (application.socialUrl case final social? when social.isNotEmpty)
-              RecordField(
-                label: context.l10n.center_applicationsRedes,
-                value: social,
-              ),
+              RecordField(label: context.l10n.socialLabel, value: social),
             if (application.message case final message?
                 when message.isNotEmpty) ...[
               const SizedBox(height: 8),

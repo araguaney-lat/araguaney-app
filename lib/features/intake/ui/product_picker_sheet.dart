@@ -50,8 +50,8 @@ class _ProductPickerSheetState extends ConsumerState<ProductPickerSheet> {
               key: const Key('product-search'),
               autofocus: true,
               decoration: InputDecoration(
-                labelText: context.l10n.intakeBuscarProducto,
-                helperText: context.l10n.intakePorNombreMarcaOPrincipio,
+                labelText: context.l10n.productSearchTitle,
+                helperText: context.l10n.productSearchHint,
                 prefixIcon: Icon(Icons.search),
               ),
               onChanged: (value) => setState(() => _search = value),
@@ -70,7 +70,7 @@ class _ProductPickerSheetState extends ConsumerState<ProductPickerSheet> {
                 }
               },
               icon: const Icon(Icons.barcode_reader),
-              label: Text(context.l10n.intakeEscanearCodigoDeBarras),
+              label: Text(context.l10n.barcodeScanAction),
             ),
           ),
           if (categories.isNotEmpty)
@@ -136,7 +136,7 @@ class _NoMatches extends StatelessWidget {
     child: Padding(
       padding: const EdgeInsets.all(32),
       child: Text(
-        context.l10n.intakeNingunProductoDelCatalogoCoincide,
+        context.l10n.productSearchNoMatch,
         textAlign: TextAlign.center,
         style: Theme.of(context).textTheme.bodyMedium,
       ),

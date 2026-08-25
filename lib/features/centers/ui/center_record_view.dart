@@ -36,7 +36,7 @@ class CenterRecordView extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(context.l10n.accountCentro),
+        title: Text(context.l10n.centerLabel),
         actions: [
           if (editable != null)
             IconButton(
@@ -44,7 +44,7 @@ class CenterRecordView extends ConsumerWidget {
                 context,
               ).push(CenterFormView.route(existing: editable)),
               icon: const Icon(Icons.edit_outlined),
-              tooltip: context.l10n.centersEditar,
+              tooltip: context.l10n.centerEditAction,
             ),
         ],
       ),
@@ -89,30 +89,21 @@ class _Body extends StatelessWidget {
         // repetirlo dos veces no informa de nada.
         if (center.legalName case final legal?
             when legal.isNotEmpty && legal != center.name)
-          RecordField(label: context.l10n.centersRazonSocial, value: legal),
+          RecordField(label: context.l10n.centerLegalNameLabel, value: legal),
         if (place.isNotEmpty)
-          RecordField(label: context.l10n.centersDonde, value: place),
+          RecordField(label: context.l10n.centerPlaceLabel, value: place),
         if (center.address case final value? when value.isNotEmpty)
-          RecordField(
-            label: context.l10n.center_applicationsDireccion,
-            value: value,
-          ),
+          RecordField(label: context.l10n.addressLabel, value: value),
         if (center.contactName case final value? when value.isNotEmpty)
-          RecordField(
-            label: context.l10n.center_applicationsContacto,
-            value: value,
-          ),
+          RecordField(label: context.l10n.contactLabel, value: value),
         if (center.contactEmail case final value? when value.isNotEmpty)
-          RecordField(label: context.l10n.sessionCorreo, value: value),
+          RecordField(label: context.l10n.emailLabel, value: value),
         if (center.contactPhone case final value? when value.isNotEmpty)
-          RecordField(
-            label: context.l10n.center_applicationsTelefono,
-            value: value,
-          ),
+          RecordField(label: context.l10n.phoneLabel, value: value),
         if (!center.isActive)
           Padding(
             padding: EdgeInsets.only(top: 16),
-            child: Text(context.l10n.centersEsteCentroEstaDesactivado),
+            child: Text(context.l10n.centerInactiveNotice),
           ),
       ],
     );

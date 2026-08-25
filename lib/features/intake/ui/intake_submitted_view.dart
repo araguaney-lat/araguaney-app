@@ -19,7 +19,7 @@ class IntakeSubmittedView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: Text(context.l10n.intakeCapturaRegistrada)),
+    appBar: AppBar(title: Text(context.l10n.captureAcceptedTitle)),
     body: ListView(
       padding: const EdgeInsets.all(16),
       children: [
@@ -38,7 +38,7 @@ class IntakeSubmittedView extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         Text(
-          context.l10n.intakeEtiquetaCadaCajaConSu,
+          context.l10n.labelBoxesInstruction,
           style: Theme.of(context).textTheme.bodySmall,
         ),
         const SizedBox(height: 16),

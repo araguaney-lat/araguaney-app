@@ -84,7 +84,7 @@ class _BoxDetailViewState extends ConsumerState<BoxDetailView> {
         title: Text(widget.code),
         actions: [
           IconButton(
-            tooltip: context.l10n.boxesVerEtiqueta,
+            tooltip: context.l10n.viewLabelAction,
             icon: const Icon(Icons.qr_code_2),
             onPressed: () =>
                 Navigator.of(context).push(BoxLabelView.route(widget.code)),
@@ -133,7 +133,7 @@ class _SealBar extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(bottom: 8),
               child: Text(
-                context.l10n.boxesSellarNecesitaConexionOtraPersona,
+                context.l10n.sealNeedsConnection,
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodySmall,
               ),
@@ -141,7 +141,7 @@ class _SealBar extends StatelessWidget {
           FilledButton.icon(
             onPressed: offline || sealing ? null : onSeal,
             icon: const Icon(Icons.lock_outline),
-            label: Text(context.l10n.boxesSellarCaja),
+            label: Text(context.l10n.sealBoxTitle),
           ),
         ],
       ),
@@ -163,28 +163,28 @@ class _BoxFields extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 8),
       children: [
         RecordField(
-          label: context.l10n.boxesEstado,
+          label: context.l10n.statusLabel,
           value: boxStatusLabel(context.l10n, status),
         ),
         RecordField(
-          label: context.l10n.boxesProducto,
+          label: context.l10n.productLabel,
           value: item.productName ?? 'No descargado en este dispositivo',
         ),
         RecordField(
-          label: context.l10n.boxesCantidad,
+          label: context.l10n.quantityLabel,
           value: '$quantity $unit',
         ),
         if (batch case final batch?)
-          RecordField(label: context.l10n.boxesLote, value: batch),
+          RecordField(label: context.l10n.batchLabel, value: batch),
         if (expiryDate case final expiry?)
           RecordField(
-            label: context.l10n.boxesCaducidad,
+            label: context.l10n.expiryLabel,
             value: formatShortDate(expiry),
           ),
         if (weightKg case final weight?)
-          RecordField(label: context.l10n.boxesPeso, value: '$weight kg'),
+          RecordField(label: context.l10n.weightLabel, value: '$weight kg'),
         if (item.box.rejectReason case final reason?)
-          RecordField(label: context.l10n.boxesMotivoDelRechazo, value: reason),
+          RecordField(label: context.l10n.rejectReasonLabel, value: reason),
         // El recorrido, al final: se consulta cuando algo no cuadra, no cada
         // vez que se abre la ficha. Y **solo con conexión** — la caché guarda
         // el estado de una caja, no su historia.
@@ -216,7 +216,7 @@ class _Timeline extends ConsumerWidget {
         children: [
           Padding(
             padding: EdgeInsets.fromLTRB(16, 16, 16, 4),
-            child: Text(context.l10n.boxesRecorrido),
+            child: Text(context.l10n.timelineHeading),
           ),
           EventTimeline(
             events: value,

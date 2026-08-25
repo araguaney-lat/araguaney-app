@@ -41,7 +41,7 @@ class PalletDetailView extends ConsumerWidget {
 
     await Navigator.of(context).push(
       ContinuousScanView.route(
-        title: context.l10n.palletsAgregarCajas,
+        title: context.l10n.palletAddBoxes,
         hint: 'Apunta a la etiqueta de cada caja sellada.',
         onScanned: (payload) async {
           final scanned = parseScannedCode(payload);
@@ -169,31 +169,28 @@ class _Fields extends StatelessWidget {
     padding: const EdgeInsets.symmetric(vertical: 8),
     children: [
       RecordField(
-        label: context.l10n.boxesEstado,
+        label: context.l10n.statusLabel,
         value: palletStatusLabel(context.l10n, pallet.status),
       ),
       RecordField(
-        label: context.l10n.boxesCajas,
+        label: context.l10n.boxesTitle,
         value: '${pallet.boxes.length}',
       ),
       if (pallet.tareWeightKg case final tare?)
-        RecordField(label: context.l10n.palletsTara, value: '$tare kg'),
+        RecordField(label: context.l10n.tareLabel, value: '$tare kg'),
       if (pallet.boxesWeightKg case final boxes?)
-        RecordField(
-          label: context.l10n.palletsPesoDeLasCajas,
-          value: '$boxes kg',
-        ),
+        RecordField(label: context.l10n.boxesWeightLabel, value: '$boxes kg'),
       if (pallet.grossWeightKg case final gross?)
-        RecordField(label: context.l10n.palletsPesoBruto, value: '$gross kg'),
+        RecordField(label: context.l10n.grossWeightLabel, value: '$gross kg'),
       // La diferencia la calcula el servidor. Aquí solo se enseña, y sin
       // adjetivos: qué tanto importa lo decide quien coordina.
       if (pallet.weightDiscrepancyKg case final discrepancy?)
         RecordField(
-          label: context.l10n.palletsDiferencia,
+          label: context.l10n.differenceLabel,
           value: '$discrepancy kg',
         ),
       if (pallet.heightCm case final height?)
-        RecordField(label: context.l10n.palletsAltura, value: '$height cm'),
+        RecordField(label: context.l10n.heightLabel, value: '$height cm'),
       if (pallet.closedAt case final closed?)
         RecordField(
           label: context.l10n.palletStatusClosed,
@@ -209,7 +206,7 @@ class _Fields extends StatelessWidget {
           trailing: onRemoveBox == null
               ? null
               : IconButton(
-                  tooltip: context.l10n.palletsQuitarDeLaTarima,
+                  tooltip: context.l10n.palletRemoveBoxTooltip,
                   icon: const Icon(Icons.remove_circle_outline),
                   onPressed: () => onRemoveBox!(box.code),
                 ),
@@ -270,7 +267,7 @@ class _Actions extends StatelessWidget {
                   child: FilledButton.icon(
                     onPressed: actionable ? onScan : null,
                     icon: const Icon(Icons.qr_code_scanner),
-                    label: Text(context.l10n.palletsAgregarCajas),
+                    label: Text(context.l10n.palletAddBoxes),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -308,7 +305,7 @@ class _Timeline extends ConsumerWidget {
         children: [
           Padding(
             padding: EdgeInsets.fromLTRB(16, 16, 16, 4),
-            child: Text(context.l10n.boxesRecorrido),
+            child: Text(context.l10n.timelineHeading),
           ),
           EventTimeline(
             events: value,

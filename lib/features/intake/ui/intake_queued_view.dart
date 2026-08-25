@@ -24,7 +24,7 @@ class IntakeQueuedView extends StatelessWidget {
     final withoutCode = draft.boxes.length - withCode.length;
 
     return Scaffold(
-      appBar: AppBar(title: Text(context.l10n.intakeCapturaGuardada)),
+      appBar: AppBar(title: Text(context.l10n.captureQueuedTitle)),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
@@ -34,7 +34,7 @@ class IntakeQueuedView extends StatelessWidget {
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
-                  context.l10n.intakeSeEnviaraSolaCuandoHaya,
+                  context.l10n.queuedWillSendItself,
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
               ),
@@ -42,13 +42,13 @@ class IntakeQueuedView extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            context.l10n.intakeNoHaceFaltaVolverA,
+            context.l10n.captureQueuedExplanation,
             style: Theme.of(context).textTheme.bodySmall,
           ),
           const SizedBox(height: 24),
           if (withCode.isNotEmpty) ...[
             Text(
-              context.l10n.intakeEtiquetaEstasCajasAhora,
+              context.l10n.labelBoxesNowTitle,
               style: Theme.of(context).textTheme.titleSmall,
             ),
             const SizedBox(height: 8),

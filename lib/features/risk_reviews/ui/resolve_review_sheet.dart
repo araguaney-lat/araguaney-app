@@ -58,7 +58,7 @@ class _ResolveReviewSheetState extends State<ResolveReviewSheet> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          context.l10n.risk_reviewsResolverLaRevision,
+          context.l10n.reviewResolveTitle,
           style: Theme.of(context).textTheme.titleMedium,
         ),
         const SizedBox(height: 8),
@@ -69,8 +69,8 @@ class _ResolveReviewSheetState extends State<ResolveReviewSheet> {
           maxLines: 3,
           maxLength: 1000,
           decoration: InputDecoration(
-            labelText: context.l10n.risk_reviewsNotaOpcional,
-            helperText: context.l10n.risk_reviewsQuedaConLaRevisionPara,
+            labelText: context.l10n.noteOptionalLabel,
+            helperText: context.l10n.reviewNoteHint,
           ),
         ),
         const SizedBox(height: 8),

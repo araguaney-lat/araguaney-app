@@ -51,7 +51,7 @@ class BoxLabelView extends StatelessWidget {
             SelectableText(code, style: Theme.of(context).textTheme.titleLarge),
             const SizedBox(height: 8),
             Text(
-              context.l10n.boxesPegaLaEtiquetaEnLa,
+              context.l10n.boxLabelInstruction,
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodySmall,
             ),

@@ -61,7 +61,7 @@ class _ForgotPasswordViewState extends ConsumerState<ForgotPasswordView> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: Text(context.l10n.sessionRecuperarElAcceso)),
+    appBar: AppBar(title: Text(context.l10n.forgotPasswordTitle)),
     body: SafeArea(
       child: Center(
         child: SingleChildScrollView(
@@ -82,7 +82,7 @@ class _ForgotPasswordViewState extends ConsumerState<ForgotPasswordView> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          context.l10n.sessionEscribeElCorreoDeTu,
+          context.l10n.forgotPasswordExplanation,
           style: Theme.of(context).textTheme.bodyLarge,
         ),
         const SizedBox(height: 24),
@@ -91,7 +91,7 @@ class _ForgotPasswordViewState extends ConsumerState<ForgotPasswordView> {
           keyboardType: TextInputType.emailAddress,
           autocorrect: false,
           onFieldSubmitted: (_) => _submit(),
-          decoration: InputDecoration(labelText: context.l10n.sessionCorreo),
+          decoration: InputDecoration(labelText: context.l10n.emailLabel),
           validator: (value) => (value == null || value.trim().isEmpty)
               ? 'Escribe tu correo'
               : null,
@@ -108,7 +108,7 @@ class _ForgotPasswordViewState extends ConsumerState<ForgotPasswordView> {
                   dimension: 20,
                   child: CircularProgressIndicator(strokeWidth: 2),
                 )
-              : Text(context.l10n.sessionEnviarElEnlace),
+              : Text(context.l10n.forgotPasswordSubmit),
         ),
       ],
     ),
@@ -134,14 +134,14 @@ class _Sent extends StatelessWidget {
       ),
       const SizedBox(height: 12),
       Text(
-        context.l10n.sessionElEnlaceAbreEnEl,
+        context.l10n.forgotPasswordLinkOpensBrowser,
         textAlign: TextAlign.center,
         style: Theme.of(context).textTheme.bodyMedium,
       ),
       const SizedBox(height: 24),
       FilledButton(
         onPressed: () => Navigator.of(context).pop(),
-        child: Text(context.l10n.sessionVolver),
+        child: Text(context.l10n.backAction),
       ),
     ],
   );

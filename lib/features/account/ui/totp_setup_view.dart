@@ -81,7 +81,7 @@ class _TotpSetupViewState extends ConsumerState<TotpSetupView> {
   @override
   Widget build(BuildContext context) => Scaffold(
     appBar: AppBar(
-      title: Text(context.l10n.sessionVerificacionEnDosPasos),
+      title: Text(context.l10n.totpChallengeTitle),
       // Con los códigos en pantalla no hay flecha atrás: son la única copia y
       // salir por descuido los pierde.
       automaticallyImplyLeading: _backupCodes == null,
@@ -104,7 +104,7 @@ class _TotpSetupViewState extends ConsumerState<TotpSetupView> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            context.l10n.accountEscaneaEsteCodigoConTu,
+            context.l10n.totpSetupInstruction,
             style: theme.textTheme.bodyLarge,
           ),
           const SizedBox(height: 20),
@@ -119,7 +119,7 @@ class _TotpSetupViewState extends ConsumerState<TotpSetupView> {
           // El secreto escrito, para quien no puede escanear porque la
           // aplicación de códigos está en este mismo teléfono.
           _CopyRow(
-            label: context.l10n.accountOEscribeloAMano,
+            label: context.l10n.totpSecretManualHint,
             value: setup.secret,
           ),
           const SizedBox(height: 20),
@@ -128,7 +128,7 @@ class _TotpSetupViewState extends ConsumerState<TotpSetupView> {
             keyboardType: TextInputType.number,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             decoration: InputDecoration(
-              labelText: context.l10n.accountCodigoDeSeisDigitos,
+              labelText: context.l10n.sixDigitCodeLabel,
             ),
             onSubmitted: (_) => _confirm(),
           ),
@@ -139,7 +139,7 @@ class _TotpSetupViewState extends ConsumerState<TotpSetupView> {
           const SizedBox(height: 20),
           FilledButton(
             onPressed: _busy ? null : _confirm,
-            child: Text(context.l10n.accountActivar),
+            child: Text(context.l10n.totpEnableAction),
           ),
         ],
       );
@@ -187,12 +187,12 @@ class _BackupCodesState extends State<_BackupCodes> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          context.l10n.accountYaEstaActivada,
+          context.l10n.totpAlreadyEnabled,
           style: theme.textTheme.titleLarge,
         ),
         const SizedBox(height: 12),
         Text(
-          context.l10n.accountGuardaEstosCodigosDeRespaldo,
+          context.l10n.backupCodesWarning,
           style: theme.textTheme.bodyMedium,
         ),
         const SizedBox(height: 16),
@@ -217,19 +217,19 @@ class _BackupCodesState extends State<_BackupCodes> {
               ScaffoldMessenger.of(context)
                 ..hideCurrentSnackBar()
                 ..showSnackBar(
-                  SnackBar(content: Text(context.l10n.accountCodigosCopiados)),
+                  SnackBar(content: Text(context.l10n.backupCodesCopied)),
                 );
             }
           },
           icon: const Icon(Icons.copy_all_outlined),
-          label: Text(context.l10n.accountCopiar),
+          label: Text(context.l10n.copyAction),
         ),
         const SizedBox(height: 12),
         CheckboxListTile(
           value: _saved,
           onChanged: (value) => setState(() => _saved = value ?? false),
           contentPadding: EdgeInsets.zero,
-          title: Text(context.l10n.accountLosGuardeEnUnSitio),
+          title: Text(context.l10n.backupCodesAcknowledge),
         ),
         const SizedBox(height: 12),
         FilledButton(
@@ -260,7 +260,7 @@ class _CopyRow extends StatelessWidget {
         ),
       ),
       IconButton(
-        tooltip: context.l10n.accountCopiar,
+        tooltip: context.l10n.copyAction,
         icon: const Icon(Icons.copy_outlined),
         onPressed: () => Clipboard.setData(ClipboardData(text: value)),
       ),

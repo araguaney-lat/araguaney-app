@@ -116,7 +116,7 @@ class _ScannerViewState extends ConsumerState<ScannerView> {
         backgroundColor: Colors.transparent,
         foregroundColor: Colors.white,
         elevation: 0,
-        title: Text(context.l10n.scanningEscanearQr),
+        title: Text(context.l10n.scanTitle),
         actions: [
           IconButton(
             tooltip: _torchOn ? 'Apagar linterna' : 'Linterna',

@@ -63,7 +63,7 @@ class _BoxesListViewState extends ConsumerState<BoxesListView> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(context.l10n.boxesCajas),
+        title: Text(context.l10n.boxesTitle),
         // El recuento va en el subtítulo y no en un chip: es contexto de la
         // pantalla, no un dato que se toque.
         bottom: PreferredSize(
@@ -150,7 +150,7 @@ class _StatusFilter extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 12),
         children: [
           _Chip(
-            label: context.l10n.boxesTodas,
+            label: context.l10n.allFilter,
             selected: selected == null,
             onTap: () => onSelected(null),
           ),
@@ -254,7 +254,7 @@ class _BoxRow extends ConsumerWidget {
           ),
           FilledButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: Text(context.l10n.boxesSellar),
+            child: Text(context.l10n.sealAction),
           ),
         ],
       ),
@@ -293,7 +293,7 @@ class _BoxRow extends ConsumerWidget {
       trailing: open && !offline
           ? TextButton(
               onPressed: () => _seal(context, ref),
-              child: Text(context.l10n.boxesSellar),
+              child: Text(context.l10n.sealAction),
             )
           : Chip(label: Text(boxStatusLabel(context.l10n, item.box.status))),
       onTap: () => Navigator.of(

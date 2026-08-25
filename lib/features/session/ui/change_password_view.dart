@@ -65,9 +65,7 @@ class _ChangePasswordViewState extends ConsumerState<ChangePasswordView> {
         Navigator.of(context).pop();
         ScaffoldMessenger.of(context)
           ..hideCurrentSnackBar()
-          ..showSnackBar(
-            SnackBar(content: Text(context.l10n.sessionContrasenaActualizada)),
-          );
+          ..showSnackBar(SnackBar(content: Text(context.l10n.passwordUpdated)));
       }
     } on Object catch (error) {
       // La política de contraseñas la define y la aplica el servidor; su
@@ -88,7 +86,7 @@ class _ChangePasswordViewState extends ConsumerState<ChangePasswordView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(context.l10n.sessionCambiaTuContrasena),
+        title: Text(context.l10n.changePasswordTitle),
         automaticallyImplyLeading: !widget.forced,
       ),
       body: SafeArea(
@@ -115,7 +113,7 @@ class _ChangePasswordViewState extends ConsumerState<ChangePasswordView> {
                       controller: _current,
                       obscureText: true,
                       decoration: InputDecoration(
-                        labelText: context.l10n.sessionContrasenaActual,
+                        labelText: context.l10n.currentPasswordLabel,
                       ),
                       validator: (value) => (value == null || value.isEmpty)
                           ? 'Escribe tu contraseña actual'
@@ -126,7 +124,7 @@ class _ChangePasswordViewState extends ConsumerState<ChangePasswordView> {
                       controller: _next,
                       obscureText: true,
                       decoration: InputDecoration(
-                        labelText: context.l10n.sessionContrasenaNueva,
+                        labelText: context.l10n.newPasswordLabel,
                       ),
                       validator: (value) => (value == null || value.isEmpty)
                           ? 'Escribe tu contraseña nueva'
@@ -138,7 +136,7 @@ class _ChangePasswordViewState extends ConsumerState<ChangePasswordView> {
                       obscureText: true,
                       onFieldSubmitted: (_) => _submit(),
                       decoration: InputDecoration(
-                        labelText: context.l10n.sessionRepiteLaContrasenaNueva,
+                        labelText: context.l10n.repeatNewPasswordLabel,
                       ),
                       // Lo único que se valida aquí: que las dos coincidan. Es
                       // un dedazo que el servidor no puede detectar.

@@ -239,7 +239,7 @@ class _IntakeFormViewState extends ConsumerState<IntakeFormView> {
               controller: _notes,
               maxLines: 3,
               decoration: InputDecoration(
-                labelText: context.l10n.intakeNotasOpcional,
+                labelText: context.l10n.notesOptionalLabel,
               ),
             ),
           ],
@@ -282,7 +282,7 @@ class _CampaignHeader extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text(context.l10n.intakeRegistrarEntrada),
+        Text(context.l10n.intakeFormTitle),
         InkWell(
           onTap: onTap,
           child: Row(
@@ -329,13 +329,13 @@ class _ActionBar extends StatelessWidget {
               Expanded(
                 child: FilledButton(
                   onPressed: onAdd,
-                  child: Text(context.l10n.intakeAnadirCaja),
+                  child: Text(context.l10n.boxAddAction),
                 ),
               ),
               const SizedBox(width: 12),
               Expanded(
                 child: ConfirmButton(
-                  label: context.l10n.intakeRegistrar,
+                  label: context.l10n.registerAction,
                   onPressed: onSubmit,
                 ),
               ),
@@ -355,7 +355,7 @@ class _DonationNotice extends StatelessWidget {
     child: Padding(
       padding: const EdgeInsets.all(12),
       child: Text(
-        context.l10n.intakeEstaCapturaQuedaLigadaA,
+        context.l10n.captureLinkedToDonation,
         style: Theme.of(context).textTheme.bodySmall,
       ),
     ),
@@ -389,11 +389,11 @@ class _DonorSection extends StatelessWidget {
               children: [
                 TextButton(
                   onPressed: onClear,
-                  child: Text(context.l10n.intakeQuitar),
+                  child: Text(context.l10n.removeAction),
                 ),
                 TextButton(
                   onPressed: () => onIdentify(),
-                  child: Text(context.l10n.centersEditar),
+                  child: Text(context.l10n.centerEditAction),
                 ),
               ],
             ),
@@ -408,15 +408,15 @@ class _DonorSection extends StatelessWidget {
         TextField(
           controller: donanteLibre,
           decoration: InputDecoration(
-            labelText: context.l10n.intakeDonanteOpcional,
-            helperText: context.l10n.intakeUnNombreSueltoSinRegistrar,
+            labelText: context.l10n.donorOptionalLabel,
+            helperText: context.l10n.freeNameHint,
           ),
         ),
         const SizedBox(height: 8),
         TextButton.icon(
           onPressed: () => onIdentify(),
           icon: const Icon(Icons.person_add_alt),
-          label: Text(context.l10n.intakeIdentificarDonante),
+          label: Text(context.l10n.identifyDonorTitle),
         ),
       ],
     );
@@ -456,7 +456,7 @@ class _BoxesCard extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(top: 8, bottom: 8, right: 8),
                 child: Text(
-                  context.l10n.intakeTodaviaNoAgregasteNingunaCaja,
+                  context.l10n.captureNeedsBoxes,
                   style: theme.textTheme.bodySmall,
                 ),
               ),
@@ -503,7 +503,7 @@ class _BoxRow extends StatelessWidget {
     onTap: onEdit,
     trailing: IconButton(
       icon: const Icon(Icons.delete_outline),
-      tooltip: context.l10n.intakeQuitarCaja,
+      tooltip: context.l10n.boxRemoveTitle,
       onPressed: onRemove,
     ),
   );

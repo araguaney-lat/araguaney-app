@@ -25,8 +25,8 @@ Future<void> openStore(BuildContext context, WidgetRef ref) async {
     'https://play.google.com/store/apps/details?id=$package',
   );
   if (!opened && context.mounted) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(context.l10n.sessionNoSePudoAbrirLa)),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(context.l10n.storeOpenFailed)));
   }
 }

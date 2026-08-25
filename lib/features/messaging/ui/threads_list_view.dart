@@ -46,11 +46,11 @@ class ThreadsListView extends ConsumerWidget {
     final threads = ref.watch(threadsProvider);
 
     return Scaffold(
-      appBar: AppBar(title: Text(context.l10n.messagingMensajes)),
+      appBar: AppBar(title: Text(context.l10n.messagesTitle)),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _open(context, ref),
         icon: const Icon(Icons.edit_outlined),
-        label: Text(context.l10n.messagingNuevoHilo),
+        label: Text(context.l10n.threadNewAction),
       ),
       body: RefreshIndicator(
         onRefresh: () async {

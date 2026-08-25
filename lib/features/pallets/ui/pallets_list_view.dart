@@ -88,7 +88,7 @@ class _PalletsListViewState extends ConsumerState<PalletsListView> {
           ? FloatingActionButton.extended(
               onPressed: _create,
               icon: const Icon(Icons.add),
-              label: Text(context.l10n.palletsNuevaTarima),
+              label: Text(context.l10n.palletNewAction),
             )
           : null,
       body: RefreshIndicator(
@@ -125,7 +125,7 @@ class _Header extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text(context.l10n.palletsTarimas),
+        Text(context.l10n.palletsTitle),
         // Abiertas y cerradas son las dos cifras que deciden qué hacer ahora:
         // una abierta admite cajas, una cerrada espera un envío.
         Text(
@@ -188,10 +188,7 @@ class _Loaded extends StatelessWidget {
         if (shown.isEmpty)
           Padding(
             padding: EdgeInsets.all(32),
-            child: Text(
-              context.l10n.palletsEsteCentroNoTieneTarimas,
-              textAlign: TextAlign.center,
-            ),
+            child: Text(context.l10n.palletsEmpty, textAlign: TextAlign.center),
           ),
         for (final pallet in shown)
           _PalletRow(

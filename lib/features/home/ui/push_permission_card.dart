@@ -69,20 +69,20 @@ class _PushPermissionCardState extends ConsumerState<PushPermissionCard> {
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
-                    context.l10n.homeAvisosDelCentro,
+                    context.l10n.homeNoticesTitle,
                     style: Theme.of(context).textTheme.titleSmall,
                   ),
                 ),
               ],
             ),
             const SizedBox(height: 8),
-            Text(context.l10n.homeTeAvisamosCuandoSeAbre),
+            Text(context.l10n.homeNoticesExplanation),
             const SizedBox(height: 12),
             Align(
               alignment: Alignment.centerRight,
               child: FilledButton(
                 onPressed: _asking ? null : _ask,
-                child: Text(context.l10n.homeActivarAvisos),
+                child: Text(context.l10n.homeEnableNotices),
               ),
             ),
           ],

@@ -102,9 +102,9 @@ class _Header extends StatelessWidget {
     crossAxisAlignment: CrossAxisAlignment.start,
     mainAxisSize: MainAxisSize.min,
     children: [
-      Text(context.l10n.risk_reviewsRevisiones),
+      Text(context.l10n.reviewsTitle),
       Text(
-        context.l10n.risk_reviewsCapturasMarcadasQueEsperanUna,
+        context.l10n.reviewsSubtitle,
         style: Theme.of(context).textTheme.bodySmall,
       ),
     ],
@@ -133,10 +133,7 @@ class _Loaded extends StatelessWidget {
         if (pending.isEmpty)
           Padding(
             padding: EdgeInsets.symmetric(vertical: 24),
-            child: Text(
-              context.l10n.risk_reviewsNadaEsperaUnaDecisionAqui,
-              textAlign: TextAlign.center,
-            ),
+            child: Text(context.l10n.reviewsEmpty, textAlign: TextAlign.center),
           ),
         for (final review in pending)
           _ReviewCard(
@@ -147,7 +144,7 @@ class _Loaded extends StatelessWidget {
         if (settled.isNotEmpty) ...[
           const SizedBox(height: 8),
           Text(
-            context.l10n.risk_reviewsYaResueltas,
+            context.l10n.reviewsSettledHeading,
             style: Theme.of(context).textTheme.titleSmall,
           ),
           const SizedBox(height: 8),
@@ -184,7 +181,7 @@ class _ReviewCard extends StatelessWidget {
           children: [
             if (highlighted) ...[
               Text(
-                context.l10n.risk_reviewsLaDelAvisoQueAbriste,
+                context.l10n.reviewFromNoticeHint,
                 style: theme.textTheme.labelSmall,
               ),
               const SizedBox(height: 6),
@@ -215,7 +212,7 @@ class _ReviewCard extends StatelessWidget {
                 width: double.infinity,
                 child: OutlinedButton(
                   onPressed: onResolve,
-                  child: Text(context.l10n.risk_reviewsAprobarORechazar),
+                  child: Text(context.l10n.reviewDecideAction),
                 ),
               ),
             ],

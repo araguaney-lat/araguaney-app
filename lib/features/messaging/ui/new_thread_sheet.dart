@@ -67,22 +67,22 @@ class _NewThreadSheetState extends ConsumerState<NewThreadSheet> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              context.l10n.messagingNuevoHiloDeCampana,
+              context.l10n.threadNewTitle,
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: 8),
             Text(
-              context.l10n.messagingLoPodraLeerQuienParticipe,
+              context.l10n.threadAudienceHint,
               style: Theme.of(context).textTheme.bodySmall,
             ),
             const SizedBox(height: 16),
             if (campaigns.isEmpty)
-              Text(context.l10n.messagingNoParticipasEnNingunaCampana)
+              Text(context.l10n.noCampaignsForThread)
             else
               DropdownButtonFormField<String>(
                 initialValue: _campaignId,
                 decoration: InputDecoration(
-                  labelText: context.l10n.intakeCampana,
+                  labelText: context.l10n.campaignLabel,
                 ),
                 items: [
                   for (final campaign in campaigns)
@@ -98,9 +98,7 @@ class _NewThreadSheetState extends ConsumerState<NewThreadSheet> {
             const SizedBox(height: 12),
             TextFormField(
               controller: _title,
-              decoration: InputDecoration(
-                labelText: context.l10n.messagingAsunto,
-              ),
+              decoration: InputDecoration(labelText: context.l10n.subjectLabel),
               validator: (value) => (value == null || value.trim().isEmpty)
                   ? 'Escribe un asunto'
                   : null,
@@ -109,9 +107,7 @@ class _NewThreadSheetState extends ConsumerState<NewThreadSheet> {
             TextFormField(
               controller: _body,
               maxLines: 4,
-              decoration: InputDecoration(
-                labelText: context.l10n.messagingMensaje,
-              ),
+              decoration: InputDecoration(labelText: context.l10n.messageLabel),
               validator: (value) => (value == null || value.trim().isEmpty)
                   ? 'Escribe el mensaje'
                   : null,
@@ -121,7 +117,7 @@ class _NewThreadSheetState extends ConsumerState<NewThreadSheet> {
               alignment: Alignment.centerRight,
               child: FilledButton(
                 onPressed: campaigns.isEmpty ? null : _submit,
-                child: Text(context.l10n.messagingAbrirHilo),
+                child: Text(context.l10n.threadOpenAction),
               ),
             ),
           ],

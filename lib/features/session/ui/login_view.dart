@@ -72,7 +72,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      context.l10n.sessionIniciaSesionParaOperarTu,
+                      context.l10n.loginSubtitle,
                       style: Theme.of(context).textTheme.bodyMedium,
                       textAlign: TextAlign.center,
                     ),
@@ -84,7 +84,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
                       keyboardType: TextInputType.emailAddress,
                       textInputAction: TextInputAction.next,
                       decoration: InputDecoration(
-                        labelText: context.l10n.sessionCorreoOUsuario,
+                        labelText: context.l10n.loginIdentifierLabel,
                       ),
                       validator: (value) =>
                           (value == null || value.trim().isEmpty)
@@ -98,7 +98,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
                       textInputAction: TextInputAction.done,
                       onFieldSubmitted: (_) => _submit(),
                       decoration: InputDecoration(
-                        labelText: context.l10n.sessionContrasena,
+                        labelText: context.l10n.passwordLabel,
                         suffixIcon: IconButton(
                           onPressed: () => setState(
                             () => _obscurePassword = !_obscurePassword,
@@ -129,7 +129,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
                               dimension: 20,
                               child: CircularProgressIndicator(strokeWidth: 2),
                             )
-                          : Text(context.l10n.sessionEntrar),
+                          : Text(context.l10n.loginSubmit),
                     ),
                     const SizedBox(height: 8),
                     TextButton(
@@ -138,7 +138,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
                           : () => Navigator.of(
                               context,
                             ).push(ForgotPasswordView.route()),
-                      child: Text(context.l10n.sessionOlvidasteTuContrasena),
+                      child: Text(context.l10n.loginForgotPassword),
                     ),
                     const _RegisterCenterLink(),
                     const SizedBox(height: 24),
@@ -211,11 +211,11 @@ class _RegisterCenterLink extends ConsumerWidget {
         );
         if (!opened && context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(context.l10n.sessionNoSePudoAbrirEl)),
+            SnackBar(content: Text(context.l10n.browserOpenFailed)),
           );
         }
       },
-      child: Text(context.l10n.sessionTuCentroAunNoEsta),
+      child: Text(context.l10n.loginRegisterCenter),
     );
   }
 }

@@ -90,7 +90,7 @@ class _ContinuousScanViewState extends State<ContinuousScanView> {
       title: Text(widget.title),
       actions: [
         IconButton(
-          tooltip: context.l10n.scanningLinterna,
+          tooltip: context.l10n.scanTorch,
           icon: const Icon(Icons.flashlight_on_outlined),
           onPressed: _controller.toggleTorch,
         ),
@@ -144,7 +144,7 @@ class _EmptyLog extends StatelessWidget {
     child: Padding(
       padding: const EdgeInsets.all(24),
       child: Text(
-        context.l10n.scanningCadaCajaQueLeasAparece,
+        context.l10n.scanContinuousExplanation,
         textAlign: TextAlign.center,
         style: Theme.of(context).textTheme.bodySmall,
       ),

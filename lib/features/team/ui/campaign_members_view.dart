@@ -85,7 +85,7 @@ class _CampaignMembersViewState extends ConsumerState<CampaignMembersView> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(context.l10n.teamSacarDeLaCampana),
+        title: Text(context.l10n.removeFromCampaignTitle),
         content: Text(
           '$name dejará de participar en esta campaña. Sigue en el centro y '
           'se le puede volver a sumar.',
@@ -97,7 +97,7 @@ class _CampaignMembersViewState extends ConsumerState<CampaignMembersView> {
           ),
           FilledButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: Text(context.l10n.teamSacar),
+            child: Text(context.l10n.removeMemberAction),
           ),
         ],
       ),
@@ -130,12 +130,12 @@ class _CampaignMembersViewState extends ConsumerState<CampaignMembersView> {
     final campaign = _selected(campaigns);
 
     return Scaffold(
-      appBar: AppBar(title: Text(context.l10n.teamCampanas)),
+      appBar: AppBar(title: Text(context.l10n.campaignsLabel)),
       floatingActionButton: canManage && campaign != null
           ? FloatingActionButton.extended(
               onPressed: () => _add(campaign.id),
               icon: const Icon(Icons.person_add_alt),
-              label: Text(context.l10n.teamSumar),
+              label: Text(context.l10n.addMemberAction),
             )
           : null,
       body: Column(
@@ -145,7 +145,7 @@ class _CampaignMembersViewState extends ConsumerState<CampaignMembersView> {
             child: DropdownButtonFormField<String>(
               initialValue: _campaignId,
               decoration: InputDecoration(
-                labelText: context.l10n.intakeCampana,
+                labelText: context.l10n.campaignLabel,
               ),
               items: [
                 for (final option in campaigns)
@@ -234,7 +234,7 @@ class _Member extends StatelessWidget {
     trailing: onRemove == null
         ? null
         : IconButton(
-            tooltip: context.l10n.teamSacarDeLaCampana,
+            tooltip: context.l10n.removeFromCampaignTitle,
             icon: const Icon(Icons.person_remove_outlined),
             onPressed: onRemove,
           ),

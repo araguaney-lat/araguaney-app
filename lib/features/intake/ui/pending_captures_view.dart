@@ -71,7 +71,7 @@ class _PendingCapturesViewState extends ConsumerState<PendingCapturesView> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(context.l10n.intakeDescartarEstaCaptura),
+        title: Text(context.l10n.discardCaptureConfirmTitle),
         content: Text(
           'Se borra del dispositivo y no se envía. Lo que se registró en '
           'papel o en las cajas de ${row.summary} no se recupera desde aquí.',
@@ -79,11 +79,11 @@ class _PendingCapturesViewState extends ConsumerState<PendingCapturesView> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: Text(context.l10n.accountConservar),
+            child: Text(context.l10n.keepAction),
           ),
           FilledButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: Text(context.l10n.intakeDescartar),
+            child: Text(context.l10n.discardAction),
           ),
         ],
       ),
@@ -165,9 +165,9 @@ class _Header extends StatelessWidget {
     crossAxisAlignment: CrossAxisAlignment.start,
     mainAxisSize: MainAxisSize.min,
     children: [
-      Text(context.l10n.intakePendientesDeEnvio),
+      Text(context.l10n.pendingCapturesTitle),
       Text(
-        context.l10n.intakeNadaSePierdeTodoEspera,
+        context.l10n.queueNothingIsLost,
         style: Theme.of(context).textTheme.bodySmall,
       ),
     ],
@@ -200,20 +200,17 @@ class _ReadinessStrip extends StatelessWidget {
       children: [
         Expanded(
           child: _Cell(
-            label: context.l10n.intakeProductosDescargados,
+            label: context.l10n.cachedProductsLabel,
             value: products,
           ),
         ),
         const SizedBox(width: 9),
         Expanded(
-          child: _Cell(
-            label: context.l10n.intakeCodigosApartados,
-            value: codes,
-          ),
+          child: _Cell(label: context.l10n.reservedCodesLabel, value: codes),
         ),
         const SizedBox(width: 9),
         Expanded(
-          child: _Cell(label: context.l10n.intakeCapturasEnCola, value: queued),
+          child: _Cell(label: context.l10n.queuedCapturesLabel, value: queued),
         ),
       ],
     ),
@@ -302,7 +299,7 @@ class _ActionsState extends ConsumerState<_Actions> {
     children: [
       Expanded(
         child: ConfirmButton(
-          label: context.l10n.intakeSincronizar,
+          label: context.l10n.syncAction,
           onPressed: widget.onSync,
         ),
       ),
@@ -310,7 +307,7 @@ class _ActionsState extends ConsumerState<_Actions> {
       Expanded(
         child: OutlinedButton(
           onPressed: _reserving ? null : _topUp,
-          child: Text(context.l10n.intakeReservarCodigos),
+          child: Text(context.l10n.reserveCodesAction),
         ),
       ),
     ],
@@ -387,7 +384,7 @@ class _QueuedCard extends StatelessWidget {
                   Expanded(
                     child: TextButton(
                       onPressed: onDiscard,
-                      child: Text(context.l10n.intakeDescartar),
+                      child: Text(context.l10n.discardAction),
                     ),
                   ),
                 ],
@@ -441,7 +438,7 @@ class _Empty extends StatelessWidget {
   Widget build(BuildContext context) => Padding(
     padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 16),
     child: Text(
-      context.l10n.intakeNoHayCapturasEsperandoLas,
+      context.l10n.queueEmpty,
       textAlign: TextAlign.center,
       style: Theme.of(context).textTheme.bodyMedium,
     ),

@@ -57,13 +57,13 @@ class _ReportIncidentSheetState extends State<ReportIncidentSheet> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            context.l10n.incidentsLevantarIncidencia,
+            context.l10n.incidentRaiseTitle,
             style: Theme.of(context).textTheme.titleMedium,
           ),
           const SizedBox(height: 16),
           DropdownButtonFormField<String>(
             initialValue: _type,
-            decoration: InputDecoration(labelText: context.l10n.incidentsTipo),
+            decoration: InputDecoration(labelText: context.l10n.typeLabel),
             items: [
               for (final type in IncidentType.all)
                 DropdownMenuItem(
@@ -80,8 +80,8 @@ class _ReportIncidentSheetState extends State<ReportIncidentSheet> {
             maxLines: 4,
             maxLength: 1000,
             decoration: InputDecoration(
-              labelText: context.l10n.incidentsQuePaso,
-              helperText: context.l10n.incidentsLoQueVeraQuienTenga,
+              labelText: context.l10n.incidentDescriptionLabel,
+              helperText: context.l10n.incidentDescriptionHint,
             ),
             validator: (value) => (value == null || value.trim().isEmpty)
                 ? 'Describe lo que pasó'
@@ -92,7 +92,7 @@ class _ReportIncidentSheetState extends State<ReportIncidentSheet> {
             alignment: Alignment.centerRight,
             child: FilledButton(
               onPressed: _submit,
-              child: Text(context.l10n.incidentsLevantar),
+              child: Text(context.l10n.incidentRaiseAction),
             ),
           ),
         ],

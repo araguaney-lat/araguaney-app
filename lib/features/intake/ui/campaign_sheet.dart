@@ -38,14 +38,14 @@ class CampaignSheet extends StatelessWidget {
       children: [
         ListTile(
           title: Text(
-            context.l10n.intakeCampana,
+            context.l10n.campaignLabel,
             style: Theme.of(context).textTheme.titleMedium,
           ),
-          subtitle: Text(context.l10n.intakeSinCampanaLaDonacionQueda),
+          subtitle: Text(context.l10n.campaignDefaultsToGeneral),
         ),
         const Divider(),
         _Option(
-          label: context.l10n.intakeCampanaGeneral,
+          label: context.l10n.generalCampaign,
           value: null,
           selected: selected,
         ),

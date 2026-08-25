@@ -69,73 +69,73 @@ class MoreMenuSheet extends ConsumerWidget {
                   child: const Icon(Icons.cloud_upload_outlined),
                 )
               : const Icon(Icons.cloud_upload_outlined),
-          title: Text(context.l10n.intakePendientesDeEnvio),
+          title: Text(context.l10n.pendingCapturesTitle),
           onTap: () => _go(context, PendingCapturesView.route()),
         ),
         ListTile(
           leading: const Icon(Icons.person_outline),
-          title: Text(context.l10n.accountPerfilYSeguridad),
+          title: Text(context.l10n.profileTitle),
           onTap: () => _go(context, ProfileView.route()),
         ),
         ListTile(
           leading: const Icon(Icons.list_alt_outlined),
-          title: Text(context.l10n.shellCapturas),
+          title: Text(context.l10n.navCaptures),
           onTap: () => _go(context, IntakeListView.route()),
         ),
         ListTile(
           leading: const Icon(Icons.donut_small_outlined),
-          title: Text(context.l10n.dashboardStockPorCategoria),
+          title: Text(context.l10n.stockByCategoryTitle),
           onTap: () => _go(context, StockByCategoryView.route()),
         ),
         ListTile(
           leading: const Icon(Icons.pallet),
-          title: Text(context.l10n.palletsTarimas),
+          title: Text(context.l10n.palletsTitle),
           onTap: () => _go(context, PalletsListView.route()),
         ),
         if (coordinates)
           ListTile(
             leading: const Icon(Icons.local_shipping_outlined),
-            title: Text(context.l10n.shellEnvios),
+            title: Text(context.l10n.navShipments),
             onTap: () => _go(context, ShipmentsListView.route()),
           ),
         ListTile(
           leading: const Icon(Icons.swap_horiz),
-          title: Text(context.l10n.shellTransferencias),
+          title: Text(context.l10n.navTransfers),
           onTap: () => _go(context, TransfersListView.route()),
         ),
         if (coordinates)
           ListTile(
             leading: const Icon(Icons.flag_outlined),
-            title: Text(context.l10n.shellRevisionesDeRiesgo),
+            title: Text(context.l10n.navRiskReviews),
             onTap: () => _go(context, RiskReviewsView.route()),
           ),
         if (coordinates)
           ListTile(
             leading: const Icon(Icons.report_gmailerrorred_outlined),
-            title: Text(context.l10n.incidentsIncidencias),
+            title: Text(context.l10n.incidentsTitle),
             onTap: () => _go(context, IncidentsListView.route()),
           ),
         if (ref.watch(canReviewApplicationsProvider))
           ListTile(
             leading: const Icon(Icons.inbox_outlined),
-            title: Text(context.l10n.center_applicationsSolicitudes),
+            title: Text(context.l10n.applicationsTitle),
             onTap: () => _go(context, ApplicationQueueView.route()),
           ),
         if (ref.watch(canListCentersProvider))
           ListTile(
             leading: const Icon(Icons.apartment_outlined),
-            title: Text(context.l10n.centersCentros),
+            title: Text(context.l10n.centersTitle),
             onTap: () => _go(context, CentersListView.route()),
           ),
         ListTile(
           leading: const Icon(Icons.people_outline),
-          title: Text(context.l10n.shellEquipo),
+          title: Text(context.l10n.navTeam),
           onTap: () => _go(context, TeamDirectoryView.route()),
         ),
         const Divider(),
         ListTile(
           leading: const Icon(Icons.logout),
-          title: Text(context.l10n.shellCerrarSesion),
+          title: Text(context.l10n.navSignOut),
           onTap: () {
             Navigator.of(context).pop();
             ref.read(sessionControllerProvider.notifier).logOut();

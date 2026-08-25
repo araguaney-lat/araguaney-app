@@ -30,7 +30,7 @@ class PickPersonSheet extends StatelessWidget {
         ? Padding(
             padding: const EdgeInsets.all(32),
             child: Text(
-              context.l10n.teamNoQuedaNadieDelCentro,
+              context.l10n.noOneLeftToAdd,
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodyMedium,
             ),
@@ -44,7 +44,7 @@ class PickPersonSheet extends StatelessWidget {
                 return Padding(
                   padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
                   child: Text(
-                    context.l10n.teamSumarALaCampana,
+                    context.l10n.addToCampaignTitle,
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                 );

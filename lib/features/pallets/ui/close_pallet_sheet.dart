@@ -60,19 +60,19 @@ class _ClosePalletSheetState extends State<ClosePalletSheet> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          context.l10n.palletsCerrarTarima,
+          context.l10n.palletCloseTitle,
           style: Theme.of(context).textTheme.titleMedium,
         ),
         const SizedBox(height: 8),
         Text(
-          context.l10n.palletsUnaTarimaCerradaYaNo,
+          context.l10n.palletCloseWarning,
           style: Theme.of(context).textTheme.bodySmall,
         ),
         const SizedBox(height: 16),
         TextField(
           controller: _weight,
           decoration: InputDecoration(
-            labelText: context.l10n.palletsPesoBrutoEnKgOpcional,
+            labelText: context.l10n.grossWeightKgOptionalLabel,
           ),
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
         ),
@@ -80,7 +80,7 @@ class _ClosePalletSheetState extends State<ClosePalletSheet> {
         TextField(
           controller: _height,
           decoration: InputDecoration(
-            labelText: context.l10n.palletsAlturaEnCmOpcional,
+            labelText: context.l10n.heightCmOptionalLabel,
           ),
           keyboardType: TextInputType.number,
           inputFormatters: [FilteringTextInputFormatter.digitsOnly],
@@ -90,7 +90,7 @@ class _ClosePalletSheetState extends State<ClosePalletSheet> {
           alignment: Alignment.centerRight,
           child: FilledButton(
             onPressed: _close,
-            child: Text(context.l10n.palletsCerrarTarima),
+            child: Text(context.l10n.palletCloseTitle),
           ),
         ),
       ],

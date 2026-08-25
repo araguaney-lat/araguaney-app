@@ -69,14 +69,14 @@ class _CreateShipmentSheetState extends State<CreateShipmentSheet> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            context.l10n.shipmentsNuevoEnvio,
+            context.l10n.shipmentNewTitle,
             style: Theme.of(context).textTheme.titleLarge,
           ),
           const SizedBox(height: 16),
           TextFormField(
             controller: _destination,
             decoration: InputDecoration(
-              labelText: context.l10n.shipmentsDestino,
+              labelText: context.l10n.destinationLabel,
             ),
             validator: (value) => (value == null || value.trim().isEmpty)
                 ? 'Escribe a dónde va'
@@ -86,15 +86,15 @@ class _CreateShipmentSheetState extends State<CreateShipmentSheet> {
           TextFormField(
             controller: _carrier,
             decoration: InputDecoration(
-              labelText: context.l10n.shipmentsTransportistaOpcional,
+              labelText: context.l10n.carrierOptionalLabel,
             ),
           ),
           const SizedBox(height: 12),
           TextFormField(
             controller: _reference,
             decoration: InputDecoration(
-              labelText: context.l10n.shipmentsReferenciaOpcional,
-              helperText: context.l10n.shipmentsGuiaContenedorLoQueSirva,
+              labelText: context.l10n.referenceOptionalLabel,
+              helperText: context.l10n.shipmentReferenceHint,
             ),
           ),
           const SizedBox(height: 12),
@@ -102,12 +102,12 @@ class _CreateShipmentSheetState extends State<CreateShipmentSheet> {
             controller: _notes,
             maxLines: 2,
             decoration: InputDecoration(
-              labelText: context.l10n.intakeNotasOpcional,
+              labelText: context.l10n.notesOptionalLabel,
             ),
           ),
           const SizedBox(height: 20),
           ConfirmButton(
-            label: context.l10n.shipmentsAbrirElEnvio,
+            label: context.l10n.shipmentOpenAction,
             onPressed: _save,
           ),
         ],

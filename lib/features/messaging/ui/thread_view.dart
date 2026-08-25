@@ -187,16 +187,14 @@ class _ReplyBar extends StatelessWidget {
               controller: controller,
               maxLines: 3,
               minLines: 1,
-              decoration: InputDecoration(
-                labelText: context.l10n.messagingResponder,
-              ),
+              decoration: InputDecoration(labelText: context.l10n.replyAction),
             ),
           ),
           const SizedBox(width: 8),
           IconButton.filled(
             onPressed: sending ? null : onSend,
             icon: const Icon(Icons.send),
-            tooltip: context.l10n.messagingEnviar,
+            tooltip: context.l10n.sendAction,
           ),
         ],
       ),

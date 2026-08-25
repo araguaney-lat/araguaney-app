@@ -62,10 +62,7 @@ class _ResolveIncidentSheetState extends State<ResolveIncidentSheet> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(
-            context.l10n.incidentsCerrarLaIncidencia,
-            style: text.titleMedium,
-          ),
+          Text(context.l10n.incidentCloseTitle, style: text.titleMedium),
           const SizedBox(height: 8),
           // Las palabras de quien la reportó, citadas: cerrar sin releerlas es
           // como se cierra la equivocada.
@@ -79,7 +76,7 @@ class _ResolveIncidentSheetState extends State<ResolveIncidentSheet> {
             textCapitalization: TextCapitalization.sentences,
             onChanged: (_) => setState(() {}),
             decoration: InputDecoration(
-              labelText: context.l10n.incidentsEnQueTermino,
+              labelText: context.l10n.incidentOutcomeLabel,
               errorText: empty ? 'Escribe en qué terminó' : null,
             ),
           ),
