@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/api/generated/models/incident_out.dart';
+import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/ui/relative_time.dart';
 import '../../../core/ui/status_labels.dart';
 import '../../shipments/ui/shipment_record_view.dart';
@@ -51,11 +52,11 @@ class _IncidentsListViewState extends ConsumerState<IncidentsListView> {
       case IncidentsRead():
         ref.invalidate(centerIncidentsProvider);
         messenger.showSnackBar(
-          const SnackBar(content: Text('La incidencia quedó cerrada.')),
+          SnackBar(content: Text(context.l10n.incidentClosed)),
         );
       case IncidentsRefused(:final failure):
         messenger.showSnackBar(
-          SnackBar(content: Text(failure.operatorMessage)),
+          SnackBar(content: Text(failure.operatorMessage(context.l10n))),
         );
     }
   }
@@ -66,7 +67,7 @@ class _IncidentsListViewState extends ConsumerState<IncidentsListView> {
     final canResolve = ref.watch(canResolveIncidentsProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Incidencias')),
+      appBar: AppBar(title: Text(context.l10n.incidentsTitle)),
       body: switch (incidents) {
         AsyncData(value: IncidentsRead(:final value)) when value.isEmpty =>
           const _Message('No hay incidencias registradas.'),
@@ -81,8 +82,8 @@ class _IncidentsListViewState extends ConsumerState<IncidentsListView> {
         ) =>
           _Message(
             isForbidden
-                ? 'Hace falta coordinar un centro para ver sus incidencias.'
-                : failure.operatorMessage,
+                ? context.l10n.incidentsForbidden
+                : failure.operatorMessage(context.l10n),
           ),
         AsyncError(:final error) => _Message('$error'),
         _ => const Center(child: CircularProgressIndicator()),
@@ -126,9 +127,9 @@ class _List extends ConsumerWidget {
               onResolve: () => onResolve(incident),
             ),
           if (closed.isNotEmpty) ...[
-            const Padding(
+            Padding(
               padding: EdgeInsets.fromLTRB(16, 24, 16, 8),
-              child: Text('Ya cerradas'),
+              child: Text(context.l10n.incidentsClosedHeading),
             ),
             for (final incident in closed)
               _IncidentCard(
@@ -153,7 +154,7 @@ class _Header extends StatelessWidget {
   Widget build(BuildContext context) => Padding(
     padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
     child: Text(switch (open) {
-      0 => 'Ninguna espera una decisión',
+      0 => context.l10n.nothingAwaitsDecision,
       1 => 'Una incidencia abierta',
       _ => '$open incidencias abiertas',
     }, style: Theme.of(context).textTheme.bodyMedium),
@@ -189,12 +190,12 @@ class _IncidentCard extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    incidentTypeLabel(incident.type),
+                    incidentTypeLabel(context.l10n, incident.type),
                     style: text.titleMedium,
                   ),
                 ),
                 Text(
-                  describeAge(incident.createdAt, DateTime.now()),
+                  describeAge(context.l10n, incident.createdAt, DateTime.now()),
                   style: text.bodySmall,
                 ),
               ],
@@ -210,14 +211,18 @@ class _IncidentCard extends StatelessWidget {
             const SizedBox(height: 12),
             Row(
               children: [
-                Chip(label: Text(incidentStatusLabel(incident.status))),
+                Chip(
+                  label: Text(
+                    incidentStatusLabel(context.l10n, incident.status),
+                  ),
+                ),
                 const Spacer(),
                 // El envío al que pertenece: es donde se puede mirar qué pasó.
                 TextButton(
                   onPressed: () => Navigator.of(
                     context,
                   ).push(ShipmentRecordView.route(incident.shipmentId)),
-                  child: const Text('Ver envío'),
+                  child: Text(context.l10n.incidentViewShipment),
                 ),
               ],
             ),
@@ -228,7 +233,7 @@ class _IncidentCard extends StatelessWidget {
                       width: double.infinity,
                       child: FilledButton(
                         onPressed: onResolve,
-                        child: const Text('Cerrar'),
+                        child: Text(context.l10n.actionClose),
                       ),
                     ),
           ],

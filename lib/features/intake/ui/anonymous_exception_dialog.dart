@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/i18n/l10n_extension.dart';
 
 /// Qué se hace cuando el servidor pide identificar a quien dona.
 enum DonorRequestOutcome {
@@ -45,7 +46,7 @@ class _AnonymousExceptionDialogState extends State<AnonymousExceptionDialog> {
 
   @override
   Widget build(BuildContext context) => AlertDialog(
-    title: const Text('Falta identificar a quien dona'),
+    title: Text(context.l10n.donorRequiredTitle),
     content: Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -60,9 +61,9 @@ class _AnonymousExceptionDialogState extends State<AnonymousExceptionDialog> {
             autofocus: true,
             maxLines: 3,
             maxLength: 500,
-            decoration: const InputDecoration(
-              labelText: 'Motivo',
-              helperText: 'Por qué no fue posible identificar a quien donó',
+            decoration: InputDecoration(
+              labelText: context.l10n.reasonLabel,
+              helperText: context.l10n.anonymousReasonLabel,
             ),
             onChanged: (_) => setState(() {}),
           ),
@@ -73,7 +74,7 @@ class _AnonymousExceptionDialogState extends State<AnonymousExceptionDialog> {
         ? [
             TextButton(
               onPressed: () => setState(() => _writingReason = false),
-              child: const Text('Volver'),
+              child: Text(context.l10n.backAction),
             ),
             FilledButton(
               onPressed: _reason.text.trim().isEmpty
@@ -82,19 +83,19 @@ class _AnonymousExceptionDialogState extends State<AnonymousExceptionDialog> {
                       outcome: DonorRequestOutcome.exception,
                       reason: _reason.text.trim(),
                     )),
-              child: const Text('Registrar sin donante'),
+              child: Text(context.l10n.registerWithoutDonor),
             ),
           ]
         : [
             TextButton(
               onPressed: () => setState(() => _writingReason = true),
-              child: const Text('No quiso identificarse'),
+              child: Text(context.l10n.donorDeclinedOption),
             ),
             FilledButton(
               onPressed: () => Navigator.of(
                 context,
               ).pop((outcome: DonorRequestOutcome.identify, reason: null)),
-              child: const Text('Identificar'),
+              child: Text(context.l10n.identifyAction),
             ),
           ],
   );

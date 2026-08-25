@@ -58,7 +58,7 @@ class AuthRepository {
     if (body == null) {
       throw const UnknownFailure(
         code: 'EMPTY_LOGIN_RESPONSE',
-        message: 'El servidor no devolvió una sesión',
+        message: 'The server returned no session',
       );
     }
 
@@ -68,7 +68,8 @@ class AuthRepository {
       if (partial == null) {
         throw const UnknownFailure(
           code: 'MISSING_PARTIAL_TOKEN',
-          message: 'El servidor pidió segundo factor sin entregar el token',
+          message:
+              'The server asked for a second factor without handing over the token',
         );
       }
       return LoginNeedsTotp(partial);
@@ -139,7 +140,7 @@ class AuthRepository {
       // Se traga a propósito: el borrado local ocurre en el controlador.
       assert(() {
         // ignore: avoid_print
-        print('Logout remoto falló (${failure.code}); se cierra localmente');
+        print('Remote logout failed (${failure.code}); closing locally');
         return true;
       }());
     }

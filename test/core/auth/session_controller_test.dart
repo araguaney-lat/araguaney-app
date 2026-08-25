@@ -5,10 +5,12 @@ import 'package:araguaney_app/core/auth/session.dart';
 import 'package:araguaney_app/core/auth/session_controller.dart';
 import 'package:araguaney_app/core/db/db_providers.dart';
 import 'package:araguaney_app/core/push/push_providers.dart';
+import 'package:araguaney_app/features/session/domain/login_failure_message.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../support/fake_auth.dart';
+import '../../support/l10n.dart';
 
 ({ProviderContainer container, SessionController controller}) _build({
   required FakeAuthRepository repository,
@@ -217,7 +219,7 @@ void main() {
 
       final state = built.container.read(sessionControllerProvider);
       expect(state, isA<SessionAbsent>());
-      expect((state as SessionAbsent).failureMessage, isNotNull);
+      expect((state as SessionAbsent).failure, isNotNull);
       expect(storage.written, isEmpty);
     });
 
@@ -341,8 +343,14 @@ void main() {
 
       final state =
           built.container.read(sessionControllerProvider) as SessionAbsent;
-      expect(state.failureMessage, contains('no es tu contraseña'));
-      expect(state.failureMessage, isNot(contains('Credenciales')));
+      expect(
+        loginFailureMessage(await spanish(), state.failure!),
+        contains('no es tu contraseña'),
+      );
+      expect(
+        loginFailureMessage(await spanish(), state.failure!),
+        isNot(contains('Credenciales')),
+      );
     });
 
     test(
@@ -369,23 +377,38 @@ void main() {
 
         final state =
             built.container.read(sessionControllerProvider) as SessionAbsent;
-        expect(state.failureMessage, 'El correo o la contraseña no coinciden.');
-        expect(state.failureMessage, isNot(contains('sesión expiró')));
+        expect(
+          loginFailureMessage(await spanish(), state.failure!),
+          'El correo o la contraseña no coinciden.',
+        );
+        expect(
+          loginFailureMessage(await spanish(), state.failure!),
+          isNot(contains('sesión expiró')),
+        );
       },
     );
 
-    test('a locked account is not told that it is not their password', () {
-      // El limite global no es culpa de quien lo recibe; el bloqueo por
-      // intentos fallidos si tiene que ver con lo que se escribio. Son dos
-      // rechazos con el mismo tipo y distinto codigo.
-      const locked = RateLimitFailure(
-        code: 'ACCOUNT_LOCKED',
-        message: 'Too many failed attempts.',
-      );
+    test(
+      'a locked account is not told that it is not their password',
+      () async {
+        // El limite global no es culpa de quien lo recibe; el bloqueo por
+        // intentos fallidos si tiene que ver con lo que se escribio. Son dos
+        // rechazos con el mismo tipo y distinto codigo.
+        const locked = RateLimitFailure(
+          code: 'ACCOUNT_LOCKED',
+          message: 'Too many failed attempts.',
+        );
 
-      expect(locked.operatorMessage, contains('intentos fallidos'));
-      expect(locked.operatorMessage, isNot(contains('no es tu contraseña')));
-    });
+        expect(
+          locked.operatorMessage(await spanish()),
+          contains('intentos fallidos'),
+        );
+        expect(
+          locked.operatorMessage(await spanish()),
+          isNot(contains('no es tu contraseña')),
+        );
+      },
+    );
   });
 
   group('second factor', () {
@@ -416,8 +439,14 @@ void main() {
 
       final state = built.container.read(sessionControllerProvider);
       expect(state, isA<SessionAwaitingTotp>());
+      // El estado lleva el fallo y la pantalla lo redacta; aquí se comprueba
+      // que llega entero el mensaje del servidor, que es lo que describe algo
+      // que quien teclea puede corregir.
       expect(
-        (state as SessionAwaitingTotp).failureMessage,
+        loginFailureMessage(
+          await spanish(),
+          (state as SessionAwaitingTotp).failure!,
+        ),
         'El código no es válido',
       );
       expect(state.partialToken, 'partial-abc');
@@ -492,7 +521,7 @@ void main() {
 
       final state = built.container.read(sessionControllerProvider);
       expect(state, isA<SessionAbsent>());
-      expect((state as SessionAbsent).failureMessage, isNotNull);
+      expect((state as SessionAbsent).failure, isNotNull);
       expect(storage.clearCount, greaterThan(0));
     });
   });

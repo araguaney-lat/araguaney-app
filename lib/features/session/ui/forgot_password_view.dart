@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/i18n/l10n_extension.dart';
 import '../../account/data/account_providers.dart';
 import '../../account/data/account_repository.dart';
 import 'login_view.dart';
@@ -53,14 +54,14 @@ class _ForgotPasswordViewState extends ConsumerState<ForgotPasswordView> {
         case AccountDone():
           _sent = true;
         case AccountRefused(:final failure):
-          _failure = failure.operatorMessage;
+          _failure = failure.operatorMessage(context.l10n);
       }
     });
   }
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: const Text('Recuperar el acceso')),
+    appBar: AppBar(title: Text(context.l10n.forgotPasswordTitle)),
     body: SafeArea(
       child: Center(
         child: SingleChildScrollView(
@@ -81,8 +82,7 @@ class _ForgotPasswordViewState extends ConsumerState<ForgotPasswordView> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          'Escribe el correo de tu cuenta y te enviamos un enlace para elegir '
-          'una contraseña nueva.',
+          context.l10n.forgotPasswordExplanation,
           style: Theme.of(context).textTheme.bodyLarge,
         ),
         const SizedBox(height: 24),
@@ -91,7 +91,7 @@ class _ForgotPasswordViewState extends ConsumerState<ForgotPasswordView> {
           keyboardType: TextInputType.emailAddress,
           autocorrect: false,
           onFieldSubmitted: (_) => _submit(),
-          decoration: const InputDecoration(labelText: 'Correo'),
+          decoration: InputDecoration(labelText: context.l10n.emailLabel),
           validator: (value) => (value == null || value.trim().isEmpty)
               ? 'Escribe tu correo'
               : null,
@@ -108,7 +108,7 @@ class _ForgotPasswordViewState extends ConsumerState<ForgotPasswordView> {
                   dimension: 20,
                   child: CircularProgressIndicator(strokeWidth: 2),
                 )
-              : const Text('Enviar el enlace'),
+              : Text(context.l10n.forgotPasswordSubmit),
         ),
       ],
     ),
@@ -128,21 +128,20 @@ class _Sent extends StatelessWidget {
       Text(
         // El servidor contesta lo mismo exista o no la cuenta, para que esta
         // pantalla no sirva para averiguar quién tiene una. Se repite tal cual.
-        'Si ese correo tiene una cuenta, el enlace ya va en camino.',
+        context.l10n.forgotPasswordSent,
         textAlign: TextAlign.center,
         style: Theme.of(context).textTheme.titleMedium,
       ),
       const SizedBox(height: 12),
       Text(
-        'El enlace abre en el navegador y ahí eliges la contraseña nueva. '
-        'Después vuelve aquí para entrar.',
+        context.l10n.forgotPasswordLinkOpensBrowser,
         textAlign: TextAlign.center,
         style: Theme.of(context).textTheme.bodyMedium,
       ),
       const SizedBox(height: 24),
       FilledButton(
         onPressed: () => Navigator.of(context).pop(),
-        child: const Text('Volver'),
+        child: Text(context.l10n.backAction),
       ),
     ],
   );

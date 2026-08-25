@@ -6,6 +6,7 @@ import '../../../core/api/generated/models/incident_create.dart';
 import '../../../core/api/generated/models/incident_out.dart';
 import '../../../core/api/generated/models/incident_resolve.dart';
 import '../../../core/api/generated/models/reception_out.dart';
+import '../../../core/i18n/generated/app_localizations.dart';
 
 /// Tipos de incidencia que reconoce el backend.
 ///
@@ -29,11 +30,11 @@ abstract final class IncidentType {
 }
 
 /// Nombre en español de un tipo. Traducción de interfaz, no interpretación.
-String incidentTypeLabel(String type) => switch (type) {
-  IncidentType.weightDifference => 'Diferencia de peso',
+String incidentTypeLabel(AppLocalizations l10n, String type) => switch (type) {
+  IncidentType.weightDifference => l10n.incidentTypeWeightDiff,
   IncidentType.missingBox => 'Caja faltante',
-  IncidentType.damage => 'Daño',
-  IncidentType.customsRetention => 'Retención en aduana',
+  IncidentType.damage => l10n.incidentTypeDamage,
+  IncidentType.customsRetention => l10n.incidentTypeCustoms,
   IncidentType.other => 'Otra',
   _ => type,
 };

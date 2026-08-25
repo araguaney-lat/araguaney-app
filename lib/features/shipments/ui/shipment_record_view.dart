@@ -9,6 +9,7 @@ import '../../../core/api/generated/models/qr_event_out.dart';
 import '../../../core/api/generated/models/reception_out.dart';
 import '../../../core/api/generated/models/shipment_detail_out.dart';
 import '../../../core/auth/auth_providers.dart';
+import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/platform/open_link.dart';
 import '../../../core/ui/confirm_button.dart';
 import '../../../core/ui/record_field.dart';
@@ -60,9 +61,9 @@ class ShipmentRecordView extends ConsumerWidget {
       case IncidentCreated():
         ref.invalidate(shipmentIncidentsProvider(shipmentId));
       case IncidentRejected(:final failure):
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(failure.operatorMessage)));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(failure.operatorMessage(context.l10n))),
+        );
     }
   }
 
@@ -72,9 +73,11 @@ class ShipmentRecordView extends ConsumerWidget {
   /// cuando termina de armarse. Si tarda más de lo que este sondeo espera, se
   /// dice — el trabajo sigue vivo allá y volver a pedirlo lo recoge.
   Future<void> _manifest(BuildContext context, WidgetRef ref) async {
-    final messenger = ScaffoldMessenger.of(
-      context,
-    )..showSnackBar(const SnackBar(content: Text('Preparando el manifiesto…')));
+    // Se toma antes de esperar: después de un await este contexto puede
+    // haber dejado de estar montado.
+    final l10n = context.l10n;
+    final messenger = ScaffoldMessenger.of(context)
+      ..showSnackBar(SnackBar(content: Text(l10n.manifestPreparing)));
 
     final outcome = await ref
         .read(shipmentsRepositoryProvider)
@@ -90,21 +93,25 @@ class ShipmentRecordView extends ConsumerWidget {
         final opened = await ref.read(openLinkProvider)(downloadUrl);
         if (!opened) {
           messenger.showSnackBar(
-            const SnackBar(
-              content: Text('No se pudo abrir el manifiesto en este teléfono.'),
-            ),
+            SnackBar(content: Text(l10n.manifestOpenFailed)),
           );
         }
       case ManifestStillWorking():
         messenger.showSnackBar(
-          const SnackBar(
+          SnackBar(content: Text(l10n.manifestStillWorking)),
+        );
+      case ManifestFailed(:final failure, :final serverError):
+        // El fallo de la llamada manda; si no lo hubo, las palabras del
+        // servidor; y si tampoco, lo único que se puede decir con certeza.
+        messenger.showSnackBar(
+          SnackBar(
             content: Text(
-              'El manifiesto sigue armándose. Vuelve a pedirlo en un momento.',
+              failure?.operatorMessage(l10n) ??
+                  serverError ??
+                  l10n.manifestFailed,
             ),
           ),
         );
-      case ManifestFailed(:final message):
-        messenger.showSnackBar(SnackBar(content: Text(message)));
     }
   }
 
@@ -115,10 +122,12 @@ class ShipmentRecordView extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(shipment.valueOrNull?.reference ?? 'Envío'),
+        title: Text(
+          shipment.valueOrNull?.reference ?? context.l10n.shipmentRecordTitle,
+        ),
         actions: [
           IconButton(
-            tooltip: 'Manifiesto',
+            tooltip: context.l10n.manifestLabel,
             icon: const Icon(Icons.description_outlined),
             onPressed: () => _manifest(context, ref),
           ),
@@ -128,7 +137,7 @@ class ShipmentRecordView extends ConsumerWidget {
           ? FloatingActionButton.extended(
               onPressed: () => _report(context, ref),
               icon: const Icon(Icons.report_outlined),
-              label: const Text('Incidencia'),
+              label: Text(context.l10n.incidentLabel),
             )
           : null,
       bottomNavigationBar: switch (shipment) {
@@ -150,7 +159,7 @@ class ShipmentRecordView extends ConsumerWidget {
           child: Padding(
             padding: const EdgeInsets.all(32),
             child: Text(
-              ApiErrorMapper.fromAny(error).operatorMessage,
+              ApiErrorMapper.fromAny(error).operatorMessage(context.l10n),
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodyMedium,
             ),
@@ -187,7 +196,7 @@ class _Body extends ConsumerWidget {
     if (!context.mounted) return;
 
     if (outcome case ShipmentRefused(:final failure)) {
-      _say(context, failure.operatorMessage);
+      _say(context, failure.operatorMessage(context.l10n));
       return;
     }
     ref
@@ -205,27 +214,38 @@ class _Body extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(vertical: 8),
       children: [
         RecordField(
-          label: 'Estado',
-          value: shipmentStatusLabel(shipment.status),
+          label: context.l10n.statusLabel,
+          value: shipmentStatusLabel(context.l10n, shipment.status),
         ),
-        RecordField(label: 'Destino', value: shipment.destination),
+        RecordField(
+          label: context.l10n.destinationLabel,
+          value: shipment.destination,
+        ),
         if (shipment.carrier case final carrier?)
-          RecordField(label: 'Transportista', value: carrier),
-        RecordField(label: 'Tarimas', value: '${shipment.pallets.length}'),
+          RecordField(label: context.l10n.carrierLabel, value: carrier),
+        RecordField(
+          label: context.l10n.palletsTitle,
+          value: '${shipment.pallets.length}',
+        ),
         if (shipment.shippedAt case final shipped?)
-          RecordField(label: 'Despachado', value: formatShortDate(shipped)),
+          RecordField(
+            label: context.l10n.shipmentStatusShipped,
+            value: formatShortDate(shipped),
+          ),
         if (shipment.deliveredAt case final delivered?)
-          RecordField(label: 'Entregado', value: formatShortDate(delivered)),
+          RecordField(
+            label: context.l10n.shipmentStatusDelivered,
+            value: formatShortDate(delivered),
+          ),
         if (shipment.notes case final notes?)
-          RecordField(label: 'Notas', value: notes),
+          RecordField(label: context.l10n.notesLabel, value: notes),
         // Los avisos de altura los calcula el servidor contra el perfil del
         // envío, y avisan sin bloquear. La aplicación los repite tal cual: el
         // umbral es suyo y aquí no se interpreta.
         for (final warning in shipment.heightWarnings) _Note(warning),
         const Divider(),
         _SectionTitle('Tarimas'),
-        if (shipment.pallets.isEmpty)
-          const _Note('Este envío todavía no lleva ninguna tarima.'),
+        if (shipment.pallets.isEmpty) _Note(context.l10n.shipmentNoPallets),
         for (final pallet in shipment.pallets)
           _PalletRow(
             pallet: pallet,
@@ -238,43 +258,41 @@ class _Body extends ConsumerWidget {
             child: OutlinedButton.icon(
               onPressed: () => _addPallet(context, ref, shipment),
               icon: const Icon(Icons.add),
-              label: const Text('Añadir tarima'),
+              label: Text(context.l10n.shipmentAddPallet),
             ),
           ),
         const Divider(),
-        _SectionTitle('Recepción'),
+        _SectionTitle(context.l10n.receptionHeading),
         switch (reception) {
           AsyncData(value: final value?) => _Reception(reception: value),
-          AsyncData() => const _Note(
-            'Todavía no se registró la recepción de este envío.',
-          ),
-          AsyncError() => const _Note('No se pudo consultar la recepción.'),
+          AsyncData() => _Note(context.l10n.receptionNotRegistered),
+          AsyncError() => _Note(context.l10n.receptionUnavailable),
           _ => const _Note('Consultando…'),
         },
         const Divider(),
         _SectionTitle('Recorrido'),
         switch (events) {
-          AsyncData(:final value) when value.isEmpty => const _Note(
-            'Todavía no hay hitos anotados para este envío.',
+          AsyncData(:final value) when value.isEmpty => _Note(
+            context.l10n.milestonesEmpty,
           ),
           AsyncData(:final value) => Column(
             children: [for (final event in value) _Event(event: event)],
           ),
-          AsyncError() => const _Note('No se pudo consultar el recorrido.'),
+          AsyncError() => _Note(context.l10n.timelineUnavailable),
           _ => const _Note('Consultando…'),
         },
         const Divider(),
         _SectionTitle('Incidencias'),
         switch (incidents) {
-          AsyncData(:final value) when value.isEmpty => const _Note(
-            'Ninguna incidencia levantada sobre este envío.',
+          AsyncData(:final value) when value.isEmpty => _Note(
+            context.l10n.incidentsEmptyForShipment,
           ),
           AsyncData(:final value) => Column(
             children: [
               for (final incident in value) _Incident(incident: incident),
             ],
           ),
-          AsyncError() => const _Note('No se pudieron consultar.'),
+          AsyncError() => _Note(context.l10n.incidentsUnavailable),
           _ => const _Note('Consultando…'),
         },
         const SizedBox(height: 80),
@@ -311,7 +329,7 @@ class _PalletRow extends ConsumerWidget {
     ),
     trailing: removable
         ? IconButton(
-            tooltip: 'Quitar del envío',
+            tooltip: context.l10n.shipmentRemovePalletTooltip,
             icon: const Icon(Icons.remove_circle_outline),
             onPressed: () => _remove(context, ref),
           )
@@ -325,7 +343,7 @@ class _PalletRow extends ConsumerWidget {
     if (!context.mounted) return;
 
     if (outcome case ShipmentRefused(:final failure)) {
-      _say(context, failure.operatorMessage);
+      _say(context, failure.operatorMessage(context.l10n));
       return;
     }
     ref
@@ -354,7 +372,7 @@ class _AdvanceState extends ConsumerState<_Advance> {
   @override
   Widget build(BuildContext context) {
     final label = switch (widget.shipment.status) {
-      'OPEN' => 'Cerrar el envío',
+      'OPEN' => context.l10n.shipmentCloseAction,
       'CLOSED' => 'Despachar',
       _ => null,
     };
@@ -382,19 +400,26 @@ class _AdvanceState extends ConsumerState<_Advance> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(closing ? '¿Cerrar el envío?' : '¿Despachar el envío?'),
+        title: Text(
+          closing
+              ? context.l10n.shipmentCloseConfirmTitle
+              : context.l10n.shipmentDispatchConfirmTitle,
+        ),
         content: Text(
           closing
-              ? 'Deja de admitir tarimas. Lleva $pallets '
-                    '${pallets == 1 ? 'tarima' : 'tarimas'} a '
-                    '${shipment.destination}.'
-              : 'Queda registrado que salió hacia ${shipment.destination}, '
-                    'con $pallets ${pallets == 1 ? 'tarima' : 'tarimas'}.',
+              ? context.l10n.shipmentCloseExplanation(
+                  pallets,
+                  shipment.destination,
+                )
+              : context.l10n.shipmentDispatchExplanation(
+                  pallets,
+                  shipment.destination,
+                ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Todavía no'),
+            child: Text(context.l10n.notYetValue),
           ),
           FilledButton(
             onPressed: () => Navigator.of(context).pop(true),
@@ -414,7 +439,7 @@ class _AdvanceState extends ConsumerState<_Advance> {
     setState(() => _busy = false);
 
     if (outcome case ShipmentRefused(:final failure)) {
-      _say(context, failure.operatorMessage);
+      _say(context, failure.operatorMessage(context.l10n));
       return;
     }
     ref
@@ -440,24 +465,26 @@ class _Reception extends StatelessWidget {
     return Column(
       children: [
         RecordField(
-          label: 'Recibida',
+          label: context.l10n.donationStatusReceived,
           value: formatShortDate(reception.receivedAt),
         ),
         if (reception.consigneeName case final consignee?)
-          RecordField(label: 'Recibió', value: consignee),
+          RecordField(label: context.l10n.receivedByLabel, value: consignee),
         RecordField(
-          label: 'Cajas',
-          value:
-              '${shrinkage.received} de ${shrinkage.totalBoxes} llegaron bien',
+          label: context.l10n.boxesTitle,
+          value: context.l10n.shrinkageArrived(
+            shrinkage.received,
+            shrinkage.totalBoxes,
+          ),
         ),
         // El porcentaje lo calcula el servidor y aquí se enseña sin adjetivos:
         // cuánta merma es demasiada es un criterio de la coordinación.
         RecordField(
-          label: 'Merma',
+          label: context.l10n.shrinkageLabel,
           value: '${shrinkage.shrinkagePct}% · ${shrinkage.notReceived} cajas',
         ),
         if (reception.notes case final notes?)
-          RecordField(label: 'Notas de la recepción', value: notes),
+          RecordField(label: context.l10n.receptionNotesLabel, value: notes),
       ],
     );
   }
@@ -475,7 +502,7 @@ class _Incident extends StatelessWidget {
           ? Icons.error_outline
           : Icons.check_circle_outline,
     ),
-    title: Text(incidentTypeLabel(incident.type)),
+    title: Text(incidentTypeLabel(context.l10n, incident.type)),
     subtitle: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -502,7 +529,11 @@ class _Event extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final described = describeEvent(event, statusLabel: shipmentStatusLabel);
+    final described = describeEvent(
+      context.l10n,
+      event,
+      statusLabel: (status) => shipmentStatusLabel(context.l10n, status),
+    );
 
     return ListTile(
       dense: true,

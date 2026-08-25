@@ -1,5 +1,6 @@
 import 'package:araguaney_app/core/api/api_providers.dart';
 import 'package:araguaney_app/core/api/generated/rest_client.dart';
+import 'package:araguaney_app/core/i18n/generated/app_localizations.dart';
 import 'package:araguaney_app/features/center_applications/ui/application_queue_view.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -63,7 +64,11 @@ void main() {
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
-        child: const MaterialApp(home: ApplicationQueueView()),
+        child: const MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: ApplicationQueueView(),
+        ),
       ),
     );
     await tester.pumpAndSettle();

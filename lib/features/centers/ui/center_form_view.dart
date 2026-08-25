@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/api/generated/models/center_create.dart';
 import '../../../core/api/generated/models/center_out.dart';
 import '../../../core/api/generated/models/center_update.dart';
+import '../../../core/i18n/generated/app_localizations.dart';
+import '../../../core/i18n/l10n_extension.dart';
 import '../data/centers_providers.dart';
 import '../data/centers_repository.dart';
 
@@ -125,7 +127,7 @@ class _CenterFormViewState extends ConsumerState<CenterFormView> {
       case CentersRefused(:final failure):
         // El mensaje del servidor entero: describe algo que quien lo escribe
         // puede corregir, como un correo mal formado.
-        setState(() => _failure = failure.operatorMessage);
+        setState(() => _failure = failure.operatorMessage(context.l10n));
     }
   }
 
@@ -146,12 +148,14 @@ class _CenterFormViewState extends ConsumerState<CenterFormView> {
                 autocorrect: field.keyboard == TextInputType.text,
                 decoration: InputDecoration(
                   labelText: field.required
-                      ? field.label
-                      : '${field.label} (opcional)',
+                      ? field.label(context.l10n)
+                      : context.l10n.optionalField(field.label(context.l10n)),
                 ),
                 validator: field.required
                     ? (value) => (value == null || value.trim().isEmpty)
-                          ? 'Escribe ${field.label.toLowerCase()}'
+                          ? context.l10n.fieldRequired(
+                              field.label(context.l10n).toLowerCase(),
+                            )
                           : null
                     : null,
               ),
@@ -185,39 +189,39 @@ class _CenterFormViewState extends ConsumerState<CenterFormView> {
 /// Que coincidan importa poco por sí solo; lo que importa es que quien haya
 /// dado de alta un centro en la web reconozca el formulario sin releerlo.
 enum _CenterField {
-  name('name', 'Nombre', required: true),
-  legalName('legal_name', 'Razón social'),
-  taxId('tax_id', 'Identificación fiscal'),
-  address('address', 'Dirección'),
-  countryCode(
-    'country_code',
-    'País',
-    capitalization: TextCapitalization.characters,
-  ),
-  stateName('state_name', 'Estado o provincia'),
-  contactName('contact_name', 'Nombre del contacto'),
-  contactEmail(
-    'contact_email',
-    'Correo del contacto',
-    keyboard: TextInputType.emailAddress,
-  ),
-  contactPhone(
-    'contact_phone',
-    'Teléfono del contacto',
-    keyboard: TextInputType.phone,
-  );
+  name('name', required: true),
+  legalName('legal_name'),
+  taxId('tax_id'),
+  address('address'),
+  countryCode('country_code', capitalization: TextCapitalization.characters),
+  stateName('state_name'),
+  contactName('contact_name'),
+  contactEmail('contact_email', keyboard: TextInputType.emailAddress),
+  contactPhone('contact_phone', keyboard: TextInputType.phone);
 
   const _CenterField(
-    this.key,
-    this.label, {
+    this.key, {
     this.required = false,
     this.keyboard = TextInputType.text,
     this.capitalization = TextCapitalization.sentences,
   });
 
   final String key;
-  final String label;
   final bool required;
   final TextInputType keyboard;
   final TextCapitalization capitalization;
+
+  /// La etiqueta se resuelve al dibujar y no en la constante: una constante no
+  /// puede ser una llamada, y el idioma solo se sabe cuando hay un contexto.
+  String label(AppLocalizations l10n) => switch (this) {
+    _CenterField.name => l10n.nameLabel,
+    _CenterField.legalName => l10n.centerLegalNameLabel,
+    _CenterField.taxId => l10n.taxIdLabel,
+    _CenterField.address => l10n.addressLabel,
+    _CenterField.countryCode => l10n.countryLabel,
+    _CenterField.stateName => l10n.stateLabel,
+    _CenterField.contactName => l10n.contactNameLabel,
+    _CenterField.contactEmail => l10n.contactEmailLabel,
+    _CenterField.contactPhone => l10n.contactPhoneLabel,
+  };
 }

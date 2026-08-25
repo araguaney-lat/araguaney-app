@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/api/api_error_mapper.dart';
 import '../../../core/auth/auth_providers.dart';
+import '../../../core/i18n/l10n_extension.dart';
 import 'login_view.dart';
 
 /// Cambiar la contraseña, por obligación o por decisión.
@@ -64,16 +65,16 @@ class _ChangePasswordViewState extends ConsumerState<ChangePasswordView> {
         Navigator.of(context).pop();
         ScaffoldMessenger.of(context)
           ..hideCurrentSnackBar()
-          ..showSnackBar(
-            const SnackBar(content: Text('Contraseña actualizada.')),
-          );
+          ..showSnackBar(SnackBar(content: Text(context.l10n.passwordUpdated)));
       }
     } on Object catch (error) {
       // La política de contraseñas la define y la aplica el servidor; su
       // mensaje es el que se muestra.
       if (mounted) {
         setState(
-          () => _failure = ApiErrorMapper.fromAny(error).operatorMessage,
+          () => _failure = ApiErrorMapper.fromAny(
+            error,
+          ).operatorMessage(context.l10n),
         );
       }
     } finally {
@@ -85,7 +86,7 @@ class _ChangePasswordViewState extends ConsumerState<ChangePasswordView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Cambia tu contraseña'),
+        title: Text(context.l10n.changePasswordTitle),
         automaticallyImplyLeading: !widget.forced,
       ),
       body: SafeArea(
@@ -102,31 +103,30 @@ class _ChangePasswordViewState extends ConsumerState<ChangePasswordView> {
                   children: [
                     Text(
                       widget.forced
-                          ? 'Tu contraseña actual es temporal. Elige una nueva '
-                                'para continuar.'
-                          : 'Escribe la que usas ahora y la nueva que quieres.',
+                          ? context.l10n.forcedPasswordChangeExplanation
+                          : context.l10n.deliberatePasswordChangeExplanation,
                       style: Theme.of(context).textTheme.bodyLarge,
                     ),
                     const SizedBox(height: 24),
                     TextFormField(
                       controller: _current,
                       obscureText: true,
-                      decoration: const InputDecoration(
-                        labelText: 'Contraseña actual',
+                      decoration: InputDecoration(
+                        labelText: context.l10n.currentPasswordLabel,
                       ),
                       validator: (value) => (value == null || value.isEmpty)
-                          ? 'Escribe tu contraseña actual'
+                          ? context.l10n.currentPasswordRequired
                           : null,
                     ),
                     const SizedBox(height: 16),
                     TextFormField(
                       controller: _next,
                       obscureText: true,
-                      decoration: const InputDecoration(
-                        labelText: 'Contraseña nueva',
+                      decoration: InputDecoration(
+                        labelText: context.l10n.newPasswordLabel,
                       ),
                       validator: (value) => (value == null || value.isEmpty)
-                          ? 'Escribe tu contraseña nueva'
+                          ? context.l10n.newPasswordRequired
                           : null,
                     ),
                     const SizedBox(height: 16),
@@ -134,13 +134,13 @@ class _ChangePasswordViewState extends ConsumerState<ChangePasswordView> {
                       controller: _confirm,
                       obscureText: true,
                       onFieldSubmitted: (_) => _submit(),
-                      decoration: const InputDecoration(
-                        labelText: 'Repite la contraseña nueva',
+                      decoration: InputDecoration(
+                        labelText: context.l10n.repeatNewPasswordLabel,
                       ),
                       // Lo único que se valida aquí: que las dos coincidan. Es
                       // un dedazo que el servidor no puede detectar.
                       validator: (value) => value != _next.text
-                          ? 'Las contraseñas no coinciden'
+                          ? context.l10n.passwordsDoNotMatch
                           : null,
                     ),
                     if (_failure case final message?) ...[

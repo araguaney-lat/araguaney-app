@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/connectivity/connectivity_controller.dart';
 import '../../../core/db/app_database.dart';
 import '../../../core/db/daos/boxes_dao.dart';
+import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/sync/sync_coordinator.dart';
 import '../../../core/sync/sync_outcome.dart';
 import '../../../core/ui/event_timeline.dart';
@@ -64,9 +65,9 @@ class _BoxDetailViewState extends ConsumerState<BoxDetailView> {
     setState(() => _sealing = false);
 
     if (outcome case SyncFailed(:final failure)) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(failure.operatorMessage)));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(failure.operatorMessage(context.l10n))),
+      );
     }
   }
 
@@ -83,7 +84,7 @@ class _BoxDetailViewState extends ConsumerState<BoxDetailView> {
         title: Text(widget.code),
         actions: [
           IconButton(
-            tooltip: 'Ver etiqueta',
+            tooltip: context.l10n.viewLabelAction,
             icon: const Icon(Icons.qr_code_2),
             onPressed: () =>
                 Navigator.of(context).push(BoxLabelView.route(widget.code)),
@@ -132,9 +133,7 @@ class _SealBar extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(bottom: 8),
               child: Text(
-                'Sellar necesita conexión: otra persona puede estar moviendo '
-                'esta caja ahora mismo, y decidirlo a ciegas dejaría dos '
-                'versiones de la misma caja.',
+                context.l10n.sealNeedsConnection,
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodySmall,
               ),
@@ -142,7 +141,7 @@ class _SealBar extends StatelessWidget {
           FilledButton.icon(
             onPressed: offline || sealing ? null : onSeal,
             icon: const Icon(Icons.lock_outline),
-            label: const Text('Sellar caja'),
+            label: Text(context.l10n.sealBoxTitle),
           ),
         ],
       ),
@@ -163,19 +162,29 @@ class _BoxFields extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.symmetric(vertical: 8),
       children: [
-        RecordField(label: 'Estado', value: boxStatusLabel(status)),
         RecordField(
-          label: 'Producto',
+          label: context.l10n.statusLabel,
+          value: boxStatusLabel(context.l10n, status),
+        ),
+        RecordField(
+          label: context.l10n.productLabel,
           value: item.productName ?? 'No descargado en este dispositivo',
         ),
-        RecordField(label: 'Cantidad', value: '$quantity $unit'),
-        if (batch case final batch?) RecordField(label: 'Lote', value: batch),
+        RecordField(
+          label: context.l10n.quantityLabel,
+          value: '$quantity $unit',
+        ),
+        if (batch case final batch?)
+          RecordField(label: context.l10n.batchLabel, value: batch),
         if (expiryDate case final expiry?)
-          RecordField(label: 'Caducidad', value: formatShortDate(expiry)),
+          RecordField(
+            label: context.l10n.expiryLabel,
+            value: formatShortDate(expiry),
+          ),
         if (weightKg case final weight?)
-          RecordField(label: 'Peso', value: '$weight kg'),
+          RecordField(label: context.l10n.weightLabel, value: '$weight kg'),
         if (item.box.rejectReason case final reason?)
-          RecordField(label: 'Motivo del rechazo', value: reason),
+          RecordField(label: context.l10n.rejectReasonLabel, value: reason),
         // El recorrido, al final: se consulta cuando algo no cuadra, no cada
         // vez que se abre la ficha. Y **solo con conexión** — la caché guarda
         // el estado de una caja, no su historia.
@@ -205,11 +214,14 @@ class _Timeline extends ConsumerWidget {
       AsyncData(:final value) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Padding(
+          Padding(
             padding: EdgeInsets.fromLTRB(16, 16, 16, 4),
-            child: Text('Recorrido'),
+            child: Text(context.l10n.timelineHeading),
           ),
-          EventTimeline(events: value, statusLabel: boxStatusLabel),
+          EventTimeline(
+            events: value,
+            statusLabel: (status) => boxStatusLabel(context.l10n, status),
+          ),
         ],
       ),
       // Un fallo aquí no rompe la ficha: lo que se vino a ver ya está arriba.
@@ -236,8 +248,7 @@ class _NotCachedView extends ConsumerWidget {
             const SizedBox(height: 16),
             Text(
               offline
-                  ? 'Esta caja no está descargada en el dispositivo. '
-                        'Necesitas conexión para consultarla.'
+                  ? context.l10n.boxNotCachedNeedsConnection
                   : 'No encontramos esta caja.',
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodyMedium,

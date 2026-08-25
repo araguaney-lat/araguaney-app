@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 import '../../../core/config/app_config.dart';
+import '../../../core/i18n/l10n_extension.dart';
 
 /// La etiqueta de una caja, dibujada en el dispositivo.
 ///
@@ -50,7 +51,7 @@ class BoxLabelView extends StatelessWidget {
             SelectableText(code, style: Theme.of(context).textTheme.titleLarge),
             const SizedBox(height: 8),
             Text(
-              'Pega la etiqueta en la caja antes de moverla.',
+              context.l10n.boxLabelInstruction,
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodySmall,
             ),

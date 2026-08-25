@@ -7,6 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 import '../../support/fake_api.dart';
 import '../../support/fake_http_adapter.dart';
 import '../../support/fixtures.dart';
+import '../../support/l10n.dart';
 
 void main() {
   TeamRepository repositoryOn(FakeHttpAdapter adapter) {
@@ -56,7 +57,10 @@ void main() {
         'Cannot remove members from the general campaign',
       ).removeMember(campaignId: 'campaign-1', userId: 'user-7');
 
-      expect((outcome as TeamRefused).message, contains('campaña general'));
+      expect(
+        (outcome as TeamRefused).reason.operatorMessage(await spanish()),
+        contains('campaña general'),
+      );
     });
 
     test(
@@ -68,7 +72,10 @@ void main() {
           'Esta campaña está cerrada',
         ).addMember(campaignId: 'campaign-1', userId: 'user-7');
 
-        expect((outcome as TeamRefused).message, 'Esta campaña está cerrada');
+        expect(
+          (outcome as TeamRefused).reason.operatorMessage(await spanish()),
+          'Esta campaña está cerrada',
+        );
       },
     );
 
@@ -83,7 +90,10 @@ void main() {
 
       final refused = outcome as TeamRefused;
       expect(refused.failure, isA<ForbiddenFailure>());
-      expect(refused.message, 'No tienes permiso para hacer esta operación.');
+      expect(
+        refused.reason.operatorMessage(await spanish()),
+        'No tienes permiso para hacer esta operación.',
+      );
     });
   });
 
@@ -114,7 +124,8 @@ void main() {
         centerRole: 'volunteer',
       );
 
-      expect((outcome as TeamChanged).notice, contains('correo'));
+      // La capa de datos marca qué pasó; la frase la pone la pantalla.
+      expect((outcome as TeamChanged).notice, TeamNotice.invited);
       expect(adapter.requests.single.data, {
         'email': 'ana@centro.test',
         'username': 'ana',
@@ -133,7 +144,10 @@ void main() {
             centerRole: 'volunteer',
           );
 
-      expect((outcome as TeamRefused).message, contains('ya tiene una cuenta'));
+      expect(
+        (outcome as TeamRefused).reason.operatorMessage(await spanish()),
+        contains('ya tiene una cuenta'),
+      );
     });
 
     test('resending an access says a new one went out', () async {
@@ -145,7 +159,7 @@ void main() {
         adapter,
       ).reinvite(centerId: 'center-1', userId: 'user-1');
 
-      expect((outcome as TeamChanged).notice, contains('acceso nuevo'));
+      expect((outcome as TeamChanged).notice, TeamNotice.accessResent);
     });
 
     test('no signal is a failure with its own words', () async {
@@ -153,20 +167,28 @@ void main() {
         OfflineHttpAdapter(),
       ).reinvite(centerId: 'center-1', userId: 'user-1');
 
-      expect((outcome as TeamRefused).message, contains('No hay conexión'));
+      expect(
+        (outcome as TeamRefused).reason.operatorMessage(await spanish()),
+        contains('No hay conexión'),
+      );
     });
   });
 
   group('reading a role', () {
-    test('the three roles read in Spanish', () {
-      expect(centerRoleLabel('volunteer'), 'Voluntariado');
-      expect(centerRoleLabel('coordinator'), 'Coordinación');
-      expect(centerRoleLabel('national_admin'), 'Administración nacional');
+    test('the three roles read in Spanish', () async {
+      final l10n = await spanish();
+      expect(centerRoleLabel(l10n, 'volunteer'), 'Voluntariado');
+      expect(centerRoleLabel(l10n, 'coordinator'), 'Coordinación');
+      expect(
+        centerRoleLabel(l10n, 'national_admin'),
+        'Administración nacional',
+      );
     });
 
-    test('a role this version does not know still reads', () {
-      expect(centerRoleLabel('auditor'), 'auditor');
-      expect(centerRoleLabel(null), 'Sin rol');
+    test('a role this version does not know still reads', () async {
+      final l10n = await spanish();
+      expect(centerRoleLabel(l10n, 'auditor'), 'auditor');
+      expect(centerRoleLabel(l10n, null), 'Sin rol');
     });
   });
 }

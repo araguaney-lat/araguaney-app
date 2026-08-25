@@ -6,6 +6,7 @@ import '../../../core/api/generated/models/qr_event_out.dart';
 import '../../../core/api/generated/models/shipment_create.dart';
 import '../../../core/api/generated/models/shipment_detail_out.dart';
 import '../../../core/api/generated/models/shipment_out.dart';
+import '../../../core/i18n/generated/app_localizations.dart';
 
 /// Hitos logísticos que reconoce el backend.
 ///
@@ -13,16 +14,17 @@ import '../../../core/api/generated/models/shipment_out.dart';
 /// pasó sin inventar estados intermedios, para que la máquina no crezca con
 /// cada aeropuerto. **Anotarlos exige administración nacional**, así que desde
 /// aquí solo se leen.
-String milestoneLabel(String milestone) => switch (milestone) {
-  'DEPARTED_WAREHOUSE' => 'Salió del almacén',
-  'ARRIVED_AIRPORT' => 'Llegó al aeropuerto',
-  'LOADED_AIRCRAFT' => 'Cargado en el avión',
-  'DEPARTED_FLIGHT' => 'Despegó',
-  'ARRIVED_DESTINATION' => 'Llegó a destino',
-  'CUSTOMS_CLEARED' => 'Liberado de aduana',
-  'DELIVERED_CONSIGNEE' => 'Entregado al consignatario',
-  _ => milestone,
-};
+String milestoneLabel(AppLocalizations l10n, String milestone) =>
+    switch (milestone) {
+      'DEPARTED_WAREHOUSE' => l10n.milestoneLeftWarehouse,
+      'ARRIVED_AIRPORT' => l10n.milestoneReachedAirport,
+      'LOADED_AIRCRAFT' => l10n.milestoneLoadedOnPlane,
+      'DEPARTED_FLIGHT' => l10n.milestoneDeparted,
+      'ARRIVED_DESTINATION' => l10n.milestoneArrived,
+      'CUSTOMS_CLEARED' => l10n.milestoneCustomsCleared,
+      'DELIVERED_CONSIGNEE' => 'Entregado al consignatario',
+      _ => milestone,
+    };
 
 /// Cómo terminó pedir un manifiesto.
 sealed class ManifestOutcome {
@@ -42,9 +44,17 @@ final class ManifestStillWorking extends ManifestOutcome {
 }
 
 final class ManifestFailed extends ManifestOutcome {
-  const ManifestFailed(this.message);
+  const ManifestFailed({this.failure, this.serverError});
 
-  final String message;
+  /// El fallo de la llamada, cuando lo hubo.
+  ///
+  /// Se lleva el fallo y no una frase: redactar en la capa de datos elegiría
+  /// un idioma sin saber en cuál se está mirando.
+  final ApiFailure? failure;
+
+  /// Lo que dijo el servidor cuando el trabajo terminó en error. Son sus
+  /// palabras y viajan tal cual, como cualquier rechazo de regla de negocio.
+  final String? serverError;
 }
 
 /// Cómo terminó una operación sobre un envío.
@@ -160,15 +170,9 @@ class ShipmentsRepository {
         switch (current.status) {
           case 'DONE':
             final url = current.downloadUrl;
-            return url == null
-                ? const ManifestFailed(
-                    'El manifiesto se generó pero no llegó su enlace.',
-                  )
-                : ManifestReady(url);
+            return url == null ? const ManifestFailed() : ManifestReady(url);
           case 'FAILED':
-            return ManifestFailed(
-              current.error ?? 'El servidor no pudo generar el manifiesto.',
-            );
+            return ManifestFailed(serverError: current.error);
         }
 
         await wait(_pollInterval);
@@ -179,7 +183,7 @@ class ShipmentsRepository {
 
       return const ManifestStillWorking();
     } on Object catch (error) {
-      return ManifestFailed(ApiErrorMapper.fromAny(error).operatorMessage);
+      return ManifestFailed(failure: ApiErrorMapper.fromAny(error));
     }
   }
 }
@@ -196,13 +200,14 @@ class ShipmentsRepository {
 /// esta función pintaba la clave cruda —«OPEN → CLOSED»— en la única pantalla
 /// que la usaba, que es la octava vez que este repositorio paga lo mismo.
 ({String title, String? note, DateTime at}) describeEvent(
+  AppLocalizations l10n,
   QrEventOut event, {
   required String Function(String) statusLabel,
 }) {
   final milestone = event.milestone;
   final from = event.fromStatus;
   final title = milestone != null
-      ? milestoneLabel(milestone)
+      ? milestoneLabel(l10n, milestone)
       : '${from == null ? '—' : statusLabel(from)} → '
             '${statusLabel(event.toStatus)}';
 

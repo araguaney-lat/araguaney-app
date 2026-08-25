@@ -7,8 +7,9 @@ import 'package:flutter_test/flutter_test.dart';
 
 import '../../support/fake_api.dart';
 import '../../support/fake_http_adapter.dart';
+import '../../support/l10n.dart';
 
-void main() {
+void main() async {
   AccountRepository on(FakeHttpAdapter adapter) =>
       AccountRepository(AuthApi(fakeDio(adapter)));
 
@@ -77,11 +78,12 @@ void main() {
     );
 
     final outcome = await on(adapter).confirmTotp('000000');
+    final l10n = await spanish();
 
     expect(
       outcome,
       isA<AccountRefused<List<String>>>().having(
-        (o) => o.failure.operatorMessage,
+        (o) => o.failure.operatorMessage(l10n),
         'message',
         'Código incorrecto',
       ),

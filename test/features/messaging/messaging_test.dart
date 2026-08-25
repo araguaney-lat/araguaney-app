@@ -1,6 +1,7 @@
 import 'package:araguaney_app/core/api/api_providers.dart';
 import 'package:araguaney_app/core/api/generated/clients/messages_api.dart';
 import 'package:araguaney_app/core/api/generated/rest_client.dart';
+import 'package:araguaney_app/core/i18n/generated/app_localizations.dart';
 import 'package:araguaney_app/features/messaging/data/messaging_repository.dart';
 import 'package:araguaney_app/features/messaging/ui/thread_view.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,7 @@ import 'package:flutter_test/flutter_test.dart';
 import '../../support/fake_api.dart';
 import '../../support/fake_http_adapter.dart';
 import '../../support/fixtures.dart';
+import '../../support/l10n.dart';
 
 void main() {
   group('the repository', () {
@@ -65,7 +67,7 @@ void main() {
       // 02. Aquí eso cuesta algo concreto: «no eres miembro de esta campaña»
       // le diría a la persona qué pedir, y «no tienes permiso» no.
       expect(
-        (outcome as MessagingRefused).failure.operatorMessage,
+        (outcome as MessagingRefused).failure.operatorMessage(await spanish()),
         'No tienes permiso para hacer esta operación.',
       );
     });
@@ -120,7 +122,11 @@ void main() {
       await tester.pumpWidget(
         UncontrolledProviderScope(
           container: container,
-          child: const MaterialApp(home: ThreadView(threadId: 'thread-1')),
+          child: const MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: ThreadView(threadId: 'thread-1'),
+          ),
         ),
       );
       await tester.pumpAndSettle();

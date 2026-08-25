@@ -4,6 +4,7 @@ import '../../../core/api/generated/models/box_public_out.dart';
 import '../../../core/api/generated/models/donation_out.dart';
 import '../../../core/api/generated/models/pallet_public_out.dart';
 import '../../../core/db/app_database.dart';
+import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/ui/category_label.dart';
 import '../../../core/ui/confirm_button.dart';
 import '../../../core/ui/record_field.dart';
@@ -73,13 +74,13 @@ class ScanResultSheet extends StatelessWidget {
       ),
       ScanNotRecognized(:final raw) => _Message(
         icon: Icons.help_outline,
-        title: 'Este código no es de Araguaney',
-        text: 'Se leyó:\n\n$raw',
+        title: context.l10n.scanUnknownCode,
+        text: context.l10n.scanRawContent(raw),
       ),
       ScanResolutionFailed(:final failure) => _Message(
         icon: Icons.error_outline,
-        title: 'No se pudo consultar',
-        text: failure.operatorMessage,
+        title: context.l10n.scanLookupFailed,
+        text: failure.operatorMessage(context.l10n),
       ),
     },
   );
@@ -129,7 +130,10 @@ class _CachedBox extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        _Headline(code: box.code, status: boxStatusLabel(box.status)),
+        _Headline(
+          code: box.code,
+          status: boxStatusLabel(context.l10n, box.status),
+        ),
         const SizedBox(height: 8),
         if (productName case final name?)
           Text(name, style: theme.textTheme.titleMedium),
@@ -145,7 +149,10 @@ class _CachedBox extends StatelessWidget {
         const SizedBox(height: 16),
         SizedBox(
           width: double.infinity,
-          child: ConfirmButton(label: 'Abrir ficha', onPressed: onOpen),
+          child: ConfirmButton(
+            label: context.l10n.scanOpenRecord,
+            onPressed: onOpen,
+          ),
         ),
       ],
     );
@@ -167,23 +174,23 @@ class _PublicBox extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        _Headline(code: box.code, status: boxStatusLabel(box.status)),
+        _Headline(
+          code: box.code,
+          status: boxStatusLabel(context.l10n, box.status),
+        ),
         const SizedBox(height: 8),
         Text(box.displayName, style: theme.textTheme.titleMedium),
         Text(
           [
             '${box.quantity} ${box.unit}',
-            categoryLabel(box.category),
+            categoryLabel(context.l10n, box.category),
             if (box.expiryDate case final expiry?)
               'vence ${formatShortDate(expiry)}',
           ].join(' · '),
           style: theme.textTheme.bodySmall,
         ),
         const SizedBox(height: 12),
-        const _Notice(
-          'Esta caja no está descargada en el dispositivo. Se muestra su ficha '
-          'pública, que trae menos datos que el registro del centro.',
-        ),
+        _Notice(context.l10n.scanBoxNotCached),
       ],
     );
   }
@@ -201,7 +208,10 @@ class _Pallet extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        _Headline(code: pallet.code, status: palletStatusLabel(pallet.status)),
+        _Headline(
+          code: pallet.code,
+          status: palletStatusLabel(context.l10n, pallet.status),
+        ),
         const SizedBox(height: 8),
         Text(pallet.centerName, style: theme.textTheme.titleMedium),
         Text(
@@ -236,11 +246,13 @@ class _Donation extends StatelessWidget {
       children: [
         _Headline(
           code: donation.code,
-          status: donationStatusLabel(donation.status),
+          status: donationStatusLabel(context.l10n, donation.status),
         ),
         const SizedBox(height: 8),
         Text(
-          'Registrada el ${formatShortDate(donation.createdAt)}',
+          context.l10n.donationRegisteredOn(
+            formatShortDate(donation.createdAt),
+          ),
           style: theme.textTheme.bodySmall,
         ),
         const SizedBox(height: 12),
@@ -250,17 +262,17 @@ class _Donation extends StatelessWidget {
             style: theme.textTheme.bodySmall,
           ),
         if (items.length > 4)
-          Text('y ${items.length - 4} más', style: theme.textTheme.bodySmall),
+          Text(
+            context.l10n.andMoreItems(items.length - 4),
+            style: theme.textTheme.bodySmall,
+          ),
         const SizedBox(height: 12),
-        const _Notice(
-          'Lo que se registra es lo que llegó. Los artículos de arriba son lo '
-          'que declaró quien donó, y no se convierten en cajas solos.',
-        ),
+        _Notice(context.l10n.donationItemsAreDeclared),
         const SizedBox(height: 12),
         SizedBox(
           width: double.infinity,
           child: ConfirmButton(
-            label: 'Capturar esta donación',
+            label: context.l10n.scanCaptureDonation,
             onPressed: onOpen,
           ),
         ),

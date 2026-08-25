@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
+import '../../../core/i18n/l10n_extension.dart';
 import '../../boxes/ui/box_detail_view.dart';
 import '../../catalog/data/catalog_providers.dart';
 import '../../intake/ui/intake_form_view.dart';
@@ -115,7 +116,7 @@ class _ScannerViewState extends ConsumerState<ScannerView> {
         backgroundColor: Colors.transparent,
         foregroundColor: Colors.white,
         elevation: 0,
-        title: const Text('Escanear QR'),
+        title: Text(context.l10n.scanTitle),
         actions: [
           IconButton(
             tooltip: _torchOn ? 'Apagar linterna' : 'Linterna',
@@ -132,9 +133,7 @@ class _ScannerViewState extends ConsumerState<ScannerView> {
       body: ScannerCamera(
         controller: _controller,
         onDetect: _onDetect,
-        overlay: const ScannerViewfinder(
-          hint: 'Apunta al código QR de una caja, una tarima o una donación.',
-        ),
+        overlay: ScannerViewfinder(hint: context.l10n.scannerHint),
       ),
     );
   }

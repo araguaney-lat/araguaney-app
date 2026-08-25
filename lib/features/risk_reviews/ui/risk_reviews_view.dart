@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/api/api_error_mapper.dart';
 import '../../../core/api/generated/models/risk_review_out.dart';
 import '../../../core/auth/auth_providers.dart';
+import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/ui/record_field.dart';
 import '../../../core/ui/status_labels.dart';
 import '../data/risk_reviews_providers.dart';
@@ -60,7 +61,9 @@ class RiskReviewsView extends ConsumerWidget {
     if (outcome case ResolveRefused(:final failure)) {
       ScaffoldMessenger.of(context)
         ..hideCurrentSnackBar()
-        ..showSnackBar(SnackBar(content: Text(failure.operatorMessage)));
+        ..showSnackBar(
+          SnackBar(content: Text(failure.operatorMessage(context.l10n))),
+        );
     }
   }
 
@@ -82,7 +85,7 @@ class RiskReviewsView extends ConsumerWidget {
                 : null,
           ),
           AsyncError(:final error) => _Message(
-            ApiErrorMapper.fromAny(error).operatorMessage,
+            ApiErrorMapper.fromAny(error).operatorMessage(context.l10n),
           ),
           _ => const Center(child: CircularProgressIndicator()),
         },
@@ -99,9 +102,9 @@ class _Header extends StatelessWidget {
     crossAxisAlignment: CrossAxisAlignment.start,
     mainAxisSize: MainAxisSize.min,
     children: [
-      const Text('Revisiones'),
+      Text(context.l10n.reviewsTitle),
       Text(
-        'Capturas marcadas que esperan una decisión',
+        context.l10n.reviewsSubtitle,
         style: Theme.of(context).textTheme.bodySmall,
       ),
     ],
@@ -128,13 +131,9 @@ class _Loaded extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
       children: [
         if (pending.isEmpty)
-          const Padding(
+          Padding(
             padding: EdgeInsets.symmetric(vertical: 24),
-            child: Text(
-              'Nada espera una decisión. Aquí aparecen las capturas que el '
-              'servidor marcó para que alguien las mire.',
-              textAlign: TextAlign.center,
-            ),
+            child: Text(context.l10n.reviewsEmpty, textAlign: TextAlign.center),
           ),
         for (final review in pending)
           _ReviewCard(
@@ -144,7 +143,10 @@ class _Loaded extends StatelessWidget {
           ),
         if (settled.isNotEmpty) ...[
           const SizedBox(height: 8),
-          Text('Ya resueltas', style: Theme.of(context).textTheme.titleSmall),
+          Text(
+            context.l10n.reviewsSettledHeading,
+            style: Theme.of(context).textTheme.titleSmall,
+          ),
           const SizedBox(height: 8),
           for (final review in settled) _SettledRow(review: review),
         ],
@@ -179,7 +181,7 @@ class _ReviewCard extends StatelessWidget {
           children: [
             if (highlighted) ...[
               Text(
-                'La del aviso que abriste',
+                context.l10n.reviewFromNoticeHint,
                 style: theme.textTheme.labelSmall,
               ),
               const SizedBox(height: 6),
@@ -210,7 +212,7 @@ class _ReviewCard extends StatelessWidget {
                 width: double.infinity,
                 child: OutlinedButton(
                   onPressed: onResolve,
-                  child: const Text('Aprobar o rechazar'),
+                  child: Text(context.l10n.reviewDecideAction),
                 ),
               ),
             ],
@@ -236,7 +238,7 @@ class _SettledRow extends StatelessWidget {
     subtitle: Text(
       [formatShortDate(review.createdAt), ?review.reviewNote].join(' · '),
     ),
-    trailing: Chip(label: Text(reviewStatusLabel(review.status))),
+    trailing: Chip(label: Text(reviewStatusLabel(context.l10n, review.status))),
   );
 }
 

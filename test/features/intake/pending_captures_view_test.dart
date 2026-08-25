@@ -3,6 +3,7 @@ import 'package:araguaney_app/core/api/generated/clients/product_types_api.dart'
 import 'package:araguaney_app/core/db/app_database.dart';
 import 'package:araguaney_app/core/db/db_providers.dart';
 import 'package:araguaney_app/core/db/tables/queued_captures_table.dart';
+import 'package:araguaney_app/core/i18n/generated/app_localizations.dart';
 import 'package:araguaney_app/features/catalog/data/catalog_providers.dart';
 import 'package:araguaney_app/features/catalog/data/catalog_repository.dart';
 import 'package:araguaney_app/features/intake/data/capture_queue_repository.dart';
@@ -77,7 +78,11 @@ void main() {
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
-        child: const MaterialApp(home: PendingCapturesView()),
+        child: const MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: PendingCapturesView(),
+        ),
       ),
     );
     await tester.pumpAndSettle();

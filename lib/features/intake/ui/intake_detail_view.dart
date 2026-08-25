@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/api/generated/models/intake_out.dart';
+import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/ui/record_field.dart';
 import '../../../core/ui/status_labels.dart';
 import '../../boxes/ui/box_label_view.dart';
@@ -24,31 +25,34 @@ class IntakeDetailView extends StatelessWidget {
     body: ListView(
       padding: const EdgeInsets.symmetric(vertical: 8),
       children: [
-        RecordField(label: 'Donante', value: donorLabel(intake) ?? 'Anónimo'),
+        RecordField(
+          label: context.l10n.donorLabel,
+          value: donorLabel(intake) ?? context.l10n.donorAnonymous,
+        ),
         if (intake.notes case final notes?)
-          RecordField(label: 'Notas', value: notes),
+          RecordField(label: context.l10n.notesLabel, value: notes),
         const Divider(),
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-          child: Text('Cajas', style: Theme.of(context).textTheme.titleMedium),
+          child: Text(
+            context.l10n.boxesTitle,
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
         ),
         // Una captura recién registrada sí trae sus cajas, porque las devuelve
         // el `POST`. Una abierta desde el historial no: el listado del servidor
         // no las rellena, y por eso aquí se dice en vez de enseñar una sección
         // vacía, que se leería como «esta captura no tuvo cajas».
         if (intake.boxes.isEmpty)
-          const Padding(
+          Padding(
             padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
-            child: Text(
-              'El historial no trae las cajas de esta captura. Búscalas por su '
-              'código en Cajas.',
-            ),
+            child: Text(context.l10n.captureBoxesNotInHistory),
           ),
         for (final box in intake.boxes)
           ListTile(
             title: Text(box.code),
             subtitle: Text(
-              '${box.quantity} ${box.unit} · ${boxStatusLabel(box.status)}',
+              '${box.quantity} ${box.unit} · ${boxStatusLabel(context.l10n, box.status)}',
             ),
             trailing: const Icon(Icons.qr_code_2),
             onTap: () =>

@@ -1,93 +1,82 @@
-/// Los estados del dominio, en español.
+import '../i18n/generated/app_localizations.dart';
+
+/// Las tablas de estados, traducidas a la salida.
 ///
-/// Las tres tablas viven juntas y en `core` a propósito. La de categorías vivía
-/// dentro de una pantalla, así que la única que la importaba traducía y todas
-/// las demás enseñaban la clave del servidor; la de cajas empezó con valores
-/// inventados y no tradujo nada durante ocho fases. El patrón es el mismo y ya
-/// se pagó dos veces: **una tabla de traducción escondida en una pantalla deja
-/// a las otras enseñando el idioma del backend.**
+/// **Las claves son las del servidor y no se tocan**: `CLOSED` viaja como
+/// `CLOSED` y solo cambia lo que se dibuja. Eso es lo que permite que la
+/// aplicación hable tres idiomas sin que el contrato sepa nada de ninguno.
 ///
-/// Todas son traducción de interfaz, no interpretación: aquí no se decide qué
-/// puede hacerse con una caja, una tarima o una donación según su estado. Y
-/// todas devuelven la clave cruda cuando no la conocen, para que un estado que
-/// el backend agregue después aparezca en pantalla en vez de desaparecer de
-/// ella.
-library;
-
-/// `BOX_STATUSES` en el backend.
-String boxStatusLabel(String status) => switch (status) {
-  'DRAFT' => 'Sin sellar',
-  'SEALED' => 'Sellada',
-  'SHIPPED' => 'Enviada',
-  'REJECTED' => 'Rechazada',
-  _ => status,
-};
-
-/// `PALLET_STATUSES` en el backend.
+/// Cada objeto tiene su vocabulario aunque comparta palabras. Una tarima
+/// «CLOSED» y un envío «CLOSED» se dicen distinto en español —«cerrada» y
+/// «cerrado»— y en portugués también; en inglés coinciden, que es justo por qué
+/// una sola tabla habría parecido correcta hasta la primera traducción.
 ///
-/// «Abierta» y no «en construcción»: una tarima abierta admite cajas, que es lo
-/// único que cambia para quien la tiene delante.
-String palletStatusLabel(String status) => switch (status) {
-  'OPEN' => 'Abierta',
-  'CLOSED' => 'Cerrada',
-  'SHIPPED' => 'Enviada',
-  _ => status,
-};
-
-/// `SHIPMENT_STATUSES` en el backend.
+/// Todas reciben [AppLocalizations] en vez de leerlo de un contexto global: un
+/// valor global tiene un idioma y esta aplicación tiene tres, y quien dibuja ya
+/// tiene el contexto a mano.
 ///
-/// «Abierto» y «cerrado» hablan de si admite tarimas, no de si terminó: un
-/// envío cerrado todavía no salió. Por eso «despachado» y «entregado» son
-/// estados distintos, y «conciliado» es el final de verdad, cuando lo recibido
-/// se cuadró con lo enviado.
-String shipmentStatusLabel(String status) => switch (status) {
-  'OPEN' => 'Abierto',
-  'CLOSED' => 'Cerrado',
-  'SHIPPED' => 'Despachado',
-  'DELIVERED' => 'Entregado',
-  'RECONCILED' => 'Conciliado',
+/// Un estado desconocido devuelve su clave. Es feo a propósito: el contrato es
+/// aditivo y un binario viejo puede recibir un estado que no conoce; enseñarlo
+/// crudo dice «esto es nuevo» en vez de inventar una traducción.
+String boxStatusLabel(AppLocalizations l10n, String status) => switch (status) {
+  'DRAFT' => l10n.boxStatusDraft,
+  'SEALED' => l10n.boxStatusSealed,
+  'SHIPPED' => l10n.boxStatusShipped,
+  'REJECTED' => l10n.boxStatusRejected,
   _ => status,
 };
 
-/// `TRANSFER_STATUSES` en el backend. Vivía dentro de la función de
-/// transferencias, que es exactamente cómo las otras cuatro acabaron
-/// enseñando la clave del servidor en las pantallas que no la importaban.
-String transferStatusLabel(String status) => switch (status) {
-  'REQUESTED' => 'Solicitada',
-  'APPROVED' => 'Aprobada',
-  'IN_TRANSIT' => 'En tránsito',
-  'RECEIVED' => 'Recibida',
-  'REJECTED' => 'Rechazada',
-  _ => status,
-};
+String palletStatusLabel(AppLocalizations l10n, String status) =>
+    switch (status) {
+      'OPEN' => l10n.palletStatusOpen,
+      'CLOSED' => l10n.palletStatusClosed,
+      'SHIPPED' => l10n.palletStatusShipped,
+      _ => status,
+    };
 
-/// El estado de una revisión de riesgo. `PENDING` es el que espera una
-/// decisión; los otros dos ya la llevan.
-String reviewStatusLabel(String status) => switch (status) {
-  'PENDING' => 'Pendiente',
-  'APPROVED' => 'Aprobada',
-  'REJECTED' => 'Rechazada',
-  _ => status,
-};
+String shipmentStatusLabel(AppLocalizations l10n, String status) =>
+    switch (status) {
+      'OPEN' => l10n.shipmentStatusOpen,
+      'CLOSED' => l10n.shipmentStatusClosed,
+      'SHIPPED' => l10n.shipmentStatusShipped,
+      'DELIVERED' => l10n.shipmentStatusDelivered,
+      'RECONCILED' => l10n.shipmentStatusReconciled,
+      _ => status,
+    };
+
+String transferStatusLabel(AppLocalizations l10n, String status) =>
+    switch (status) {
+      'REQUESTED' => l10n.transferStatusRequested,
+      'APPROVED' => l10n.transferStatusApproved,
+      'IN_TRANSIT' => l10n.transferStatusInTransit,
+      'RECEIVED' => l10n.transferStatusReceived,
+      'REJECTED' => l10n.transferStatusRejected,
+      _ => status,
+    };
+
+String reviewStatusLabel(AppLocalizations l10n, String status) =>
+    switch (status) {
+      'PENDING' => l10n.reviewStatusPending,
+      'APPROVED' => l10n.reviewStatusApproved,
+      'REJECTED' => l10n.reviewStatusRejected,
+      _ => status,
+    };
 
 /// El ciclo de una donación pre-registrada: se registra por correo, se
 /// confirma, y se recibe cuando alguien la captura en un centro.
-String donationStatusLabel(String status) => switch (status) {
-  'PENDING_EMAIL' => 'Sin confirmar',
-  'REGISTERED' => 'Registrada',
-  'RECEIVED' => 'Recibida',
-  'CANCELLED' => 'Cancelada',
-  'EXPIRED' => 'Caducada',
-  _ => status,
-};
+String donationStatusLabel(AppLocalizations l10n, String status) =>
+    switch (status) {
+      'PENDING_EMAIL' => l10n.donationStatusPendingEmail,
+      'REGISTERED' => l10n.donationStatusRegistered,
+      'RECEIVED' => l10n.donationStatusReceived,
+      'CANCELLED' => l10n.donationStatusCancelled,
+      'EXPIRED' => l10n.donationStatusExpired,
+      _ => status,
+    };
 
-/// El estado de una incidencia. Solo dos: la abrió alguien, o alguien la
-/// cerró. Vive aquí y no en la feature por la misma razón que las seis de
-/// arriba —una tabla escondida en una pantalla deja a las otras enseñando el
-/// idioma del backend— y esta ya se lee desde dos: la lista y la ficha de un
-/// envío.
-String incidentStatusLabel(String status) => switch (status) {
-  'OPEN' => 'Abierta',
-  'RESOLVED' => 'Resuelta',
-  _ => status,
-};
+String incidentStatusLabel(AppLocalizations l10n, String status) =>
+    switch (status) {
+      'OPEN' => l10n.incidentStatusOpen,
+      'RESOLVED' => l10n.incidentStatusResolved,
+      _ => status,
+    };

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/api/api_error_mapper.dart';
 import '../../../core/api/generated/models/thread_detail_out.dart';
+import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/ui/record_field.dart';
 import '../data/messaging_providers.dart';
 import '../data/messaging_repository.dart';
@@ -65,9 +66,9 @@ class _ThreadViewState extends ConsumerState<ThreadView> {
       case MessagingRefused(:final failure):
         // El texto se queda en el campo: perder lo escrito por un fallo de red
         // sería la peor forma de contestar a alguien que ya escribió.
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(failure.operatorMessage)));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(failure.operatorMessage(context.l10n))),
+        );
     }
   }
 
@@ -86,7 +87,7 @@ class _ThreadViewState extends ConsumerState<ThreadView> {
                 child: Padding(
                   padding: const EdgeInsets.all(32),
                   child: Text(
-                    ApiErrorMapper.fromAny(error).operatorMessage,
+                    ApiErrorMapper.fromAny(error).operatorMessage(context.l10n),
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -118,9 +119,7 @@ class _Conversation extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(top: 16),
           child: Text(
-            '${thread.attachments.length} '
-            '${thread.attachments.length == 1 ? 'adjunto' : 'adjuntos'} · '
-            'se abren desde el panel web',
+            context.l10n.threadAttachments(thread.attachments.length),
             style: Theme.of(context).textTheme.bodySmall,
           ),
         ),
@@ -186,14 +185,14 @@ class _ReplyBar extends StatelessWidget {
               controller: controller,
               maxLines: 3,
               minLines: 1,
-              decoration: const InputDecoration(labelText: 'Responder'),
+              decoration: InputDecoration(labelText: context.l10n.replyAction),
             ),
           ),
           const SizedBox(width: 8),
           IconButton.filled(
             onPressed: sending ? null : onSend,
             icon: const Icon(Icons.send),
-            tooltip: 'Enviar',
+            tooltip: context.l10n.sendAction,
           ),
         ],
       ),

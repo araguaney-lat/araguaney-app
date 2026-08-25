@@ -5,6 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/api/api_error_mapper.dart';
 import '../../../core/api/generated/models/user_out.dart';
 import '../../../core/api/generated/models/user_profile_out.dart';
+import '../../../core/i18n/generated/app_localizations.dart';
+import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/ui/record_field.dart';
 import '../../session/ui/change_password_view.dart';
 import '../data/account_providers.dart';
@@ -27,7 +29,7 @@ class ProfileView extends ConsumerWidget {
     final account = ref.watch(myAccountProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Perfil y seguridad')),
+      appBar: AppBar(title: Text(context.l10n.profileTitle)),
       body: RefreshIndicator(
         onRefresh: () async => ref.invalidate(myAccountProvider),
         child: switch (account) {
@@ -36,7 +38,7 @@ class ProfileView extends ConsumerWidget {
             account: value.account,
           ),
           AsyncError(:final error) => _Message(
-            ApiErrorMapper.fromAny(error).operatorMessage,
+            ApiErrorMapper.fromAny(error).operatorMessage(context.l10n),
           ),
           _ => const Center(child: CircularProgressIndicator()),
         },
@@ -55,24 +57,30 @@ class _Loaded extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) => ListView(
     padding: const EdgeInsets.symmetric(vertical: 8),
     children: [
-      RecordField(label: 'Nombre', value: profile.fullName ?? '—'),
-      RecordField(label: 'Usuario', value: profile.username),
-      RecordField(label: 'Correo', value: profile.email),
+      RecordField(
+        label: context.l10n.nameLabel,
+        value: profile.fullName ?? '—',
+      ),
+      RecordField(label: context.l10n.usernameLabel, value: profile.username),
+      RecordField(label: context.l10n.emailLabel, value: profile.email),
       if (profile.centerName case final center?)
-        RecordField(label: 'Centro', value: center),
+        RecordField(label: context.l10n.centerLabel, value: center),
       if (profile.centerRole case final role?)
-        RecordField(label: 'Rol', value: _roleLabel(role)),
+        RecordField(
+          label: context.l10n.roleLabel,
+          value: _roleLabel(context.l10n, role),
+        ),
       Padding(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
         child: OutlinedButton(
           onPressed: () => _rename(context, ref, profile.fullName ?? ''),
-          child: const Text('Cambiar mi nombre'),
+          child: Text(context.l10n.profileChangeName),
         ),
       ),
       const Divider(height: 32),
       ListTile(
-        title: const Text('Contraseña'),
-        subtitle: const Text('Cámbiala cuando quieras, no solo cuando toca'),
+        title: Text(context.l10n.passwordLabel),
+        subtitle: Text(context.l10n.passwordChangeHint),
         trailing: const Icon(Icons.chevron_right),
         onTap: () => Navigator.of(context).push(
           MaterialPageRoute<void>(
@@ -85,12 +93,13 @@ class _Loaded extends ConsumerWidget {
     ],
   );
 
-  static String _roleLabel(String role) => switch (role) {
-    'volunteer' => 'Voluntariado',
-    'coordinator' => 'Coordinación',
-    'national_admin' => 'Administración nacional',
-    _ => role,
-  };
+  static String _roleLabel(AppLocalizations l10n, String role) =>
+      switch (role) {
+        'volunteer' => l10n.roleVolunteerLabel,
+        'coordinator' => l10n.roleCoordinatorLabel,
+        'national_admin' => l10n.roleNationalAdminLabel,
+        _ => role,
+      };
 
   Future<void> _rename(
     BuildContext context,
@@ -101,20 +110,20 @@ class _Loaded extends ConsumerWidget {
     final name = await showDialog<String>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Tu nombre'),
+        title: Text(context.l10n.yourNameLabel),
         content: TextField(
           controller: controller,
           autofocus: true,
-          decoration: const InputDecoration(labelText: 'Nombre completo'),
+          decoration: InputDecoration(labelText: context.l10n.fullNameLabel),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancelar'),
+            child: Text(context.l10n.actionCancel),
           ),
           FilledButton(
             onPressed: () => Navigator.of(context).pop(controller.text.trim()),
-            child: const Text('Guardar'),
+            child: Text(context.l10n.actionSave),
           ),
         ],
       ),
@@ -126,7 +135,7 @@ class _Loaded extends ConsumerWidget {
     if (!context.mounted) return;
 
     if (outcome case AccountRefused(:final failure)) {
-      _say(context, failure.operatorMessage);
+      _say(context, failure.operatorMessage(context.l10n));
       return;
     }
     ref.invalidate(myAccountProvider);
@@ -140,11 +149,11 @@ class _TotpTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => ListTile(
-    title: const Text('Verificación en dos pasos'),
+    title: Text(context.l10n.totpChallengeTitle),
     subtitle: Text(
       enabled
-          ? 'Activada: al entrar se te pide un código'
-          : 'Desactivada: tu contraseña es lo único que protege la cuenta',
+          ? context.l10n.totpEnabledCaption
+          : context.l10n.totpDisabledCaption,
     ),
     trailing: const Icon(Icons.chevron_right),
     onTap: () async {
@@ -166,32 +175,29 @@ class _TotpTile extends ConsumerWidget {
     final code = await showDialog<String>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('¿Desactivar la verificación?'),
+        title: Text(context.l10n.totpDisableConfirmTitle),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text(
-              'Después de esto, tu contraseña será lo único que proteja la '
-              'cuenta. Escribe un código de tu aplicación para confirmarlo.',
-            ),
+            Text(context.l10n.totpDisableWarning),
             const SizedBox(height: 12),
             TextField(
               controller: controller,
               autofocus: true,
               keyboardType: TextInputType.number,
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-              decoration: const InputDecoration(labelText: 'Código'),
+              decoration: InputDecoration(labelText: context.l10n.codeLabel),
             ),
           ],
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Conservar'),
+            child: Text(context.l10n.keepAction),
           ),
           FilledButton(
             onPressed: () => Navigator.of(context).pop(controller.text.trim()),
-            child: const Text('Desactivar'),
+            child: Text(context.l10n.disableAction),
           ),
         ],
       ),
@@ -203,7 +209,7 @@ class _TotpTile extends ConsumerWidget {
     if (!context.mounted) return;
 
     if (outcome case AccountRefused(:final failure)) {
-      _say(context, failure.operatorMessage);
+      _say(context, failure.operatorMessage(context.l10n));
       return;
     }
     ref.invalidate(myAccountProvider);
@@ -218,7 +224,7 @@ class _TermsTile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) => ListTile(
     leading: const Icon(Icons.assignment_outlined),
-    title: const Text('Términos pendientes de aceptar'),
+    title: Text(context.l10n.pendingTermsTitle),
     trailing: const Icon(Icons.chevron_right),
     onTap: () async {
       final outcome = await ref
@@ -226,7 +232,7 @@ class _TermsTile extends ConsumerWidget {
           .acceptTerms('current');
       if (!context.mounted) return;
       if (outcome case AccountRefused(:final failure)) {
-        _say(context, failure.operatorMessage);
+        _say(context, failure.operatorMessage(context.l10n));
         return;
       }
       ref.invalidate(myAccountProvider);

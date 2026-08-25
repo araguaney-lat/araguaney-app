@@ -14,6 +14,7 @@ import 'package:flutter_test/flutter_test.dart';
 import '../../support/fake_api.dart';
 import '../../support/fake_http_adapter.dart';
 import '../../support/fake_push.dart';
+import '../../support/l10n.dart';
 
 void main() {
   Future<void> pumpShell(
@@ -139,7 +140,9 @@ void main() {
   });
 
   testWidgets('the role decides the action, not the screen', (tester) async {
-    expect(centerActionFor(coordinates: true).label, 'Escanear');
-    expect(centerActionFor(coordinates: false).label, 'Capturar');
+    final l10n = await spanish();
+
+    expect(centerActionFor(l10n, coordinates: true).label, 'Escanear');
+    expect(centerActionFor(l10n, coordinates: false).label, 'Capturar');
   });
 }

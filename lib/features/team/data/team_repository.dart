@@ -6,17 +6,21 @@ import '../../../core/api/generated/models/campaign_member_add.dart';
 import '../../../core/api/generated/models/campaign_member_out.dart';
 import '../../../core/api/generated/models/user_invite.dart';
 import '../../../core/api/generated/models/user_out.dart';
+import '../../../core/i18n/generated/app_localizations.dart';
 
 /// Cómo se lee un rol de centro.
-String centerRoleLabel(String? role) => switch (role) {
-  'volunteer' => 'Voluntariado',
-  'coordinator' => 'Coordinación',
-  'national_admin' => 'Administración nacional',
+String centerRoleLabel(AppLocalizations l10n, String? role) => switch (role) {
+  'volunteer' => l10n.roleVolunteerLabel,
+  'coordinator' => l10n.roleCoordinatorLabel,
+  'national_admin' => l10n.roleNationalAdminLabel,
   null => 'Sin rol',
   _ => role,
 };
 
 /// Cómo terminó una operación sobre el equipo.
+/// Lo que se le puede decir a quien acaba de cambiar algo del equipo.
+enum TeamNotice { invited, accessResent }
+
 sealed class TeamOutcome {
   const TeamOutcome();
 }
@@ -24,9 +28,12 @@ sealed class TeamOutcome {
 final class TeamChanged extends TeamOutcome {
   const TeamChanged({this.notice});
 
+  /// Qué pasó, cuando hay algo que decir. Es una marca y no una frase: la capa
+  /// de datos no sabe en qué idioma se está mirando.
+
   /// Lo que hay que contarle a quien lo pidió, cuando hay algo que contar:
   /// invitar y reinvitar mandan un correo, y eso no se ve desde aquí.
-  final String? notice;
+  final TeamNotice? notice;
 }
 
 final class TeamRefused extends TeamOutcome {
@@ -34,7 +41,9 @@ final class TeamRefused extends TeamOutcome {
 
   final ApiFailure failure;
 
-  String get message => failure.operatorMessage;
+  /// El fallo, no una frase: redactarlo aquí elegiría un idioma en una capa
+  /// que no sabe en cuál se está mirando.
+  ApiFailure get reason => failure;
 }
 
 /// El equipo del centro y quién participa en cada campaña.
@@ -96,7 +105,7 @@ class TeamRepository {
         centerRole: centerRole,
       ),
     ),
-    notice: 'Invitación enviada por correo.',
+    notice: TeamNotice.invited,
   );
 
   /// Vuelve a mandar el acceso. La contraseña anterior deja de servir.
@@ -108,12 +117,12 @@ class TeamRepository {
       centerId: centerId,
       userId: userId,
     ),
-    notice: 'Se envió un acceso nuevo por correo.',
+    notice: TeamNotice.accessResent,
   );
 
   Future<TeamOutcome> _attempt(
     Future<void> Function() call, {
-    String? notice,
+    TeamNotice? notice,
   }) async {
     try {
       await call();

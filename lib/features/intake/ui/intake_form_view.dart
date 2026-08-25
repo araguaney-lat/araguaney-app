@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/api/generated/models/campaign_out.dart';
 import '../../../core/connectivity/connectivity_controller.dart';
+import '../../../core/i18n/generated/app_localizations.dart';
+import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/ui/confirm_button.dart';
 import '../../../core/ui/record_field.dart';
 import '../../../core/ui/theme/app_theme.dart';
@@ -136,7 +138,7 @@ class _IntakeFormViewState extends ConsumerState<IntakeFormView> {
       // el donante llegue hasta aquí significa que quedó sin resolver, y esa
       // también es una respuesta que quien captura tiene que leer.
       case IntakeNeedsDonor(:final failure):
-        _showFailure(failure.operatorMessage);
+        _showFailure(failure.operatorMessage(context.l10n));
       // La red se cayó a mitad del envío. Perder lo capturado sería el peor
       // resultado posible, así que la captura pasa a la cola con su misma
       // llave: cuando salga la señal se enviará una vez, no dos.
@@ -144,7 +146,7 @@ class _IntakeFormViewState extends ConsumerState<IntakeFormView> {
           when failure.isRetryable && userId != null:
         await _enqueue(userId);
       case IntakeRejected(:final failure):
-        _showFailure(failure.operatorMessage);
+        _showFailure(failure.operatorMessage(context.l10n));
     }
   }
 
@@ -184,7 +186,7 @@ class _IntakeFormViewState extends ConsumerState<IntakeFormView> {
   Future<IntakeSubmission?> _resolveDonorRequest(IntakeNeedsDonor asked) async {
     final decision = await AnonymousExceptionDialog.show(
       context,
-      serverMessage: asked.failure.operatorMessage,
+      serverMessage: asked.failure.operatorMessage(context.l10n),
     );
     if (decision == null || !mounted) return null;
 
@@ -210,7 +212,11 @@ class _IntakeFormViewState extends ConsumerState<IntakeFormView> {
     return Scaffold(
       appBar: AppBar(
         title: _CampaignHeader(
-          label: _campaignLabel(campaigns.valueOrNull, draft.campaignId),
+          label: _campaignLabel(
+            context.l10n,
+            campaigns.valueOrNull,
+            draft.campaignId,
+          ),
           onTap: () => _pickCampaign(campaigns.valueOrNull ?? const []),
         ),
       ),
@@ -237,7 +243,9 @@ class _IntakeFormViewState extends ConsumerState<IntakeFormView> {
             TextField(
               controller: _notes,
               maxLines: 3,
-              decoration: const InputDecoration(labelText: 'Notas (opcional)'),
+              decoration: InputDecoration(
+                labelText: context.l10n.notesOptionalLabel,
+              ),
             ),
           ],
         ),
@@ -255,13 +263,17 @@ class _IntakeFormViewState extends ConsumerState<IntakeFormView> {
   /// Nombre de la campaña activa. Mientras la lista no llega no se puede
   /// resolver un identificador a un nombre, y decir «general» sin saberlo sería
   /// afirmar algo falso justo en la línea que da el contexto.
-  static String _campaignLabel(List<CampaignOut>? campaigns, String? id) {
-    if (id == null) return 'Campaña general';
-    if (campaigns == null) return 'Campaña…';
+  static String _campaignLabel(
+    AppLocalizations l10n,
+    List<CampaignOut>? campaigns,
+    String? id,
+  ) {
+    if (id == null) return l10n.generalCampaign;
+    if (campaigns == null) return l10n.campaignPlaceholder;
     for (final campaign in campaigns) {
       if (campaign.id == id) return campaign.name;
     }
-    return 'Campaña general';
+    return l10n.generalCampaign;
   }
 }
 
@@ -279,7 +291,7 @@ class _CampaignHeader extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        const Text('Registrar entrada'),
+        Text(context.l10n.intakeFormTitle),
         InkWell(
           onTap: onTap,
           child: Row(
@@ -326,12 +338,15 @@ class _ActionBar extends StatelessWidget {
               Expanded(
                 child: FilledButton(
                   onPressed: onAdd,
-                  child: const Text('Añadir caja'),
+                  child: Text(context.l10n.boxAddAction),
                 ),
               ),
               const SizedBox(width: 12),
               Expanded(
-                child: ConfirmButton(label: 'Registrar', onPressed: onSubmit),
+                child: ConfirmButton(
+                  label: context.l10n.registerAction,
+                  onPressed: onSubmit,
+                ),
               ),
             ],
           ),
@@ -349,8 +364,7 @@ class _DonationNotice extends StatelessWidget {
     child: Padding(
       padding: const EdgeInsets.all(12),
       child: Text(
-        'Esta captura queda ligada a la donación que escaneaste. Registra lo '
-        'que llegó: lo que declaró quien donó es otra cosa.',
+        context.l10n.captureLinkedToDonation,
         style: Theme.of(context).textTheme.bodySmall,
       ),
     ),
@@ -382,10 +396,13 @@ class _DonorSection extends StatelessWidget {
             ),
             OverflowBar(
               children: [
-                TextButton(onPressed: onClear, child: const Text('Quitar')),
+                TextButton(
+                  onPressed: onClear,
+                  child: Text(context.l10n.removeAction),
+                ),
                 TextButton(
                   onPressed: () => onIdentify(),
-                  child: const Text('Editar'),
+                  child: Text(context.l10n.centerEditAction),
                 ),
               ],
             ),
@@ -399,16 +416,16 @@ class _DonorSection extends StatelessWidget {
       children: [
         TextField(
           controller: donanteLibre,
-          decoration: const InputDecoration(
-            labelText: 'Donante (opcional)',
-            helperText: 'Un nombre suelto, sin registrar a la persona',
+          decoration: InputDecoration(
+            labelText: context.l10n.donorOptionalLabel,
+            helperText: context.l10n.freeNameHint,
           ),
         ),
         const SizedBox(height: 8),
         TextButton.icon(
           onPressed: () => onIdentify(),
           icon: const Icon(Icons.person_add_alt),
-          label: const Text('Identificar donante'),
+          label: Text(context.l10n.identifyDonorTitle),
         ),
       ],
     );
@@ -441,15 +458,14 @@ class _BoxesCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Cajas en la entrada · ${boxes.length}',
+              context.l10n.boxesInIntake(boxes.length),
               style: theme.textTheme.titleMedium,
             ),
             if (boxes.isEmpty)
               Padding(
                 padding: const EdgeInsets.only(top: 8, bottom: 8, right: 8),
                 child: Text(
-                  'Todavía no agregaste ninguna caja. Sin cajas no hay '
-                  'captura.',
+                  context.l10n.captureNeedsBoxes,
                   style: theme.textTheme.bodySmall,
                 ),
               ),
@@ -496,7 +512,7 @@ class _BoxRow extends StatelessWidget {
     onTap: onEdit,
     trailing: IconButton(
       icon: const Icon(Icons.delete_outline),
-      tooltip: 'Quitar caja',
+      tooltip: context.l10n.boxRemoveTitle,
       onPressed: onRemove,
     ),
   );

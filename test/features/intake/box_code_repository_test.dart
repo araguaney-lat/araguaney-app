@@ -7,6 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 import '../../support/fake_api.dart';
 import '../../support/fake_http_adapter.dart';
 import '../../support/fixtures.dart';
+import '../../support/l10n.dart';
 import '../../support/test_database.dart';
 
 void main() {
@@ -92,7 +93,7 @@ void main() {
     ).topUp(count: 99999, userId: 'user-1');
 
     expect(
-      (outcome as SyncFailed).failure.operatorMessage,
+      (outcome as SyncFailed).failure.operatorMessage(await spanish()),
       'Cantidad no válida',
     );
     expect(await db.boxCodesDao.available('user-1'), 0);

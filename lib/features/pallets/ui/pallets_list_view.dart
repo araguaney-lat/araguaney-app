@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/api/api_error_mapper.dart';
 import '../../../core/api/generated/models/pallet_out.dart';
 import '../../../core/connectivity/connectivity_controller.dart';
+import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/ui/record_field.dart';
 import '../../../core/ui/status_labels.dart';
 import '../data/pallets_providers.dart';
@@ -42,7 +43,7 @@ class _PalletsListViewState extends ConsumerState<PalletsListView> {
         await Navigator.of(context).push(PalletDetailView.route(value.id));
         if (mounted) ref.invalidate(palletsProvider);
       case PalletRejected(:final failure):
-        _say(failure.operatorMessage);
+        _say(failure.operatorMessage(context.l10n));
     }
   }
 
@@ -66,7 +67,7 @@ class _PalletsListViewState extends ConsumerState<PalletsListView> {
       case PalletChanged():
         ref.invalidate(palletsProvider);
       case PalletRejected(:final failure):
-        _say(failure.operatorMessage);
+        _say(failure.operatorMessage(context.l10n));
     }
   }
 
@@ -87,7 +88,7 @@ class _PalletsListViewState extends ConsumerState<PalletsListView> {
           ? FloatingActionButton.extended(
               onPressed: _create,
               icon: const Icon(Icons.add),
-              label: const Text('Nueva tarima'),
+              label: Text(context.l10n.palletNewAction),
             )
           : null,
       body: RefreshIndicator(
@@ -102,7 +103,7 @@ class _PalletsListViewState extends ConsumerState<PalletsListView> {
             onClose: canOperate && !offline ? _close : null,
           ),
           AsyncError(:final error) => _Message(
-            ApiErrorMapper.fromAny(error).operatorMessage,
+            ApiErrorMapper.fromAny(error).operatorMessage(context.l10n),
           ),
           _ => const Center(child: CircularProgressIndicator()),
         },
@@ -124,7 +125,7 @@ class _Header extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        const Text('Tarimas'),
+        Text(context.l10n.palletsTitle),
         // Abiertas y cerradas son las dos cifras que deciden qué hacer ahora:
         // una abierta admite cajas, una cerrada espera un envío.
         Text(
@@ -174,7 +175,9 @@ class _Loaded extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(right: 8),
                     child: ChoiceChip(
-                      label: Text('${palletStatusLabel(value)} · $count'),
+                      label: Text(
+                        '${palletStatusLabel(context.l10n, value)} · $count',
+                      ),
                       selected: status == value,
                       onSelected: (chosen) => onStatus(chosen ? value : null),
                     ),
@@ -183,13 +186,9 @@ class _Loaded extends StatelessWidget {
           ),
         ),
         if (shown.isEmpty)
-          const Padding(
+          Padding(
             padding: EdgeInsets.all(32),
-            child: Text(
-              'Este centro no tiene tarimas todavía. Una tarima agrupa cajas '
-              'selladas para que viajen juntas.',
-              textAlign: TextAlign.center,
-            ),
+            child: Text(context.l10n.palletsEmpty, textAlign: TextAlign.center),
           ),
         for (final pallet in shown)
           _PalletRow(
@@ -220,15 +219,18 @@ class _PalletRow extends StatelessWidget {
       if (pallet.heightCm case final height?) '$height cm',
       if (pallet.closedAt case final closed?)
         'cerrada ${formatShortDate(closed)}',
-      if (pallet.shipmentId != null) 'en un envío',
+      if (pallet.shipmentId != null) context.l10n.palletInShipment,
     ];
 
     return ListTile(
       title: Text(pallet.code),
       subtitle: details.isEmpty ? null : Text(details.join(' · ')),
       trailing: onClose != null
-          ? TextButton(onPressed: onClose, child: const Text('Cerrar'))
-          : Chip(label: Text(palletStatusLabel(pallet.status))),
+          ? TextButton(
+              onPressed: onClose,
+              child: Text(context.l10n.actionClose),
+            )
+          : Chip(label: Text(palletStatusLabel(context.l10n, pallet.status))),
       onTap: () =>
           Navigator.of(context).push(PalletDetailView.route(pallet.id)),
     );

@@ -54,7 +54,10 @@ class AppBottomBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    assert(items.length == 4, 'La barra lleva cuatro destinos y un botón');
+    assert(
+      items.length == 4,
+      'The bar carries four destinations and one button',
+    );
     final palette = AppPalette.of(context);
     final bottomInset = MediaQuery.viewPaddingOf(context).bottom;
 

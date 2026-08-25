@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/push/push_providers.dart';
 import '../../../core/push/push_service.dart';
 
@@ -68,24 +69,20 @@ class _PushPermissionCardState extends ConsumerState<PushPermissionCard> {
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
-                    'Avisos del centro',
+                    context.l10n.homeNoticesTitle,
                     style: Theme.of(context).textTheme.titleSmall,
                   ),
                 ),
               ],
             ),
             const SizedBox(height: 8),
-            const Text(
-              'Te avisamos cuando se abre una revisión sobre una captura de '
-              'este centro y cuando llega un envío que salió de aquí. Nada '
-              'más.',
-            ),
+            Text(context.l10n.homeNoticesExplanation),
             const SizedBox(height: 12),
             Align(
               alignment: Alignment.centerRight,
               child: FilledButton(
                 onPressed: _asking ? null : _ask,
-                child: const Text('Activar avisos'),
+                child: Text(context.l10n.homeEnableNotices),
               ),
             ),
           ],

@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import '../../support/fake_api.dart';
 import '../../support/fake_http_adapter.dart';
 import '../../support/fixtures.dart';
+import '../../support/l10n.dart';
 
 void main() {
   IncidentsRepository repositoryOn(FakeHttpAdapter adapter) =>
@@ -84,12 +85,13 @@ void main() {
     });
   });
 
-  test('every incident type has a Spanish name', () {
+  test('every incident type has a Spanish name', () async {
+    final l10n = await spanish();
     for (final type in IncidentType.all) {
-      expect(incidentTypeLabel(type), isNot(type));
+      expect(incidentTypeLabel(l10n, type), isNot(type));
     }
     // Y un tipo que esta versión no conoce se muestra tal cual en vez de
     // desaparecer de la pantalla.
-    expect(incidentTypeLabel('SOMETHING_NEW'), 'SOMETHING_NEW');
+    expect(incidentTypeLabel(l10n, 'SOMETHING_NEW'), 'SOMETHING_NEW');
   });
 }

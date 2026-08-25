@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/api/generated/models/center_out.dart';
+import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/ui/record_field.dart';
 import '../data/centers_providers.dart';
 import '../data/centers_repository.dart';
@@ -35,7 +36,7 @@ class CenterRecordView extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Centro'),
+        title: Text(context.l10n.centerLabel),
         actions: [
           if (editable != null)
             IconButton(
@@ -43,7 +44,7 @@ class CenterRecordView extends ConsumerWidget {
                 context,
               ).push(CenterFormView.route(existing: editable)),
               icon: const Icon(Icons.edit_outlined),
-              tooltip: 'Editar',
+              tooltip: context.l10n.centerEditAction,
             ),
         ],
       ),
@@ -52,9 +53,8 @@ class CenterRecordView extends ConsumerWidget {
         AsyncData(value: CentersRefused(:final isForbidden, :final failure)) =>
           _Message(
             isForbidden
-                ? 'Solo la administración nacional puede ver la ficha de un '
-                      'centro.'
-                : failure.operatorMessage,
+                ? context.l10n.centerRecordForbidden
+                : failure.operatorMessage(context.l10n),
           ),
         AsyncError(:final error) => _Message('$error'),
         _ => const Center(child: CircularProgressIndicator()),
@@ -88,20 +88,21 @@ class _Body extends StatelessWidget {
         // repetirlo dos veces no informa de nada.
         if (center.legalName case final legal?
             when legal.isNotEmpty && legal != center.name)
-          RecordField(label: 'Razón social', value: legal),
-        if (place.isNotEmpty) RecordField(label: 'Dónde', value: place),
+          RecordField(label: context.l10n.centerLegalNameLabel, value: legal),
+        if (place.isNotEmpty)
+          RecordField(label: context.l10n.centerPlaceLabel, value: place),
         if (center.address case final value? when value.isNotEmpty)
-          RecordField(label: 'Dirección', value: value),
+          RecordField(label: context.l10n.addressLabel, value: value),
         if (center.contactName case final value? when value.isNotEmpty)
-          RecordField(label: 'Contacto', value: value),
+          RecordField(label: context.l10n.contactLabel, value: value),
         if (center.contactEmail case final value? when value.isNotEmpty)
-          RecordField(label: 'Correo', value: value),
+          RecordField(label: context.l10n.emailLabel, value: value),
         if (center.contactPhone case final value? when value.isNotEmpty)
-          RecordField(label: 'Teléfono', value: value),
+          RecordField(label: context.l10n.phoneLabel, value: value),
         if (!center.isActive)
-          const Padding(
+          Padding(
             padding: EdgeInsets.only(top: 16),
-            child: Text('Este centro está desactivado.'),
+            child: Text(context.l10n.centerInactiveNotice),
           ),
       ],
     );

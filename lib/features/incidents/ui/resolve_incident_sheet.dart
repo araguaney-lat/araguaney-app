@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/i18n/l10n_extension.dart';
 
 import '../../../core/ui/sheet_insets.dart';
 
@@ -61,7 +62,7 @@ class _ResolveIncidentSheetState extends State<ResolveIncidentSheet> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text('Cerrar la incidencia', style: text.titleMedium),
+          Text(context.l10n.incidentCloseTitle, style: text.titleMedium),
           const SizedBox(height: 8),
           // Las palabras de quien la reportó, citadas: cerrar sin releerlas es
           // como se cierra la equivocada.
@@ -75,16 +76,19 @@ class _ResolveIncidentSheetState extends State<ResolveIncidentSheet> {
             textCapitalization: TextCapitalization.sentences,
             onChanged: (_) => setState(() {}),
             decoration: InputDecoration(
-              labelText: 'En qué terminó',
-              errorText: empty ? 'Escribe en qué terminó' : null,
+              labelText: context.l10n.incidentOutcomeLabel,
+              errorText: empty ? context.l10n.incidentOutcomeRequired : null,
             ),
           ),
           const SizedBox(height: 16),
-          FilledButton(onPressed: _submit, child: const Text('Cerrar')),
+          FilledButton(
+            onPressed: _submit,
+            child: Text(context.l10n.actionClose),
+          ),
           const SizedBox(height: 8),
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancelar'),
+            child: Text(context.l10n.actionCancel),
           ),
         ],
       ),

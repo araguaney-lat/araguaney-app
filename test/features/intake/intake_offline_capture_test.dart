@@ -2,6 +2,7 @@ import 'package:araguaney_app/core/api/generated/clients/intakes_api.dart';
 import 'package:araguaney_app/core/api/generated/clients/product_types_api.dart';
 import 'package:araguaney_app/core/connectivity/connectivity_controller.dart';
 import 'package:araguaney_app/core/db/app_database.dart';
+import 'package:araguaney_app/core/i18n/generated/app_localizations.dart';
 import 'package:araguaney_app/features/catalog/data/catalog_providers.dart';
 import 'package:araguaney_app/features/catalog/data/catalog_repository.dart';
 import 'package:araguaney_app/features/intake/data/intake_providers.dart';
@@ -71,7 +72,11 @@ void main() {
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
-        child: const MaterialApp(home: IntakeFormView()),
+        child: const MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: IntakeFormView(),
+        ),
       ),
     );
     await tester.pumpAndSettle();

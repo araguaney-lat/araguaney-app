@@ -2,6 +2,7 @@ import 'package:araguaney_app/core/api/api_providers.dart';
 import 'package:araguaney_app/core/api/generated/clients/risk_reviews_api.dart';
 import 'package:araguaney_app/core/api/generated/rest_client.dart';
 import 'package:araguaney_app/core/auth/auth_providers.dart';
+import 'package:araguaney_app/core/i18n/generated/app_localizations.dart';
 import 'package:araguaney_app/features/risk_reviews/data/risk_reviews_repository.dart';
 import 'package:araguaney_app/features/risk_reviews/ui/risk_reviews_view.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,7 @@ import 'package:flutter_test/flutter_test.dart';
 import '../../support/fake_api.dart';
 import '../../support/fake_http_adapter.dart';
 import '../../support/fixtures.dart';
+import '../../support/l10n.dart';
 
 void main() {
   group('the repository', () {
@@ -65,7 +67,7 @@ void main() {
       ).resolve(reviewId: 'rr-1', resolution: RiskResolution.approve);
 
       expect(
-        (outcome as ResolveRefused).failure.operatorMessage,
+        (outcome as ResolveRefused).failure.operatorMessage(await spanish()),
         'Esta revisión ya fue resuelta',
       );
     });
@@ -104,7 +106,11 @@ void main() {
       await tester.pumpWidget(
         UncontrolledProviderScope(
           container: container,
-          child: const MaterialApp(home: RiskReviewsView()),
+          child: const MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: RiskReviewsView(),
+          ),
         ),
       );
       await tester.pumpAndSettle();

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/api/api_error_mapper.dart';
 import '../../../core/api/generated/models/thread_out.dart';
+import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/ui/record_field.dart';
 import '../data/messaging_providers.dart';
 import '../data/messaging_repository.dart';
@@ -34,9 +35,9 @@ class ThreadsListView extends ConsumerWidget {
         ref.invalidate(threadsProvider);
         await Navigator.of(context).push(ThreadView.route(value.id));
       case MessagingRefused(:final failure):
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(failure.operatorMessage)));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(failure.operatorMessage(context.l10n))),
+        );
     }
   }
 
@@ -45,11 +46,11 @@ class ThreadsListView extends ConsumerWidget {
     final threads = ref.watch(threadsProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Mensajes')),
+      appBar: AppBar(title: Text(context.l10n.messagesTitle)),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _open(context, ref),
         icon: const Icon(Icons.edit_outlined),
-        label: const Text('Nuevo hilo'),
+        label: Text(context.l10n.threadNewAction),
       ),
       body: RefreshIndicator(
         onRefresh: () async {
@@ -58,8 +59,8 @@ class ThreadsListView extends ConsumerWidget {
             ..invalidate(unreadMessagesProvider);
         },
         child: switch (threads) {
-          AsyncData(:final value) when value.isEmpty => const _Message(
-            'No hay hilos que puedas leer todavía.',
+          AsyncData(:final value) when value.isEmpty => _Message(
+            context.l10n.threadsEmpty,
           ),
           AsyncData(:final value) => ListView.separated(
             itemCount: value.length,
@@ -67,7 +68,7 @@ class ThreadsListView extends ConsumerWidget {
             itemBuilder: (context, index) => _ThreadTile(thread: value[index]),
           ),
           AsyncError(:final error) => _Message(
-            ApiErrorMapper.fromAny(error).operatorMessage,
+            ApiErrorMapper.fromAny(error).operatorMessage(context.l10n),
           ),
           _ => const Center(child: CircularProgressIndicator()),
         },
@@ -90,7 +91,7 @@ class _ThreadTile extends StatelessWidget {
     ),
     title: Text(thread.title),
     subtitle: Text(
-      '${threadTypeLabel(thread.threadType)} · '
+      '${threadTypeLabel(context.l10n, thread.threadType)} · '
       '${formatShortDate(thread.updatedAt)}',
     ),
     onTap: () => Navigator.of(context).push(ThreadView.route(thread.id)),

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/api/api_error_mapper.dart';
 import '../../../core/api/generated/models/intake_out.dart';
+import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/ui/record_field.dart';
 import '../data/intake_providers.dart';
 import 'intake_detail_view.dart';
@@ -24,24 +25,24 @@ class IntakeListView extends ConsumerWidget {
     final intakes = ref.watch(intakesProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Capturas del centro')),
+      appBar: AppBar(title: Text(context.l10n.capturesTitle)),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
           await Navigator.of(context).push(IntakeFormView.route());
           ref.invalidate(intakesProvider);
         },
         icon: const Icon(Icons.add),
-        label: const Text('Nueva captura'),
+        label: Text(context.l10n.captureNewAction),
       ),
       body: RefreshIndicator(
         onRefresh: () async => ref.invalidate(intakesProvider),
         child: switch (intakes) {
-          AsyncData(:final value) when value.isEmpty => const _Message(
-            'Este centro todavía no registró ninguna captura.',
+          AsyncData(:final value) when value.isEmpty => _Message(
+            context.l10n.capturesEmpty,
           ),
           AsyncData(:final value) => _IntakeList(intakes: value),
           AsyncError(:final error) => _Message(
-            ApiErrorMapper.fromAny(error).operatorMessage,
+            ApiErrorMapper.fromAny(error).operatorMessage(context.l10n),
           ),
           _ => const Center(child: CircularProgressIndicator()),
         },

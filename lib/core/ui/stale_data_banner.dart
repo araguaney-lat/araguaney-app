@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../connectivity/connectivity_controller.dart';
+import '../i18n/generated/app_localizations.dart';
+import '../i18n/l10n_extension.dart';
 import 'relative_time.dart';
 
 /// Aviso de que lo que se ve puede no ser lo último.
@@ -48,7 +50,7 @@ class StaleDataBanner extends ConsumerWidget {
             const SizedBox(width: 12),
             Expanded(
               child: Text(
-                _message(offline),
+                _message(context.l10n, offline),
                 style: theme.textTheme.bodySmall?.copyWith(
                   color: scheme.onSecondaryContainer,
                 ),
@@ -60,11 +62,14 @@ class StaleDataBanner extends ConsumerWidget {
     );
   }
 
-  String _message(bool offline) {
-    final headline = offline ? 'Sin conexión' : 'No se pudo actualizar';
+  String _message(AppLocalizations l10n, bool offline) {
+    final headline = offline ? l10n.offlineHeadline : l10n.staleHeadline;
     final moment = lastSyncedAt;
 
-    if (moment == null) return '$headline · todavía no se descargó nada';
-    return '$headline · datos de ${describeAge(moment, (now ?? DateTime.now)())}';
+    if (moment == null) return l10n.staleNothingDownloaded(headline);
+    return l10n.staleWithAge(
+      headline,
+      describeAge(l10n, moment, (now ?? DateTime.now)()),
+    );
   }
 }

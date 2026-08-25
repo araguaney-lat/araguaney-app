@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import '../../support/fake_api.dart';
 import '../../support/fake_http_adapter.dart';
 import '../../support/fixtures.dart';
+import '../../support/l10n.dart';
 
 void main() {
   PalletsRepository repositoryOn(FakeHttpAdapter adapter) =>
@@ -45,7 +46,10 @@ void main() {
 
     final failure = (outcome as PalletRejected).failure;
     expect(failure, isA<BusinessRuleFailure>());
-    expect(failure.operatorMessage, 'La caja ya está en otra tarima');
+    expect(
+      failure.operatorMessage(await spanish()),
+      'La caja ya está en otra tarima',
+    );
   });
 
   test('closing sends the weight and the height it was given', () async {

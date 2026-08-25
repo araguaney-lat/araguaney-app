@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/api/generated/models/pallet_out.dart';
+import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/ui/record_field.dart';
 import '../../../core/ui/sheet_insets.dart';
 import '../../../core/ui/status_labels.dart';
@@ -42,7 +43,7 @@ class PickPalletSheet extends ConsumerWidget {
               .where((p) => p.status == 'CLOSED' && !alreadyIn.contains(p.id))
               .toList(),
         ),
-        AsyncError() => const _Note('No se pudieron consultar las tarimas.'),
+        AsyncError() => _Note(context.l10n.palletsUnavailable),
         _ => const Padding(
           padding: EdgeInsets.all(32),
           child: Center(child: CircularProgressIndicator()),
@@ -60,10 +61,7 @@ class _List extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (pallets.isEmpty) {
-      return const _Note(
-        'No hay tarimas cerradas disponibles. Una tarima entra en un envío '
-        'cuando se cierra.',
-      );
+      return _Note(context.l10n.noClosedPallets);
     }
 
     return ListView(
@@ -74,7 +72,7 @@ class _List extends StatelessWidget {
             title: Text(pallet.code),
             subtitle: Text(
               [
-                palletStatusLabel(pallet.status),
+                palletStatusLabel(context.l10n, pallet.status),
                 if (pallet.closedAt case final closed?)
                   'cerrada ${formatShortDate(closed)}',
                 if (pallet.heightCm case final height?) '$height cm',

@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/auth/auth_providers.dart';
 import '../../../core/auth/session.dart';
+import '../../../core/i18n/l10n_extension.dart';
+import '../domain/login_failure_message.dart';
 import 'login_view.dart';
 
 /// Segundo factor. Se llega aquí solo cuando el servidor lo pide, con un token
@@ -38,14 +40,16 @@ class _TotpChallengeViewState extends ConsumerState<TotpChallengeView> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(sessionControllerProvider);
-    final failure = state is SessionAwaitingTotp ? state.failureMessage : null;
+    final failure = state is SessionAwaitingTotp && state.failure != null
+        ? loginFailureMessage(context.l10n, state.failure!)
+        : null;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Verificación en dos pasos'),
+        title: Text(context.l10n.totpChallengeTitle),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          tooltip: 'Volver al inicio de sesión',
+          tooltip: context.l10n.backToLogin,
           onPressed: () =>
               ref.read(sessionControllerProvider.notifier).cancelTotp(),
         ),
@@ -61,7 +65,7 @@ class _TotpChallengeViewState extends ConsumerState<TotpChallengeView> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Text(
-                    'Escribe el código de tu aplicación de autenticación.',
+                    context.l10n.totpChallengeExplanation,
                     style: Theme.of(context).textTheme.bodyLarge,
                     textAlign: TextAlign.center,
                   ),
@@ -75,8 +79,8 @@ class _TotpChallengeViewState extends ConsumerState<TotpChallengeView> {
                     style: Theme.of(context).textTheme.headlineSmall,
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     onSubmitted: (_) => _submit(),
-                    decoration: const InputDecoration(
-                      labelText: 'Código de 6 dígitos',
+                    decoration: InputDecoration(
+                      labelText: context.l10n.totpCodeLabel,
                       counterText: '',
                     ),
                   ),
@@ -92,7 +96,7 @@ class _TotpChallengeViewState extends ConsumerState<TotpChallengeView> {
                             dimension: 20,
                             child: CircularProgressIndicator(strokeWidth: 2),
                           )
-                        : const Text('Verificar'),
+                        : Text(context.l10n.totpVerifySubmit),
                   ),
                 ],
               ),

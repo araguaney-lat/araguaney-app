@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/connectivity/connectivity_controller.dart';
 import '../../../core/db/daos/boxes_dao.dart';
+import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/sync/sync_coordinator.dart';
 import '../../../core/sync/sync_outcome.dart';
 import '../../../core/ui/stale_data_banner.dart';
@@ -62,7 +63,7 @@ class _BoxesListViewState extends ConsumerState<BoxesListView> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Cajas'),
+        title: Text(context.l10n.boxesTitle),
         // El recuento va en el subtítulo y no en un chip: es contexto de la
         // pantalla, no un dato que se toque.
         bottom: PreferredSize(
@@ -73,9 +74,7 @@ class _BoxesListViewState extends ConsumerState<BoxesListView> {
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
                 child: Text(
-                  all.length == 1
-                      ? '1 caja en el centro'
-                      : '${all.length} cajas en el centro',
+                  context.l10n.boxesInCenter(all.length),
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
               ),
@@ -149,13 +148,14 @@ class _StatusFilter extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 12),
         children: [
           _Chip(
-            label: 'Todas',
+            label: context.l10n.allFilter,
             selected: selected == null,
             onTap: () => onSelected(null),
           ),
           for (final status in [...known, ...extra])
             _Chip(
-              label: '${boxStatusLabel(status)} · ${counts[status]}',
+              label:
+                  '${boxStatusLabel(context.l10n, status)} · ${counts[status]}',
               selected: selected == status,
               onTap: () => onSelected(status),
             ),
@@ -200,7 +200,7 @@ class _NoneInFilter extends StatelessWidget {
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 64),
         child: Text(
-          'Ninguna caja en estado «${boxStatusLabel(status)}».',
+          'Ninguna caja en estado «${boxStatusLabel(context.l10n, status)}».',
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.bodyMedium,
         ),
@@ -238,21 +238,22 @@ class _BoxRow extends ConsumerWidget {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Sellar ${item.box.code}'),
+        title: Text(context.l10n.sealBoxConfirmTitle(item.box.code)),
         content: Text(
-          '${item.productName ?? 'Producto no descargado'} · '
-          '${item.box.quantity} ${item.box.unit}.\n\n'
-          'Una caja sellada ya no admite cambios: es la que se pone en una '
-          'tarima y viaja.',
+          context.l10n.sealBoxConfirmBody(
+            item.productName ?? context.l10n.productNotCached,
+            '${item.box.quantity}',
+            item.box.unit,
+          ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancelar'),
+            child: Text(context.l10n.actionCancel),
           ),
           FilledButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Sellar'),
+            child: Text(context.l10n.sealAction),
           ),
         ],
       ),
@@ -264,9 +265,9 @@ class _BoxRow extends ConsumerWidget {
 
     ref.read(syncCoordinatorProvider).report([outcome]);
     if (outcome case SyncFailed(:final failure)) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(failure.operatorMessage)));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(failure.operatorMessage(context.l10n))),
+      );
     }
   }
 
@@ -291,9 +292,9 @@ class _BoxRow extends ConsumerWidget {
       trailing: open && !offline
           ? TextButton(
               onPressed: () => _seal(context, ref),
-              child: const Text('Sellar'),
+              child: Text(context.l10n.sealAction),
             )
-          : Chip(label: Text(boxStatusLabel(item.box.status))),
+          : Chip(label: Text(boxStatusLabel(context.l10n, item.box.status))),
       onTap: () => Navigator.of(
         context,
       ).push(BoxDetailView.route(boxId: item.box.id, code: item.box.code)),
@@ -321,9 +322,8 @@ class _EmptyView extends ConsumerWidget {
               const SizedBox(height: 16),
               Text(
                 offline
-                    ? 'Sin conexión y sin cajas descargadas. Conéctate una vez '
-                          'para poder consultarlas después sin señal.'
-                    : 'Este centro todavía no tiene cajas registradas.',
+                    ? context.l10n.boxesOfflineNoneCached
+                    : context.l10n.boxesEmpty,
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodyMedium,
               ),

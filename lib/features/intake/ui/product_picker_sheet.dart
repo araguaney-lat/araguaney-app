@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/db/app_database.dart';
+import '../../../core/i18n/generated/app_localizations.dart';
+import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/ui/category_label.dart';
 import '../../../core/ui/sheet_insets.dart';
 import '../../catalog/data/catalog_providers.dart';
@@ -48,9 +50,9 @@ class _ProductPickerSheetState extends ConsumerState<ProductPickerSheet> {
             child: TextField(
               key: const Key('product-search'),
               autofocus: true,
-              decoration: const InputDecoration(
-                labelText: 'Buscar producto',
-                helperText: 'Por nombre, marca o principio activo',
+              decoration: InputDecoration(
+                labelText: context.l10n.productSearchTitle,
+                helperText: context.l10n.productSearchHint,
                 prefixIcon: Icon(Icons.search),
               ),
               onChanged: (value) => setState(() => _search = value),
@@ -69,7 +71,7 @@ class _ProductPickerSheetState extends ConsumerState<ProductPickerSheet> {
                 }
               },
               icon: const Icon(Icons.barcode_reader),
-              label: const Text('Escanear código de barras'),
+              label: Text(context.l10n.barcodeScanAction),
             ),
           ),
           if (categories.isNotEmpty)
@@ -83,7 +85,7 @@ class _ProductPickerSheetState extends ConsumerState<ProductPickerSheet> {
                     Padding(
                       padding: const EdgeInsets.only(right: 8),
                       child: FilterChip(
-                        label: Text(categoryLabel(category)),
+                        label: Text(categoryLabel(context.l10n, category)),
                         selected: _category == category,
                         onSelected: (selected) => setState(
                           () => _category = selected ? category : null,
@@ -104,7 +106,7 @@ class _ProductPickerSheetState extends ConsumerState<ProductPickerSheet> {
                   final product = value[index];
                   return ListTile(
                     title: Text(product.displayName),
-                    subtitle: Text(_describe(product)),
+                    subtitle: Text(_describe(context.l10n, product)),
                     trailing: product.isControlled
                         ? const Icon(Icons.gpp_maybe_outlined)
                         : null,
@@ -120,8 +122,8 @@ class _ProductPickerSheetState extends ConsumerState<ProductPickerSheet> {
     );
   }
 
-  static String _describe(ProductTypeRow product) => [
-    categoryLabel(product.category),
+  static String _describe(AppLocalizations l10n, ProductTypeRow product) => [
+    categoryLabel(l10n, product.category),
     ?product.brand,
     ?product.strength,
   ].join(' · ');
@@ -135,9 +137,7 @@ class _NoMatches extends StatelessWidget {
     child: Padding(
       padding: const EdgeInsets.all(32),
       child: Text(
-        'Ningún producto del catálogo coincide. Si falta algo que sí existe, '
-        'sincroniza con conexión: el catálogo local es el que el servidor '
-        'sirvió para esta campaña.',
+        context.l10n.productSearchNoMatch,
         textAlign: TextAlign.center,
         style: Theme.of(context).textTheme.bodyMedium,
       ),

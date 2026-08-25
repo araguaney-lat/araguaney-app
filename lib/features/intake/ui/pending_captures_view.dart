@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/api/refusal_copy.dart';
 import '../../../core/db/app_database.dart';
 import '../../../core/db/tables/queued_captures_table.dart';
+import '../../../core/i18n/generated/app_localizations.dart';
+import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/sync/sync_outcome.dart';
 import '../../../core/ui/confirm_button.dart';
 import '../../../core/ui/record_field.dart';
@@ -42,41 +45,42 @@ class _PendingCapturesViewState extends ConsumerState<PendingCapturesView> {
     setState(() => _flushing = false);
 
     final messenger = ScaffoldMessenger.of(context)..hideCurrentSnackBar();
-    messenger.showSnackBar(SnackBar(content: Text(_reportMessage(report))));
+    messenger.showSnackBar(
+      SnackBar(content: Text(_reportMessage(context.l10n, report))),
+    );
   }
 
   /// Qué se le dice a quien pulsó «sincronizar». El motivo del servidor manda
   /// sobre el recuento: saber que no hay señal es más útil que saber que no se
   /// envió nada.
-  static String _reportMessage(QueueFlushReport report) {
-    if (report.stoppedBy case final failure?) return failure.operatorMessage;
+  static String _reportMessage(AppLocalizations l10n, QueueFlushReport report) {
+    if (report.stoppedBy case final failure?) {
+      return failure.operatorMessage(l10n);
+    }
     if (report.sent > 0 && report.remaining == 0) {
       return 'Se enviaron ${report.sent}. No queda nada pendiente.';
     }
     if (report.sent > 0) return 'Se enviaron ${report.sent}.';
     if (report.parked > 0) {
-      return 'El servidor rechazó ${report.parked}. Revisa el motivo.';
+      return l10n.queueParkedByServer(report.parked);
     }
-    return 'No había nada que enviar.';
+    return l10n.nothingToSend;
   }
 
   Future<void> _discard(QueuedCaptureRow row) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('¿Descartar esta captura?'),
-        content: Text(
-          'Se borra del dispositivo y no se envía. Lo que se registró en '
-          'papel o en las cajas de ${row.summary} no se recupera desde aquí.',
-        ),
+        title: Text(context.l10n.discardCaptureConfirmTitle),
+        content: Text(context.l10n.discardCaptureExplanation(row.summary)),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Conservar'),
+            child: Text(context.l10n.keepAction),
           ),
           FilledButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Descartar'),
+            child: Text(context.l10n.discardAction),
           ),
         ],
       ),
@@ -158,9 +162,9 @@ class _Header extends StatelessWidget {
     crossAxisAlignment: CrossAxisAlignment.start,
     mainAxisSize: MainAxisSize.min,
     children: [
-      const Text('Pendientes de envío'),
+      Text(context.l10n.pendingCapturesTitle),
       Text(
-        'Nada se pierde: todo espera aquí',
+        context.l10n.queueNothingIsLost,
         style: Theme.of(context).textTheme.bodySmall,
       ),
     ],
@@ -192,15 +196,18 @@ class _ReadinessStrip extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Expanded(
-          child: _Cell(label: 'Productos descargados', value: products),
+          child: _Cell(
+            label: context.l10n.cachedProductsLabel,
+            value: products,
+          ),
         ),
         const SizedBox(width: 9),
         Expanded(
-          child: _Cell(label: 'Códigos apartados', value: codes),
+          child: _Cell(label: context.l10n.reservedCodesLabel, value: codes),
         ),
         const SizedBox(width: 9),
         Expanded(
-          child: _Cell(label: 'Capturas en cola', value: queued),
+          child: _Cell(label: context.l10n.queuedCapturesLabel, value: queued),
         ),
       ],
     ),
@@ -277,8 +284,8 @@ class _ActionsState extends ConsumerState<_Actions> {
     setState(() => _reserving = false);
 
     final message = switch (outcome) {
-      SyncSucceeded(:final itemCount) => 'Se reservaron $itemCount códigos.',
-      SyncFailed(:final failure) => failure.operatorMessage,
+      SyncSucceeded(:final itemCount) => context.l10n.codesReserved(itemCount),
+      SyncFailed(:final failure) => failure.operatorMessage(context.l10n),
     };
     final messenger = ScaffoldMessenger.of(context)..hideCurrentSnackBar();
     messenger.showSnackBar(SnackBar(content: Text(message)));
@@ -288,13 +295,16 @@ class _ActionsState extends ConsumerState<_Actions> {
   Widget build(BuildContext context) => Row(
     children: [
       Expanded(
-        child: ConfirmButton(label: 'Sincronizar', onPressed: widget.onSync),
+        child: ConfirmButton(
+          label: context.l10n.syncAction,
+          onPressed: widget.onSync,
+        ),
       ),
       const SizedBox(width: 9),
       Expanded(
         child: OutlinedButton(
           onPressed: _reserving ? null : _topUp,
-          child: const Text('Reservar códigos'),
+          child: Text(context.l10n.reserveCodesAction),
         ),
       ),
     ],
@@ -334,7 +344,10 @@ class _QueuedCard extends StatelessWidget {
                     children: [
                       Text(row.summary, style: theme.textTheme.titleMedium),
                       const SizedBox(height: 3),
-                      Text(_when(row), style: theme.textTheme.bodySmall),
+                      Text(
+                        _when(context.l10n, row),
+                        style: theme.textTheme.bodySmall,
+                      ),
                     ],
                   ),
                 ),
@@ -345,7 +358,12 @@ class _QueuedCard extends StatelessWidget {
             if (lines.isNotEmpty) const SizedBox(height: 10),
             for (final line in lines)
               Text('· $line', style: theme.textTheme.bodySmall),
-            if (row.lastFailureMessage case final message?) ...[
+            // La copia propia si conocemos el código, y si no las palabras
+            // que mandó el servidor. Lo guardado es lo segundo siempre: ver
+            // `capture_queue_sync`.
+            if (refusalCopyFor(context.l10n, row.lastFailureCode ?? '') ??
+                    row.lastFailureMessage
+                case final message?) ...[
               const SizedBox(height: 10),
               Text(message, style: theme.textTheme.bodyMedium),
             ],
@@ -359,14 +377,14 @@ class _QueuedCard extends StatelessWidget {
                   Expanded(
                     child: OutlinedButton(
                       onPressed: onRetry,
-                      child: const Text('Reintentar'),
+                      child: Text(context.l10n.actionRetry),
                     ),
                   ),
                   const SizedBox(width: 9),
                   Expanded(
                     child: TextButton(
                       onPressed: onDiscard,
-                      child: const Text('Descartar'),
+                      child: Text(context.l10n.discardAction),
                     ),
                   ),
                 ],
@@ -383,9 +401,12 @@ class _QueuedCard extends StatelessWidget {
   /// Sin denominador: la cola reintenta mientras haya motivo para hacerlo y no
   /// tiene un máximo. Escribir «intento 1 de 5» pondría en pantalla un límite
   /// que este sistema no tiene.
-  static String _when(QueuedCaptureRow row) => [
+  static String _when(AppLocalizations l10n, QueuedCaptureRow row) => [
     formatShortDateTime(row.createdAt),
-    if (row.attempts > 0) 'intento ${row.attempts}' else 'sin intentos todavía',
+    if (row.attempts > 0)
+      l10n.attemptNumber(row.attempts)
+    else
+      l10n.noAttemptsYet,
   ].join(' · ');
 }
 
@@ -420,8 +441,7 @@ class _Empty extends StatelessWidget {
   Widget build(BuildContext context) => Padding(
     padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 16),
     child: Text(
-      'No hay capturas esperando. Las que se hagan sin señal aparecerán '
-      'aquí hasta que se envíen.',
+      context.l10n.queueEmpty,
       textAlign: TextAlign.center,
       style: Theme.of(context).textTheme.bodyMedium,
     ),

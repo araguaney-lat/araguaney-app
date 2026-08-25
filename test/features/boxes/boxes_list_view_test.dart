@@ -3,6 +3,7 @@ import 'package:araguaney_app/core/api/generated/clients/product_types_api.dart'
 import 'package:araguaney_app/core/connectivity/connectivity_controller.dart';
 import 'package:araguaney_app/core/db/app_database.dart';
 import 'package:araguaney_app/core/db/daos/sync_markers_dao.dart';
+import 'package:araguaney_app/core/i18n/generated/app_localizations.dart';
 import 'package:araguaney_app/features/boxes/data/boxes_providers.dart';
 import 'package:araguaney_app/features/boxes/data/boxes_repository.dart';
 import 'package:araguaney_app/features/boxes/ui/boxes_list_view.dart';
@@ -66,7 +67,11 @@ void main() {
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
-        child: const MaterialApp(home: BoxesListView()),
+        child: const MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: BoxesListView(),
+        ),
       ),
     );
     await tester.pumpAndSettle();

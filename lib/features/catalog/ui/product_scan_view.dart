@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 import '../../../core/db/app_database.dart';
+import '../../../core/i18n/l10n_extension.dart';
 import '../../scanning/domain/scan_throttle.dart';
 import '../../scanning/domain/scanned_code.dart';
 import '../../scanning/ui/scanner_camera.dart';
@@ -76,22 +77,17 @@ class _ProductScanViewState extends ConsumerState<ProductScanView> {
       case BarcodeProductFound(:final product):
         Navigator.of(context).pop(product);
       case BarcodeOnlyDescribed(:final prefill):
-        _say(
-          'Ese código es ${prefill.displayName}, pero ese producto no está en '
-          'el catálogo. Elígelo a mano.',
-        );
+        _say(context.l10n.productNotInCatalogue(prefill.displayName));
       case BarcodeUnresolved(:final failure):
-        _say(failure.operatorMessage);
+        _say(failure.operatorMessage(context.l10n));
     }
   }
 
   void _explainQr(String raw) => _say(switch (parseScannedCode(raw)) {
-    BoxCode() => 'Eso es la etiqueta de una caja, no el producto.',
-    PalletCode() => 'Eso es la etiqueta de una tarima, no el producto.',
-    DonationCode() => 'Eso es el código de una donación, no el producto.',
-    UnrecognizedCode() =>
-      'Ese código lleva a una página del fabricante. El que identifica el '
-          'producto es el de barras.',
+    BoxCode() => context.l10n.barcodeIsBoxLabel,
+    PalletCode() => context.l10n.barcodeIsPalletLabel,
+    DonationCode() => context.l10n.barcodeIsDonationCode,
+    UnrecognizedCode() => context.l10n.barcodeIsManufacturerUrl,
   });
 
   void _say(String message) {
@@ -111,14 +107,12 @@ class _ProductScanViewState extends ConsumerState<ProductScanView> {
       backgroundColor: Colors.transparent,
       foregroundColor: Colors.white,
       elevation: 0,
-      title: const Text('Escanear producto'),
+      title: Text(context.l10n.productScanTitle),
     ),
     body: ScannerCamera(
       controller: _controller,
       onDetect: _onDetect,
-      overlay: const ScannerViewfinder(
-        hint: 'Apunta al código de barras del envase, no al QR.',
-      ),
+      overlay: ScannerViewfinder(hint: context.l10n.barcodeAimAtPackage),
     ),
   );
 }

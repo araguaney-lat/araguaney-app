@@ -4,7 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/auth/auth_providers.dart';
 import '../../../core/auth/session.dart';
 import '../../../core/config/app_config.dart';
+import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/platform/open_link.dart';
+import '../domain/login_failure_message.dart';
 import 'app_version_footer.dart';
 import 'forgot_password_view.dart';
 
@@ -44,7 +46,9 @@ class _LoginViewState extends ConsumerState<LoginView> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(sessionControllerProvider);
-    final failure = state is SessionAbsent ? state.failureMessage : null;
+    final failure = state is SessionAbsent && state.failure != null
+        ? loginFailureMessage(context.l10n, state.failure!)
+        : null;
 
     return Scaffold(
       body: SafeArea(
@@ -62,13 +66,13 @@ class _LoginViewState extends ConsumerState<LoginView> {
                     const _ArrivingMark(),
                     const SizedBox(height: 16),
                     Text(
-                      'Araguaney',
+                      context.l10n.appTitle,
                       style: Theme.of(context).textTheme.headlineMedium,
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Inicia sesión para operar tu centro de acopio.',
+                      context.l10n.loginSubtitle,
                       style: Theme.of(context).textTheme.bodyMedium,
                       textAlign: TextAlign.center,
                     ),
@@ -79,8 +83,8 @@ class _LoginViewState extends ConsumerState<LoginView> {
                       enableSuggestions: false,
                       keyboardType: TextInputType.emailAddress,
                       textInputAction: TextInputAction.next,
-                      decoration: const InputDecoration(
-                        labelText: 'Correo o usuario',
+                      decoration: InputDecoration(
+                        labelText: context.l10n.loginIdentifierLabel,
                       ),
                       validator: (value) =>
                           (value == null || value.trim().isEmpty)
@@ -94,7 +98,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
                       textInputAction: TextInputAction.done,
                       onFieldSubmitted: (_) => _submit(),
                       decoration: InputDecoration(
-                        labelText: 'Contraseña',
+                        labelText: context.l10n.passwordLabel,
                         suffixIcon: IconButton(
                           onPressed: () => setState(
                             () => _obscurePassword = !_obscurePassword,
@@ -105,12 +109,12 @@ class _LoginViewState extends ConsumerState<LoginView> {
                                 : Icons.visibility_off_outlined,
                           ),
                           tooltip: _obscurePassword
-                              ? 'Mostrar contraseña'
-                              : 'Ocultar contraseña',
+                              ? context.l10n.showPassword
+                              : context.l10n.hidePassword,
                         ),
                       ),
                       validator: (value) => (value == null || value.isEmpty)
-                          ? 'Escribe tu contraseña'
+                          ? context.l10n.passwordRequired
                           : null,
                     ),
                     if (failure != null) ...[
@@ -125,7 +129,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
                               dimension: 20,
                               child: CircularProgressIndicator(strokeWidth: 2),
                             )
-                          : const Text('Entrar'),
+                          : Text(context.l10n.loginSubmit),
                     ),
                     const SizedBox(height: 8),
                     TextButton(
@@ -134,7 +138,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
                           : () => Navigator.of(
                               context,
                             ).push(ForgotPasswordView.route()),
-                      child: const Text('¿Olvidaste tu contraseña?'),
+                      child: Text(context.l10n.loginForgotPassword),
                     ),
                     const _RegisterCenterLink(),
                     const SizedBox(height: 24),
@@ -207,11 +211,11 @@ class _RegisterCenterLink extends ConsumerWidget {
         );
         if (!opened && context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('No se pudo abrir el navegador.')),
+            SnackBar(content: Text(context.l10n.browserOpenFailed)),
           );
         }
       },
-      child: const Text('¿Tu centro aún no está registrado?'),
+      child: Text(context.l10n.loginRegisterCenter),
     );
   }
 }
@@ -295,7 +299,7 @@ class _ArrivingMarkState extends State<_ArrivingMark>
           // más ancho que alto.
           fit: BoxFit.fitHeight,
           filterQuality: FilterQuality.medium,
-          semanticLabel: 'Araguaney',
+          semanticLabel: context.l10n.appTitle,
         ),
       ),
     );

@@ -2,10 +2,2053 @@
   "@@locale": "es",
   "appTitle": "Araguaney",
   "@appTitle": {
-    "description": "Nombre de la aplicación, visible en el lanzador y la barra de título."
+    "description": "Application name, shown in the launcher and the title bar."
   },
-  "homePlaceholderMessage": "Cliente móvil de Araguaney en desarrollo.",
-  "@homePlaceholderMessage": {
-    "description": "Mensaje temporal de la pantalla inicial durante el desarrollo del scaffold."
+  "actionCancel": "Cancelar",
+  "@actionCancel": {
+    "description": "Button that dismisses an action without doing it."
+  },
+  "actionSave": "Guardar",
+  "@actionSave": {
+    "description": "Button that confirms an edit."
+  },
+  "actionClose": "Cerrar",
+  "@actionClose": {
+    "description": "Button that closes something: a box, a pallet, an incident."
+  },
+  "actionRetry": "Reintentar",
+  "@actionRetry": {
+    "description": "Button that repeats an operation that failed."
+  },
+  "actionApprove": "Aprobar",
+  "@actionApprove": {
+    "description": "Button that accepts a request."
+  },
+  "actionReject": "Rechazar",
+  "@actionReject": {
+    "description": "Button that denies a request, always with a reason."
+  },
+  "actionFinish": "Terminar",
+  "@actionFinish": {
+    "description": "Button that ends a multi-step flow."
+  },
+  "boxStatusDraft": "Sin sellar",
+  "@boxStatusDraft": {
+    "description": "A box that has not been sealed yet. Not a 'draft': the box exists and has contents, it is just not closed."
+  },
+  "boxStatusSealed": "Sellada",
+  "@boxStatusSealed": {
+    "description": "Estado de una caja cerrada y contada."
+  },
+  "boxStatusShipped": "Enviada",
+  "@boxStatusShipped": {
+    "description": "A box that left in a shipment."
+  },
+  "boxStatusRejected": "Rechazada",
+  "@boxStatusRejected": {
+    "description": "A box that was not accepted."
+  },
+  "palletStatusOpen": "Abierta",
+  "@palletStatusOpen": {
+    "description": "A pallet that still takes boxes."
+  },
+  "palletStatusClosed": "Cerrada",
+  "@palletStatusClosed": {
+    "description": "Estado de una tarima que ya no admite cajas."
+  },
+  "palletStatusShipped": "Enviada",
+  "@palletStatusShipped": {
+    "description": "A pallet that left in a shipment."
+  },
+  "shipmentStatusOpen": "Abierto",
+  "@shipmentStatusOpen": {
+    "description": "A shipment that still takes pallets."
+  },
+  "shipmentStatusClosed": "Cerrado",
+  "@shipmentStatusClosed": {
+    "description": "A closed shipment that has not left yet."
+  },
+  "shipmentStatusShipped": "Despachado",
+  "@shipmentStatusShipped": {
+    "description": "A shipment that has left."
+  },
+  "shipmentStatusDelivered": "Entregado",
+  "@shipmentStatusDelivered": {
+    "description": "A shipment that reached its destination."
+  },
+  "shipmentStatusReconciled": "Conciliado",
+  "@shipmentStatusReconciled": {
+    "description": "The final state: what was received was squared against what was sent."
+  },
+  "transferStatusRequested": "Solicitada",
+  "@transferStatusRequested": {
+    "description": "Transferencia propuesta, esperando respuesta."
+  },
+  "transferStatusApproved": "Aprobada",
+  "@transferStatusApproved": {
+    "description": "A transfer accepted but not dispatched yet."
+  },
+  "transferStatusInTransit": "En tránsito",
+  "@transferStatusInTransit": {
+    "description": "A transfer that left and has not arrived."
+  },
+  "transferStatusReceived": "Recibida",
+  "@transferStatusReceived": {
+    "description": "A transfer that reached its destination."
+  },
+  "transferStatusRejected": "Rechazada",
+  "@transferStatusRejected": {
+    "description": "A transfer the other centre did not accept."
+  },
+  "reviewStatusPending": "Pendiente",
+  "@reviewStatusPending": {
+    "description": "A review waiting for a decision."
+  },
+  "reviewStatusApproved": "Aprobada",
+  "@reviewStatusApproved": {
+    "description": "A review resolved in the capture's favour."
+  },
+  "reviewStatusRejected": "Rechazada",
+  "@reviewStatusRejected": {
+    "description": "A review resolved against the capture."
+  },
+  "incidentStatusOpen": "Abierta",
+  "@incidentStatusOpen": {
+    "description": "Incidencia que nadie ha cerrado."
+  },
+  "incidentStatusResolved": "Resuelta",
+  "@incidentStatusResolved": {
+    "description": "Incidencia cerrada con una nota."
+  },
+  "incidentTypeWeightDiff": "Diferencia de peso",
+  "@incidentTypeWeightDiff": {
+    "description": "Tipo de incidencia."
+  },
+  "incidentTypeMissingBox": "Caja faltante",
+  "@incidentTypeMissingBox": {
+    "description": "Tipo de incidencia."
+  },
+  "incidentTypeDamage": "Daño",
+  "@incidentTypeDamage": {
+    "description": "Tipo de incidencia."
+  },
+  "incidentTypeCustoms": "Retención en aduana",
+  "@incidentTypeCustoms": {
+    "description": "Tipo de incidencia."
+  },
+  "incidentTypeOther": "Otra",
+  "@incidentTypeOther": {
+    "description": "Tipo de incidencia."
+  },
+  "failureNetwork": "No hay conexión con el servidor. Revisa tu señal e inténtalo de nuevo.",
+  "@failureNetwork": {
+    "description": "No network, DNS, timeout or a dropped connection."
+  },
+  "failureSessionExpired": "Tu sesión expiró. Inicia sesión de nuevo.",
+  "@failureSessionExpired": {
+    "description": "A generic 401, when there really was a session."
+  },
+  "failureForbidden": "No tienes permiso para hacer esta operación.",
+  "@failureForbidden": {
+    "description": "A 403 with no named code: there is nothing the person can do about it."
+  },
+  "failureNotFound": "No encontramos lo que buscabas.",
+  "@failureNotFound": {
+    "description": "Un 404."
+  },
+  "failureRateLimited": "Demasiadas peticiones seguidas. Espera un momento e inténtalo de nuevo.",
+  "@failureRateLimited": {
+    "description": "A 429 with no named code."
+  },
+  "failureServer": "El servidor tuvo un problema. Inténtalo de nuevo en un momento.",
+  "@failureServer": {
+    "description": "Un 5xx."
+  },
+  "failureUnexpected": "Ocurrió un error inesperado.",
+  "@failureUnexpected": {
+    "description": "Cualquier cosa que no encaje en las anteriores."
+  },
+  "refusalInvalidCredentials": "El correo o la contraseña no coinciden.",
+  "@refusalInvalidCredentials": {
+    "description": "Wrong credentials at sign-in. Does not say which of the two failed."
+  },
+  "refusalAccountLocked": "Demasiados intentos fallidos. Espera un momento antes de volver a intentarlo.",
+  "@refusalAccountLocked": {
+    "description": "Account locked by failed attempts. Names neither how many nor for how long."
+  },
+  "refusalAccountDisabled": "Esa cuenta está desactivada.",
+  "@refusalAccountDisabled": {
+    "description": "Cuenta inhabilitada."
+  },
+  "refusalEmailNotVerified": "Tienes que verificar tu correo antes de operar.",
+  "@refusalEmailNotVerified": {
+    "description": "Correo sin verificar."
+  },
+  "refusalSelfReview": "No puedes resolver una revisión que abriste tú. Escala a la coordinación nacional.",
+  "@refusalSelfReview": {
+    "description": "Whoever raised a review cannot close it."
+  },
+  "refusalNotCampaignMember": "No participas en esa campaña. Pide que te sumen para poder capturar en ella.",
+  "@refusalNotCampaignMember": {
+    "description": "Capturing into a campaign the person is not part of."
+  },
+  "refusalEmailTaken": "Ese correo ya tiene una cuenta.",
+  "@refusalEmailTaken": {
+    "description": "Correo repetido al invitar."
+  },
+  "refusalUsernameTaken": "Ese nombre de usuario ya está tomado.",
+  "@refusalUsernameTaken": {
+    "description": "Usuario repetido al invitar."
+  },
+  "refusalInvalidRole": "El rol tiene que ser coordinación o voluntariado.",
+  "@refusalInvalidRole": {
+    "description": "Role not allowed when inviting: national administration is not handed out from here."
+  },
+  "refusalProtectedCampaign": "De la campaña general no se puede sacar a nadie: es donde entra todo lo que no pertenece a otra campaña.",
+  "@refusalProtectedCampaign": {
+    "description": "Nobody can be removed from the general campaign."
+  },
+  "donationStatusPendingEmail": "Sin confirmar",
+  "@donationStatusPendingEmail": {
+    "description": "A donation registered on the web whose email has not been confirmed."
+  },
+  "donationStatusRegistered": "Registrada",
+  "@donationStatusRegistered": {
+    "description": "A confirmed donation that has not reached a centre yet."
+  },
+  "donationStatusReceived": "Recibida",
+  "@donationStatusReceived": {
+    "description": "A donation a centre has received."
+  },
+  "donationStatusCancelled": "Cancelada",
+  "@donationStatusCancelled": {
+    "description": "A donation cancelled by whoever registered it."
+  },
+  "donationStatusExpired": "Caducada",
+  "@donationStatusExpired": {
+    "description": "A donation that never arrived and ran out of time."
+  },
+  "loginRateLimited": "Demasiados intentos seguidos. Espera unos minutos y vuelve a entrar: no es tu contraseña.",
+  "@loginRateLimited": {
+    "description": "Rate limit at sign-in. It is not counted per person: at the start of a shift the whole centre can exhaust it, and whoever gets refused has the right password."
+  },
+  "manifestFailed": "No se pudo obtener el manifiesto.",
+  "@manifestFailed": {
+    "description": "The manifest job did not finish and the server did not say why."
+  },
+  "updateAvailableFooter": "Hay una versión más nueva disponible.",
+  "@updateAvailableFooter": {
+    "description": "Screen: app_version_footer."
+  },
+  "passwordUpdated": "Contraseña actualizada.",
+  "@passwordUpdated": {
+    "description": "Screen: change_password_view."
+  },
+  "changePasswordTitle": "Cambia tu contraseña",
+  "@changePasswordTitle": {
+    "description": "Screen: change_password_view."
+  },
+  "currentPasswordLabel": "Contraseña actual",
+  "@currentPasswordLabel": {
+    "description": "Screen: change_password_view."
+  },
+  "newPasswordLabel": "Contraseña nueva",
+  "@newPasswordLabel": {
+    "description": "Screen: change_password_view."
+  },
+  "repeatNewPasswordLabel": "Repite la contraseña nueva",
+  "@repeatNewPasswordLabel": {
+    "description": "Screen: change_password_view."
+  },
+  "forgotPasswordTitle": "Recuperar el acceso",
+  "@forgotPasswordTitle": {
+    "description": "Screen: forgot_password_view."
+  },
+  "forgotPasswordExplanation": "Escribe el correo de tu cuenta y te enviamos un enlace para elegir una contraseña nueva.",
+  "@forgotPasswordExplanation": {
+    "description": "Screen: forgot_password_view."
+  },
+  "emailLabel": "Correo",
+  "@emailLabel": {
+    "description": "Screen: forgot_password_view."
+  },
+  "forgotPasswordSubmit": "Enviar el enlace",
+  "@forgotPasswordSubmit": {
+    "description": "Screen: forgot_password_view."
+  },
+  "forgotPasswordLinkOpensBrowser": "El enlace abre en el navegador y ahí eliges la contraseña nueva. Después vuelve aquí para entrar.",
+  "@forgotPasswordLinkOpensBrowser": {
+    "description": "Screen: forgot_password_view."
+  },
+  "backAction": "Volver",
+  "@backAction": {
+    "description": "Screen: forgot_password_view."
+  },
+  "loginSubtitle": "Inicia sesión para operar tu centro de acopio.",
+  "@loginSubtitle": {
+    "description": "Screen: login_view."
+  },
+  "loginIdentifierLabel": "Correo o usuario",
+  "@loginIdentifierLabel": {
+    "description": "Screen: login_view."
+  },
+  "passwordLabel": "Contraseña",
+  "@passwordLabel": {
+    "description": "Screen: login_view."
+  },
+  "loginSubmit": "Entrar",
+  "@loginSubmit": {
+    "description": "Screen: login_view."
+  },
+  "loginForgotPassword": "¿Olvidaste tu contraseña?",
+  "@loginForgotPassword": {
+    "description": "Screen: login_view."
+  },
+  "browserOpenFailed": "No se pudo abrir el navegador.",
+  "@browserOpenFailed": {
+    "description": "Screen: login_view."
+  },
+  "loginRegisterCenter": "¿Tu centro aún no está registrado?",
+  "@loginRegisterCenter": {
+    "description": "Screen: login_view."
+  },
+  "storeOpenFailed": "No se pudo abrir la tienda. Búscala como «Araguaney».",
+  "@storeOpenFailed": {
+    "description": "Screen: store_link."
+  },
+  "totpChallengeTitle": "Verificación en dos pasos",
+  "@totpChallengeTitle": {
+    "description": "Screen: totp_challenge_view."
+  },
+  "backToLogin": "Volver al inicio de sesión",
+  "@backToLogin": {
+    "description": "Screen: totp_challenge_view."
+  },
+  "totpChallengeExplanation": "Escribe el código de tu aplicación de autenticación.",
+  "@totpChallengeExplanation": {
+    "description": "Screen: totp_challenge_view."
+  },
+  "totpCodeLabel": "Código de 6 dígitos",
+  "@totpCodeLabel": {
+    "description": "Screen: totp_challenge_view."
+  },
+  "totpVerifySubmit": "Verificar",
+  "@totpVerifySubmit": {
+    "description": "Screen: totp_challenge_view."
+  },
+  "updateAvailableTitle": "Hay una versión más nueva",
+  "@updateAvailableTitle": {
+    "description": "Screen: update_available_view."
+  },
+  "updateAction": "Actualizar",
+  "@updateAction": {
+    "description": "Screen: update_available_view."
+  },
+  "updateLaterAction": "Más tarde",
+  "@updateLaterAction": {
+    "description": "Screen: update_available_view."
+  },
+  "updateRequiredTitle": "Esta versión ya no funciona",
+  "@updateRequiredTitle": {
+    "description": "Screen: update_required_view."
+  },
+  "updateRequiredExplanation": "Actualiza Araguaney para seguir operando tu centro. Las capturas que tengas guardadas sin enviar siguen en el teléfono y se envían cuando actualices.",
+  "@updateRequiredExplanation": {
+    "description": "Screen: update_required_view."
+  },
+  "productScanTitle": "Escanear producto",
+  "@productScanTitle": {
+    "description": "Screen: product_scan_view."
+  },
+  "stockByCategoryTitle": "Stock por categoría",
+  "@stockByCategoryTitle": {
+    "description": "Screen: stock_by_category_view."
+  },
+  "profileTitle": "Perfil y seguridad",
+  "@profileTitle": {
+    "description": "Screen: profile_view."
+  },
+  "nameLabel": "Nombre",
+  "@nameLabel": {
+    "description": "Screen: profile_view."
+  },
+  "usernameLabel": "Usuario",
+  "@usernameLabel": {
+    "description": "Screen: profile_view."
+  },
+  "centerLabel": "Centro",
+  "@centerLabel": {
+    "description": "Screen: profile_view."
+  },
+  "roleLabel": "Rol",
+  "@roleLabel": {
+    "description": "Screen: profile_view."
+  },
+  "profileChangeName": "Cambiar mi nombre",
+  "@profileChangeName": {
+    "description": "Screen: profile_view."
+  },
+  "passwordChangeHint": "Cámbiala cuando quieras, no solo cuando toca",
+  "@passwordChangeHint": {
+    "description": "Screen: profile_view."
+  },
+  "yourNameLabel": "Tu nombre",
+  "@yourNameLabel": {
+    "description": "Screen: profile_view."
+  },
+  "fullNameLabel": "Nombre completo",
+  "@fullNameLabel": {
+    "description": "Screen: profile_view."
+  },
+  "totpDisableConfirmTitle": "¿Desactivar la verificación?",
+  "@totpDisableConfirmTitle": {
+    "description": "Screen: profile_view."
+  },
+  "totpDisableWarning": "Después de esto, tu contraseña será lo único que proteja la cuenta. Escribe un código de tu aplicación para confirmarlo.",
+  "@totpDisableWarning": {
+    "description": "Screen: profile_view."
+  },
+  "codeLabel": "Código",
+  "@codeLabel": {
+    "description": "Screen: profile_view."
+  },
+  "keepAction": "Conservar",
+  "@keepAction": {
+    "description": "Screen: profile_view."
+  },
+  "disableAction": "Desactivar",
+  "@disableAction": {
+    "description": "Screen: profile_view."
+  },
+  "pendingTermsTitle": "Términos pendientes de aceptar",
+  "@pendingTermsTitle": {
+    "description": "Screen: profile_view."
+  },
+  "totpSetupInstruction": "Escanea este código con tu aplicación de verificación y escribe el número de seis dígitos que te muestre.",
+  "@totpSetupInstruction": {
+    "description": "Screen: totp_setup_view."
+  },
+  "totpSecretManualHint": "O escríbelo a mano",
+  "@totpSecretManualHint": {
+    "description": "Screen: totp_setup_view."
+  },
+  "sixDigitCodeLabel": "Código de seis dígitos",
+  "@sixDigitCodeLabel": {
+    "description": "Screen: totp_setup_view."
+  },
+  "totpEnableAction": "Activar",
+  "@totpEnableAction": {
+    "description": "Screen: totp_setup_view."
+  },
+  "totpAlreadyEnabled": "Ya está activada",
+  "@totpAlreadyEnabled": {
+    "description": "Screen: totp_setup_view."
+  },
+  "backupCodesWarning": "Guarda estos códigos de respaldo fuera de este teléfono. Sirven para entrar si lo pierdes, y no se pueden volver a ver.",
+  "@backupCodesWarning": {
+    "description": "Screen: totp_setup_view."
+  },
+  "backupCodesCopied": "Códigos copiados.",
+  "@backupCodesCopied": {
+    "description": "Screen: totp_setup_view."
+  },
+  "copyAction": "Copiar",
+  "@copyAction": {
+    "description": "Screen: totp_setup_view."
+  },
+  "backupCodesAcknowledge": "Los guardé en un sitio seguro",
+  "@backupCodesAcknowledge": {
+    "description": "Screen: totp_setup_view."
+  },
+  "viewLabelAction": "Ver etiqueta",
+  "@viewLabelAction": {
+    "description": "Screen: box_detail_view."
+  },
+  "sealNeedsConnection": "Sellar necesita conexión: otra persona puede estar moviendo esta caja ahora mismo, y decidirlo a ciegas dejaría dos versiones de la misma caja.",
+  "@sealNeedsConnection": {
+    "description": "Screen: box_detail_view."
+  },
+  "sealBoxTitle": "Sellar caja",
+  "@sealBoxTitle": {
+    "description": "Screen: box_detail_view."
+  },
+  "statusLabel": "Estado",
+  "@statusLabel": {
+    "description": "Screen: box_detail_view."
+  },
+  "productLabel": "Producto",
+  "@productLabel": {
+    "description": "Screen: box_detail_view."
+  },
+  "quantityLabel": "Cantidad",
+  "@quantityLabel": {
+    "description": "Screen: box_detail_view."
+  },
+  "batchLabel": "Lote",
+  "@batchLabel": {
+    "description": "Screen: box_detail_view."
+  },
+  "expiryLabel": "Caducidad",
+  "@expiryLabel": {
+    "description": "Screen: box_detail_view."
+  },
+  "weightLabel": "Peso",
+  "@weightLabel": {
+    "description": "Screen: box_detail_view."
+  },
+  "rejectReasonLabel": "Motivo del rechazo",
+  "@rejectReasonLabel": {
+    "description": "Screen: box_detail_view."
+  },
+  "timelineHeading": "Recorrido",
+  "@timelineHeading": {
+    "description": "Screen: box_detail_view."
+  },
+  "boxLabelInstruction": "Pega la etiqueta en la caja antes de moverla.",
+  "@boxLabelInstruction": {
+    "description": "Screen: box_label_view."
+  },
+  "boxesTitle": "Cajas",
+  "@boxesTitle": {
+    "description": "Screen: boxes_list_view."
+  },
+  "allFilter": "Todas",
+  "@allFilter": {
+    "description": "Screen: boxes_list_view."
+  },
+  "sealAction": "Sellar",
+  "@sealAction": {
+    "description": "Screen: boxes_list_view."
+  },
+  "applicationViewCenter": "Ver centro",
+  "@applicationViewCenter": {
+    "description": "Screen: application_queue_view."
+  },
+  "applicationsTitle": "Solicitudes",
+  "@applicationsTitle": {
+    "description": "Screen: application_queue_view."
+  },
+  "contactLabel": "Contacto",
+  "@contactLabel": {
+    "description": "Screen: application_queue_view."
+  },
+  "phoneLabel": "Teléfono",
+  "@phoneLabel": {
+    "description": "Screen: application_queue_view."
+  },
+  "addressLabel": "Dirección",
+  "@addressLabel": {
+    "description": "Screen: application_queue_view."
+  },
+  "backingOrgLabel": "Respaldo",
+  "@backingOrgLabel": {
+    "description": "Screen: application_queue_view."
+  },
+  "socialLabel": "Redes",
+  "@socialLabel": {
+    "description": "Screen: application_queue_view."
+  },
+  "applicationRejectReasonHint": "El motivo se le envía por correo a quien postuló. Escríbelo para que se entienda sin conocer la plataforma.",
+  "@applicationRejectReasonHint": {
+    "description": "Screen: reject_application_sheet."
+  },
+  "reasonLabel": "Motivo",
+  "@reasonLabel": {
+    "description": "Screen: reject_application_sheet."
+  },
+  "centerEditAction": "Editar",
+  "@centerEditAction": {
+    "description": "Screen: center_record_view."
+  },
+  "centerLegalNameLabel": "Razón social",
+  "@centerLegalNameLabel": {
+    "description": "Screen: center_record_view."
+  },
+  "centerPlaceLabel": "Dónde",
+  "@centerPlaceLabel": {
+    "description": "Screen: center_record_view."
+  },
+  "centerInactiveNotice": "Este centro está desactivado.",
+  "@centerInactiveNotice": {
+    "description": "Screen: center_record_view."
+  },
+  "centersTitle": "Centros",
+  "@centersTitle": {
+    "description": "Screen: centers_list_view."
+  },
+  "centerNewTitle": "Nuevo centro",
+  "@centerNewTitle": {
+    "description": "Screen: centers_list_view."
+  },
+  "centerInactiveChip": "Desactivado",
+  "@centerInactiveChip": {
+    "description": "Screen: centers_list_view."
+  },
+  "homeKeepAppOpenWhileSending": "Deja la aplicación abierta hasta que llegue a cero.",
+  "@homeKeepAppOpenWhileSending": {
+    "description": "Screen: home_view."
+  },
+  "homeCapturesToday": "Capturas hoy",
+  "@homeCapturesToday": {
+    "description": "Screen: home_view."
+  },
+  "homeCenterStock": "Stock del centro",
+  "@homeCenterStock": {
+    "description": "Screen: home_view."
+  },
+  "homeOpenPallets": "Tarimas abiertas",
+  "@homeOpenPallets": {
+    "description": "Screen: home_view."
+  },
+  "homeNoticesTitle": "Avisos del centro",
+  "@homeNoticesTitle": {
+    "description": "Screen: push_permission_card."
+  },
+  "homeNoticesExplanation": "Te avisamos cuando se abre una revisión sobre una captura de este centro y cuando llega un envío que salió de aquí. Nada más.",
+  "@homeNoticesExplanation": {
+    "description": "Screen: push_permission_card."
+  },
+  "homeEnableNotices": "Activar avisos",
+  "@homeEnableNotices": {
+    "description": "Screen: push_permission_card."
+  },
+  "incidentClosed": "La incidencia quedó cerrada.",
+  "@incidentClosed": {
+    "description": "Screen: incidents_list_view."
+  },
+  "incidentsTitle": "Incidencias",
+  "@incidentsTitle": {
+    "description": "Screen: incidents_list_view."
+  },
+  "incidentsClosedHeading": "Ya cerradas",
+  "@incidentsClosedHeading": {
+    "description": "Screen: incidents_list_view."
+  },
+  "incidentViewShipment": "Ver envío",
+  "@incidentViewShipment": {
+    "description": "Screen: incidents_list_view."
+  },
+  "incidentRaiseTitle": "Levantar incidencia",
+  "@incidentRaiseTitle": {
+    "description": "Screen: report_incident_sheet."
+  },
+  "typeLabel": "Tipo",
+  "@typeLabel": {
+    "description": "Screen: report_incident_sheet."
+  },
+  "incidentDescriptionLabel": "Qué pasó",
+  "@incidentDescriptionLabel": {
+    "description": "Screen: report_incident_sheet."
+  },
+  "incidentDescriptionHint": "Lo que verá quien tenga que resolverlo",
+  "@incidentDescriptionHint": {
+    "description": "Screen: report_incident_sheet."
+  },
+  "incidentRaiseAction": "Levantar",
+  "@incidentRaiseAction": {
+    "description": "Screen: report_incident_sheet."
+  },
+  "incidentCloseTitle": "Cerrar la incidencia",
+  "@incidentCloseTitle": {
+    "description": "Screen: resolve_incident_sheet."
+  },
+  "incidentOutcomeLabel": "En qué terminó",
+  "@incidentOutcomeLabel": {
+    "description": "Screen: resolve_incident_sheet."
+  },
+  "donorRequiredTitle": "Falta identificar a quien dona",
+  "@donorRequiredTitle": {
+    "description": "Screen: anonymous_exception_dialog."
+  },
+  "anonymousReasonLabel": "Por qué no fue posible identificar a quien donó",
+  "@anonymousReasonLabel": {
+    "description": "Screen: anonymous_exception_dialog."
+  },
+  "registerWithoutDonor": "Registrar sin donante",
+  "@registerWithoutDonor": {
+    "description": "Screen: anonymous_exception_dialog."
+  },
+  "donorDeclinedOption": "No quiso identificarse",
+  "@donorDeclinedOption": {
+    "description": "Screen: anonymous_exception_dialog."
+  },
+  "identifyAction": "Identificar",
+  "@identifyAction": {
+    "description": "Screen: anonymous_exception_dialog."
+  },
+  "changeAction": "Cambiar",
+  "@changeAction": {
+    "description": "Screen: box_draft_sheet."
+  },
+  "productPickAction": "Elegir producto",
+  "@productPickAction": {
+    "description": "Screen: box_draft_sheet."
+  },
+  "unitLabel": "Unidad",
+  "@unitLabel": {
+    "description": "Screen: box_draft_sheet."
+  },
+  "unitHint": "Cajas, frascos, sobres…",
+  "@unitHint": {
+    "description": "Screen: box_draft_sheet."
+  },
+  "batchOptionalLabel": "Lote (opcional)",
+  "@batchOptionalLabel": {
+    "description": "Screen: box_draft_sheet."
+  },
+  "weightKgOptionalLabel": "Peso en kg (opcional)",
+  "@weightKgOptionalLabel": {
+    "description": "Screen: box_draft_sheet."
+  },
+  "boxHoldsOneProduct": "Una caja lleva un solo producto, un lote y una caducidad. Si recibiste dos cosas distintas, agrega dos cajas.",
+  "@boxHoldsOneProduct": {
+    "description": "Screen: box_draft_sheet."
+  },
+  "campaignLabel": "Campaña",
+  "@campaignLabel": {
+    "description": "Screen: campaign_sheet."
+  },
+  "campaignDefaultsToGeneral": "Sin campaña la donación queda en la general",
+  "@campaignDefaultsToGeneral": {
+    "description": "Screen: campaign_sheet."
+  },
+  "generalCampaign": "Campaña general",
+  "@generalCampaign": {
+    "description": "Screen: campaign_sheet."
+  },
+  "identifyDonorTitle": "Identificar donante",
+  "@identifyDonorTitle": {
+    "description": "Screen: donor_sheet."
+  },
+  "personOption": "Persona",
+  "@personOption": {
+    "description": "Screen: donor_sheet."
+  },
+  "companyOption": "Empresa",
+  "@companyOption": {
+    "description": "Screen: donor_sheet."
+  },
+  "lastNameLabel": "Apellido",
+  "@lastNameLabel": {
+    "description": "Screen: donor_sheet."
+  },
+  "companyDonorHint": "El nombre con el que la empresa dona",
+  "@companyDonorHint": {
+    "description": "Screen: donor_sheet."
+  },
+  "emailOptionalLabel": "Correo (opcional)",
+  "@emailOptionalLabel": {
+    "description": "Screen: donor_sheet."
+  },
+  "phoneOptionalLabel": "Teléfono (opcional)",
+  "@phoneOptionalLabel": {
+    "description": "Screen: donor_sheet."
+  },
+  "donationTermsAccept": "Acepta los Términos de Donación",
+  "@donationTermsAccept": {
+    "description": "Screen: donor_sheet."
+  },
+  "companyTermsNotice": "Quien dona a nombre de una empresa tiene que aceptarlos.",
+  "@companyTermsNotice": {
+    "description": "Screen: donor_sheet."
+  },
+  "donorLabel": "Donante",
+  "@donorLabel": {
+    "description": "Screen: intake_detail_view."
+  },
+  "notesLabel": "Notas",
+  "@notesLabel": {
+    "description": "Screen: intake_detail_view."
+  },
+  "captureBoxesNotInHistory": "El historial no trae las cajas de esta captura. Búscalas por su código en Cajas.",
+  "@captureBoxesNotInHistory": {
+    "description": "Screen: intake_detail_view."
+  },
+  "notesOptionalLabel": "Notas (opcional)",
+  "@notesOptionalLabel": {
+    "description": "Screen: intake_form_view."
+  },
+  "intakeFormTitle": "Registrar entrada",
+  "@intakeFormTitle": {
+    "description": "Screen: intake_form_view."
+  },
+  "boxAddAction": "Añadir caja",
+  "@boxAddAction": {
+    "description": "Screen: intake_form_view."
+  },
+  "registerAction": "Registrar",
+  "@registerAction": {
+    "description": "Screen: intake_form_view."
+  },
+  "captureLinkedToDonation": "Esta captura queda ligada a la donación que escaneaste. Registra lo que llegó: lo que declaró quien donó es otra cosa.",
+  "@captureLinkedToDonation": {
+    "description": "Screen: intake_form_view."
+  },
+  "removeAction": "Quitar",
+  "@removeAction": {
+    "description": "Screen: intake_form_view."
+  },
+  "donorOptionalLabel": "Donante (opcional)",
+  "@donorOptionalLabel": {
+    "description": "Screen: intake_form_view."
+  },
+  "freeNameHint": "Un nombre suelto, sin registrar a la persona",
+  "@freeNameHint": {
+    "description": "Screen: intake_form_view."
+  },
+  "captureNeedsBoxes": "Todavía no agregaste ninguna caja. Sin cajas no hay captura.",
+  "@captureNeedsBoxes": {
+    "description": "Screen: intake_form_view."
+  },
+  "boxRemoveTitle": "Quitar caja",
+  "@boxRemoveTitle": {
+    "description": "Screen: intake_form_view."
+  },
+  "capturesTitle": "Capturas del centro",
+  "@capturesTitle": {
+    "description": "Screen: intake_list_view."
+  },
+  "captureNewAction": "Nueva captura",
+  "@captureNewAction": {
+    "description": "Screen: intake_list_view."
+  },
+  "captureQueuedTitle": "Captura guardada",
+  "@captureQueuedTitle": {
+    "description": "Screen: intake_queued_view."
+  },
+  "queuedWillSendItself": "Se enviará sola cuando haya conexión",
+  "@queuedWillSendItself": {
+    "description": "Screen: intake_queued_view."
+  },
+  "captureQueuedExplanation": "No hace falta volver a capturarla ni recordar enviarla. Sale una sola vez aunque se reintente varias.",
+  "@captureQueuedExplanation": {
+    "description": "Screen: intake_queued_view."
+  },
+  "labelBoxesNowTitle": "Etiqueta estas cajas ahora",
+  "@labelBoxesNowTitle": {
+    "description": "Screen: intake_queued_view."
+  },
+  "captureAcceptedTitle": "Captura registrada",
+  "@captureAcceptedTitle": {
+    "description": "Screen: intake_submitted_view."
+  },
+  "labelBoxesInstruction": "Etiqueta cada caja con su código antes de moverla.",
+  "@labelBoxesInstruction": {
+    "description": "Screen: intake_submitted_view."
+  },
+  "discardCaptureConfirmTitle": "¿Descartar esta captura?",
+  "@discardCaptureConfirmTitle": {
+    "description": "Screen: pending_captures_view."
+  },
+  "discardAction": "Descartar",
+  "@discardAction": {
+    "description": "Screen: pending_captures_view."
+  },
+  "pendingCapturesTitle": "Pendientes de envío",
+  "@pendingCapturesTitle": {
+    "description": "Screen: pending_captures_view."
+  },
+  "queueNothingIsLost": "Nada se pierde: todo espera aquí",
+  "@queueNothingIsLost": {
+    "description": "Screen: pending_captures_view."
+  },
+  "cachedProductsLabel": "Productos descargados",
+  "@cachedProductsLabel": {
+    "description": "Screen: pending_captures_view."
+  },
+  "reservedCodesLabel": "Códigos apartados",
+  "@reservedCodesLabel": {
+    "description": "Screen: pending_captures_view."
+  },
+  "queuedCapturesLabel": "Capturas en cola",
+  "@queuedCapturesLabel": {
+    "description": "Screen: pending_captures_view."
+  },
+  "syncAction": "Sincronizar",
+  "@syncAction": {
+    "description": "Screen: pending_captures_view."
+  },
+  "reserveCodesAction": "Reservar códigos",
+  "@reserveCodesAction": {
+    "description": "Screen: pending_captures_view."
+  },
+  "queueEmpty": "No hay capturas esperando. Las que se hagan sin señal aparecerán aquí hasta que se envíen.",
+  "@queueEmpty": {
+    "description": "Screen: pending_captures_view."
+  },
+  "productSearchTitle": "Buscar producto",
+  "@productSearchTitle": {
+    "description": "Screen: product_picker_sheet."
+  },
+  "productSearchHint": "Por nombre, marca o principio activo",
+  "@productSearchHint": {
+    "description": "Screen: product_picker_sheet."
+  },
+  "barcodeScanAction": "Escanear código de barras",
+  "@barcodeScanAction": {
+    "description": "Screen: product_picker_sheet."
+  },
+  "productSearchNoMatch": "Ningún producto del catálogo coincide. Si falta algo que sí existe, sincroniza con conexión: el catálogo local es el que el servidor sirvió para esta campaña.",
+  "@productSearchNoMatch": {
+    "description": "Screen: product_picker_sheet."
+  },
+  "threadNewTitle": "Nuevo hilo de campaña",
+  "@threadNewTitle": {
+    "description": "Screen: new_thread_sheet."
+  },
+  "threadAudienceHint": "Lo podrá leer quien participe en la campaña que elijas.",
+  "@threadAudienceHint": {
+    "description": "Screen: new_thread_sheet."
+  },
+  "noCampaignsForThread": "No participas en ninguna campaña, así que no hay dónde abrir un hilo.",
+  "@noCampaignsForThread": {
+    "description": "Screen: new_thread_sheet."
+  },
+  "subjectLabel": "Asunto",
+  "@subjectLabel": {
+    "description": "Screen: new_thread_sheet."
+  },
+  "messageLabel": "Mensaje",
+  "@messageLabel": {
+    "description": "Screen: new_thread_sheet."
+  },
+  "threadOpenAction": "Abrir hilo",
+  "@threadOpenAction": {
+    "description": "Screen: new_thread_sheet."
+  },
+  "replyAction": "Responder",
+  "@replyAction": {
+    "description": "Screen: thread_view."
+  },
+  "sendAction": "Enviar",
+  "@sendAction": {
+    "description": "Screen: thread_view."
+  },
+  "messagesTitle": "Mensajes",
+  "@messagesTitle": {
+    "description": "Screen: threads_list_view."
+  },
+  "threadNewAction": "Nuevo hilo",
+  "@threadNewAction": {
+    "description": "Screen: threads_list_view."
+  },
+  "palletCloseTitle": "Cerrar tarima",
+  "@palletCloseTitle": {
+    "description": "Screen: close_pallet_sheet."
+  },
+  "palletCloseWarning": "Una tarima cerrada ya no admite cajas. Pésala completa, con la tarima incluida.",
+  "@palletCloseWarning": {
+    "description": "Screen: close_pallet_sheet."
+  },
+  "grossWeightKgOptionalLabel": "Peso bruto en kg (opcional)",
+  "@grossWeightKgOptionalLabel": {
+    "description": "Screen: close_pallet_sheet."
+  },
+  "heightCmOptionalLabel": "Altura en cm (opcional)",
+  "@heightCmOptionalLabel": {
+    "description": "Screen: close_pallet_sheet."
+  },
+  "palletAddBoxes": "Agregar cajas",
+  "@palletAddBoxes": {
+    "description": "Screen: pallet_detail_view."
+  },
+  "tareLabel": "Tara",
+  "@tareLabel": {
+    "description": "Screen: pallet_detail_view."
+  },
+  "boxesWeightLabel": "Peso de las cajas",
+  "@boxesWeightLabel": {
+    "description": "Screen: pallet_detail_view."
+  },
+  "grossWeightLabel": "Peso bruto",
+  "@grossWeightLabel": {
+    "description": "Screen: pallet_detail_view."
+  },
+  "differenceLabel": "Diferencia",
+  "@differenceLabel": {
+    "description": "Screen: pallet_detail_view."
+  },
+  "heightLabel": "Altura",
+  "@heightLabel": {
+    "description": "Screen: pallet_detail_view."
+  },
+  "palletRemoveBoxTooltip": "Quitar de la tarima",
+  "@palletRemoveBoxTooltip": {
+    "description": "Screen: pallet_detail_view."
+  },
+  "palletNewAction": "Nueva tarima",
+  "@palletNewAction": {
+    "description": "Screen: pallets_list_view."
+  },
+  "palletsTitle": "Tarimas",
+  "@palletsTitle": {
+    "description": "Screen: pallets_list_view."
+  },
+  "palletsEmpty": "Este centro no tiene tarimas todavía. Una tarima agrupa cajas selladas para que viajen juntas.",
+  "@palletsEmpty": {
+    "description": "Screen: pallets_list_view."
+  },
+  "reviewResolveTitle": "Resolver la revisión",
+  "@reviewResolveTitle": {
+    "description": "Screen: resolve_review_sheet."
+  },
+  "noteOptionalLabel": "Nota (opcional)",
+  "@noteOptionalLabel": {
+    "description": "Screen: resolve_review_sheet."
+  },
+  "reviewNoteHint": "Queda con la revisión, para quien la lea después",
+  "@reviewNoteHint": {
+    "description": "Screen: resolve_review_sheet."
+  },
+  "reviewsTitle": "Revisiones",
+  "@reviewsTitle": {
+    "description": "Screen: risk_reviews_view."
+  },
+  "reviewsSubtitle": "Capturas marcadas que esperan una decisión",
+  "@reviewsSubtitle": {
+    "description": "Screen: risk_reviews_view."
+  },
+  "reviewsEmpty": "Nada espera una decisión. Aquí aparecen las capturas que el servidor marcó para que alguien las mire.",
+  "@reviewsEmpty": {
+    "description": "Screen: risk_reviews_view."
+  },
+  "reviewsSettledHeading": "Ya resueltas",
+  "@reviewsSettledHeading": {
+    "description": "Screen: risk_reviews_view."
+  },
+  "reviewFromNoticeHint": "La del aviso que abriste",
+  "@reviewFromNoticeHint": {
+    "description": "Screen: risk_reviews_view."
+  },
+  "reviewDecideAction": "Aprobar o rechazar",
+  "@reviewDecideAction": {
+    "description": "Screen: risk_reviews_view."
+  },
+  "scanTorch": "Linterna",
+  "@scanTorch": {
+    "description": "Screen: continuous_scan_view."
+  },
+  "scanContinuousExplanation": "Cada caja que leas aparece aquí, con lo que respondió el servidor.",
+  "@scanContinuousExplanation": {
+    "description": "Screen: continuous_scan_view."
+  },
+  "scanUnknownCode": "Este código no es de Araguaney",
+  "@scanUnknownCode": {
+    "description": "Screen: scan_result_sheet."
+  },
+  "scanLookupFailed": "No se pudo consultar",
+  "@scanLookupFailed": {
+    "description": "Screen: scan_result_sheet."
+  },
+  "scanOpenRecord": "Abrir ficha",
+  "@scanOpenRecord": {
+    "description": "Screen: scan_result_sheet."
+  },
+  "scanCaptureDonation": "Capturar esta donación",
+  "@scanCaptureDonation": {
+    "description": "Screen: scan_result_sheet."
+  },
+  "scanTitle": "Escanear QR",
+  "@scanTitle": {
+    "description": "Screen: scanner_view."
+  },
+  "navScan": "Escanear",
+  "@navScan": {
+    "description": "Screen: app_shell."
+  },
+  "navCapture": "Capturar",
+  "@navCapture": {
+    "description": "Screen: app_shell."
+  },
+  "navHome": "Inicio",
+  "@navHome": {
+    "description": "Screen: app_shell."
+  },
+  "navMenu": "Menú",
+  "@navMenu": {
+    "description": "Screen: app_shell."
+  },
+  "navCaptures": "Capturas",
+  "@navCaptures": {
+    "description": "Screen: more_menu_sheet."
+  },
+  "navShipments": "Envíos",
+  "@navShipments": {
+    "description": "Screen: more_menu_sheet."
+  },
+  "navTransfers": "Transferencias",
+  "@navTransfers": {
+    "description": "Screen: more_menu_sheet."
+  },
+  "navRiskReviews": "Revisiones de riesgo",
+  "@navRiskReviews": {
+    "description": "Screen: more_menu_sheet."
+  },
+  "navTeam": "Equipo",
+  "@navTeam": {
+    "description": "Screen: more_menu_sheet."
+  },
+  "navSignOut": "Cerrar sesión",
+  "@navSignOut": {
+    "description": "Screen: more_menu_sheet."
+  },
+  "shipmentNewTitle": "Nuevo envío",
+  "@shipmentNewTitle": {
+    "description": "Screen: create_shipment_sheet."
+  },
+  "destinationLabel": "Destino",
+  "@destinationLabel": {
+    "description": "Screen: create_shipment_sheet."
+  },
+  "carrierOptionalLabel": "Transportista (opcional)",
+  "@carrierOptionalLabel": {
+    "description": "Screen: create_shipment_sheet."
+  },
+  "referenceOptionalLabel": "Referencia (opcional)",
+  "@referenceOptionalLabel": {
+    "description": "Screen: create_shipment_sheet."
+  },
+  "shipmentReferenceHint": "Guía, contenedor, lo que sirva para encontrarlo",
+  "@shipmentReferenceHint": {
+    "description": "Screen: create_shipment_sheet."
+  },
+  "shipmentOpenAction": "Abrir el envío",
+  "@shipmentOpenAction": {
+    "description": "Screen: create_shipment_sheet."
+  },
+  "manifestPreparing": "Preparando el manifiesto…",
+  "@manifestPreparing": {
+    "description": "Screen: shipment_record_view."
+  },
+  "manifestOpenFailed": "No se pudo abrir el manifiesto en este teléfono.",
+  "@manifestOpenFailed": {
+    "description": "Screen: shipment_record_view."
+  },
+  "manifestStillWorking": "El manifiesto sigue armándose. Vuelve a pedirlo en un momento.",
+  "@manifestStillWorking": {
+    "description": "Screen: shipment_record_view."
+  },
+  "manifestLabel": "Manifiesto",
+  "@manifestLabel": {
+    "description": "Screen: shipment_record_view."
+  },
+  "incidentLabel": "Incidencia",
+  "@incidentLabel": {
+    "description": "Screen: shipment_record_view."
+  },
+  "carrierLabel": "Transportista",
+  "@carrierLabel": {
+    "description": "Screen: shipment_record_view."
+  },
+  "shipmentAddPallet": "Añadir tarima",
+  "@shipmentAddPallet": {
+    "description": "Screen: shipment_record_view."
+  },
+  "shipmentRemovePalletTooltip": "Quitar del envío",
+  "@shipmentRemovePalletTooltip": {
+    "description": "Screen: shipment_record_view."
+  },
+  "notYetValue": "Todavía no",
+  "@notYetValue": {
+    "description": "Screen: shipment_record_view."
+  },
+  "receivedByLabel": "Recibió",
+  "@receivedByLabel": {
+    "description": "Screen: shipment_record_view."
+  },
+  "shrinkageLabel": "Merma",
+  "@shrinkageLabel": {
+    "description": "Screen: shipment_record_view."
+  },
+  "receptionNotesLabel": "Notas de la recepción",
+  "@receptionNotesLabel": {
+    "description": "Screen: shipment_record_view."
+  },
+  "shipmentsEmpty": "Todavía no hay envíos. Uno se abre cuando hay tarimas cerradas esperando salir.",
+  "@shipmentsEmpty": {
+    "description": "Screen: shipments_list_view."
+  },
+  "removeFromCampaignTitle": "Sacar de la campaña",
+  "@removeFromCampaignTitle": {
+    "description": "Screen: campaign_members_view."
+  },
+  "removeMemberAction": "Sacar",
+  "@removeMemberAction": {
+    "description": "Screen: campaign_members_view."
+  },
+  "campaignsLabel": "Campañas",
+  "@campaignsLabel": {
+    "description": "Screen: campaign_members_view."
+  },
+  "addMemberAction": "Sumar",
+  "@addMemberAction": {
+    "description": "Screen: campaign_members_view."
+  },
+  "inviteToCenterTitle": "Sumar a alguien al centro",
+  "@inviteToCenterTitle": {
+    "description": "Screen: invite_person_sheet."
+  },
+  "inviteExplanation": "Recibirá un correo con su acceso. La contraseña la genera el servidor y no se ve desde aquí.",
+  "@inviteExplanation": {
+    "description": "Screen: invite_person_sheet."
+  },
+  "usernameFieldLabel": "Nombre de usuario",
+  "@usernameFieldLabel": {
+    "description": "Screen: invite_person_sheet."
+  },
+  "fullNameOptionalLabel": "Nombre y apellido (opcional)",
+  "@fullNameOptionalLabel": {
+    "description": "Screen: invite_person_sheet."
+  },
+  "roleVolunteer": "Voluntariado",
+  "@roleVolunteer": {
+    "description": "Screen: invite_person_sheet."
+  },
+  "roleCoordinator": "Coordinación",
+  "@roleCoordinator": {
+    "description": "Screen: invite_person_sheet."
+  },
+  "inviteSubmit": "Enviar invitación",
+  "@inviteSubmit": {
+    "description": "Screen: invite_person_sheet."
+  },
+  "noOneLeftToAdd": "No queda nadie del centro por sumar a esta campaña.",
+  "@noOneLeftToAdd": {
+    "description": "Screen: pick_person_sheet."
+  },
+  "addToCampaignTitle": "Sumar a la campaña",
+  "@addToCampaignTitle": {
+    "description": "Screen: pick_person_sheet."
+  },
+  "resendAccessAction": "Reenviar acceso",
+  "@resendAccessAction": {
+    "description": "Screen: team_directory_view."
+  },
+  "transferRejectReasonTitle": "¿Por qué se rechaza?",
+  "@transferRejectReasonTitle": {
+    "description": "Screen: transfer_detail_view."
+  },
+  "transferRejectReasonHint": "Lo leerá el centro que la pidió",
+  "@transferRejectReasonHint": {
+    "description": "Screen: transfer_detail_view."
+  },
+  "transferRecordTitle": "Transferencia",
+  "@transferRecordTitle": {
+    "description": "Screen: transfer_detail_view."
+  },
+  "transferHistoryHeading": "Historial",
+  "@transferHistoryHeading": {
+    "description": "Screen: transfer_detail_view."
+  },
+  "transferNeedsConnection": "Mover una transferencia necesita conexión: la mueven dos centros, y sin señal no se sabe qué hizo el otro.",
+  "@transferNeedsConnection": {
+    "description": "Screen: transfer_detail_view."
+  },
+  "roleVolunteerLabel": "Voluntariado",
+  "@roleVolunteerLabel": {
+    "description": "The volunteer role, as shown on the home screen."
+  },
+  "roleCoordinatorLabel": "Coordinación",
+  "@roleCoordinatorLabel": {
+    "description": "The coordinator role, as shown on the home screen."
+  },
+  "roleNationalAdminLabel": "Administración nacional",
+  "@roleNationalAdminLabel": {
+    "description": "The national administration role, as shown on the home screen."
+  },
+  "byCategoryCaption": "por categoría",
+  "@byCategoryCaption": {
+    "description": "Caption under a home tile: the number is broken down by category."
+  },
+  "homePendingCaptures": "{count, plural, =1{1 captura pendiente de enviar} other{{count} capturas pendientes de enviar}}",
+  "@homePendingCaptures": {
+    "description": "How many captures are waiting for a connection.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "homePendingReviews": "{count, plural, =1{1 revisión espera tu decisión} other{{count} revisiones esperan tu decisión}}",
+  "@homePendingReviews": {
+    "description": "How many risk reviews are waiting for a decision.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "applicationsPendingCount": "{count, plural, =1{Un centro espera aprobación} other{{count} centros esperan aprobación}}",
+  "@applicationsPendingCount": {
+    "description": "How many centre applications are waiting.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "boxesInCenter": "{count, plural, =1{1 caja en el centro} other{{count} cajas en el centro}}",
+  "@boxesInCenter": {
+    "description": "How many boxes the centre holds.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "offlineReadyWithoutCodes": "Sin códigos de caja reservados: sin señal no vas a poder sellar. {products} productos descargados.",
+  "@offlineReadyWithoutCodes": {
+    "description": "Warning on the home screen: the catalogue is cached but there are no box codes, so sealing offline is impossible.",
+    "placeholders": {
+      "products": {
+        "type": "int"
+      }
+    }
+  },
+  "offlineReady": "Listo para trabajar sin señal: {products} productos y {codes} códigos descargados.",
+  "@offlineReady": {
+    "description": "Confirmation on the home screen that the device can work without a signal.",
+    "placeholders": {
+      "products": {
+        "type": "int"
+      },
+      "codes": {
+        "type": "int"
+      }
+    }
+  },
+  "shipmentRecordTitle": "Envío",
+  "@shipmentRecordTitle": {
+    "description": "Title of a shipment's record."
+  },
+  "shipmentNoPallets": "Este envío todavía no lleva ninguna tarima.",
+  "@shipmentNoPallets": {
+    "description": "A shipment that has been opened but is still empty."
+  },
+  "receptionHeading": "Recepción",
+  "@receptionHeading": {
+    "description": "Section heading: what arrived at the other end."
+  },
+  "receptionNotRegistered": "Todavía no se registró la recepción de este envío.",
+  "@receptionNotRegistered": {
+    "description": "Nobody has registered what arrived yet."
+  },
+  "receptionUnavailable": "No se pudo consultar la recepción.",
+  "@receptionUnavailable": {
+    "description": "The reception could not be fetched."
+  },
+  "milestonesEmpty": "Todavía no hay hitos anotados para este envío.",
+  "@milestonesEmpty": {
+    "description": "No milestones have been written on the journey."
+  },
+  "timelineUnavailable": "No se pudo consultar el recorrido.",
+  "@timelineUnavailable": {
+    "description": "The journey could not be fetched."
+  },
+  "incidentsEmptyForShipment": "Ninguna incidencia levantada sobre este envío.",
+  "@incidentsEmptyForShipment": {
+    "description": "Nothing has been reported wrong about this shipment."
+  },
+  "incidentsUnavailable": "No se pudieron consultar.",
+  "@incidentsUnavailable": {
+    "description": "The incidents could not be fetched."
+  },
+  "shipmentCloseAction": "Cerrar el envío",
+  "@shipmentCloseAction": {
+    "description": "Button that stops a shipment taking pallets."
+  },
+  "shipmentCloseConfirmTitle": "¿Cerrar el envío?",
+  "@shipmentCloseConfirmTitle": {
+    "description": "Confirmation before closing a shipment."
+  },
+  "shipmentDispatchConfirmTitle": "¿Despachar el envío?",
+  "@shipmentDispatchConfirmTitle": {
+    "description": "Confirmation before dispatching a shipment."
+  },
+  "applicationsEmpty": "Ninguna postulación espera una decisión.",
+  "@applicationsEmpty": {
+    "description": "Nothing in the centre application queue."
+  },
+  "scanBoxNotCached": "Esta caja no está descargada en el dispositivo. Se muestra su ficha pública, que trae menos datos que el registro del centro.",
+  "@scanBoxNotCached": {
+    "description": "A scanned box that is not in the local cache: only the public record is available."
+  },
+  "donationItemsAreDeclared": "Lo que se registra es lo que llegó. Los artículos de arriba son lo que declaró quien donó, y no se convierten en cajas solos.",
+  "@donationItemsAreDeclared": {
+    "description": "What a donor declared is not what gets captured: somebody still counts what actually arrived."
+  },
+  "boxesOfflineNoneCached": "Sin conexión y sin cajas descargadas. Conéctate una vez para poder consultarlas después sin señal.",
+  "@boxesOfflineNoneCached": {
+    "description": "Offline with an empty cache: there is nothing to read."
+  },
+  "boxesEmpty": "Este centro todavía no tiene cajas registradas.",
+  "@boxesEmpty": {
+    "description": "The centre has never sealed a box."
+  },
+  "barcodeAimAtPackage": "Apunta al código de barras del envase, no al QR.",
+  "@barcodeAimAtPackage": {
+    "description": "Instruction on the product scanner."
+  },
+  "barcodeIsBoxLabel": "Eso es la etiqueta de una caja, no el producto.",
+  "@barcodeIsBoxLabel": {
+    "description": "The scanner read a box label while looking for a product."
+  },
+  "barcodeIsPalletLabel": "Eso es la etiqueta de una tarima, no el producto.",
+  "@barcodeIsPalletLabel": {
+    "description": "The scanner read a pallet label while looking for a product."
+  },
+  "barcodeIsDonationCode": "Eso es el código de una donación, no el producto.",
+  "@barcodeIsDonationCode": {
+    "description": "The scanner read a donation code while looking for a product."
+  },
+  "barcodeIsManufacturerUrl": "Ese código lleva a una página del fabricante. El que identifica el producto es el de barras.",
+  "@barcodeIsManufacturerUrl": {
+    "description": "A QR on the package that points at a website rather than identifying the product."
+  },
+  "shipmentCloseExplanation": "{pallets, plural, =1{Deja de admitir tarimas. Lleva 1 tarima a {destination}.} other{Deja de admitir tarimas. Lleva {pallets} tarimas a {destination}.}}",
+  "@shipmentCloseExplanation": {
+    "description": "What closing a shipment does, with how many pallets it carries and where they go.",
+    "placeholders": {
+      "pallets": {
+        "type": "int"
+      },
+      "destination": {
+        "type": "String"
+      }
+    }
+  },
+  "shipmentDispatchExplanation": "{pallets, plural, =1{Queda registrado que salió hacia {destination}, con 1 tarima.} other{Queda registrado que salió hacia {destination}, con {pallets} tarimas.}}",
+  "@shipmentDispatchExplanation": {
+    "description": "What dispatching a shipment does.",
+    "placeholders": {
+      "pallets": {
+        "type": "int"
+      },
+      "destination": {
+        "type": "String"
+      }
+    }
+  },
+  "shrinkageArrivedWell": "{received} de {total} llegaron bien",
+  "@shrinkageArrivedWell": {
+    "description": "How many boxes of a shipment arrived without incident.",
+    "placeholders": {
+      "received": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "applicationApproveConfirmTitle": "¿Aprobar {center}?",
+  "@applicationApproveConfirmTitle": {
+    "description": "Confirmation before approving a centre application.",
+    "placeholders": {
+      "center": {
+        "type": "String"
+      }
+    }
+  },
+  "applicationApproveExplanation": "Se crea el centro, se da de alta a {contact} como su coordinación, y le llega por correo una contraseña temporal a {email}.\n\nNo se puede deshacer desde aquí.",
+  "@applicationApproveExplanation": {
+    "description": "The three things approving does, named before it happens.",
+    "placeholders": {
+      "contact": {
+        "type": "String"
+      },
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "applicationApproved": "{center} quedó aprobado.",
+  "@applicationApproved": {
+    "description": "Confirmation after approving.",
+    "placeholders": {
+      "center": {
+        "type": "String"
+      }
+    }
+  },
+  "applicationRejected": "Se le avisó a {contact}.",
+  "@applicationRejected": {
+    "description": "Confirmation after rejecting: the reason was emailed.",
+    "placeholders": {
+      "contact": {
+        "type": "String"
+      }
+    }
+  },
+  "productNotInCatalogue": "Ese código es {product}, pero ese producto no está en el catálogo. Elígelo a mano.",
+  "@productNotInCatalogue": {
+    "description": "A barcode resolved to a product the local catalogue does not carry.",
+    "placeholders": {
+      "product": {
+        "type": "String"
+      }
+    }
+  },
+  "scanRawContent": "Se leyó:\n\n{raw}",
+  "@scanRawContent": {
+    "description": "What a scanned code contained, when it is not one of ours.",
+    "placeholders": {
+      "raw": {
+        "type": "String"
+      }
+    }
+  },
+  "donationRegisteredOn": "Registrada el {date}",
+  "@donationRegisteredOn": {
+    "description": "When a pre-registered donation was created.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "andMoreItems": "y {count} más",
+  "@andMoreItems": {
+    "description": "How many declared items are not shown.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sealBoxConfirmTitle": "Sellar {code}",
+  "@sealBoxConfirmTitle": {
+    "description": "Confirmation before sealing, naming the box.",
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "sealBoxConfirmBody": "{product} · {quantity} {unit}.\n\nUna caja sellada ya no admite cambios: es la que se pone en una tarima y viaja.",
+  "@sealBoxConfirmBody": {
+    "description": "What is inside the box about to be sealed, and why sealing is not undoable.",
+    "placeholders": {
+      "product": {
+        "type": "String"
+      },
+      "quantity": {
+        "type": "String"
+      },
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "productNotCached": "Producto no descargado",
+  "@productNotCached": {
+    "description": "Stands in for a product name the device never downloaded."
+  },
+  "categoryMedicalSupply": "Insumo médico",
+  "@categoryMedicalSupply": {
+    "description": "Product category."
+  },
+  "categoryRescueGear": "Equipo de rescate",
+  "@categoryRescueGear": {
+    "description": "Product category."
+  },
+  "timelineEmpty": "Todavía no hay nada que contar.",
+  "@timelineEmpty": {
+    "description": "An object whose journey has no events yet."
+  },
+  "relativeJustNow": "hace un momento",
+  "@relativeJustNow": {
+    "description": "Something that happened seconds ago."
+  },
+  "offlineHeadline": "Sin conexión",
+  "@offlineHeadline": {
+    "description": "Banner headline when the device has no connection."
+  },
+  "staleHeadline": "No se pudo actualizar",
+  "@staleHeadline": {
+    "description": "Banner headline when the last refresh failed."
+  },
+  "totpEnabledCaption": "Activada: al entrar se te pide un código",
+  "@totpEnabledCaption": {
+    "description": "The second factor is on."
+  },
+  "totpDisabledCaption": "Desactivada: tu contraseña es lo único que protege la cuenta",
+  "@totpDisabledCaption": {
+    "description": "The second factor is off."
+  },
+  "boxNotCachedNeedsConnection": "Esta caja no está descargada en el dispositivo. Necesitas conexión para consultarla.",
+  "@boxNotCachedNeedsConnection": {
+    "description": "A box that is not in the local cache, with no way to fetch it."
+  },
+  "rejectReasonRequired": "Escribe el motivo del rechazo",
+  "@rejectReasonRequired": {
+    "description": "Validation: a rejection needs a reason."
+  },
+  "taxIdLabel": "Identificación fiscal",
+  "@taxIdLabel": {
+    "description": "A centre's tax identifier."
+  },
+  "countryLabel": "País",
+  "@countryLabel": {
+    "description": "A country field."
+  },
+  "contactPhoneLabel": "Teléfono del contacto",
+  "@contactPhoneLabel": {
+    "description": "A centre's contact phone."
+  },
+  "centerRecordForbidden": "Solo la administración nacional puede ver la ficha de un centro.",
+  "@centerRecordForbidden": {
+    "description": "Reading a centre needs a role this session does not have."
+  },
+  "centersEmpty": "No hay centros registrados todavía.",
+  "@centersEmpty": {
+    "description": "No centre exists yet."
+  },
+  "centersForbidden": "Solo la administración nacional puede ver los centros.",
+  "@centersForbidden": {
+    "description": "Listing centres needs a role this session does not have."
+  },
+  "stockEmpty": "No hay cajas selladas todavía. Una caja cuenta aquí cuando se sella, no cuando se captura.",
+  "@stockEmpty": {
+    "description": "Nothing sealed yet, and why the number is not the capture count."
+  },
+  "stockNationalCaption": "Cajas selladas de todos los centros. Una caja cuenta desde que se sella hasta que sale en un envío.",
+  "@stockNationalCaption": {
+    "description": "What the national figure counts."
+  },
+  "stockCenterCaption": "Cajas selladas de este centro. Una caja cuenta desde que se sella hasta que sale en un envío.",
+  "@stockCenterCaption": {
+    "description": "What the centre figure counts."
+  },
+  "incidentsForbidden": "Hace falta coordinar un centro para ver sus incidencias.",
+  "@incidentsForbidden": {
+    "description": "Listing incidents needs a role this session does not have."
+  },
+  "nothingAwaitsDecision": "Ninguna espera una decisión",
+  "@nothingAwaitsDecision": {
+    "description": "Nothing in a queue needs a person right now."
+  },
+  "incidentDescriptionRequired": "Describe lo que pasó",
+  "@incidentDescriptionRequired": {
+    "description": "Validation: an incident needs a description."
+  },
+  "incidentOutcomeRequired": "Escribe en qué terminó",
+  "@incidentOutcomeRequired": {
+    "description": "Validation: closing an incident needs a note."
+  },
+  "quantityRequired": "Escribe cuántas unidades trae la caja",
+  "@quantityRequired": {
+    "description": "Validation: a box needs a quantity."
+  },
+  "unitRequired": "Indica la unidad",
+  "@unitRequired": {
+    "description": "Validation: a box needs a unit."
+  },
+  "donorAnonymous": "Anónimo",
+  "@donorAnonymous": {
+    "description": "A capture whose donor did not identify themselves."
+  },
+  "campaignPlaceholder": "Campaña…",
+  "@campaignPlaceholder": {
+    "description": "Placeholder in the campaign picker."
+  },
+  "capturesEmpty": "Este centro todavía no registró ninguna captura.",
+  "@capturesEmpty": {
+    "description": "The centre has never captured anything."
+  },
+  "nothingToSend": "No había nada que enviar.",
+  "@nothingToSend": {
+    "description": "The queue was already empty when a flush was asked for."
+  },
+  "noAttemptsYet": "sin intentos todavía",
+  "@noAttemptsYet": {
+    "description": "A queued capture the application has not tried to send yet."
+  },
+  "threadTypeCampaign": "De la campaña",
+  "@threadTypeCampaign": {
+    "description": "A message thread everybody in the campaign can read."
+  },
+  "campaignRequired": "Elige una campaña",
+  "@campaignRequired": {
+    "description": "Validation: a thread belongs to a campaign."
+  },
+  "subjectRequired": "Escribe un asunto",
+  "@subjectRequired": {
+    "description": "Validation: a thread needs a subject."
+  },
+  "messageRequired": "Escribe el mensaje",
+  "@messageRequired": {
+    "description": "Validation: a message needs a body."
+  },
+  "threadsOpenFromPanel": "se abren desde el panel web",
+  "@threadsOpenFromPanel": {
+    "description": "Private threads are started on the web, not here."
+  },
+  "threadsEmpty": "No hay hilos que puedas leer todavía.",
+  "@threadsEmpty": {
+    "description": "Nothing to read in messages."
+  },
+  "palletScanBoxesHint": "Apunta a la etiqueta de cada caja sellada.",
+  "@palletScanBoxesHint": {
+    "description": "Instruction while adding boxes to a pallet by scanning."
+  },
+  "scannedCodeIsNotABox": "Ese código no es de una caja.",
+  "@scannedCodeIsNotABox": {
+    "description": "Something other than a box label was scanned while adding boxes."
+  },
+  "palletAlreadyClosed": "Esta tarima ya está cerrada.",
+  "@palletAlreadyClosed": {
+    "description": "Why a closed pallet offers no actions."
+  },
+  "palletNeedsCoordinator": "Armar tarimas es cosa de la coordinación del centro.",
+  "@palletNeedsCoordinator": {
+    "description": "Building pallets needs a role this session does not have."
+  },
+  "palletNeedsConnection": "Armar una tarima necesita conexión: otra persona puede estar poniendo cajas en esta misma ahora mismo.",
+  "@palletNeedsConnection": {
+    "description": "Why pallets cannot be built offline."
+  },
+  "palletInShipment": "en un envío",
+  "@palletInShipment": {
+    "description": "A pallet that already belongs to a shipment."
+  },
+  "cameraPermissionDenied": "Araguaney necesita la cámara para leer los códigos QR de las cajas. Concede el permiso desde los ajustes del sistema y vuelve a intentarlo.",
+  "@cameraPermissionDenied": {
+    "description": "The camera permission was refused."
+  },
+  "cameraUnsupported": "Este dispositivo no puede escanear códigos.",
+  "@cameraUnsupported": {
+    "description": "The device has no usable camera."
+  },
+  "cameraFailed": "No se pudo abrir la cámara. Inténtalo de nuevo.",
+  "@cameraFailed": {
+    "description": "The camera could not be started."
+  },
+  "scannerHint": "Apunta al código QR de una caja, una tarima o una donación.",
+  "@scannerHint": {
+    "description": "Instruction on the QR scanner."
+  },
+  "forcedPasswordChangeExplanation": "Tu contraseña actual es temporal. Elige una nueva para continuar.",
+  "@forcedPasswordChangeExplanation": {
+    "description": "Why the password screen cannot be skipped after an invitation."
+  },
+  "deliberatePasswordChangeExplanation": "Escribe la que usas ahora y la nueva que quieres.",
+  "@deliberatePasswordChangeExplanation": {
+    "description": "Changing a password on purpose rather than because the server forced it."
+  },
+  "currentPasswordRequired": "Escribe tu contraseña actual",
+  "@currentPasswordRequired": {
+    "description": "Validation."
+  },
+  "newPasswordRequired": "Escribe tu contraseña nueva",
+  "@newPasswordRequired": {
+    "description": "Validation."
+  },
+  "passwordsDoNotMatch": "Las contraseñas no coinciden",
+  "@passwordsDoNotMatch": {
+    "description": "Validation: the repeated password differs."
+  },
+  "forgotPasswordSent": "Si ese correo tiene una cuenta, el enlace ya va en camino.",
+  "@forgotPasswordSent": {
+    "description": "The server answers the same whether or not the address has an account, and the screen repeats that answer."
+  },
+  "showPassword": "Mostrar contraseña",
+  "@showPassword": {
+    "description": "Tooltip."
+  },
+  "hidePassword": "Ocultar contraseña",
+  "@hidePassword": {
+    "description": "Tooltip."
+  },
+  "passwordRequired": "Escribe tu contraseña",
+  "@passwordRequired": {
+    "description": "Validation."
+  },
+  "updateAvailableGeneric": "Actualizar te trae las mejoras y los arreglos más recientes. Las capturas que tengas guardadas sin enviar siguen en el teléfono.",
+  "@updateAvailableGeneric": {
+    "description": "A newer version exists but the server did not name it."
+  },
+  "milestoneLeftWarehouse": "Salió del almacén",
+  "@milestoneLeftWarehouse": {
+    "description": "Shipment milestone."
+  },
+  "milestoneReachedAirport": "Llegó al aeropuerto",
+  "@milestoneReachedAirport": {
+    "description": "Shipment milestone."
+  },
+  "milestoneLoadedOnPlane": "Cargado en el avión",
+  "@milestoneLoadedOnPlane": {
+    "description": "Shipment milestone."
+  },
+  "milestoneDeparted": "Despegó",
+  "@milestoneDeparted": {
+    "description": "Shipment milestone."
+  },
+  "milestoneArrived": "Llegó a destino",
+  "@milestoneArrived": {
+    "description": "Shipment milestone."
+  },
+  "milestoneCustomsCleared": "Liberado de aduana",
+  "@milestoneCustomsCleared": {
+    "description": "Shipment milestone."
+  },
+  "destinationRequired": "Escribe a dónde va",
+  "@destinationRequired": {
+    "description": "Validation: a shipment needs a destination."
+  },
+  "palletsUnavailable": "No se pudieron consultar las tarimas.",
+  "@palletsUnavailable": {
+    "description": "The pallet list could not be fetched."
+  },
+  "noClosedPallets": "No hay tarimas cerradas disponibles. Una tarima entra en un envío cuando se cierra.",
+  "@noClosedPallets": {
+    "description": "Nothing can be added to a shipment yet."
+  },
+  "invitationSent": "Invitación enviada por correo.",
+  "@invitationSent": {
+    "description": "Confirmation after inviting somebody."
+  },
+  "accessResent": "Se envió un acceso nuevo por correo.",
+  "@accessResent": {
+    "description": "Confirmation after resending an access."
+  },
+  "pickCampaignToSeeMembers": "Elige una campaña para ver quién participa.",
+  "@pickCampaignToSeeMembers": {
+    "description": "Nothing is selected in the campaign members screen."
+  },
+  "campaignHasNoMembers": "Todavía no participa nadie de tu centro en esta campaña.",
+  "@campaignHasNoMembers": {
+    "description": "The campaign is empty for this centre."
+  },
+  "generalCampaignExplanation": "Es la campaña general: recoge lo que no pertenece a ninguna otra, y de ella no se saca a nadie.",
+  "@generalCampaignExplanation": {
+    "description": "Why nobody can be removed from the general campaign."
+  },
+  "emailRequired": "Escribe el correo",
+  "@emailRequired": {
+    "description": "Validation."
+  },
+  "usernameRequired": "Escribe el nombre de usuario",
+  "@usernameRequired": {
+    "description": "Validation."
+  },
+  "teamNoCenter": "Tu sesión no pertenece a un centro, así que no hay un equipo que mostrar aquí.",
+  "@teamNoCenter": {
+    "description": "A national administrator has no team of their own."
+  },
+  "teamEmpty": "Todavía no hay nadie más en este centro.",
+  "@teamEmpty": {
+    "description": "The centre has only the person looking."
+  },
+  "transfersNothingAwaits": "Ninguna espera tu decisión",
+  "@transfersNothingAwaits": {
+    "description": "No transfer needs an answer."
+  },
+  "transfersEmptyForCenter": "Este centro no participa en ninguna transferencia.",
+  "@transfersEmptyForCenter": {
+    "description": "The centre has no transfers at all."
+  },
+  "staleNothingDownloaded": "{headline} · todavía no se descargó nada",
+  "@staleNothingDownloaded": {
+    "description": "Banner: offline or failed, and the cache is empty.",
+    "placeholders": {
+      "headline": {
+        "type": "String"
+      }
+    }
+  },
+  "staleWithAge": "{headline} · datos de {age}",
+  "@staleWithAge": {
+    "description": "Banner: offline or failed, showing how old the cached data is.",
+    "placeholders": {
+      "headline": {
+        "type": "String"
+      },
+      "age": {
+        "type": "String"
+      }
+    }
+  },
+  "boxesInIntake": "Cajas en la entrada · {count}",
+  "@boxesInIntake": {
+    "description": "How many boxes the capture being written carries.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "queueParkedByServer": "El servidor rechazó {count}. Revisa el motivo.",
+  "@queueParkedByServer": {
+    "description": "How many captures the server refused.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "discardCaptureExplanation": "Se borra del dispositivo y no se envía. Lo que se registró en papel o en las cajas de {summary} no se recupera desde aquí.",
+  "@discardCaptureExplanation": {
+    "description": "What discarding a queued capture costs.",
+    "placeholders": {
+      "summary": {
+        "type": "String"
+      }
+    }
+  },
+  "codesReserved": "Se reservaron {count} códigos.",
+  "@codesReserved": {
+    "description": "How many box codes were reserved.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "palletBoxAdded": "{code} · {count} en la tarima",
+  "@palletBoxAdded": {
+    "description": "Feedback after scanning a box into a pallet.",
+    "placeholders": {
+      "code": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "appVersion": "Versión {version}",
+  "@appVersion": {
+    "description": "The installed version when there is no build number.",
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "appVersionWithBuild": "Versión {version} ({build})",
+  "@appVersionWithBuild": {
+    "description": "The installed version and the build that identifies the binary.",
+    "placeholders": {
+      "version": {
+        "type": "String"
+      },
+      "build": {
+        "type": "String"
+      }
+    }
+  },
+  "updateAvailableNamed": "La versión {latest} ya está publicada. Las capturas que tengas guardadas sin enviar siguen en el teléfono.",
+  "@updateAvailableNamed": {
+    "description": "A newer version, named.",
+    "placeholders": {
+      "latest": {
+        "type": "String"
+      }
+    }
+  },
+  "shrinkageArrived": "{received} de {total} llegaron bien",
+  "@shrinkageArrived": {
+    "description": "How many boxes arrived without incident.",
+    "placeholders": {
+      "received": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "removeFromCampaignExplanation": "{name} dejará de participar en esta campaña. Sigue en el centro y se le puede volver a sumar.",
+  "@removeFromCampaignExplanation": {
+    "description": "What removing somebody from a campaign does, and does not.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "attemptNumber": "intento {count}",
+  "@attemptNumber": {
+    "description": "How many times a queued capture has been tried.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "boxesWithoutCode": "{count, plural, =1{Una caja quedó sin código: el bloque reservado se agotó. Recibirá el suyo cuando la captura llegue al servidor, y habrá que etiquetarla entonces.} other{{count} cajas quedaron sin código porque el bloque reservado se agotó. Recibirán el suyo cuando la captura llegue al servidor, y habrá que etiquetarlas entonces.}}",
+  "@boxesWithoutCode": {
+    "description": "Boxes queued without a code because the reserved block ran out.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "shipmentsInCenter": "{count, plural, =1{1 envío en el centro} other{{count} envíos en el centro}}",
+  "@shipmentsInCenter": {
+    "description": "How many shipments the centre has.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "transfersAwaitingDecision": "{count, plural, =1{1 espera tu decisión} other{{count} esperan tu decisión}}",
+  "@transfersAwaitingDecision": {
+    "description": "How many transfers need an answer.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "threadAttachments": "{count, plural, =1{1 adjunto · se abren desde el panel web} other{{count} adjuntos · se abren desde el panel web}}",
+  "@threadAttachments": {
+    "description": "How many files a thread carries, and that they are opened on the web panel.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "stateLabel": "Estado o provincia",
+  "@stateLabel": {
+    "description": "A state or province field."
+  },
+  "contactNameLabel": "Nombre del contacto",
+  "@contactNameLabel": {
+    "description": "A centre's contact person."
+  },
+  "contactEmailLabel": "Correo del contacto",
+  "@contactEmailLabel": {
+    "description": "A centre's contact address."
+  },
+  "optionalField": "{label} (opcional)",
+  "@optionalField": {
+    "description": "Marks a form field as not required.",
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "fieldRequired": "Escribe {label}",
+  "@fieldRequired": {
+    "description": "Validation for a required field, naming it in lower case.",
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "refusalInvalidGtin": "Ese código no lleva ningún número.",
+  "@refusalInvalidGtin": {
+    "description": "A scanned code that carries no digits at all, so it cannot be a barcode. Raised by this application, not the server."
+  },
+  "refusalBarcodeNotFound": "Ese código no está en el catálogo.",
+  "@refusalBarcodeNotFound": {
+    "description": "A valid barcode the catalogue does not know. Raised by this application, not the server."
   }
 }

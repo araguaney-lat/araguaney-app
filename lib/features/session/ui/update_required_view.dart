@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/i18n/l10n_extension.dart';
 import 'app_version_footer.dart';
 import 'store_link.dart';
 
@@ -38,26 +39,24 @@ class UpdateRequiredView extends ConsumerWidget {
                     height: 72,
                     fit: BoxFit.fitHeight,
                     filterQuality: FilterQuality.medium,
-                    semanticLabel: 'Araguaney',
+                    semanticLabel: context.l10n.appTitle,
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'Esta versión ya no funciona',
+                    context.l10n.updateRequiredTitle,
                     style: text.headlineSmall,
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    'Actualiza Araguaney para seguir operando tu centro. '
-                    'Las capturas que tengas guardadas sin enviar siguen en '
-                    'el teléfono y se envían cuando actualices.',
+                    context.l10n.updateRequiredExplanation,
                     style: text.bodyMedium,
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 24),
                   FilledButton(
                     onPressed: () => openStore(context, ref),
-                    child: const Text('Actualizar'),
+                    child: Text(context.l10n.updateAction),
                   ),
                   const SizedBox(height: 24),
                   const AppVersionFooter(),

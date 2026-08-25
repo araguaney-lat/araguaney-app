@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/api/generated/models/center_application_out.dart';
+import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/ui/record_field.dart';
 import '../../../core/ui/relative_time.dart';
 import '../../centers/data/centers_providers.dart';
@@ -35,26 +36,32 @@ class _ApplicationQueueViewState extends ConsumerState<ApplicationQueueView> {
   String? _deciding;
 
   Future<void> _approve(CenterApplicationOut application) async {
+    // Se toma antes de abrir el diálogo: después de esperarlo, este contexto
+    // puede haber dejado de estar montado.
+    final l10n = context.l10n;
     // Aprobar hace tres cosas irreversibles desde aquí, así que se nombran las
     // tres antes de hacerlas. Una confirmación que solo dice «¿seguro?» no
     // informa de nada.
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('¿Aprobar ${application.centerName}?'),
+        title: Text(
+          context.l10n.applicationApproveConfirmTitle(application.centerName),
+        ),
         content: Text(
-          'Se crea el centro, se da de alta a ${application.contactName} como '
-          'su coordinación, y le llega por correo una contraseña temporal a '
-          '${application.contactEmail}.\n\nNo se puede deshacer desde aquí.',
+          context.l10n.applicationApproveExplanation(
+            application.contactName,
+            application.contactEmail,
+          ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancelar'),
+            child: Text(context.l10n.actionCancel),
           ),
           FilledButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Aprobar'),
+            child: Text(context.l10n.actionApprove),
           ),
         ],
       ),
@@ -66,7 +73,7 @@ class _ApplicationQueueViewState extends ConsumerState<ApplicationQueueView> {
       () => ref
           .read(centerApplicationsRepositoryProvider)
           .approve(application.id),
-      done: '${application.centerName} quedó aprobado.',
+      done: l10n.applicationApproved(application.centerName),
       // Aprobar crea un centro, y `created_center_id` viene en la respuesta.
       // Ofrecerlo cierra el paso siguiente real: quien acaba de aprobar suele
       // querer mirar —o corregir— lo que se acaba de crear, con la postulación
@@ -74,12 +81,16 @@ class _ApplicationQueueViewState extends ConsumerState<ApplicationQueueView> {
       onCreated: (resolved) {
         final id = resolved.createdCenterId;
         if (id == null) return null;
-        return (label: 'Ver centro', route: CenterRecordView.route(id));
+        return (
+          label: context.l10n.applicationViewCenter,
+          route: CenterRecordView.route(id),
+        );
       },
     );
   }
 
   Future<void> _reject(CenterApplicationOut application) async {
+    final l10n = context.l10n;
     final reason = await RejectApplicationSheet.show(
       context,
       centerName: application.centerName,
@@ -91,7 +102,7 @@ class _ApplicationQueueViewState extends ConsumerState<ApplicationQueueView> {
       () => ref
           .read(centerApplicationsRepositoryProvider)
           .reject(application.id, reason),
-      done: 'Se le avisó a ${application.contactName}.',
+      done: l10n.applicationRejected(application.contactName),
     );
   }
 
@@ -128,7 +139,7 @@ class _ApplicationQueueViewState extends ConsumerState<ApplicationQueueView> {
         );
       case ApplicationsRefused(:final failure):
         messenger.showSnackBar(
-          SnackBar(content: Text(failure.operatorMessage)),
+          SnackBar(content: Text(failure.operatorMessage(context.l10n))),
         );
     }
   }
@@ -138,10 +149,10 @@ class _ApplicationQueueViewState extends ConsumerState<ApplicationQueueView> {
     final queue = ref.watch(applicationQueueProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Solicitudes')),
+      appBar: AppBar(title: Text(context.l10n.applicationsTitle)),
       body: switch (queue) {
         AsyncData(value: ApplicationsRead(:final value)) when value.isEmpty =>
-          const _Message('Ninguna postulación espera una decisión.'),
+          _Message(context.l10n.applicationsEmpty),
         AsyncData(value: ApplicationsRead(:final value)) => RefreshIndicator(
           onRefresh: () async => ref.invalidate(applicationQueueProvider),
           child: ListView(
@@ -163,7 +174,7 @@ class _ApplicationQueueViewState extends ConsumerState<ApplicationQueueView> {
           _Message(
             isForbidden
                 ? 'Solo quien revisa postulaciones puede ver esta cola.'
-                : failure.operatorMessage,
+                : failure.operatorMessage(context.l10n),
           ),
         AsyncError(:final error) => _Message('$error'),
         _ => const Center(child: CircularProgressIndicator()),
@@ -181,9 +192,7 @@ class _Header extends StatelessWidget {
   Widget build(BuildContext context) => Padding(
     padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
     child: Text(
-      pending == 1
-          ? 'Un centro espera aprobación'
-          : '$pending centros esperan aprobación',
+      context.l10n.applicationsPendingCount(pending),
       style: Theme.of(context).textTheme.bodyMedium,
     ),
   );
@@ -224,7 +233,11 @@ class _ApplicationCard extends StatelessWidget {
                   child: Text(application.centerName, style: text.titleMedium),
                 ),
                 Text(
-                  describeAge(application.createdAt, DateTime.now()),
+                  describeAge(
+                    context.l10n,
+                    application.createdAt,
+                    DateTime.now(),
+                  ),
                   style: text.bodySmall,
                 ),
               ],
@@ -239,18 +252,18 @@ class _ApplicationCard extends StatelessWidget {
             // una ficha para saber quién respalda un centro convierte una cola
             // de tres en tres navegaciones.
             RecordField(
-              label: 'Contacto',
+              label: context.l10n.contactLabel,
               value: '${application.contactName} · ${application.contactEmail}',
             ),
             if (application.contactPhone case final phone?
                 when phone.isNotEmpty)
-              RecordField(label: 'Teléfono', value: phone),
+              RecordField(label: context.l10n.phoneLabel, value: phone),
             if (application.address case final address? when address.isNotEmpty)
-              RecordField(label: 'Dirección', value: address),
+              RecordField(label: context.l10n.addressLabel, value: address),
             if (application.backingOrg case final org? when org.isNotEmpty)
-              RecordField(label: 'Respaldo', value: org),
+              RecordField(label: context.l10n.backingOrgLabel, value: org),
             if (application.socialUrl case final social? when social.isNotEmpty)
-              RecordField(label: 'Redes', value: social),
+              RecordField(label: context.l10n.socialLabel, value: social),
             if (application.message case final message?
                 when message.isNotEmpty) ...[
               const SizedBox(height: 8),
@@ -266,14 +279,14 @@ class _ApplicationCard extends StatelessWidget {
                   Expanded(
                     child: FilledButton(
                       onPressed: onApprove,
-                      child: const Text('Aprobar'),
+                      child: Text(context.l10n.actionApprove),
                     ),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
                     child: OutlinedButton(
                       onPressed: onReject,
-                      child: const Text('Rechazar'),
+                      child: Text(context.l10n.actionReject),
                     ),
                   ),
                 ],

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/api/api_error_mapper.dart';
 import '../../../core/api/generated/models/shipment_out.dart';
+import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/ui/record_field.dart';
 import '../../../core/ui/status_labels.dart';
 import '../data/shipments_providers.dart';
@@ -53,7 +54,9 @@ class _ShipmentsListViewState extends ConsumerState<ShipmentsListView> {
       case ShipmentRefused(:final failure):
         ScaffoldMessenger.of(context)
           ..hideCurrentSnackBar()
-          ..showSnackBar(SnackBar(content: Text(failure.operatorMessage)));
+          ..showSnackBar(
+            SnackBar(content: Text(failure.operatorMessage(context.l10n))),
+          );
     }
   }
 
@@ -62,11 +65,11 @@ class _ShipmentsListViewState extends ConsumerState<ShipmentsListView> {
     final shipments = ref.watch(shipmentsProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Envíos')),
+      appBar: AppBar(title: Text(context.l10n.navShipments)),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _create,
         icon: const Icon(Icons.add),
-        label: const Text('Nuevo envío'),
+        label: Text(context.l10n.shipmentNewTitle),
       ),
       body: RefreshIndicator(
         onRefresh: () async => ref.invalidate(shipmentsProvider),
@@ -77,7 +80,7 @@ class _ShipmentsListViewState extends ConsumerState<ShipmentsListView> {
             onStatus: (status) => setState(() => _status = status),
           ),
           AsyncError(:final error) => _Message(
-            ApiErrorMapper.fromAny(error).operatorMessage,
+            ApiErrorMapper.fromAny(error).operatorMessage(context.l10n),
           ),
           _ => const Center(child: CircularProgressIndicator()),
         },
@@ -113,9 +116,7 @@ class _Loaded extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
           child: Text(
-            shipments.length == 1
-                ? '1 envío en el centro'
-                : '${shipments.length} envíos en el centro',
+            context.l10n.shipmentsInCenter(shipments.length),
             style: Theme.of(context).textTheme.bodySmall,
           ),
         ),
@@ -132,7 +133,9 @@ class _Loaded extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(right: 8),
                     child: ChoiceChip(
-                      label: Text('${shipmentStatusLabel(value)} · $count'),
+                      label: Text(
+                        '${shipmentStatusLabel(context.l10n, value)} · $count',
+                      ),
                       selected: status == value,
                       onSelected: (chosen) => onStatus(chosen ? value : null),
                     ),
@@ -141,11 +144,10 @@ class _Loaded extends StatelessWidget {
           ),
         ),
         if (shown.isEmpty)
-          const Padding(
+          Padding(
             padding: EdgeInsets.all(32),
             child: Text(
-              'Todavía no hay envíos. Uno se abre cuando hay tarimas cerradas '
-              'esperando salir.',
+              context.l10n.shipmentsEmpty,
               textAlign: TextAlign.center,
             ),
           ),
@@ -159,7 +161,9 @@ class _Loaded extends StatelessWidget {
                 ?shipment.reference,
               ].join(' · '),
             ),
-            trailing: Chip(label: Text(shipmentStatusLabel(shipment.status))),
+            trailing: Chip(
+              label: Text(shipmentStatusLabel(context.l10n, shipment.status)),
+            ),
             onTap: () => Navigator.of(
               context,
             ).push(ShipmentRecordView.route(shipment.id)),

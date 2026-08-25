@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/api/generated/models/center_out.dart';
+import '../../../core/i18n/l10n_extension.dart';
 import '../data/centers_providers.dart';
 import '../data/centers_repository.dart';
 import 'center_form_view.dart';
@@ -23,24 +24,24 @@ class CentersListView extends ConsumerWidget {
     final centers = ref.watch(centersProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Centros')),
+      appBar: AppBar(title: Text(context.l10n.centersTitle)),
       floatingActionButton: ref.watch(canListCentersProvider)
           ? FloatingActionButton(
               onPressed: () =>
                   Navigator.of(context).push(CenterFormView.route()),
-              tooltip: 'Nuevo centro',
+              tooltip: context.l10n.centerNewTitle,
               child: const Icon(Icons.add),
             )
           : null,
       body: switch (centers) {
         AsyncData(value: CentersRead(:final value)) when value.isEmpty =>
-          const _Message('No hay centros registrados todavía.'),
+          _Message(context.l10n.centersEmpty),
         AsyncData(value: CentersRead(:final value)) => _List(centers: value),
         AsyncData(value: CentersRefused(:final isForbidden, :final failure)) =>
           _Message(
             isForbidden
-                ? 'Solo la administración nacional puede ver los centros.'
-                : failure.operatorMessage,
+                ? context.l10n.centersForbidden
+                : failure.operatorMessage(context.l10n),
           ),
         AsyncError(:final error) => _Message('$error'),
         _ => const Center(child: CircularProgressIndicator()),
@@ -78,7 +79,7 @@ class _List extends StatelessWidget {
           subtitle: place.isEmpty ? null : Text(place),
           trailing: center.isActive
               ? null
-              : const Chip(label: Text('Desactivado')),
+              : Chip(label: Text(context.l10n.centerInactiveChip)),
           onTap: () =>
               Navigator.of(context).push(CenterRecordView.route(center.id)),
         );

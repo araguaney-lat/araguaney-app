@@ -1,4 +1,5 @@
 import 'package:araguaney_app/core/api/generated/models/intake_out.dart';
+import 'package:araguaney_app/core/i18n/generated/app_localizations.dart';
 import 'package:araguaney_app/features/intake/data/intake_providers.dart';
 import 'package:araguaney_app/features/intake/ui/intake_detail_view.dart';
 import 'package:araguaney_app/features/intake/ui/intake_list_view.dart';
@@ -13,7 +14,11 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [intakesProvider.overrideWith((ref) async => intakes)],
-        child: const MaterialApp(home: IntakeListView()),
+        child: const MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: IntakeListView(),
+        ),
       ),
     );
     await tester.pumpAndSettle();

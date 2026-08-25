@@ -1,6 +1,7 @@
 import 'package:araguaney_app/core/api/api_providers.dart';
 import 'package:araguaney_app/core/api/generated/rest_client.dart';
 import 'package:araguaney_app/core/auth/auth_providers.dart';
+import 'package:araguaney_app/core/i18n/generated/app_localizations.dart';
 import 'package:araguaney_app/core/push/push_destination.dart';
 import 'package:araguaney_app/core/push/push_providers.dart';
 import 'package:araguaney_app/core/routing/push_router.dart';
@@ -35,6 +36,9 @@ void main() {
       UncontrolledProviderScope(
         container: container,
         child: const MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+
           home: PushRouter(child: Scaffold(body: Text('inicio'))),
         ),
       ),

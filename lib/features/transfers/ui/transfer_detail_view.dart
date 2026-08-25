@@ -5,6 +5,7 @@ import '../../../core/api/api_error_mapper.dart';
 import '../../../core/api/generated/models/transfer_detail_out.dart';
 import '../../../core/auth/auth_providers.dart';
 import '../../../core/connectivity/connectivity_controller.dart';
+import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/ui/record_field.dart';
 import '../../../core/ui/status_labels.dart';
 import '../data/transfers_providers.dart';
@@ -42,9 +43,9 @@ class TransferDetailView extends ConsumerWidget {
       ..invalidate(transfersProvider);
 
     if (outcome case TransferRefused(:final failure)) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(failure.operatorMessage)));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(failure.operatorMessage(context.l10n))),
+      );
     }
   }
 
@@ -56,24 +57,24 @@ class TransferDetailView extends ConsumerWidget {
     return showDialog<String>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('¿Por qué se rechaza?'),
+        title: Text(context.l10n.transferRejectReasonTitle),
         content: TextField(
           controller: controller,
           autofocus: true,
           maxLines: 3,
-          decoration: const InputDecoration(
-            labelText: 'Motivo',
-            helperText: 'Lo leerá el centro que la pidió',
+          decoration: InputDecoration(
+            labelText: context.l10n.reasonLabel,
+            helperText: context.l10n.transferRejectReasonHint,
           ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancelar'),
+            child: Text(context.l10n.actionCancel),
           ),
           FilledButton(
             onPressed: () => Navigator.of(context).pop(controller.text.trim()),
-            child: const Text('Rechazar'),
+            child: Text(context.l10n.actionReject),
           ),
         ],
       ),
@@ -102,7 +103,7 @@ class TransferDetailView extends ConsumerWidget {
     };
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Transferencia')),
+      appBar: AppBar(title: Text(context.l10n.transferRecordTitle)),
       body: switch (transfer) {
         AsyncData(:final value) => _Fields(
           transfer: value,
@@ -112,7 +113,7 @@ class TransferDetailView extends ConsumerWidget {
           child: Padding(
             padding: const EdgeInsets.all(32),
             child: Text(
-              ApiErrorMapper.fromAny(error).operatorMessage,
+              ApiErrorMapper.fromAny(error).operatorMessage(context.l10n),
               textAlign: TextAlign.center,
             ),
           ),
@@ -148,31 +149,34 @@ class _Fields extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 8),
       children: [
         RecordField(
-          label: 'Estado',
-          value: transferStatusLabel(transfer.status),
+          label: context.l10n.statusLabel,
+          value: transferStatusLabel(context.l10n, transfer.status),
         ),
         RecordField(
-          label: 'Dirección',
+          label: context.l10n.addressLabel,
           value: switch (direction) {
             TransferDirection.incoming => 'Entrante, hacia este centro',
             TransferDirection.outgoing => 'Saliente, desde este centro',
             TransferDirection.other => 'Entre otros centros',
           },
         ),
-        RecordField(label: 'Cajas', value: '${transfer.boxes.length}'),
         RecordField(
-          label: 'Solicitada',
+          label: context.l10n.boxesTitle,
+          value: '${transfer.boxes.length}',
+        ),
+        RecordField(
+          label: context.l10n.transferStatusRequested,
           value: formatShortDate(transfer.createdAt),
         ),
         if (transfer.notes case final notes?)
-          RecordField(label: 'Notas', value: notes),
+          RecordField(label: context.l10n.notesLabel, value: notes),
         const Divider(),
         for (final box in transfer.boxes)
           ListTile(
             dense: true,
             title: Text(box.code),
             subtitle: Text(
-              '${box.quantity} ${box.unit} · ${boxStatusLabel(box.status)}',
+              '${box.quantity} ${box.unit} · ${boxStatusLabel(context.l10n, box.status)}',
             ),
           ),
         if (transfer.events.isNotEmpty) ...[
@@ -180,7 +184,7 @@ class _Fields extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
             child: Text(
-              'Historial',
+              context.l10n.transferHistoryHeading,
               style: Theme.of(context).textTheme.titleMedium,
             ),
           ),
@@ -188,8 +192,8 @@ class _Fields extends StatelessWidget {
             ListTile(
               dense: true,
               title: Text(
-                '${transferStatusLabel(event.fromStatus ?? '—')} → '
-                '${transferStatusLabel(event.toStatus)}',
+                '${transferStatusLabel(context.l10n, event.fromStatus ?? '—')} → '
+                '${transferStatusLabel(context.l10n, event.toStatus)}',
               ),
               subtitle: Text(
                 [formatShortDate(event.ts), ?event.note].join(' · '),
@@ -223,8 +227,7 @@ class _Actions extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(bottom: 8),
               child: Text(
-                'Mover una transferencia necesita conexión: la mueven dos '
-                'centros, y sin señal no se sabe qué hizo el otro.',
+                context.l10n.transferNeedsConnection,
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodySmall,
               ),

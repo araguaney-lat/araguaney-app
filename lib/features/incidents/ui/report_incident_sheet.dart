@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/i18n/l10n_extension.dart';
 
 import '../../../core/ui/sheet_insets.dart';
 import '../data/incidents_repository.dart';
@@ -56,18 +57,18 @@ class _ReportIncidentSheetState extends State<ReportIncidentSheet> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Levantar incidencia',
+            context.l10n.incidentRaiseTitle,
             style: Theme.of(context).textTheme.titleMedium,
           ),
           const SizedBox(height: 16),
           DropdownButtonFormField<String>(
             initialValue: _type,
-            decoration: const InputDecoration(labelText: 'Tipo'),
+            decoration: InputDecoration(labelText: context.l10n.typeLabel),
             items: [
               for (final type in IncidentType.all)
                 DropdownMenuItem(
                   value: type,
-                  child: Text(incidentTypeLabel(type)),
+                  child: Text(incidentTypeLabel(context.l10n, type)),
                 ),
             ],
             onChanged: (value) =>
@@ -78,12 +79,12 @@ class _ReportIncidentSheetState extends State<ReportIncidentSheet> {
             controller: _description,
             maxLines: 4,
             maxLength: 1000,
-            decoration: const InputDecoration(
-              labelText: 'Qué pasó',
-              helperText: 'Lo que verá quien tenga que resolverlo',
+            decoration: InputDecoration(
+              labelText: context.l10n.incidentDescriptionLabel,
+              helperText: context.l10n.incidentDescriptionHint,
             ),
             validator: (value) => (value == null || value.trim().isEmpty)
-                ? 'Describe lo que pasó'
+                ? context.l10n.incidentDescriptionRequired
                 : null,
           ),
           const SizedBox(height: 12),
@@ -91,7 +92,7 @@ class _ReportIncidentSheetState extends State<ReportIncidentSheet> {
             alignment: Alignment.centerRight,
             child: FilledButton(
               onPressed: _submit,
-              child: const Text('Levantar'),
+              child: Text(context.l10n.incidentRaiseAction),
             ),
           ),
         ],

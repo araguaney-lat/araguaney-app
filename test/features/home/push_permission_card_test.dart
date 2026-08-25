@@ -1,3 +1,4 @@
+import 'package:araguaney_app/core/i18n/generated/app_localizations.dart';
 import 'package:araguaney_app/core/push/push_providers.dart';
 import 'package:araguaney_app/core/push/push_service.dart';
 import 'package:araguaney_app/features/home/ui/push_permission_card.dart';
@@ -32,7 +33,11 @@ void main() {
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
-        child: const MaterialApp(home: Scaffold(body: PushPermissionCard())),
+        child: const MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Scaffold(body: PushPermissionCard()),
+        ),
       ),
     );
     await tester.pumpAndSettle();
@@ -67,7 +72,11 @@ void main() {
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
-        child: const MaterialApp(home: Scaffold(body: PushPermissionCard())),
+        child: const MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Scaffold(body: PushPermissionCard()),
+        ),
       ),
     );
     await tester.pumpAndSettle();

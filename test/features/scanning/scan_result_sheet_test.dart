@@ -2,6 +2,7 @@ import 'package:araguaney_app/core/api/api_failure.dart';
 import 'package:araguaney_app/core/api/generated/models/box_public_out.dart';
 import 'package:araguaney_app/core/api/generated/models/donation_out.dart';
 import 'package:araguaney_app/core/api/generated/models/pallet_public_out.dart';
+import 'package:araguaney_app/core/i18n/generated/app_localizations.dart';
 import 'package:araguaney_app/features/scanning/data/scan_resolution.dart';
 import 'package:araguaney_app/features/scanning/ui/scan_result_sheet.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +19,9 @@ void main() {
     String? productName,
   }) => tester.pumpWidget(
     MaterialApp(
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+
       home: Scaffold(
         body: ScanResultSheet(
           resolution: resolution,

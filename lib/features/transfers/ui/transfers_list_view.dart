@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/api/api_error_mapper.dart';
 import '../../../core/api/generated/models/transfer_out.dart';
 import '../../../core/auth/auth_providers.dart';
+import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/ui/record_field.dart';
 import '../../../core/ui/status_labels.dart';
 import '../../centers/data/centers_providers.dart';
@@ -61,7 +62,7 @@ class _TransfersListViewState extends ConsumerState<TransfersListView> {
             onDirection: (value) => setState(() => _direction = value),
           ),
           AsyncError(:final error) => _Message(
-            ApiErrorMapper.fromAny(error).operatorMessage,
+            ApiErrorMapper.fromAny(error).operatorMessage(context.l10n),
           ),
           _ => const Center(child: CircularProgressIndicator()),
         },
@@ -94,13 +95,11 @@ class _Header extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        const Text('Transferencias'),
+        Text(context.l10n.navTransfers),
         Text(
           waiting == 0
-              ? 'Ninguna espera tu decisión'
-              : waiting == 1
-              ? '1 espera tu decisión'
-              : '$waiting esperan tu decisión',
+              ? context.l10n.transfersNothingAwaits
+              : context.l10n.transfersAwaitingDecision(waiting),
           style: Theme.of(context).textTheme.bodySmall,
         ),
       ],
@@ -168,7 +167,7 @@ class _Loaded extends StatelessWidget {
               // encontró mirar la pantalla con esa sesión, no un test.
               myCenterId == null
                   ? 'No hay transferencias registradas.'
-                  : 'Este centro no participa en ninguna transferencia.',
+                  : context.l10n.transfersEmptyForCenter,
               textAlign: TextAlign.center,
             ),
           ),
@@ -220,7 +219,9 @@ class _TransferRow extends ConsumerWidget {
         TransferDirection.other => 'Entre otros centros',
       }),
       subtitle: Text(other == null ? date : '$other · $date'),
-      trailing: Chip(label: Text(transferStatusLabel(transfer.status))),
+      trailing: Chip(
+        label: Text(transferStatusLabel(context.l10n, transfer.status)),
+      ),
       onTap: () =>
           Navigator.of(context).push(TransferDetailView.route(transfer.id)),
     );

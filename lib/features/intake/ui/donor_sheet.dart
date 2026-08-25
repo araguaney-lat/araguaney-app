@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/api/generated/models/donor_input.dart';
+import '../../../core/i18n/l10n_extension.dart';
 import '../domain/intake_draft.dart';
 
 /// El donante que se identifica en el mostrador.
@@ -79,8 +80,10 @@ class _DonorSheetState extends State<DonorSheet> {
     heightFactor: 0.9,
     child: Scaffold(
       appBar: AppBar(
-        title: const Text('Identificar donante'),
-        actions: [TextButton(onPressed: _save, child: const Text('Guardar'))],
+        title: Text(context.l10n.identifyDonorTitle),
+        actions: [
+          TextButton(onPressed: _save, child: Text(context.l10n.actionSave)),
+        ],
       ),
       body: Form(
         key: _formKey,
@@ -88,9 +91,15 @@ class _DonorSheetState extends State<DonorSheet> {
           padding: const EdgeInsets.all(16),
           children: [
             SegmentedButton<String>(
-              segments: const [
-                ButtonSegment(value: DonorType.natural, label: Text('Persona')),
-                ButtonSegment(value: DonorType.legal, label: Text('Empresa')),
+              segments: [
+                ButtonSegment(
+                  value: DonorType.natural,
+                  label: Text(context.l10n.personOption),
+                ),
+                ButtonSegment(
+                  value: DonorType.legal,
+                  label: Text(context.l10n.companyOption),
+                ),
               ],
               selected: {_type},
               onSelectionChanged: (selection) =>
@@ -99,14 +108,16 @@ class _DonorSheetState extends State<DonorSheet> {
             const SizedBox(height: 16),
             TextFormField(
               controller: _firstName,
-              decoration: const InputDecoration(labelText: 'Nombre'),
+              decoration: InputDecoration(labelText: context.l10n.nameLabel),
               textCapitalization: TextCapitalization.words,
               validator: _required,
             ),
             const SizedBox(height: 12),
             TextFormField(
               controller: _lastName,
-              decoration: const InputDecoration(labelText: 'Apellido'),
+              decoration: InputDecoration(
+                labelText: context.l10n.lastNameLabel,
+              ),
               textCapitalization: TextCapitalization.words,
               validator: _required,
             ),
@@ -114,9 +125,9 @@ class _DonorSheetState extends State<DonorSheet> {
               const SizedBox(height: 12),
               TextFormField(
                 controller: _legalName,
-                decoration: const InputDecoration(
-                  labelText: 'Razón social',
-                  helperText: 'El nombre con el que la empresa dona',
+                decoration: InputDecoration(
+                  labelText: context.l10n.centerLegalNameLabel,
+                  helperText: context.l10n.companyDonorHint,
                 ),
                 textCapitalization: TextCapitalization.words,
               ),
@@ -124,14 +135,16 @@ class _DonorSheetState extends State<DonorSheet> {
             const SizedBox(height: 12),
             TextFormField(
               controller: _email,
-              decoration: const InputDecoration(labelText: 'Correo (opcional)'),
+              decoration: InputDecoration(
+                labelText: context.l10n.emailOptionalLabel,
+              ),
               keyboardType: TextInputType.emailAddress,
             ),
             const SizedBox(height: 12),
             TextFormField(
               controller: _phone,
-              decoration: const InputDecoration(
-                labelText: 'Teléfono (opcional)',
+              decoration: InputDecoration(
+                labelText: context.l10n.phoneOptionalLabel,
               ),
               keyboardType: TextInputType.phone,
             ),
@@ -139,10 +152,8 @@ class _DonorSheetState extends State<DonorSheet> {
             CheckboxListTile(
               value: _terms,
               onChanged: (value) => setState(() => _terms = value ?? false),
-              title: const Text('Acepta los Términos de Donación'),
-              subtitle: const Text(
-                'Quien dona a nombre de una empresa tiene que aceptarlos.',
-              ),
+              title: Text(context.l10n.donationTermsAccept),
+              subtitle: Text(context.l10n.companyTermsNotice),
               contentPadding: EdgeInsets.zero,
             ),
           ],

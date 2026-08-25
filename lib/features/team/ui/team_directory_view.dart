@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/api/api_error_mapper.dart';
 import '../../../core/api/generated/models/user_out.dart';
 import '../../../core/auth/auth_providers.dart';
+import '../../../core/i18n/l10n_extension.dart';
 import '../data/team_providers.dart';
 import '../data/team_repository.dart';
 import 'campaign_members_view.dart';
@@ -61,16 +62,21 @@ class TeamDirectoryView extends ConsumerWidget {
   void _report(BuildContext context, WidgetRef ref, TeamOutcome outcome) {
     switch (outcome) {
       case TeamChanged(:final notice):
+        final text = switch (notice) {
+          TeamNotice.invited => context.l10n.invitationSent,
+          TeamNotice.accessResent => context.l10n.accessResent,
+          null => null,
+        };
         ref.invalidate(centerUsersProvider);
-        if (notice != null) {
+        if (text != null) {
           ScaffoldMessenger.of(
             context,
-          ).showSnackBar(SnackBar(content: Text(notice)));
+          ).showSnackBar(SnackBar(content: Text(text)));
         }
-      case TeamRefused(:final message):
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(message)));
+      case TeamRefused(:final reason):
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(reason.operatorMessage(context.l10n))),
+        );
     }
   }
 
@@ -82,10 +88,10 @@ class TeamDirectoryView extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Equipo'),
+        title: Text(context.l10n.navTeam),
         actions: [
           IconButton(
-            tooltip: 'Campañas',
+            tooltip: context.l10n.campaignsLabel,
             icon: const Icon(Icons.groups_outlined),
             onPressed: () =>
                 Navigator.of(context).push(CampaignMembersView.route()),
@@ -96,18 +102,15 @@ class TeamDirectoryView extends ConsumerWidget {
           ? FloatingActionButton.extended(
               onPressed: () => _invite(context, ref),
               icon: const Icon(Icons.person_add_alt),
-              label: const Text('Sumar'),
+              label: Text(context.l10n.addMemberAction),
             )
           : null,
       body: RefreshIndicator(
         onRefresh: () async => ref.invalidate(centerUsersProvider),
         child: switch (people) {
-          AsyncData() when !hasCenter => const _Message(
-            'Tu sesión no pertenece a un centro, así que no hay un equipo que '
-            'mostrar aquí.',
-          ),
-          AsyncData(:final value) when value.isEmpty => const _Message(
-            'Todavía no hay nadie más en este centro.',
+          AsyncData() when !hasCenter => _Message(context.l10n.teamNoCenter),
+          AsyncData(:final value) when value.isEmpty => _Message(
+            context.l10n.teamEmpty,
           ),
           AsyncData(:final value) => ListView.separated(
             itemCount: value.length,
@@ -120,7 +123,7 @@ class TeamDirectoryView extends ConsumerWidget {
             ),
           ),
           AsyncError(:final error) => _Message(
-            ApiErrorMapper.fromAny(error).operatorMessage,
+            ApiErrorMapper.fromAny(error).operatorMessage(context.l10n),
           ),
           _ => const Center(child: CircularProgressIndicator()),
         },
@@ -143,7 +146,7 @@ class _Person extends StatelessWidget {
     title: Text(person.fullName ?? person.username),
     subtitle: Text(
       [
-        centerRoleLabel(person.centerRole),
+        centerRoleLabel(context.l10n, person.centerRole),
         person.username,
         if (!person.isActive) 'cuenta desactivada',
       ].join(' · '),
@@ -152,7 +155,7 @@ class _Person extends StatelessWidget {
     // servidor lo rechaza, y activarla es trabajo de escritorio.
     trailing: onReinvite != null && person.isActive
         ? IconButton(
-            tooltip: 'Reenviar acceso',
+            tooltip: context.l10n.resendAccessAction,
             icon: const Icon(Icons.mail_outline),
             onPressed: onReinvite,
           )

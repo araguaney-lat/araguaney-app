@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/auth/auth_providers.dart';
 import '../../../core/auth/session.dart';
 import '../../../core/i18n/generated/app_localizations.dart';
+import '../../../core/i18n/l10n_extension.dart';
 import '../../dashboard/data/center_dashboard_providers.dart';
 import '../../dashboard/ui/stock_by_category_view.dart';
 import '../../intake/data/intake_providers.dart';
@@ -26,11 +27,13 @@ import 'push_permission_card.dart';
 class HomeView extends ConsumerWidget {
   const HomeView({super.key});
 
-  static const _roleLabels = {
-    'volunteer': 'Voluntariado',
-    'coordinator': 'Coordinación',
-    'national_admin': 'Administración nacional',
-  };
+  static String _roleLabel(AppLocalizations l10n, String role) =>
+      switch (role) {
+        'volunteer' => l10n.roleVolunteerLabel,
+        'coordinator' => l10n.roleCoordinatorLabel,
+        'national_admin' => l10n.roleNationalAdminLabel,
+        _ => role,
+      };
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -54,7 +57,7 @@ class HomeView extends ConsumerWidget {
               Padding(
                 padding: const EdgeInsets.only(bottom: 12),
                 child: Text(
-                  _roleLabels[role] ?? role,
+                  _roleLabel(context.l10n, role),
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
               ),
@@ -89,14 +92,8 @@ class _PendingCaptures extends ConsumerWidget {
       margin: const EdgeInsets.only(bottom: 8),
       child: ListTile(
         leading: const Icon(Icons.cloud_upload_outlined),
-        title: Text(
-          pending == 1
-              ? '1 captura pendiente de enviar'
-              : '$pending capturas pendientes de enviar',
-        ),
-        subtitle: const Text(
-          'Deja la aplicación abierta hasta que llegue a cero.',
-        ),
+        title: Text(context.l10n.homePendingCaptures(pending)),
+        subtitle: Text(context.l10n.homeKeepAppOpenWhileSending),
         trailing: const Icon(Icons.chevron_right),
         onTap: () => Navigator.of(context).push(PendingCapturesView.route()),
       ),
@@ -121,11 +118,7 @@ class _PendingReviews extends ConsumerWidget {
       margin: const EdgeInsets.only(bottom: 8),
       child: ListTile(
         leading: const Icon(Icons.flag_outlined),
-        title: Text(
-          pending == 1
-              ? '1 revisión espera tu decisión'
-              : '$pending revisiones esperan tu decisión',
-        ),
+        title: Text(context.l10n.homePendingReviews(pending)),
         trailing: const Icon(Icons.chevron_right),
         onTap: () => Navigator.of(context).push(RiskReviewsView.route()),
       ),
@@ -141,13 +134,13 @@ class _DayGrid extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) => _Grid(
     children: [
       _Tile(
-        label: 'Capturas hoy',
+        label: context.l10n.homeCapturesToday,
         value: '${ref.watch(todaysIntakeCountProvider)}',
         onTap: () => Navigator.of(context).push(IntakeListView.route()),
       ),
       _Tile(
-        label: 'Stock del centro',
-        caption: 'por categoría',
+        label: context.l10n.homeCenterStock,
+        caption: context.l10n.byCategoryCaption,
         onTap: () => Navigator.of(context).push(StockByCategoryView.route()),
       ),
     ],
@@ -162,18 +155,18 @@ class _CoordinatorGrid extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) => _Grid(
     children: [
       _Tile(
-        label: 'Capturas hoy',
+        label: context.l10n.homeCapturesToday,
         value: '${ref.watch(todaysIntakeCountProvider)}',
         onTap: () => Navigator.of(context).push(IntakeListView.route()),
       ),
       _Tile(
-        label: 'Tarimas abiertas',
+        label: context.l10n.homeOpenPallets,
         value: '${ref.watch(openPalletCountProvider)}',
         onTap: () => Navigator.of(context).push(PalletsListView.route()),
       ),
       _Tile(
-        label: 'Stock del centro',
-        caption: 'por categoría',
+        label: context.l10n.homeCenterStock,
+        caption: context.l10n.byCategoryCaption,
         onTap: () => Navigator.of(context).push(StockByCategoryView.route()),
       ),
     ],
@@ -234,11 +227,8 @@ class _OfflineReadiness extends ConsumerWidget {
             Expanded(
               child: Text(
                 ready.codes == 0
-                    ? 'Sin códigos de caja reservados: sin señal no vas a '
-                          'poder sellar. ${ready.products} productos '
-                          'descargados.'
-                    : 'Listo para trabajar sin señal: ${ready.products} '
-                          'productos y ${ready.codes} códigos descargados.',
+                    ? context.l10n.offlineReadyWithoutCodes(ready.products)
+                    : context.l10n.offlineReady(ready.products, ready.codes),
                 style: Theme.of(context).textTheme.bodySmall,
               ),
             ),

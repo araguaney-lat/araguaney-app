@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 import '../../../core/api/generated/models/totp_setup_out.dart';
+import '../../../core/i18n/l10n_extension.dart';
 import '../data/account_providers.dart';
 import '../data/account_repository.dart';
 
@@ -52,7 +53,7 @@ class _TotpSetupViewState extends ConsumerState<TotpSetupView> {
         case AccountDone(:final value):
           _setup = value;
         case AccountRefused(:final failure):
-          _failure = failure.operatorMessage;
+          _failure = failure.operatorMessage(context.l10n);
       }
     });
   }
@@ -72,7 +73,7 @@ class _TotpSetupViewState extends ConsumerState<TotpSetupView> {
         case AccountDone(:final value):
           _backupCodes = value;
         case AccountRefused(:final failure):
-          _failure = failure.operatorMessage;
+          _failure = failure.operatorMessage(context.l10n);
       }
     });
   }
@@ -80,7 +81,7 @@ class _TotpSetupViewState extends ConsumerState<TotpSetupView> {
   @override
   Widget build(BuildContext context) => Scaffold(
     appBar: AppBar(
-      title: const Text('Verificación en dos pasos'),
+      title: Text(context.l10n.totpChallengeTitle),
       // Con los códigos en pantalla no hay flecha atrás: son la única copia y
       // salir por descuido los pierde.
       automaticallyImplyLeading: _backupCodes == null,
@@ -103,8 +104,7 @@ class _TotpSetupViewState extends ConsumerState<TotpSetupView> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            'Escanea este código con tu aplicación de verificación y escribe '
-            'el número de seis dígitos que te muestre.',
+            context.l10n.totpSetupInstruction,
             style: theme.textTheme.bodyLarge,
           ),
           const SizedBox(height: 20),
@@ -118,14 +118,17 @@ class _TotpSetupViewState extends ConsumerState<TotpSetupView> {
           const SizedBox(height: 16),
           // El secreto escrito, para quien no puede escanear porque la
           // aplicación de códigos está en este mismo teléfono.
-          _CopyRow(label: 'O escríbelo a mano', value: setup.secret),
+          _CopyRow(
+            label: context.l10n.totpSecretManualHint,
+            value: setup.secret,
+          ),
           const SizedBox(height: 20),
           TextField(
             controller: _code,
             keyboardType: TextInputType.number,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            decoration: const InputDecoration(
-              labelText: 'Código de seis dígitos',
+            decoration: InputDecoration(
+              labelText: context.l10n.sixDigitCodeLabel,
             ),
             onSubmitted: (_) => _confirm(),
           ),
@@ -136,7 +139,7 @@ class _TotpSetupViewState extends ConsumerState<TotpSetupView> {
           const SizedBox(height: 20),
           FilledButton(
             onPressed: _busy ? null : _confirm,
-            child: const Text('Activar'),
+            child: Text(context.l10n.totpEnableAction),
           ),
         ],
       );
@@ -147,7 +150,10 @@ class _TotpSetupViewState extends ConsumerState<TotpSetupView> {
         children: [
           Text(message, style: theme.textTheme.bodyMedium),
           const SizedBox(height: 16),
-          FilledButton(onPressed: _start, child: const Text('Reintentar')),
+          FilledButton(
+            onPressed: _start,
+            child: Text(context.l10n.actionRetry),
+          ),
         ],
       );
     }
@@ -180,11 +186,13 @@ class _BackupCodesState extends State<_BackupCodes> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text('Ya está activada', style: theme.textTheme.titleLarge),
+        Text(
+          context.l10n.totpAlreadyEnabled,
+          style: theme.textTheme.titleLarge,
+        ),
         const SizedBox(height: 12),
         Text(
-          'Guarda estos códigos de respaldo fuera de este teléfono. Sirven '
-          'para entrar si lo pierdes, y no se pueden volver a ver.',
+          context.l10n.backupCodesWarning,
           style: theme.textTheme.bodyMedium,
         ),
         const SizedBox(height: 16),
@@ -209,24 +217,24 @@ class _BackupCodesState extends State<_BackupCodes> {
               ScaffoldMessenger.of(context)
                 ..hideCurrentSnackBar()
                 ..showSnackBar(
-                  const SnackBar(content: Text('Códigos copiados.')),
+                  SnackBar(content: Text(context.l10n.backupCodesCopied)),
                 );
             }
           },
           icon: const Icon(Icons.copy_all_outlined),
-          label: const Text('Copiar'),
+          label: Text(context.l10n.copyAction),
         ),
         const SizedBox(height: 12),
         CheckboxListTile(
           value: _saved,
           onChanged: (value) => setState(() => _saved = value ?? false),
           contentPadding: EdgeInsets.zero,
-          title: const Text('Los guardé en un sitio seguro'),
+          title: Text(context.l10n.backupCodesAcknowledge),
         ),
         const SizedBox(height: 12),
         FilledButton(
           onPressed: _saved ? () => Navigator.of(context).pop(true) : null,
-          child: const Text('Terminar'),
+          child: Text(context.l10n.actionFinish),
         ),
       ],
     );
@@ -252,7 +260,7 @@ class _CopyRow extends StatelessWidget {
         ),
       ),
       IconButton(
-        tooltip: 'Copiar',
+        tooltip: context.l10n.copyAction,
         icon: const Icon(Icons.copy_outlined),
         onPressed: () => Clipboard.setData(ClipboardData(text: value)),
       ),

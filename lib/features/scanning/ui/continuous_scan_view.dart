@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
+import '../../../core/i18n/l10n_extension.dart';
 import '../domain/scan_throttle.dart';
 import 'scanner_camera.dart';
 
@@ -89,7 +90,7 @@ class _ContinuousScanViewState extends State<ContinuousScanView> {
       title: Text(widget.title),
       actions: [
         IconButton(
-          tooltip: 'Linterna',
+          tooltip: context.l10n.scanTorch,
           icon: const Icon(Icons.flashlight_on_outlined),
           onPressed: _controller.toggleTorch,
         ),
@@ -143,7 +144,7 @@ class _EmptyLog extends StatelessWidget {
     child: Padding(
       padding: const EdgeInsets.all(24),
       child: Text(
-        'Cada caja que leas aparece aquí, con lo que respondió el servidor.',
+        context.l10n.scanContinuousExplanation,
         textAlign: TextAlign.center,
         style: Theme.of(context).textTheme.bodySmall,
       ),

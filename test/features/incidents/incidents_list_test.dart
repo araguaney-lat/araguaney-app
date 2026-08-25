@@ -1,5 +1,6 @@
 import 'package:araguaney_app/core/api/api_providers.dart';
 import 'package:araguaney_app/core/api/generated/rest_client.dart';
+import 'package:araguaney_app/core/i18n/generated/app_localizations.dart';
 import 'package:araguaney_app/features/incidents/data/incidents_providers.dart';
 import 'package:araguaney_app/features/incidents/ui/incidents_list_view.dart';
 import 'package:dio/dio.dart';
@@ -60,7 +61,11 @@ void main() {
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
-        child: const MaterialApp(home: IncidentsListView()),
+        child: const MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: IncidentsListView(),
+        ),
       ),
     );
     await tester.pumpAndSettle();
