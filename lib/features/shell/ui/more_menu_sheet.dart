@@ -19,6 +19,7 @@ import '../../intake/data/intake_providers.dart';
 import '../../intake/ui/intake_list_view.dart';
 import '../../intake/ui/pending_captures_view.dart';
 import '../../pallets/ui/pallets_list_view.dart';
+import '../../reports/ui/reports_view.dart';
 import '../../risk_reviews/ui/risk_reviews_view.dart';
 import '../../shipments/ui/shipments_list_view.dart';
 import '../../team/ui/team_directory_view.dart';
@@ -126,6 +127,13 @@ class MoreMenuSheet extends ConsumerWidget {
               leading: const Icon(Icons.donut_small_outlined),
               title: Text(context.l10n.stockByCategoryTitle),
               onTap: () => _go(context, StockByCategoryView.route()),
+            ),
+            // Va junto al stock porque es la pregunta siguiente: el stock dice
+            // qué hay, el informe dice cómo va.
+            ListTile(
+              leading: const Icon(Icons.insights_outlined),
+              title: Text(context.l10n.reportsTitle),
+              onTap: () => _go(context, ReportsView.route()),
             ),
             ListTile(
               leading: const Icon(Icons.pallet),

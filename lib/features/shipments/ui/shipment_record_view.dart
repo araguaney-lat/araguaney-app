@@ -19,6 +19,7 @@ import '../../incidents/data/incidents_providers.dart';
 import '../../incidents/data/incidents_repository.dart';
 import '../../incidents/ui/report_incident_sheet.dart';
 import '../../pallets/data/pallets_providers.dart';
+import '../../reports/ui/reports_view.dart';
 import '../data/shipments_providers.dart';
 import '../data/shipments_repository.dart';
 import 'pick_pallet_sheet.dart';
@@ -265,13 +266,16 @@ class _Body extends ConsumerWidget {
         const Divider(),
         _SectionTitle(context.l10n.receptionHeading),
         switch (reception) {
-          AsyncData(value: final value?) => _Reception(reception: value),
+          AsyncData(value: final value?) => _Reception(
+            reception: value,
+            campaignId: shipment.campaignId,
+          ),
           AsyncData() => _Note(context.l10n.receptionNotRegistered),
           AsyncError() => _Note(context.l10n.receptionUnavailable),
-          _ => const _Note('Consultando…'),
+          _ => _Note(context.l10n.loadingShort),
         },
         const Divider(),
-        _SectionTitle('Recorrido'),
+        _SectionTitle(context.l10n.timelineHeading),
         switch (events) {
           AsyncData(:final value) when value.isEmpty => _Note(
             context.l10n.milestonesEmpty,
@@ -280,7 +284,7 @@ class _Body extends ConsumerWidget {
             children: [for (final event in value) _Event(event: event)],
           ),
           AsyncError() => _Note(context.l10n.timelineUnavailable),
-          _ => const _Note('Consultando…'),
+          _ => _Note(context.l10n.loadingShort),
         },
         const Divider(),
         _SectionTitle(context.l10n.incidentsTitle),
@@ -294,7 +298,7 @@ class _Body extends ConsumerWidget {
             ],
           ),
           AsyncError() => _Note(context.l10n.incidentsUnavailable),
-          _ => const _Note('Consultando…'),
+          _ => _Note(context.l10n.loadingShort),
         },
         const SizedBox(height: 80),
       ],
@@ -459,9 +463,12 @@ void _say(BuildContext context, String message) => ScaffoldMessenger.of(context)
   ..showSnackBar(SnackBar(content: Text(message)));
 
 class _Reception extends StatelessWidget {
-  const _Reception({required this.reception});
+  const _Reception({required this.reception, this.campaignId});
 
   final ReceptionOut reception;
+
+  /// La campaña del envío, para poder mirar su merma desde aquí.
+  final String? campaignId;
 
   @override
   Widget build(BuildContext context) {
@@ -490,6 +497,18 @@ class _Reception extends StatelessWidget {
               '${shrinkage.shrinkagePct}% · '
               '${context.l10n.boxCount(shrinkage.notReceived)}',
         ),
+        // La merma de la campaña se mira desde aquí, que es donde alguien
+        // acaba de descubrir que algo no cuadra.
+        if (campaignId case final campaign?)
+          ListTile(
+            dense: true,
+            leading: const Icon(Icons.insights_outlined),
+            title: Text(context.l10n.reportsShrinkageOfCampaign),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.of(
+              context,
+            ).push(ReportsView.route(campaignId: campaign)),
+          ),
         if (reception.notes case final notes?)
           RecordField(label: context.l10n.receptionNotesLabel, value: notes),
       ],

@@ -52,13 +52,46 @@ of the boxes that do not match.
 
 | # | Task | Description | Complexity | Status |
 |---|------|-------------|------------|--------|
-| 1 | Reports repository | The seven routes behind a sealed outcome, scoped by campaign. | 🟠 Medium | ⬜ Pending |
-| 2 | The summary | `GET /v1/reports/campaign/{id}/summary` as the screen somebody opens first. | 🟠 Medium | ⬜ Pending |
-| 3 | By category, completed | What «Stock por categoría» is a fragment of, with the campaign chosen rather than assumed. | 🟠 Medium | ⬜ Pending |
-| 4 | Shrinkage | Reached from a reception, where the discrepancy is found. | 🟠 Medium | ⬜ Pending |
-| 5 | Activity and countries | Two reads that only make sense with a campaign selected. | 🟢 Low | ⬜ Pending |
-| 6 | The export | `POST .../export.csv` produces a job; the file leaves for the system viewer, like a manifest. | 🟠 Medium | ⬜ Pending |
-| 7 | Weight | `GET /v1/dashboard/weight` needs only a centre role and is not called. | 🟢 Low | ⬜ Pending |
+| 1 | Reports repository | The seven routes behind a sealed outcome, scoped by campaign. | 🟠 Medium | ✅ Done |
+| 2 | The summary | Six of the ten numbers, the ones somebody acts on. | 🟠 Medium | ✅ Done |
+| 3 | By category, completed | With the campaign chosen rather than assumed. | 🟠 Medium | ✅ Done |
+| 4 | Shrinkage | Its own section, and reachable from a shipment's reception where the discrepancy is found. | 🟠 Medium | ✅ Done |
+| 5 | Activity and countries | The seven most recent days, and the countries. | 🟢 Low | ✅ Done |
+| 6 | The export | `POST .../export.csv` produces a job; the file leaves for the system viewer. | 🟠 Medium | ✅ Done |
+| 7 | Weight | `GET /v1/dashboard/weight`, with the goal when the campaign set one. | 🟢 Low | ✅ Done |
 | 8 | Verify on a device | Against a campaign with real movement. | 🟢 Low | ⬜ Pending |
+
+## One screen, not five
+
+Every route hangs off a campaign, so the campaign is chosen once at the top and
+everything below answers for it. Five screens would mean choosing it five times,
+or carrying it through five routes.
+
+The order is the order of the questions: how much have we collected, what state
+are the boxes in, did what we sent arrive, are we short of anything.
+
+## What was left out of the summary on purpose
+
+Ten numbers arrive and six are drawn. Active centres and total units are
+answered better by the sections underneath, and the rejection rate is a
+percentage of a percentage — a nine-cell grid on a phone is a grid nobody reads.
+
+Nothing is hidden silently: the export hands over the whole thing, and the panel
+still has the tables.
+
+## Two things a report must not do
+
+**Say nothing when it has nothing.** Shrinkage over zero reconciled boxes is not
+«0%», it is «no reception has been squared up yet» — a percentage calculated on
+nothing looks like a fact.
+
+**Cut a list without saying so.** The activity list draws the seven most recent
+days out of however many there are, and says which of the two numbers it is
+showing. Silently truncating reads as «that was all there was».
+
+## The document waiting was already shared
+
+`awaitDocument` came out of the shipment manifest during Phase 27; the CSV is
+its third caller and needed no new code.
 
 This graduates block 12 of [Phase 10](phase-10-operational-parity.md).
