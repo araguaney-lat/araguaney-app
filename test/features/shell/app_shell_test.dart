@@ -136,6 +136,15 @@ void main() {
     await tester.tap(find.text('Menú'));
     await tester.pumpAndSettle();
 
+    // El menú ya no cabe entero: hay que desplazarlo. Es la señal de que
+    // necesita agruparse, anotada en la fase 11.
+    await tester.dragUntilVisible(
+      find.text('Revisiones de riesgo'),
+      find.byType(ListView).last,
+      const Offset(0, -80),
+    );
+    await tester.pumpAndSettle();
+
     expect(find.text('Revisiones de riesgo'), findsOneWidget);
   });
 

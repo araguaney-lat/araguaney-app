@@ -68,13 +68,42 @@ produce two truths about the same pallet of boxes.
 
 | # | Task | Description | Complexity | Status |
 |---|------|-------------|------------|--------|
-| 1 | Donations repository | `GET /v1/donations` and `GET /v1/donations/{code}` behind a sealed outcome, with the read model caching the list. | 🟠 Medium | ⬜ Pending |
-| 2 | The list | What is expected at this centre, what arrived, and what was received, in the order somebody asks those questions. | 🟠 Medium | ⬜ Pending |
-| 3 | The record | The donor, the declared contents, the photos, and the state it is in. | 🟠 Medium | ⬜ Pending |
-| 4 | Receiving | `POST /v1/donations/{code}/receive`, online only, with the reason said on screen. | 🔴 High | ⬜ Pending |
-| 5 | What the donor declared | `GET /v1/donations/{code}/suggestions` so the contents are not typed twice. | 🟠 Medium | ⬜ Pending |
-| 6 | The photos | Reading a photo, and asking the server to read a label out of one. | 🟠 Medium | ⬜ Pending |
-| 7 | From the scanner to here | A scanned donation code leads to its record and to receiving, instead of ending at an identification. | 🟢 Low | ⬜ Pending |
+| 1 | Donations repository | `GET /v1/donations` and `GET /v1/donations/{code}` behind a sealed outcome. | 🟠 Medium | ✅ Done |
+| 2 | The list | What is expected at this centre and what was received, as the two questions the server itself separates. | 🟠 Medium | ✅ Done |
+| 3 | The record | The declared contents, the photos, and the state it is in. **Not the donor** — see below. | 🟠 Medium | 🟨 Partial |
+| 4 | Receiving | `POST /v1/donations/{code}/receive`, online only, with the reason said on screen. | 🔴 High | ✅ Done |
+| 5 | What the donor declared | `GET /v1/donations/{code}/suggestions` for each free-text line, so the contents are not typed twice. | 🟠 Medium | ✅ Done |
+| 6 | The photos | Reading a photo through its signed link, and asking the server to read a label out of one. | 🟠 Medium | ✅ Done |
+| 7 | From the scanner to here | A scanned donation code opens its record instead of jumping to capture. | 🟢 Low | ✅ Done |
 | 8 | Verify on a device | A real code, a real reception, at a door. | 🟢 Low | ⬜ Pending |
+
+## The donor is not in the contract
+
+`DonationOut` carries the code, the status, the declared items, the photos and
+the centres. **It carries nothing about who donated**, although the model has
+the relationship. The panel's own reception screen shows no donor either, so
+this is not a gap between the two clients: it is what the endpoint publishes.
+
+Whether that is a privacy decision or an oversight is the backend's answer to
+give — `DonationPublicOut` says «sin un solo dato del donante» about the public
+QR, and this is the centre-facing schema. Recorded as a question in
+[`docs/backend-requests.md`](../backend-requests.md), not as a demand: receiving
+works without it, and asking for personal data that somebody decided to withhold
+would be the wrong request to make loudly.
+
+## Marking is the exception, not the norm
+
+`ReceiveIn` takes only the lines that went wrong; anything unmarked the server
+counts as received. The screen follows that exactly, which is what makes the
+normal case — everything arrived — a single button. What travels is what
+somebody looked at and decided.
+
+## Extras are not built yet
+
+`ReceiveIn.extras` carries what arrived without being announced, and the
+repository takes it. No screen fills it in: adding an unannounced line means
+picking a catalogue product and a quantity at the door, which is the capture
+form's job and duplicating it here would be a second way to do the same thing.
+The reception registers what was declared; what came extra is captured.
 
 This graduates block 9 of [Phase 10](phase-10-operational-parity.md).

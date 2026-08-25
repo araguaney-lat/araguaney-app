@@ -255,6 +255,29 @@ already carries its centre, so nothing is guessed; it is only wasteful.
 
 ---
 
+## 10. A question, not a request: the donor on `DonationOut`
+
+**What we noticed.** `DonationOut` publishes the code, the status, the declared
+items, the photos and the centres. It publishes **nothing about who donated**,
+although `Donation` has the relationship and loads it eagerly.
+
+**Why it is a question.** The panel's own reception screen shows no donor
+either, so the two clients agree; this is what the endpoint serves. And
+`DonationPublicOut` is documented as «sin un solo dato del donante» for the
+public QR, which reads like a deliberate line — but that schema is the public
+one, and this is the centre-facing one.
+
+**What we would use it for.** Confirming at the door that the person handing
+over the boxes is the one who announced them. Today the code is the only thing
+that matches, which is probably enough.
+
+**Not a request.** If the omission is deliberate, this application is fine as it
+is: [Phase 18](roadmap/phase-18-preregistered-donations.md) ships without it and
+says so. Asking loudly for personal data that somebody chose to withhold would
+be the wrong move; asking whether it was a choice is not.
+
+---
+
 ## Not requests
 
 Recorded here so they are not mistaken for gaps:

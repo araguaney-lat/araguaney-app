@@ -13,6 +13,7 @@ import '../../centers/data/centers_providers.dart';
 import '../../centers/ui/centers_list_view.dart';
 import '../../centers/ui/choose_center_view.dart';
 import '../../dashboard/ui/stock_by_category_view.dart';
+import '../../donations/ui/donations_list_view.dart';
 import '../../incidents/ui/incidents_list_view.dart';
 import '../../intake/data/intake_providers.dart';
 import '../../intake/ui/intake_list_view.dart';
@@ -108,6 +109,11 @@ class MoreMenuSheet extends ConsumerWidget {
           leading: const Icon(Icons.inventory_outlined),
           title: Text(context.l10n.catalogTitle),
           onTap: () => _go(context, CatalogListView.route()),
+        ),
+        ListTile(
+          leading: const Icon(Icons.volunteer_activism_outlined),
+          title: Text(context.l10n.donationsTitle),
+          onTap: () => _go(context, DonationsListView.route()),
         ),
         ListTile(
           leading: const Icon(Icons.pallet),

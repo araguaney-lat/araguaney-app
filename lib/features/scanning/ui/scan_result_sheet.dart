@@ -258,7 +258,8 @@ class _Donation extends StatelessWidget {
         const SizedBox(height: 12),
         for (final item in items.take(4))
           Text(
-            '· ${item.freeText ?? 'Artículo'} — ${item.quantity} ${item.unit}',
+            '· ${item.freeText ?? context.l10n.donationItemFromCatalogue} — '
+            '${item.quantity} ${item.unit}',
             style: theme.textTheme.bodySmall,
           ),
         if (items.length > 4)
@@ -272,7 +273,7 @@ class _Donation extends StatelessWidget {
         SizedBox(
           width: double.infinity,
           child: ConfirmButton(
-            label: context.l10n.scanCaptureDonation,
+            label: context.l10n.scanOpenDonation,
             onPressed: onOpen,
           ),
         ),

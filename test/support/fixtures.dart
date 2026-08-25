@@ -136,34 +136,26 @@ Map<String, Object?> publicPalletJson({
 };
 
 Map<String, Object?> donationJson({
+  String id = 'donation-1',
   String code = 'DN-0001',
   String status = 'REGISTERED',
+  bool atypicalVolume = false,
+  String? notes,
   List<Map<String, Object?>>? items,
+  List<Map<String, Object?>>? photos,
 }) => {
-  'id': 'donation-1',
+  'id': id,
   'code': code,
   'status': status,
   'created_at': testNow.toIso8601String(),
   'registered_at': testNow.toIso8601String(),
-  'atypical_volume': false,
+  'atypical_volume': atypicalVolume,
   'intended_campaign_id': null,
   'intended_center_id': null,
   'received_center_id': null,
-  'notes': null,
-  'photos': const [],
-  'items':
-      items ??
-      [
-        {
-          'id': 'item-1',
-          'quantity': 3,
-          'unit': 'caja',
-          'added_by': 'donor',
-          'free_text': 'Paracetamol 500 mg',
-          'product_type_id': null,
-          'reception_status': null,
-        },
-      ],
+  'notes': notes,
+  'photos': photos ?? const [],
+  'items': items ?? [donationItemJson(quantity: 3)],
 };
 
 Map<String, Object?> boxJson({
@@ -455,4 +447,29 @@ Map<String, Object?> campaignMemberJson({
   'center_role': centerRole,
   'center_id': centerId,
   'is_active': isActive,
+};
+
+Map<String, Object?> donationItemJson({
+  String id = 'item-1',
+  String? freeText = 'Paracetamol 500 mg',
+  String? productTypeId,
+  int quantity = 10,
+  String unit = 'caja',
+  String addedBy = 'donor',
+  String? receptionStatus,
+}) => {
+  'id': id,
+  'product_type_id': productTypeId,
+  'free_text': freeText,
+  'quantity': quantity,
+  'unit': unit,
+  'added_by': addedBy,
+  'reception_status': receptionStatus,
+};
+
+Map<String, Object?> donationPhotoJson({String id = 'photo-1'}) => {
+  'id': id,
+  'content_type': 'image/jpeg',
+  'size_bytes': 1024,
+  'created_at': testNow.toIso8601String(),
 };

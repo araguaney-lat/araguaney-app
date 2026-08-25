@@ -2649,5 +2649,122 @@
         "type": "String"
       }
     }
+  },
+  "donationsTitle": "Donaciones anunciadas",
+  "@donationsTitle": {
+    "description": "Pre-registered donations, as a screen title and a menu entry."
+  },
+  "donationsIncomingTab": "En camino",
+  "@donationsIncomingTab": {
+    "description": "Donations heading for this centre."
+  },
+  "donationsReceivedTab": "Recibidas",
+  "@donationsReceivedTab": {
+    "description": "Donations this centre already received."
+  },
+  "donationsIncomingEmpty": "Nada anunciado en camino a este centro.",
+  "@donationsIncomingEmpty": {
+    "description": "No incoming donation."
+  },
+  "donationsReceivedEmpty": "Todavía no se recibió ninguna donación anunciada.",
+  "@donationsReceivedEmpty": {
+    "description": "No received donation."
+  },
+  "donationLineCount": "{count, plural, =1{1 renglón} other{{count} renglones}}",
+  "@donationLineCount": {
+    "description": "How many lines the donor declared.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "donationDeclaredTitle": "Lo que anunció quien dona",
+  "@donationDeclaredTitle": {
+    "description": "Heading over the declared contents."
+  },
+  "donationDeclaredExplanation": "Marca solo lo que no llegó o no se acepta. El resto se da por recibido.",
+  "@donationDeclaredExplanation": {
+    "description": "How receiving works: exceptions are marked, everything else counts as received."
+  },
+  "donationItemFromCatalogue": "Producto del catálogo",
+  "@donationItemFromCatalogue": {
+    "description": "A declared line that points at a catalogue product instead of free text."
+  },
+  "donationItemAddedByCenter": "agregado por el centro",
+  "@donationItemAddedByCenter": {
+    "description": "A line the centre added while receiving, not the donor."
+  },
+  "donationSuggestionsTitle": "Se parece a",
+  "@donationSuggestionsTitle": {
+    "description": "Heading over the catalogue matches suggested for a free-text line."
+  },
+  "donationPhotosTitle": "Fotos",
+  "@donationPhotosTitle": {
+    "description": "Heading over the photos the donor uploaded."
+  },
+  "donationPhotoTitle": "Foto de la donación",
+  "@donationPhotoTitle": {
+    "description": "Title of the screen that shows one photo."
+  },
+  "donationPhotoUnavailable": "No se pudo abrir la foto.",
+  "@donationPhotoUnavailable": {
+    "description": "The signed link did not work or expired."
+  },
+  "donationReadLabelAction": "Leer la etiqueta",
+  "@donationReadLabelAction": {
+    "description": "Asks the server to read a label out of the photo."
+  },
+  "donationLabelUnread": "No se pudo leer nada de esta foto. Se teclea como siempre.",
+  "@donationLabelUnread": {
+    "description": "The label reader returned nothing, which is a normal answer and not a failure."
+  },
+  "donationLabelSuggestions": "Lo que se leyó llega como sugerencia: confírmalo con el envase delante.",
+  "@donationLabelSuggestions": {
+    "description": "What the label reader returns is a draft for a person to confirm."
+  },
+  "donationReceiveAction": "Recibir la donación",
+  "@donationReceiveAction": {
+    "description": "Registers the reception, at the door."
+  },
+  "donationReceiveNeedsConnection": "Recibir necesita conexión: otra persona puede estar recibiendo esta misma donación ahora.",
+  "@donationReceiveNeedsConnection": {
+    "description": "Why receiving is not available offline. Same reasoning as sealing a box."
+  },
+  "donationAlreadyReceived": "Esta donación ya se recibió.",
+  "@donationAlreadyReceived": {
+    "description": "The donation is in RECEIVED and there is nothing to do here."
+  },
+  "donationAtypicalTitle": "Volumen atípico",
+  "@donationAtypicalTitle": {
+    "description": "The server flagged this donation as unusually large."
+  },
+  "donationAtypicalExplanation": "Revísala con calma antes de recibirla.",
+  "@donationAtypicalExplanation": {
+    "description": "What to do about it. It deliberately does not say what the threshold is."
+  },
+  "receptionMissing": "Falta",
+  "@receptionMissing": {
+    "description": "A declared line that did not arrive."
+  },
+  "receptionRejected": "No se acepta",
+  "@receptionRejected": {
+    "description": "A declared line that arrived and is not accepted."
+  },
+  "receptionReceived": "Recibido",
+  "@receptionReceived": {
+    "description": "A declared line that arrived as announced."
+  },
+  "registeredOnLabel": "Anunciada el",
+  "@registeredOnLabel": {
+    "description": "When the donation was registered from the website."
+  },
+  "scanOpenDonation": "Abrir la donación",
+  "@scanOpenDonation": {
+    "description": "Opens the record of a scanned donation, where it can be received."
+  },
+  "donationCaptureAction": "Capturar esta donación",
+  "@donationCaptureAction": {
+    "description": "Goes from a received donation to the capture it belongs to."
   }
 }
