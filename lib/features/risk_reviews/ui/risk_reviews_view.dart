@@ -61,7 +61,9 @@ class RiskReviewsView extends ConsumerWidget {
     if (outcome case ResolveRefused(:final failure)) {
       ScaffoldMessenger.of(context)
         ..hideCurrentSnackBar()
-        ..showSnackBar(SnackBar(content: Text(failure.operatorMessage)));
+        ..showSnackBar(
+          SnackBar(content: Text(failure.operatorMessage(context.l10n))),
+        );
     }
   }
 
@@ -83,7 +85,7 @@ class RiskReviewsView extends ConsumerWidget {
                 : null,
           ),
           AsyncError(:final error) => _Message(
-            ApiErrorMapper.fromAny(error).operatorMessage,
+            ApiErrorMapper.fromAny(error).operatorMessage(context.l10n),
           ),
           _ => const Center(child: CircularProgressIndicator()),
         },

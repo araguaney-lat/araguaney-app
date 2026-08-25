@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/api/generated/models/center_create.dart';
 import '../../../core/api/generated/models/center_out.dart';
 import '../../../core/api/generated/models/center_update.dart';
+import '../../../core/i18n/l10n_extension.dart';
 import '../data/centers_providers.dart';
 import '../data/centers_repository.dart';
 
@@ -125,7 +126,7 @@ class _CenterFormViewState extends ConsumerState<CenterFormView> {
       case CentersRefused(:final failure):
         // El mensaje del servidor entero: describe algo que quien lo escribe
         // puede corregir, como un correo mal formado.
-        setState(() => _failure = failure.operatorMessage);
+        setState(() => _failure = failure.operatorMessage(context.l10n));
     }
   }
 

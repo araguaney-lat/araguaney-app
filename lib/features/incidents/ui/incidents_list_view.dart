@@ -56,7 +56,7 @@ class _IncidentsListViewState extends ConsumerState<IncidentsListView> {
         );
       case IncidentsRefused(:final failure):
         messenger.showSnackBar(
-          SnackBar(content: Text(failure.operatorMessage)),
+          SnackBar(content: Text(failure.operatorMessage(context.l10n))),
         );
     }
   }
@@ -83,7 +83,7 @@ class _IncidentsListViewState extends ConsumerState<IncidentsListView> {
           _Message(
             isForbidden
                 ? 'Hace falta coordinar un centro para ver sus incidencias.'
-                : failure.operatorMessage,
+                : failure.operatorMessage(context.l10n),
           ),
         AsyncError(:final error) => _Message('$error'),
         _ => const Center(child: CircularProgressIndicator()),

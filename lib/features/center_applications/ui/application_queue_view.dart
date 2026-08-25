@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/api/generated/models/center_application_out.dart';
+import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/ui/record_field.dart';
 import '../../../core/ui/relative_time.dart';
 import '../../centers/data/centers_providers.dart';
@@ -128,7 +129,7 @@ class _ApplicationQueueViewState extends ConsumerState<ApplicationQueueView> {
         );
       case ApplicationsRefused(:final failure):
         messenger.showSnackBar(
-          SnackBar(content: Text(failure.operatorMessage)),
+          SnackBar(content: Text(failure.operatorMessage(context.l10n))),
         );
     }
   }
@@ -163,7 +164,7 @@ class _ApplicationQueueViewState extends ConsumerState<ApplicationQueueView> {
           _Message(
             isForbidden
                 ? 'Solo quien revisa postulaciones puede ver esta cola.'
-                : failure.operatorMessage,
+                : failure.operatorMessage(context.l10n),
           ),
         AsyncError(:final error) => _Message('$error'),
         _ => const Center(child: CircularProgressIndicator()),

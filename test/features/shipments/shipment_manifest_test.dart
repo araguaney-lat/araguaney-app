@@ -76,7 +76,12 @@ void main() {
         adapter,
       ).manifest('shipment-1', wait: noWait);
 
-      expect((outcome as ManifestFailed).message, 'El envío no tiene tarimas');
+      // El trabajo terminó en error y el servidor dijo por qué: sus palabras
+      // viajan tal cual, como cualquier rechazo de regla de negocio.
+      expect(
+        (outcome as ManifestFailed).serverError,
+        'El envío no tiene tarimas',
+      );
     });
 
     test(
@@ -114,7 +119,10 @@ void main() {
         OfflineHttpAdapter(),
       ).manifest('shipment-1', wait: noWait);
 
-      expect((outcome as ManifestFailed).message, contains('No hay conexión'));
+      expect(
+        (outcome as ManifestFailed).failure!.operatorMessage(await spanish()),
+        contains('No hay conexión'),
+      );
     });
   });
 

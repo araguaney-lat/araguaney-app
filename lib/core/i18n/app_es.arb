@@ -227,5 +227,13 @@
   "donationStatusExpired": "Caducada",
   "@donationStatusExpired": {
     "description": "Donación que nunca llegó y venció su plazo."
+  },
+  "loginRateLimited": "Demasiados intentos seguidos. Espera unos minutos y vuelve a entrar: no es tu contraseña.",
+  "@loginRateLimited": {
+    "description": "Límite de peticiones al iniciar sesión. No se cuenta por persona: en el arranque de un turno lo agota el centro entero, y quien lo recibe tiene la contraseña correcta."
+  },
+  "manifestFailed": "No se pudo obtener el manifiesto.",
+  "@manifestFailed": {
+    "description": "El trabajo del manifiesto no terminó bien y el servidor no dijo por qué."
   }
 }

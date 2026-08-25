@@ -4,7 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/auth/auth_providers.dart';
 import '../../../core/auth/session.dart';
 import '../../../core/config/app_config.dart';
+import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/platform/open_link.dart';
+import '../domain/login_failure_message.dart';
 import 'app_version_footer.dart';
 import 'forgot_password_view.dart';
 
@@ -44,7 +46,9 @@ class _LoginViewState extends ConsumerState<LoginView> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(sessionControllerProvider);
-    final failure = state is SessionAbsent ? state.failureMessage : null;
+    final failure = state is SessionAbsent && state.failure != null
+        ? loginFailureMessage(context.l10n, state.failure!)
+        : null;
 
     return Scaffold(
       body: SafeArea(

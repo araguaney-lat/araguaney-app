@@ -266,9 +266,9 @@ class _BoxRow extends ConsumerWidget {
 
     ref.read(syncCoordinatorProvider).report([outcome]);
     if (outcome case SyncFailed(:final failure)) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(failure.operatorMessage)));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(failure.operatorMessage(context.l10n))),
+      );
     }
   }
 

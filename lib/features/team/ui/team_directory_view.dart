@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/api/api_error_mapper.dart';
 import '../../../core/api/generated/models/user_out.dart';
 import '../../../core/auth/auth_providers.dart';
+import '../../../core/i18n/l10n_extension.dart';
 import '../data/team_providers.dart';
 import '../data/team_repository.dart';
 import 'campaign_members_view.dart';
@@ -67,10 +68,10 @@ class TeamDirectoryView extends ConsumerWidget {
             context,
           ).showSnackBar(SnackBar(content: Text(notice)));
         }
-      case TeamRefused(:final message):
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(message)));
+      case TeamRefused(:final reason):
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(reason.operatorMessage(context.l10n))),
+        );
     }
   }
 
@@ -120,7 +121,7 @@ class TeamDirectoryView extends ConsumerWidget {
             ),
           ),
           AsyncError(:final error) => _Message(
-            ApiErrorMapper.fromAny(error).operatorMessage,
+            ApiErrorMapper.fromAny(error).operatorMessage(context.l10n),
           ),
           _ => const Center(child: CircularProgressIndicator()),
         },

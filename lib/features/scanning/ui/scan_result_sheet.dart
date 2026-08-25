@@ -80,7 +80,7 @@ class ScanResultSheet extends StatelessWidget {
       ScanResolutionFailed(:final failure) => _Message(
         icon: Icons.error_outline,
         title: 'No se pudo consultar',
-        text: failure.operatorMessage,
+        text: failure.operatorMessage(context.l10n),
       ),
     },
   );

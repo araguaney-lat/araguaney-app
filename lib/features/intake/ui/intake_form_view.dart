@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/api/generated/models/campaign_out.dart';
 import '../../../core/connectivity/connectivity_controller.dart';
+import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/ui/confirm_button.dart';
 import '../../../core/ui/record_field.dart';
 import '../../../core/ui/theme/app_theme.dart';
@@ -136,7 +137,7 @@ class _IntakeFormViewState extends ConsumerState<IntakeFormView> {
       // el donante llegue hasta aquí significa que quedó sin resolver, y esa
       // también es una respuesta que quien captura tiene que leer.
       case IntakeNeedsDonor(:final failure):
-        _showFailure(failure.operatorMessage);
+        _showFailure(failure.operatorMessage(context.l10n));
       // La red se cayó a mitad del envío. Perder lo capturado sería el peor
       // resultado posible, así que la captura pasa a la cola con su misma
       // llave: cuando salga la señal se enviará una vez, no dos.
@@ -144,7 +145,7 @@ class _IntakeFormViewState extends ConsumerState<IntakeFormView> {
           when failure.isRetryable && userId != null:
         await _enqueue(userId);
       case IntakeRejected(:final failure):
-        _showFailure(failure.operatorMessage);
+        _showFailure(failure.operatorMessage(context.l10n));
     }
   }
 
@@ -184,7 +185,7 @@ class _IntakeFormViewState extends ConsumerState<IntakeFormView> {
   Future<IntakeSubmission?> _resolveDonorRequest(IntakeNeedsDonor asked) async {
     final decision = await AnonymousExceptionDialog.show(
       context,
-      serverMessage: asked.failure.operatorMessage,
+      serverMessage: asked.failure.operatorMessage(context.l10n),
     );
     if (decision == null || !mounted) return null;
 

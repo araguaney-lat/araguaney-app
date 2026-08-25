@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/i18n/l10n_extension.dart';
 import '../../account/data/account_providers.dart';
 import '../../account/data/account_repository.dart';
 import 'login_view.dart';
@@ -53,7 +54,7 @@ class _ForgotPasswordViewState extends ConsumerState<ForgotPasswordView> {
         case AccountDone():
           _sent = true;
         case AccountRefused(:final failure):
-          _failure = failure.operatorMessage;
+          _failure = failure.operatorMessage(context.l10n);
       }
     });
   }

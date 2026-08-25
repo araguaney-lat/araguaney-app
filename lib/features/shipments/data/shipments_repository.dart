@@ -42,9 +42,17 @@ final class ManifestStillWorking extends ManifestOutcome {
 }
 
 final class ManifestFailed extends ManifestOutcome {
-  const ManifestFailed(this.message);
+  const ManifestFailed({this.failure, this.serverError});
 
-  final String message;
+  /// El fallo de la llamada, cuando lo hubo.
+  ///
+  /// Se lleva el fallo y no una frase: redactar en la capa de datos elegiría
+  /// un idioma sin saber en cuál se está mirando.
+  final ApiFailure? failure;
+
+  /// Lo que dijo el servidor cuando el trabajo terminó en error. Son sus
+  /// palabras y viajan tal cual, como cualquier rechazo de regla de negocio.
+  final String? serverError;
 }
 
 /// Cómo terminó una operación sobre un envío.
@@ -160,15 +168,9 @@ class ShipmentsRepository {
         switch (current.status) {
           case 'DONE':
             final url = current.downloadUrl;
-            return url == null
-                ? const ManifestFailed(
-                    'El manifiesto se generó pero no llegó su enlace.',
-                  )
-                : ManifestReady(url);
+            return url == null ? const ManifestFailed() : ManifestReady(url);
           case 'FAILED':
-            return ManifestFailed(
-              current.error ?? 'El servidor no pudo generar el manifiesto.',
-            );
+            return ManifestFailed(serverError: current.error);
         }
 
         await wait(_pollInterval);
@@ -179,7 +181,7 @@ class ShipmentsRepository {
 
       return const ManifestStillWorking();
     } on Object catch (error) {
-      return ManifestFailed(ApiErrorMapper.fromAny(error).operatorMessage);
+      return ManifestFailed(failure: ApiErrorMapper.fromAny(error));
     }
   }
 }

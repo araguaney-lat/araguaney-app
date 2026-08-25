@@ -60,11 +60,11 @@ class SessionController extends Notifier<SessionState> {
         // volver a iniciar sesión, así que borrarla dejaría el dispositivo
         // inservible justo en el sótano donde más falta hace. Al volver la
         // conexión, restaurar vuelve a intentarlo.
-        state = SessionAbsent(failureMessage: failure.operatorMessage);
+        state = SessionAbsent(failure: failure);
         return;
       }
       // El servidor sí dijo que no sirve: vencido, revocado o reutilizado.
-      await _clear(message: failure.operatorMessage);
+      await _clear(failure: failure);
     }
   }
 
@@ -84,28 +84,8 @@ class SessionController extends Notifier<SessionState> {
           state = SessionAwaitingTotp(partialToken: partialToken);
       }
     } on Object catch (error) {
-      state = SessionAbsent(failureMessage: _loginMessageFor(error));
+      state = SessionAbsent(failure: _failureFor(error));
     }
-  }
-
-  /// Qué se le dice a quien no pudo entrar.
-  ///
-  /// El límite de intentos del inicio de sesión no se cuenta por persona —no
-  /// hay sesión todavía—, así que en el arranque de un turno lo puede agotar el
-  /// centro entero y a la siguiente persona le toca el rechazo con la
-  /// contraseña correcta. Decirle «credenciales inválidas» la mandaría a
-  /// teclear de nuevo, a gastar el siguiente intento y a dudar de algo que no
-  /// era el problema.
-  String _loginMessageFor(Object error) {
-    final failure = _failureFor(error);
-    // `ACCOUNT_LOCKED` llega con este mismo tipo y es lo contrario: ahí el
-    // bloqueo lo causaron los intentos fallidos de esa cuenta, así que decir
-    // «no es tu contraseña» sería falso. Se deja pasar a su copia propia.
-    if (failure is RateLimitFailure && failure.code != 'ACCOUNT_LOCKED') {
-      return 'Demasiados intentos seguidos. Espera unos minutos y vuelve a '
-          'entrar: no es tu contraseña.';
-    }
-    return failure.operatorMessage;
   }
 
   Future<void> submitTotpCode(String code) async {
@@ -124,11 +104,11 @@ class SessionController extends Notifier<SessionState> {
       // sesión en vez de dejar a alguien tecleando códigos contra una puerta
       // que ya se cerró.
       if (failure is UnauthorizedFailure) {
-        state = SessionAbsent(failureMessage: failure.operatorMessage);
+        state = SessionAbsent(failure: failure);
       } else {
         state = SessionAwaitingTotp(
           partialToken: current.partialToken,
-          failureMessage: failure.operatorMessage,
+          failure: failure,
         );
       }
     }
@@ -200,8 +180,12 @@ class SessionController extends Notifier<SessionState> {
   /// sesión válida y justo eso es lo que se acaba de perder. El token queda
   /// registrado hasta que alguien entre, y entrar lo reasigna.
 
-  Future<void> expire() =>
-      _clear(message: 'Tu sesión expiró. Inicia sesión de nuevo.');
+  Future<void> expire() => _clear(
+    failure: const UnauthorizedFailure(
+      code: 'UNAUTHORIZED',
+      message: 'Session expired',
+    ),
+  );
 
   /// Adopta el token como sesión activa.
   ///
@@ -290,9 +274,9 @@ class SessionController extends Notifier<SessionState> {
     return current;
   }
 
-  Future<void> _clear({String? message}) async {
+  Future<void> _clear({ApiFailure? failure}) async {
     await _storage.clear();
-    state = SessionAbsent(failureMessage: message);
+    state = SessionAbsent(failure: failure);
   }
 
   ApiFailure _failureFor(Object error) => ApiErrorMapper.fromAny(error);

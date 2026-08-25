@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/api/api_error_mapper.dart';
 import '../../../core/api/generated/models/user_out.dart';
 import '../../../core/api/generated/models/user_profile_out.dart';
+import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/ui/record_field.dart';
 import '../../session/ui/change_password_view.dart';
 import '../data/account_providers.dart';
@@ -36,7 +37,7 @@ class ProfileView extends ConsumerWidget {
             account: value.account,
           ),
           AsyncError(:final error) => _Message(
-            ApiErrorMapper.fromAny(error).operatorMessage,
+            ApiErrorMapper.fromAny(error).operatorMessage(context.l10n),
           ),
           _ => const Center(child: CircularProgressIndicator()),
         },
@@ -126,7 +127,7 @@ class _Loaded extends ConsumerWidget {
     if (!context.mounted) return;
 
     if (outcome case AccountRefused(:final failure)) {
-      _say(context, failure.operatorMessage);
+      _say(context, failure.operatorMessage(context.l10n));
       return;
     }
     ref.invalidate(myAccountProvider);
@@ -203,7 +204,7 @@ class _TotpTile extends ConsumerWidget {
     if (!context.mounted) return;
 
     if (outcome case AccountRefused(:final failure)) {
-      _say(context, failure.operatorMessage);
+      _say(context, failure.operatorMessage(context.l10n));
       return;
     }
     ref.invalidate(myAccountProvider);
@@ -226,7 +227,7 @@ class _TermsTile extends ConsumerWidget {
           .acceptTerms('current');
       if (!context.mounted) return;
       if (outcome case AccountRefused(:final failure)) {
-        _say(context, failure.operatorMessage);
+        _say(context, failure.operatorMessage(context.l10n));
         return;
       }
       ref.invalidate(myAccountProvider);

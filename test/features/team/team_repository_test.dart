@@ -7,6 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 import '../../support/fake_api.dart';
 import '../../support/fake_http_adapter.dart';
 import '../../support/fixtures.dart';
+import '../../support/l10n.dart';
 
 void main() {
   TeamRepository repositoryOn(FakeHttpAdapter adapter) {
@@ -56,7 +57,10 @@ void main() {
         'Cannot remove members from the general campaign',
       ).removeMember(campaignId: 'campaign-1', userId: 'user-7');
 
-      expect((outcome as TeamRefused).message, contains('campaña general'));
+      expect(
+        (outcome as TeamRefused).reason.operatorMessage(await spanish()),
+        contains('campaña general'),
+      );
     });
 
     test(
@@ -68,7 +72,10 @@ void main() {
           'Esta campaña está cerrada',
         ).addMember(campaignId: 'campaign-1', userId: 'user-7');
 
-        expect((outcome as TeamRefused).message, 'Esta campaña está cerrada');
+        expect(
+          (outcome as TeamRefused).reason.operatorMessage(await spanish()),
+          'Esta campaña está cerrada',
+        );
       },
     );
 
@@ -83,7 +90,10 @@ void main() {
 
       final refused = outcome as TeamRefused;
       expect(refused.failure, isA<ForbiddenFailure>());
-      expect(refused.message, 'No tienes permiso para hacer esta operación.');
+      expect(
+        refused.reason.operatorMessage(await spanish()),
+        'No tienes permiso para hacer esta operación.',
+      );
     });
   });
 
@@ -133,7 +143,10 @@ void main() {
             centerRole: 'volunteer',
           );
 
-      expect((outcome as TeamRefused).message, contains('ya tiene una cuenta'));
+      expect(
+        (outcome as TeamRefused).reason.operatorMessage(await spanish()),
+        contains('ya tiene una cuenta'),
+      );
     });
 
     test('resending an access says a new one went out', () async {
@@ -153,7 +166,10 @@ void main() {
         OfflineHttpAdapter(),
       ).reinvite(centerId: 'center-1', userId: 'user-1');
 
-      expect((outcome as TeamRefused).message, contains('No hay conexión'));
+      expect(
+        (outcome as TeamRefused).reason.operatorMessage(await spanish()),
+        contains('No hay conexión'),
+      );
     });
   });
 

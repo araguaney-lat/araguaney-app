@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/auth/auth_providers.dart';
 import '../../../core/auth/session.dart';
+import '../../../core/i18n/l10n_extension.dart';
+import '../domain/login_failure_message.dart';
 import 'login_view.dart';
 
 /// Segundo factor. Se llega aquí solo cuando el servidor lo pide, con un token
@@ -38,7 +40,9 @@ class _TotpChallengeViewState extends ConsumerState<TotpChallengeView> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(sessionControllerProvider);
-    final failure = state is SessionAwaitingTotp ? state.failureMessage : null;
+    final failure = state is SessionAwaitingTotp && state.failure != null
+        ? loginFailureMessage(context.l10n, state.failure!)
+        : null;
 
     return Scaffold(
       appBar: AppBar(

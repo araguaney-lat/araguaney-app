@@ -8,6 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 import '../../support/fake_api.dart';
 import '../../support/fake_http_adapter.dart';
 import '../../support/fixtures.dart';
+import '../../support/l10n.dart';
 
 void main() {
   final draft = const IntakeDraft(captureId: 'capture-1').addBox(
@@ -52,7 +53,7 @@ void main() {
 
     expect(result, isA<IntakeNeedsDonor>());
     expect(
-      (result as IntakeNeedsDonor).failure.operatorMessage,
+      (result as IntakeNeedsDonor).failure.operatorMessage(await spanish()),
       contains('supera el volumen'),
     );
   });
@@ -73,7 +74,7 @@ void main() {
     final failure = (result as IntakeRejected).failure;
     expect(failure, isA<BusinessRuleFailure>());
     expect(
-      failure.operatorMessage,
+      failure.operatorMessage(await spanish()),
       'La caducidad no alcanza el mínimo de la campaña',
     );
     expect(failure.field, 'expiry_date');

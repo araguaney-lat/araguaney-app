@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/api/api_error_mapper.dart';
 import '../../../core/auth/auth_providers.dart';
+import '../../../core/i18n/l10n_extension.dart';
 import 'login_view.dart';
 
 /// Cambiar la contraseña, por obligación o por decisión.
@@ -73,7 +74,9 @@ class _ChangePasswordViewState extends ConsumerState<ChangePasswordView> {
       // mensaje es el que se muestra.
       if (mounted) {
         setState(
-          () => _failure = ApiErrorMapper.fromAny(error).operatorMessage,
+          () => _failure = ApiErrorMapper.fromAny(
+            error,
+          ).operatorMessage(context.l10n),
         );
       }
     } finally {

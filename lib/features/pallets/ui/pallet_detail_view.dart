@@ -35,6 +35,9 @@ class PalletDetailView extends ConsumerWidget {
   /// dijo el servidor, que es quien decide si una caja puede entrar.
   Future<void> _scanBoxes(BuildContext context, WidgetRef ref) async {
     final repository = ref.read(palletsRepositoryProvider);
+    // Se toma antes de navegar: dentro del callback ya no hay garantía de que
+    // este contexto siga montado.
+    final l10n = context.l10n;
 
     await Navigator.of(context).push(
       ContinuousScanView.route(
@@ -59,7 +62,7 @@ class PalletDetailView extends ConsumerWidget {
             // está en otra tarima, que es de otro centro. Traducirlo aquí sería
             // mantener dos versiones de la misma regla.
             PalletRejected(:final failure) => ScanFeedback.rejected(
-              '${scanned.code} · ${failure.operatorMessage}',
+              '${scanned.code} · ${failure.operatorMessage(l10n)}',
             ),
           };
         },
@@ -87,9 +90,9 @@ class PalletDetailView extends ConsumerWidget {
       ..invalidate(palletsProvider);
 
     if (outcome case PalletRejected(:final failure)) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(failure.operatorMessage)));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(failure.operatorMessage(context.l10n))),
+      );
     }
   }
 
@@ -105,9 +108,9 @@ class PalletDetailView extends ConsumerWidget {
 
     ref.invalidate(palletDetailProvider(palletId));
     if (outcome case PalletRejected(:final failure)) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(failure.operatorMessage)));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(failure.operatorMessage(context.l10n))),
+      );
     }
   }
 
@@ -134,7 +137,7 @@ class PalletDetailView extends ConsumerWidget {
           child: Padding(
             padding: const EdgeInsets.all(32),
             child: Text(
-              ApiErrorMapper.fromAny(error).operatorMessage,
+              ApiErrorMapper.fromAny(error).operatorMessage(context.l10n),
               textAlign: TextAlign.center,
             ),
           ),

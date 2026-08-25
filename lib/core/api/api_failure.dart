@@ -1,3 +1,4 @@
+import '../i18n/generated/app_localizations.dart';
 import 'refusal_copy.dart';
 
 /// Fallo de una llamada a la API, ya interpretado.
@@ -43,8 +44,11 @@ sealed class ApiFailure implements Exception {
   /// Si reintentar la misma petición puede dar un resultado distinto.
   bool get isRetryable;
 
-  /// Texto que se le muestra a quien opera.
-  String get operatorMessage;
+  /// Texto que se le muestra a quien opera, en su idioma.
+  ///
+  /// Recibe [AppLocalizations] en vez de leerlo de un global porque un global
+  /// tiene un idioma y esta aplicación va a tener varios.
+  String operatorMessage(AppLocalizations l10n);
 
   @override
   String toString() => '$runtimeType(code: $code, message: $message)';
@@ -58,8 +62,7 @@ final class NetworkFailure extends ApiFailure {
   bool get isRetryable => true;
 
   @override
-  String get operatorMessage =>
-      'No hay conexión con el servidor. Revisa tu señal e inténtalo de nuevo.';
+  String operatorMessage(AppLocalizations l10n) => l10n.failureNetwork;
 }
 
 /// La sesión no es válida o expiró (401).
@@ -81,8 +84,8 @@ final class UnauthorizedFailure extends ApiFailure {
   bool get isRetryable => false;
 
   @override
-  String get operatorMessage =>
-      refusalCopyFor(code) ?? 'Tu sesión expiró. Inicia sesión de nuevo.';
+  String operatorMessage(AppLocalizations l10n) =>
+      refusalCopyFor(l10n, code) ?? l10n.failureSessionExpired;
 }
 
 /// La sesión es válida pero no alcanza para esta operación (403).
@@ -111,8 +114,8 @@ final class ForbiddenFailure extends ApiFailure {
   bool get isRetryable => false;
 
   @override
-  String get operatorMessage =>
-      refusalCopyFor(code) ?? 'No tienes permiso para hacer esta operación.';
+  String operatorMessage(AppLocalizations l10n) =>
+      refusalCopyFor(l10n, code) ?? l10n.failureForbidden;
 }
 
 /// El recurso no existe o no es visible para este centro (404).
@@ -128,7 +131,7 @@ final class NotFoundFailure extends ApiFailure {
   bool get isRetryable => false;
 
   @override
-  String get operatorMessage => 'No encontramos lo que buscabas.';
+  String operatorMessage(AppLocalizations l10n) => l10n.failureNotFound;
 }
 
 /// El servidor rechazó la petición por una regla de negocio o de validación.
@@ -153,7 +156,8 @@ final class BusinessRuleFailure extends ApiFailure {
   bool get isRetryable => false;
 
   @override
-  String get operatorMessage => refusalCopyFor(code) ?? message;
+  String operatorMessage(AppLocalizations l10n) =>
+      refusalCopyFor(l10n, code) ?? message;
 }
 
 /// Se superó el límite de peticiones (429).
@@ -173,9 +177,8 @@ final class RateLimitFailure extends ApiFailure {
   bool get isRetryable => true;
 
   @override
-  String get operatorMessage =>
-      refusalCopyFor(code) ??
-      'Demasiadas peticiones seguidas. Espera un momento e inténtalo de nuevo.';
+  String operatorMessage(AppLocalizations l10n) =>
+      refusalCopyFor(l10n, code) ?? l10n.failureRateLimited;
 }
 
 /// El servidor falló (5xx).
@@ -191,8 +194,7 @@ final class ServerFailure extends ApiFailure {
   bool get isRetryable => true;
 
   @override
-  String get operatorMessage =>
-      'El servidor tuvo un problema. Inténtalo de nuevo en un momento.';
+  String operatorMessage(AppLocalizations l10n) => l10n.failureServer;
 }
 
 /// Cualquier otra cosa. Existe para que el mapeo sea total y nunca lance algo
@@ -209,5 +211,5 @@ final class UnknownFailure extends ApiFailure {
   bool get isRetryable => false;
 
   @override
-  String get operatorMessage => 'Ocurrió un error inesperado.';
+  String operatorMessage(AppLocalizations l10n) => l10n.failureUnexpected;
 }

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:araguaney_app/core/api/generated/clients/intakes_api.dart';
+import 'package:araguaney_app/core/api/refusal_copy.dart';
 import 'package:araguaney_app/core/db/app_database.dart';
 import 'package:araguaney_app/core/db/daos/sync_markers_dao.dart';
 import 'package:araguaney_app/core/db/tables/queued_captures_table.dart';
@@ -13,6 +14,7 @@ import 'package:flutter_test/flutter_test.dart';
 import '../../support/fake_api.dart';
 import '../../support/fake_http_adapter.dart';
 import '../../support/fixtures.dart';
+import '../../support/l10n.dart';
 import '../../support/test_database.dart';
 
 IntakeDraft draftWith({
@@ -242,7 +244,16 @@ void main() {
 
       expect(report.parked, 1);
       final row = await db.captureQueueDao.findById('capture-1');
-      expect(row?.lastFailureMessage, contains('Pide que te sumen'));
+      // **Se guarda el código y las palabras del servidor, no la copia
+      // propia.** Lo guardado lo lee alguien días después, quizá con la
+      // aplicación en otro idioma; escribir aquí el renderizado de hoy
+      // congelaría un idioma en la base. La pantalla resuelve con el código.
+      expect(row?.lastFailureCode, 'NOT_CAMPAIGN_MEMBER');
+      expect(row?.lastFailureMessage, 'User is not assigned to this campaign');
+      expect(
+        refusalCopyFor(await spanish(), row!.lastFailureCode!),
+        contains('Pide que te sumen'),
+      );
     });
 
     test('a parked capture is not retried again', () async {

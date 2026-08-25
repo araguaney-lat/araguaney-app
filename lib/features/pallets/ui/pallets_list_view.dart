@@ -43,7 +43,7 @@ class _PalletsListViewState extends ConsumerState<PalletsListView> {
         await Navigator.of(context).push(PalletDetailView.route(value.id));
         if (mounted) ref.invalidate(palletsProvider);
       case PalletRejected(:final failure):
-        _say(failure.operatorMessage);
+        _say(failure.operatorMessage(context.l10n));
     }
   }
 
@@ -67,7 +67,7 @@ class _PalletsListViewState extends ConsumerState<PalletsListView> {
       case PalletChanged():
         ref.invalidate(palletsProvider);
       case PalletRejected(:final failure):
-        _say(failure.operatorMessage);
+        _say(failure.operatorMessage(context.l10n));
     }
   }
 
@@ -103,7 +103,7 @@ class _PalletsListViewState extends ConsumerState<PalletsListView> {
             onClose: canOperate && !offline ? _close : null,
           ),
           AsyncError(:final error) => _Message(
-            ApiErrorMapper.fromAny(error).operatorMessage,
+            ApiErrorMapper.fromAny(error).operatorMessage(context.l10n),
           ),
           _ => const Center(child: CircularProgressIndicator()),
         },

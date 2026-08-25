@@ -1,3 +1,5 @@
+import '../api/api_failure.dart';
+
 import '../api/generated/models/token.dart';
 import '../api/generated/models/user_out.dart';
 
@@ -87,11 +89,16 @@ class SessionRestoring extends SessionState {
   const SessionRestoring();
 }
 
-/// No hay sesión. [failureMessage] explica por qué, cuando la hay.
+/// No hay sesión. [failure] explica por qué, cuando hay un porqué.
+///
+/// Lleva el fallo y no una frase: redactar aquí obligaría a que el controlador
+/// —que no tiene contexto— eligiera un idioma, y esta aplicación va a tener
+/// varios. La pantalla, que sí lo tiene, la redacta con
+/// `loginFailureMessage`.
 class SessionAbsent extends SessionState {
-  const SessionAbsent({this.failureMessage});
+  const SessionAbsent({this.failure});
 
-  final String? failureMessage;
+  final ApiFailure? failure;
 }
 
 /// Credenciales correctas, falta el segundo factor.
@@ -99,10 +106,10 @@ class SessionAbsent extends SessionState {
 /// El token parcial vive solo en memoria y caduca en minutos: no es una sesión
 /// y no se persiste.
 class SessionAwaitingTotp extends SessionState {
-  const SessionAwaitingTotp({required this.partialToken, this.failureMessage});
+  const SessionAwaitingTotp({required this.partialToken, this.failure});
 
   final String partialToken;
-  final String? failureMessage;
+  final ApiFailure? failure;
 }
 
 /// Hay sesión. Si [Session.mustChangePassword] es cierto, la interfaz interpone

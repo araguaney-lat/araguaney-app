@@ -62,7 +62,7 @@ class _TransfersListViewState extends ConsumerState<TransfersListView> {
             onDirection: (value) => setState(() => _direction = value),
           ),
           AsyncError(:final error) => _Message(
-            ApiErrorMapper.fromAny(error).operatorMessage,
+            ApiErrorMapper.fromAny(error).operatorMessage(context.l10n),
           ),
           _ => const Center(child: CircularProgressIndicator()),
         },

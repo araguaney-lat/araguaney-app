@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/api/api_error_mapper.dart';
 import '../../../core/api/generated/models/thread_out.dart';
+import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/ui/record_field.dart';
 import '../data/messaging_providers.dart';
 import '../data/messaging_repository.dart';
@@ -34,9 +35,9 @@ class ThreadsListView extends ConsumerWidget {
         ref.invalidate(threadsProvider);
         await Navigator.of(context).push(ThreadView.route(value.id));
       case MessagingRefused(:final failure):
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(failure.operatorMessage)));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(failure.operatorMessage(context.l10n))),
+        );
     }
   }
 
@@ -67,7 +68,7 @@ class ThreadsListView extends ConsumerWidget {
             itemBuilder: (context, index) => _ThreadTile(thread: value[index]),
           ),
           AsyncError(:final error) => _Message(
-            ApiErrorMapper.fromAny(error).operatorMessage,
+            ApiErrorMapper.fromAny(error).operatorMessage(context.l10n),
           ),
           _ => const Center(child: CircularProgressIndicator()),
         },

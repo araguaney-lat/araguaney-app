@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 import '../../../core/db/app_database.dart';
+import '../../../core/i18n/l10n_extension.dart';
 import '../../scanning/domain/scan_throttle.dart';
 import '../../scanning/domain/scanned_code.dart';
 import '../../scanning/ui/scanner_camera.dart';
@@ -81,7 +82,7 @@ class _ProductScanViewState extends ConsumerState<ProductScanView> {
           'el catálogo. Elígelo a mano.',
         );
       case BarcodeUnresolved(:final failure):
-        _say(failure.operatorMessage);
+        _say(failure.operatorMessage(context.l10n));
     }
   }
 

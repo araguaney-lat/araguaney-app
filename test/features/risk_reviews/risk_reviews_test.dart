@@ -12,6 +12,7 @@ import 'package:flutter_test/flutter_test.dart';
 import '../../support/fake_api.dart';
 import '../../support/fake_http_adapter.dart';
 import '../../support/fixtures.dart';
+import '../../support/l10n.dart';
 
 void main() {
   group('the repository', () {
@@ -66,7 +67,7 @@ void main() {
       ).resolve(reviewId: 'rr-1', resolution: RiskResolution.approve);
 
       expect(
-        (outcome as ResolveRefused).failure.operatorMessage,
+        (outcome as ResolveRefused).failure.operatorMessage(await spanish()),
         'Esta revisión ya fue resuelta',
       );
     });

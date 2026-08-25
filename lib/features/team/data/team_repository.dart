@@ -34,7 +34,9 @@ final class TeamRefused extends TeamOutcome {
 
   final ApiFailure failure;
 
-  String get message => failure.operatorMessage;
+  /// El fallo, no una frase: redactarlo aquí elegiría un idioma en una capa
+  /// que no sabe en cuál se está mirando.
+  ApiFailure get reason => failure;
 }
 
 /// El equipo del centro y quién participa en cada campaña.

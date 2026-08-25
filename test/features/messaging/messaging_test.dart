@@ -11,6 +11,7 @@ import 'package:flutter_test/flutter_test.dart';
 import '../../support/fake_api.dart';
 import '../../support/fake_http_adapter.dart';
 import '../../support/fixtures.dart';
+import '../../support/l10n.dart';
 
 void main() {
   group('the repository', () {
@@ -66,7 +67,7 @@ void main() {
       // 02. Aquí eso cuesta algo concreto: «no eres miembro de esta campaña»
       // le diría a la persona qué pedir, y «no tienes permiso» no.
       expect(
-        (outcome as MessagingRefused).failure.operatorMessage,
+        (outcome as MessagingRefused).failure.operatorMessage(await spanish()),
         'No tienes permiso para hacer esta operación.',
       );
     });

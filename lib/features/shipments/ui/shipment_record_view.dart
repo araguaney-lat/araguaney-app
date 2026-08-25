@@ -61,9 +61,9 @@ class ShipmentRecordView extends ConsumerWidget {
       case IncidentCreated():
         ref.invalidate(shipmentIncidentsProvider(shipmentId));
       case IncidentRejected(:final failure):
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(failure.operatorMessage)));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(failure.operatorMessage(context.l10n))),
+        );
     }
   }
 
@@ -104,8 +104,18 @@ class ShipmentRecordView extends ConsumerWidget {
             ),
           ),
         );
-      case ManifestFailed(:final message):
-        messenger.showSnackBar(SnackBar(content: Text(message)));
+      case ManifestFailed(:final failure, :final serverError):
+        // El fallo de la llamada manda; si no lo hubo, las palabras del
+        // servidor; y si tampoco, lo único que se puede decir con certeza.
+        messenger.showSnackBar(
+          SnackBar(
+            content: Text(
+              failure?.operatorMessage(context.l10n) ??
+                  serverError ??
+                  context.l10n.manifestFailed,
+            ),
+          ),
+        );
     }
   }
 
@@ -151,7 +161,7 @@ class ShipmentRecordView extends ConsumerWidget {
           child: Padding(
             padding: const EdgeInsets.all(32),
             child: Text(
-              ApiErrorMapper.fromAny(error).operatorMessage,
+              ApiErrorMapper.fromAny(error).operatorMessage(context.l10n),
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodyMedium,
             ),
@@ -188,7 +198,7 @@ class _Body extends ConsumerWidget {
     if (!context.mounted) return;
 
     if (outcome case ShipmentRefused(:final failure)) {
-      _say(context, failure.operatorMessage);
+      _say(context, failure.operatorMessage(context.l10n));
       return;
     }
     ref
@@ -326,7 +336,7 @@ class _PalletRow extends ConsumerWidget {
     if (!context.mounted) return;
 
     if (outcome case ShipmentRefused(:final failure)) {
-      _say(context, failure.operatorMessage);
+      _say(context, failure.operatorMessage(context.l10n));
       return;
     }
     ref
@@ -415,7 +425,7 @@ class _AdvanceState extends ConsumerState<_Advance> {
     setState(() => _busy = false);
 
     if (outcome case ShipmentRefused(:final failure)) {
-      _say(context, failure.operatorMessage);
+      _say(context, failure.operatorMessage(context.l10n));
       return;
     }
     ref

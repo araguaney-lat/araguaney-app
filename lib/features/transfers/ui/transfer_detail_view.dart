@@ -43,9 +43,9 @@ class TransferDetailView extends ConsumerWidget {
       ..invalidate(transfersProvider);
 
     if (outcome case TransferRefused(:final failure)) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(failure.operatorMessage)));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(failure.operatorMessage(context.l10n))),
+      );
     }
   }
 
@@ -113,7 +113,7 @@ class TransferDetailView extends ConsumerWidget {
           child: Padding(
             padding: const EdgeInsets.all(32),
             child: Text(
-              ApiErrorMapper.fromAny(error).operatorMessage,
+              ApiErrorMapper.fromAny(error).operatorMessage(context.l10n),
               textAlign: TextAlign.center,
             ),
           ),

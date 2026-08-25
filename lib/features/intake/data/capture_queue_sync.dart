@@ -80,7 +80,12 @@ class CaptureQueueSync {
           await _db.captureQueueDao.markRejected(
             row.captureId,
             code: failure.code,
-            message: failure.operatorMessage,
+            // **Las palabras del servidor, no una traducción.** Lo que se
+            // guarda aquí lo lee alguien días después, quizá con la aplicación
+            // en otro idioma: dejar escrito el renderizado de hoy congelaría
+            // un idioma en la base. El código viaja al lado y la pantalla
+            // resuelve con él la copia propia cuando la conoce.
+            message: failure.message,
             at: _now(),
           );
           parked++;
@@ -92,7 +97,7 @@ class CaptureQueueSync {
         await _db.captureQueueDao.markRetryable(
           row.captureId,
           code: failure.code,
-          message: failure.operatorMessage,
+          message: failure.message,
           at: _now(),
         );
         stoppedBy = failure;

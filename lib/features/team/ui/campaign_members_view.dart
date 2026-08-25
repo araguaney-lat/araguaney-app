@@ -6,6 +6,7 @@ import '../../../core/api/generated/models/campaign_member_out.dart';
 import '../../../core/api/generated/models/campaign_out.dart';
 import '../../../core/api/generated/models/user_out.dart';
 import '../../../core/auth/auth_providers.dart';
+import '../../../core/i18n/l10n_extension.dart';
 import '../../intake/data/intake_providers.dart';
 import '../data/team_providers.dart';
 import '../data/team_repository.dart';
@@ -51,7 +52,11 @@ class _CampaignMembersViewState extends ConsumerState<CampaignMembersView> {
     } on Object catch (error) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(ApiErrorMapper.fromAny(error).operatorMessage)),
+        SnackBar(
+          content: Text(
+            ApiErrorMapper.fromAny(error).operatorMessage(context.l10n),
+          ),
+        ),
       );
       return;
     }
@@ -111,10 +116,10 @@ class _CampaignMembersViewState extends ConsumerState<CampaignMembersView> {
     switch (outcome) {
       case TeamChanged():
         ref.invalidate(campaignMembersProvider(campaignId));
-      case TeamRefused(:final message):
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(message)));
+      case TeamRefused(:final reason):
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(reason.operatorMessage(context.l10n))),
+        );
     }
   }
 
@@ -203,7 +208,7 @@ class _Members extends ConsumerWidget {
           },
         ),
         AsyncError(:final error) => _Message(
-          ApiErrorMapper.fromAny(error).operatorMessage,
+          ApiErrorMapper.fromAny(error).operatorMessage(context.l10n),
         ),
         _ => const Center(child: CircularProgressIndicator()),
       },

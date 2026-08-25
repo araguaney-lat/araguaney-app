@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/api/generated/models/center_out.dart';
+import '../../../core/i18n/l10n_extension.dart';
 import '../data/centers_providers.dart';
 import '../data/centers_repository.dart';
 import 'center_form_view.dart';
@@ -40,7 +41,7 @@ class CentersListView extends ConsumerWidget {
           _Message(
             isForbidden
                 ? 'Solo la administración nacional puede ver los centros.'
-                : failure.operatorMessage,
+                : failure.operatorMessage(context.l10n),
           ),
         AsyncError(:final error) => _Message('$error'),
         _ => const Center(child: CircularProgressIndicator()),

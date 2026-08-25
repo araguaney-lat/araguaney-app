@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 import '../../../core/api/generated/models/totp_setup_out.dart';
+import '../../../core/i18n/l10n_extension.dart';
 import '../data/account_providers.dart';
 import '../data/account_repository.dart';
 
@@ -52,7 +53,7 @@ class _TotpSetupViewState extends ConsumerState<TotpSetupView> {
         case AccountDone(:final value):
           _setup = value;
         case AccountRefused(:final failure):
-          _failure = failure.operatorMessage;
+          _failure = failure.operatorMessage(context.l10n);
       }
     });
   }
@@ -72,7 +73,7 @@ class _TotpSetupViewState extends ConsumerState<TotpSetupView> {
         case AccountDone(:final value):
           _backupCodes = value;
         case AccountRefused(:final failure):
-          _failure = failure.operatorMessage;
+          _failure = failure.operatorMessage(context.l10n);
       }
     });
   }

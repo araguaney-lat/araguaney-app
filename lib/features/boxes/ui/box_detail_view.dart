@@ -65,9 +65,9 @@ class _BoxDetailViewState extends ConsumerState<BoxDetailView> {
     setState(() => _sealing = false);
 
     if (outcome case SyncFailed(:final failure)) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(failure.operatorMessage)));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(failure.operatorMessage(context.l10n))),
+      );
     }
   }
 

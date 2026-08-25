@@ -1,3 +1,5 @@
+import '../i18n/generated/app_localizations.dart';
+
 /// Copia propia para rechazos que el backend nombra con un código.
 ///
 /// Existe por dos motivos distintos que dan el mismo resultado:
@@ -15,41 +17,16 @@
 /// entonces— y la tabla no debería crecer mucho: si lo hace, lo correcto es que
 /// los mensajes vengan del backend en español, que es la petición 6 de
 /// `docs/backend-requests.md`.
-const _refusalCopy = {
-  // Permisos con nombre propio (403).
-  'SELF_REVIEW':
-      'No puedes resolver una revisión que abriste tú. Escala a la '
-      'coordinación nacional.',
-  'NOT_CAMPAIGN_MEMBER':
-      'No participas en esa campaña. Pide que te sumen para poder capturar '
-      'en ella.',
-  'ACCOUNT_DISABLED': 'Esa cuenta está desactivada.',
-  'EMAIL_NOT_VERIFIED': 'Tienes que verificar tu correo antes de operar.',
-
-  // Lo que se lee al iniciar sesión (401, 429).
-  //
-  // Sin la primera, escribir mal una contraseña respondía «Tu sesión expiró»
-  // en la pantalla donde todavía no hay sesión ninguna. La segunda no arregla
-  // un fallo sino una imprecisión: una cuenta bloqueada por intentos fallidos
-  // caía en el texto de límite de peticiones, que describe otra cosa.
-  //
-  // Ninguna de las dos dice cuántos intentos ni cuántos minutos: ese es un
-  // parámetro de un control del servidor y no se publica desde aquí. El
-  // servidor sí manda el tiempo restante en su propio mensaje, y quien lo
-  // necesite lo tiene ahí.
-  'INVALID_CREDENTIALS': 'El correo o la contraseña no coinciden.',
-  'ACCOUNT_LOCKED':
-      'Demasiados intentos fallidos. Espera un momento antes de volver a '
-      'intentarlo.',
-
-  // Reglas de negocio que el servidor contesta en inglés (400, 409, 422).
-  'EMAIL_TAKEN': 'Ese correo ya tiene una cuenta.',
-  'USERNAME_TAKEN': 'Ese nombre de usuario ya está tomado.',
-  'INVALID_ROLE': 'El rol tiene que ser coordinación o voluntariado.',
-  'PROTECTED_CAMPAIGN':
-      'De la campaña general no se puede sacar a nadie: es donde entra todo '
-      'lo que no pertenece a otra campaña.',
+String? refusalCopyFor(AppLocalizations l10n, String code) => switch (code) {
+  'SELF_REVIEW' => l10n.refusalSelfReview,
+  'NOT_CAMPAIGN_MEMBER' => l10n.refusalNotCampaignMember,
+  'ACCOUNT_DISABLED' => l10n.refusalAccountDisabled,
+  'EMAIL_NOT_VERIFIED' => l10n.refusalEmailNotVerified,
+  'INVALID_CREDENTIALS' => l10n.refusalInvalidCredentials,
+  'ACCOUNT_LOCKED' => l10n.refusalAccountLocked,
+  'EMAIL_TAKEN' => l10n.refusalEmailTaken,
+  'USERNAME_TAKEN' => l10n.refusalUsernameTaken,
+  'INVALID_ROLE' => l10n.refusalInvalidRole,
+  'PROTECTED_CAMPAIGN' => l10n.refusalProtectedCampaign,
+  _ => null,
 };
-
-/// La copia propia para [code], si esta versión la conoce.
-String? refusalCopyFor(String code) => _refusalCopy[code];
