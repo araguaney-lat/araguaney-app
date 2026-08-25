@@ -234,6 +234,42 @@ The tree travels on its cream disc because yellow on gold does not read.
 `Theme.DeviceDefault` gives the activity the system ActionBar back, and a bar
 with the application's name appears above the interface.
 
+## After publishing a version
+
+One step, in the backend's environment, and it is easy to forget because nothing
+in this repository breaks without it.
+
+`GET /v1/client/version` publishes two values that this application reads on
+every start — the minimum it supports and the newest published. Both are
+environment variables of the backend, never committed anywhere:
+
+| Variable | Raise it | What the application does |
+|---|---|---|
+| `LATEST_CLIENT_VERSION` | Every time a version becomes **downloadable** | Mentions the update at the foot of the sign-in screen, and offers «Actualizar» or «Más tarde» at launch |
+| `MIN_SUPPORTED_CLIENT_VERSION` | Only when an old version would produce **incorrect data** | Blocks it with a screen that has no way past |
+
+```
+railway variables --service <backend> --set LATEST_CLIENT_VERSION=1.0.0
+```
+
+Timing matters in one direction: raise `latest` when the build is actually
+available to download, not when it is submitted for review. Announcing an update
+that is not there yet sends somebody looking for a button that does not exist.
+
+Raising the minimum is the expensive one and the backend repository has a runbook
+for that decision — `docs/flujo/version-minima-del-cliente.md`. The short version:
+never to push adoption, only when an old build would write something wrong, and
+never without leaving time for the update to reach people first.
+
+**A subtlety of how versions compare.** The gate parses semantic versions, where
+`+3` is build metadata and does not participate in precedence — so `1.0.0+1` and
+`1.0.0+3` compare **equal**. A minimum retires a version *name*, never one build
+of it. Retiring a specific build means the next one carries a new name, not only
+a new code.
+
+The endpoint is cached at the edge for an hour, so a change takes up to that long
+to be seen everywhere.
+
 ## Distribution
 
 Play internal testing is the standing channel during development. Production

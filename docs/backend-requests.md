@@ -1,7 +1,7 @@
 # What the mobile client needs from the backend
 
 Eight things this application cannot do because the `/v1` contract does not
-offer them — two of which are now resolved and kept here for what they cost
+offer them — three of which are now resolved and kept here for what they cost
 while they were open. Each was found while building a phase, and each is written
 here with what it blocks and what the application does instead in the meantime —
 so that whoever picks one up can judge whether it is worth doing, not just what
@@ -194,22 +194,37 @@ would disappear from every cold start on a connection that cannot spare it.
 
 ---
 
-## 8. Real values on `GET /v1/client/version`
+## 8. Real values on `GET /v1/client/version` — **not a request; it is our step**
 
-**Blocks:** the minimum-version gate doing anything at all.
+**Closed on 2026-08-24 without the backend adding anything.** Kept here because
+how it was miscast is the useful part.
 
-The route answers `{"min_supported":"0.0.0","latest":"0.0.0"}`. Both are
-placeholders, and with them the gate evaluates to «current» for every build that
-has ever existed: nothing is below `0.0.0` and nothing is newer than it.
+It was written as a gap: the route answers `{"min_supported":"0.0.0",
+"latest":"0.0.0"}`, both placeholders, so the gate wired in Phase 29 evaluates to
+«current» for every build that has ever existed.
 
-**What the application does today:** asks on every start, evaluates, and acts on
-the answer — the wall below the minimum, a mention when a newer one exists. All
-of it is wired and inert, waiting on the numbers.
+That is all true and none of it is the backend's to fix. The values live in the
+backend's **environment**, deliberately — `MIN_SUPPORTED_CLIENT_VERSION` and
+`LATEST_CLIENT_VERSION`, set by whoever operates it when a version of this
+application is published. And that repository already carries a runbook for
+exactly this decision, `docs/flujo/version-minima-del-cliente.md`, which is more
+careful than the request was:
 
-**Shape that would work:** `min_supported` set to the oldest build the contract
-still guarantees, and `latest` to the newest published to Play. Raising
-`min_supported` is then the lever that retires a build, and it is worth knowing
-that it takes effect on the next start of every installed application.
+- Raise `LATEST_CLIENT_VERSION` **when the version is downloadable**, not when it
+  is submitted, so nobody goes looking for a button that is not there.
+- Raise `MIN_SUPPORTED_CLIENT_VERSION` **only when an old version would produce
+  incorrect data** — never to push adoption, which is what `latest` is for.
+- Both being `0.0.0` is described there as the correct state until there is a
+  published application. Which there was not, until now.
+
+So the step belongs to this repository's release checklist, not to a backend
+roadmap. It is recorded in
+[`docs/release/android.md`](release/android.md#after-publishing-a-version).
+
+**The lesson, which is the third time in a week:** what looked like a missing
+capability was a capability whose documentation nobody had read. The same shape
+as request 1, where the endpoint already existed, and as the barcode search
+routes that Phase 10 listed as unused for months.
 
 ---
 

@@ -91,9 +91,17 @@ numbers — which is a decision for the other repository and not something this
 one can make on its own. The alternative, leaving the client unwired until the
 backend has values, is how it stayed unwired for six phases.
 
-Recorded as a request rather than assumed: until `min_supported` names a real
-version, no build can ever be blocked, and until `latest` does, nobody is ever
-told there is a newer one.
+Until `min_supported` names a real version no build can ever be blocked, and
+until `latest` does, nobody is ever told there is a newer one.
+
+That was first written down as a request to the backend, and it was the wrong
+shape. **The values are environment variables of the backend, set by whoever
+publishes a version of this application** — and that repository already carries a
+runbook for the decision, more careful than the request was: raise `latest` when
+the build is downloadable, raise the minimum only when an old build would produce
+incorrect data, and treat both being `0.0.0` as correct until something is
+published. So it is our release step, not their gap, and it now lives in
+[`docs/release/android.md`](../release/android.md#after-publishing-a-version).
 
 ## What was found while wiring it
 
@@ -131,5 +139,6 @@ locks anybody out». It was written before the code was correct, and it failed.
 | 4 | The mention | A line at the foot of the sign-in screen, beside the installed version. | 🟢 Low | ✅ Done |
 | 5 | «Actualizar» or «Más tarde», at launch | The screen, shown only when the application opens, remembered per version, with silence starting at five days and tightening to one. | 🟠 Medium | ✅ Done |
 | 6 | The installed version, at the foot | `Versión 1.0.0 (3)` on the sign-in screen and on the wall, with the build number, so asking «what version do you have» stops costing a conversation. | 🟢 Low | ✅ Done |
-| 7 | Real values in the backend | Both are `0.0.0` today, so the gate is inert. Recorded as a request. | 🟢 Low | ⬜ Pending |
-| 8 | Verify on a device | With a build deliberately declared below the minimum, once the backend publishes real values. | 🟢 Low | ⬜ Pending |
+| 7 | Say where the values are set | Not a backend request: two environment variables, raised by whoever publishes a version. Written into the release checklist. | 🟢 Low | ✅ Done |
+| 8 | Raise `LATEST_CLIENT_VERSION` | Once a build is downloadable rather than merely uploaded. Belongs to a release, not to this phase. | 🟢 Low | ⬜ Pending |
+| 9 | Verify on a device | With a build deliberately declared below the minimum, once the backend publishes real values. | 🟢 Low | ⬜ Pending |
