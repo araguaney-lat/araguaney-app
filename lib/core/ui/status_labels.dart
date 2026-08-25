@@ -80,3 +80,14 @@ String donationStatusLabel(String status) => switch (status) {
   'EXPIRED' => 'Caducada',
   _ => status,
 };
+
+/// El estado de una incidencia. Solo dos: la abrió alguien, o alguien la
+/// cerró. Vive aquí y no en la feature por la misma razón que las seis de
+/// arriba —una tabla escondida en una pantalla deja a las otras enseñando el
+/// idioma del backend— y esta ya se lee desde dos: la lista y la ficha de un
+/// envío.
+String incidentStatusLabel(String status) => switch (status) {
+  'OPEN' => 'Abierta',
+  'RESOLVED' => 'Resuelta',
+  _ => status,
+};

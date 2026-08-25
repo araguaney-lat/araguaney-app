@@ -6,6 +6,7 @@ import '../../../core/db/app_database.dart';
 import '../../../core/db/daos/boxes_dao.dart';
 import '../../../core/sync/sync_coordinator.dart';
 import '../../../core/sync/sync_outcome.dart';
+import '../../../core/ui/event_timeline.dart';
 import '../../../core/ui/record_field.dart';
 import '../../../core/ui/status_labels.dart';
 import '../data/boxes_providers.dart';
@@ -175,8 +176,45 @@ class _BoxFields extends StatelessWidget {
           RecordField(label: 'Peso', value: '$weight kg'),
         if (item.box.rejectReason case final reason?)
           RecordField(label: 'Motivo del rechazo', value: reason),
+        // El recorrido, al final: se consulta cuando algo no cuadra, no cada
+        // vez que se abre la ficha. Y **solo con conexión** — la caché guarda
+        // el estado de una caja, no su historia.
+        _Timeline(id: item.box.id),
       ],
     );
+  }
+}
+
+/// El recorrido de la caja.
+///
+/// Responde «¿quién selló esto?» sobre el objeto que alguien tiene en la mano,
+/// que es la pregunta que se hace en los malos momentos. Va al final porque no
+/// se consulta cada vez, y calla mientras carga en vez de reservar sitio para
+/// algo que quizá no llegue.
+class _Timeline extends ConsumerWidget {
+  const _Timeline({required this.id});
+
+  final String id;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final events = ref.watch(boxEventsProvider(id));
+
+    return switch (events) {
+      AsyncData(:final value) when value.isEmpty => const SizedBox.shrink(),
+      AsyncData(:final value) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Padding(
+            padding: EdgeInsets.fromLTRB(16, 16, 16, 4),
+            child: Text('Recorrido'),
+          ),
+          EventTimeline(events: value, statusLabel: boxStatusLabel),
+        ],
+      ),
+      // Un fallo aquí no rompe la ficha: lo que se vino a ver ya está arriba.
+      _ => const SizedBox.shrink(),
+    };
   }
 }
 

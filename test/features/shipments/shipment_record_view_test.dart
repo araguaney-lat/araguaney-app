@@ -151,10 +151,10 @@ void main() {
       tester,
       coordinator: true,
       events: [
-        qrEventJson(fromStatus: 'CLOSED', toStatus: 'IN_TRANSIT'),
+        qrEventJson(fromStatus: 'CLOSED', toStatus: 'SHIPPED'),
         qrEventJson(
-          fromStatus: 'IN_TRANSIT',
-          toStatus: 'IN_TRANSIT',
+          fromStatus: 'SHIPPED',
+          toStatus: 'SHIPPED',
           milestone: 'CUSTOMS_CLEARED',
           note: 'Sin inspección',
         ),
@@ -163,7 +163,7 @@ void main() {
 
     await tester.scrollUntilVisible(find.text('Liberado de aduana'), 200);
 
-    expect(find.text('CLOSED → IN_TRANSIT'), findsOneWidget);
+    expect(find.text('Cerrado → Despachado'), findsOneWidget);
     expect(find.textContaining('Sin inspección'), findsOneWidget);
   });
 

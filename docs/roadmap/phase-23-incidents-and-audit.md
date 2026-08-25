@@ -38,6 +38,58 @@ generated, unused, and answer exactly that question for the two objects somebody
 holds. They are cheaper than the audit log and closer to where the question is
 asked, which is why they come first here.
 
+## What shipped, and the two things it turned up
+
+Tasks 1 to 4. Listing incidents, closing one, and the box and pallet timelines.
+
+### The timeline was showing the server's keys
+
+`describeShipmentEvent` rendered a state change as
+`'${event.fromStatus} → ${event.toStatus}'` — raw. So the one screen that used
+it read «CLOSED → SHIPPED» to somebody reading Spanish. **Eighth time this
+repository has paid for the same shape**, after the box statuses, the
+categories, the pallet and donation tables, the transfer and review ones.
+
+It is now `describeEvent`, and it takes the label table as a parameter. That is
+not ceremony: the same `QrEventOut` describes a shipment, a box and a pallet,
+and «CLOSED» means a different thing in each of the three. A shared drawing with
+a per-object vocabulary is what makes one timeline widget correct in three
+places.
+
+### Translating it exposed an invented fixture
+
+The test asserted `'CLOSED → IN_TRANSIT'`, which was wrong twice over: it pinned
+a raw key as though it were something a person should read, and **`IN_TRANSIT`
+is not a shipment status at all**. `SHIPMENT_STATUSES` is `OPEN, CLOSED,
+SHIPPED, DELIVERED, RECONCILED`; `IN_TRANSIT` belongs to transfers. The fixture
+agreed with the code and with nothing the server sends, and it had been that way
+since the shipment work.
+
+Nobody could have noticed while the keys were printed raw. Making the screen
+speak Spanish is what made the wrong word visible — which is the argument for
+translating at the edge rather than «later».
+
+## What the list decides
+
+**Open first, oldest at the top.** An old open incident is exactly the one being
+forgotten, and a list sorted by recency buries it.
+
+**The description is quoted and unedited**, and so is the closing note, which is
+the only thing left to whoever reported it. The contract requires that note and
+the reason is that: somebody saw a box was missing, said so, and this sentence
+is what they read afterwards. Closing without explaining turns a report into
+silence.
+
+**Closing needs national administration; listing needs only a coordinator.** The
+button is absent rather than refused for everybody else.
+
+## The timelines are at the foot of a record, and they are quiet
+
+They answer «who sealed this?» about the object somebody is holding — the
+question asked at bad moments, not on every open. So they go last, they draw
+nothing while loading, and a failure to fetch them leaves the record intact:
+what somebody came to see is above.
+
 ---
 
 ## Objectives
@@ -57,9 +109,9 @@ asked, which is why they come first here.
 
 | # | Task | Description | Complexity | Status |
 |---|------|-------------|------------|--------|
-| 1 | Incidents repository | `GET /v1/incidents` and `POST /v1/incidents/{id}/resolve` behind a sealed outcome. | 🟠 Medium | ⬜ Pending |
-| 2 | The list | What this centre reported, open first, with the shipment it belongs to. | 🟠 Medium | ⬜ Pending |
-| 3 | Resolving | `national_admin` only, with the resolution written where the reporter can read it. | 🟠 Medium | ⬜ Pending |
-| 4 | The timeline of a box and a pallet | `GET /v1/boxes/{id}/events` and `GET /v1/pallets/{id}/events` on their records, which shipments already have. Closes block 13 of Phase 10 in part. | 🟠 Medium | ⬜ Pending |
+| 1 | Incidents repository | The centre's incidents and closing one, behind a sealed outcome that reads a 403 as an answer. | 🟠 Medium | ✅ Done |
+| 2 | The list | Open first and oldest at the top, quoted, with a way to the shipment it belongs to. | 🟠 Medium | ✅ Done |
+| 3 | Closing one | `national_admin` only, with the note required and what was reported quoted while it is written. | 🟠 Medium | ✅ Done |
+| 4 | The timeline of a box and a pallet | One widget for the three records, with the status vocabulary passed in — which is what turned up the raw keys and the invented fixture. Closes block 13 of Phase 10 in part. | 🟠 Medium | ✅ Done |
 | 5 | Who did this | The audit entry as a line on a record rather than a screen of its own. | 🟠 Medium | ⬜ Pending |
 | 6 | Verify on a device | With an incident raised from the phone and resolved from the panel. | 🟢 Low | ⬜ Pending |

@@ -9,6 +9,7 @@ import '../../center_applications/ui/application_queue_view.dart';
 import '../../centers/data/centers_providers.dart';
 import '../../centers/ui/centers_list_view.dart';
 import '../../dashboard/ui/stock_by_category_view.dart';
+import '../../incidents/ui/incidents_list_view.dart';
 import '../../intake/data/intake_providers.dart';
 import '../../intake/ui/intake_list_view.dart';
 import '../../intake/ui/pending_captures_view.dart';
@@ -106,6 +107,12 @@ class MoreMenuSheet extends ConsumerWidget {
             leading: const Icon(Icons.flag_outlined),
             title: const Text('Revisiones de riesgo'),
             onTap: () => _go(context, RiskReviewsView.route()),
+          ),
+        if (coordinates)
+          ListTile(
+            leading: const Icon(Icons.report_gmailerrorred_outlined),
+            title: const Text('Incidencias'),
+            onTap: () => _go(context, IncidentsListView.route()),
           ),
         if (ref.watch(canReviewApplicationsProvider))
           ListTile(

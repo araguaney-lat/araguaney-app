@@ -1,8 +1,10 @@
 import '../../../core/api/api_error_mapper.dart';
 import '../../../core/api/api_failure.dart';
+import '../../../core/api/generated/clients/incidents_api.dart';
 import '../../../core/api/generated/clients/shipments_api.dart';
 import '../../../core/api/generated/models/incident_create.dart';
 import '../../../core/api/generated/models/incident_out.dart';
+import '../../../core/api/generated/models/incident_resolve.dart';
 import '../../../core/api/generated/models/reception_out.dart';
 
 /// Tipos de incidencia que reconoce el backend.
@@ -106,4 +108,62 @@ class IncidentsRepository {
       return IncidentRejected(ApiErrorMapper.fromAny(error));
     }
   }
+}
+
+/// Las incidencias del centro, y cerrarlas.
+///
+/// Va aparte del repositorio de envíos porque responde otra pregunta. Aquel
+/// contesta «qué pasó con este envío»; este contesta «qué hay abierto», que es
+/// lo que nadie podía preguntar: la aplicación sabía **levantar** una
+/// incidencia y no sabía enseñarla, así que quien reportaba un problema no
+/// tenía forma de saber si alguien lo miró.
+///
+/// El servidor acota por centro solo: una administración nacional las ve todas.
+class CenterIncidentsRepository {
+  CenterIncidentsRepository(this._incidents);
+
+  final IncidentsApi _incidents;
+
+  Future<IncidentsOutcome<List<IncidentOut>>> list({String? status}) async {
+    try {
+      return IncidentsRead(
+        await _incidents.listIncidentsV1IncidentsGet(status: status),
+      );
+    } on Object catch (error) {
+      return IncidentsRefused(ApiErrorMapper.fromAny(error));
+    }
+  }
+
+  /// Cerrar una incidencia. La nota es obligatoria en el contrato, y con razón:
+  /// es lo único que le queda a quien la reportó para saber en qué terminó.
+  Future<IncidentsOutcome<IncidentOut>> resolve(String id, String note) async {
+    try {
+      return IncidentsRead(
+        await _incidents.resolveIncidentV1IncidentsIncidentIdResolvePost(
+          incidentId: id,
+          body: IncidentResolve(note: note),
+        ),
+      );
+    } on Object catch (error) {
+      return IncidentsRefused(ApiErrorMapper.fromAny(error));
+    }
+  }
+}
+
+sealed class IncidentsOutcome<T> {
+  const IncidentsOutcome();
+}
+
+final class IncidentsRead<T> extends IncidentsOutcome<T> {
+  const IncidentsRead(this.value);
+
+  final T value;
+}
+
+final class IncidentsRefused<T> extends IncidentsOutcome<T> {
+  const IncidentsRefused(this.failure);
+
+  final ApiFailure failure;
+
+  bool get isForbidden => failure is ForbiddenFailure;
 }
