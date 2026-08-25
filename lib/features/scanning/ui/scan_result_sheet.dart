@@ -74,12 +74,12 @@ class ScanResultSheet extends StatelessWidget {
       ),
       ScanNotRecognized(:final raw) => _Message(
         icon: Icons.help_outline,
-        title: 'Este código no es de Araguaney',
+        title: context.l10n.scanningEsteCodigoNoEsDe,
         text: 'Se leyó:\n\n$raw',
       ),
       ScanResolutionFailed(:final failure) => _Message(
         icon: Icons.error_outline,
-        title: 'No se pudo consultar',
+        title: context.l10n.scanningNoSePudoConsultar,
         text: failure.operatorMessage(context.l10n),
       ),
     },
@@ -149,7 +149,10 @@ class _CachedBox extends StatelessWidget {
         const SizedBox(height: 16),
         SizedBox(
           width: double.infinity,
-          child: ConfirmButton(label: 'Abrir ficha', onPressed: onOpen),
+          child: ConfirmButton(
+            label: context.l10n.scanningAbrirFicha,
+            onPressed: onOpen,
+          ),
         ),
       ],
     );
@@ -270,7 +273,7 @@ class _Donation extends StatelessWidget {
         SizedBox(
           width: double.infinity,
           child: ConfirmButton(
-            label: 'Capturar esta donación',
+            label: context.l10n.scanningCapturarEstaDonacion,
             onPressed: onOpen,
           ),
         ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/i18n/l10n_extension.dart';
 
 import '../../../core/ui/sheet_insets.dart';
 
@@ -65,8 +66,7 @@ class _RejectApplicationSheetState extends State<RejectApplicationSheet> {
           ),
           const SizedBox(height: 8),
           Text(
-            'El motivo se le envía por correo a quien postuló. Escríbelo para '
-            'que se entienda sin conocer la plataforma.',
+            context.l10n.center_applicationsElMotivoSeLeEnvia,
             style: Theme.of(context).textTheme.bodyMedium,
           ),
           const SizedBox(height: 16),
@@ -78,16 +78,19 @@ class _RejectApplicationSheetState extends State<RejectApplicationSheet> {
             textCapitalization: TextCapitalization.sentences,
             onChanged: (_) => setState(() {}),
             decoration: InputDecoration(
-              labelText: 'Motivo',
+              labelText: context.l10n.center_applicationsMotivo,
               errorText: empty ? 'Escribe el motivo del rechazo' : null,
             ),
           ),
           const SizedBox(height: 16),
-          FilledButton(onPressed: _submit, child: const Text('Rechazar')),
+          FilledButton(
+            onPressed: _submit,
+            child: Text(context.l10n.actionReject),
+          ),
           const SizedBox(height: 8),
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancelar'),
+            child: Text(context.l10n.actionCancel),
           ),
         ],
       ),

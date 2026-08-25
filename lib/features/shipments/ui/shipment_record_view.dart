@@ -73,9 +73,13 @@ class ShipmentRecordView extends ConsumerWidget {
   /// cuando termina de armarse. Si tarda más de lo que este sondeo espera, se
   /// dice — el trabajo sigue vivo allá y volver a pedirlo lo recoge.
   Future<void> _manifest(BuildContext context, WidgetRef ref) async {
-    final messenger = ScaffoldMessenger.of(
-      context,
-    )..showSnackBar(const SnackBar(content: Text('Preparando el manifiesto…')));
+    // Se toma antes de esperar: después de un await este contexto puede
+    // haber dejado de estar montado.
+    final l10n = context.l10n;
+    final messenger = ScaffoldMessenger.of(context)
+      ..showSnackBar(
+        SnackBar(content: Text(l10n.shipmentsPreparandoElManifiesto)),
+      );
 
     final outcome = await ref
         .read(shipmentsRepositoryProvider)
@@ -91,17 +95,13 @@ class ShipmentRecordView extends ConsumerWidget {
         final opened = await ref.read(openLinkProvider)(downloadUrl);
         if (!opened) {
           messenger.showSnackBar(
-            const SnackBar(
-              content: Text('No se pudo abrir el manifiesto en este teléfono.'),
-            ),
+            SnackBar(content: Text(l10n.shipmentsNoSePudoAbrirEl)),
           );
         }
       case ManifestStillWorking():
         messenger.showSnackBar(
-          const SnackBar(
-            content: Text(
-              'El manifiesto sigue armándose. Vuelve a pedirlo en un momento.',
-            ),
+          SnackBar(
+            content: Text(l10n.shipmentsElManifiestoSigueArmandoseVuelve),
           ),
         );
       case ManifestFailed(:final failure, :final serverError):
@@ -110,9 +110,9 @@ class ShipmentRecordView extends ConsumerWidget {
         messenger.showSnackBar(
           SnackBar(
             content: Text(
-              failure?.operatorMessage(context.l10n) ??
+              failure?.operatorMessage(l10n) ??
                   serverError ??
-                  context.l10n.manifestFailed,
+                  l10n.manifestFailed,
             ),
           ),
         );
@@ -129,7 +129,7 @@ class ShipmentRecordView extends ConsumerWidget {
         title: Text(shipment.valueOrNull?.reference ?? 'Envío'),
         actions: [
           IconButton(
-            tooltip: 'Manifiesto',
+            tooltip: context.l10n.shipmentsManifiesto,
             icon: const Icon(Icons.description_outlined),
             onPressed: () => _manifest(context, ref),
           ),
@@ -139,7 +139,7 @@ class ShipmentRecordView extends ConsumerWidget {
           ? FloatingActionButton.extended(
               onPressed: () => _report(context, ref),
               icon: const Icon(Icons.report_outlined),
-              label: const Text('Incidencia'),
+              label: Text(context.l10n.shipmentsIncidencia),
             )
           : null,
       bottomNavigationBar: switch (shipment) {
@@ -216,19 +216,34 @@ class _Body extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(vertical: 8),
       children: [
         RecordField(
-          label: 'Estado',
+          label: context.l10n.boxesEstado,
           value: shipmentStatusLabel(context.l10n, shipment.status),
         ),
-        RecordField(label: 'Destino', value: shipment.destination),
+        RecordField(
+          label: context.l10n.shipmentsDestino,
+          value: shipment.destination,
+        ),
         if (shipment.carrier case final carrier?)
-          RecordField(label: 'Transportista', value: carrier),
-        RecordField(label: 'Tarimas', value: '${shipment.pallets.length}'),
+          RecordField(
+            label: context.l10n.shipmentsTransportista,
+            value: carrier,
+          ),
+        RecordField(
+          label: context.l10n.palletsTarimas,
+          value: '${shipment.pallets.length}',
+        ),
         if (shipment.shippedAt case final shipped?)
-          RecordField(label: 'Despachado', value: formatShortDate(shipped)),
+          RecordField(
+            label: context.l10n.shipmentStatusShipped,
+            value: formatShortDate(shipped),
+          ),
         if (shipment.deliveredAt case final delivered?)
-          RecordField(label: 'Entregado', value: formatShortDate(delivered)),
+          RecordField(
+            label: context.l10n.shipmentStatusDelivered,
+            value: formatShortDate(delivered),
+          ),
         if (shipment.notes case final notes?)
-          RecordField(label: 'Notas', value: notes),
+          RecordField(label: context.l10n.intakeNotas, value: notes),
         // Los avisos de altura los calcula el servidor contra el perfil del
         // envío, y avisan sin bloquear. La aplicación los repite tal cual: el
         // umbral es suyo y aquí no se interpreta.
@@ -249,7 +264,7 @@ class _Body extends ConsumerWidget {
             child: OutlinedButton.icon(
               onPressed: () => _addPallet(context, ref, shipment),
               icon: const Icon(Icons.add),
-              label: const Text('Añadir tarima'),
+              label: Text(context.l10n.shipmentsAnadirTarima),
             ),
           ),
         const Divider(),
@@ -322,7 +337,7 @@ class _PalletRow extends ConsumerWidget {
     ),
     trailing: removable
         ? IconButton(
-            tooltip: 'Quitar del envío',
+            tooltip: context.l10n.shipmentsQuitarDelEnvio,
             icon: const Icon(Icons.remove_circle_outline),
             onPressed: () => _remove(context, ref),
           )
@@ -405,7 +420,7 @@ class _AdvanceState extends ConsumerState<_Advance> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Todavía no'),
+            child: Text(context.l10n.shipmentsTodaviaNo),
           ),
           FilledButton(
             onPressed: () => Navigator.of(context).pop(true),
@@ -451,24 +466,27 @@ class _Reception extends StatelessWidget {
     return Column(
       children: [
         RecordField(
-          label: 'Recibida',
+          label: context.l10n.donationStatusReceived,
           value: formatShortDate(reception.receivedAt),
         ),
         if (reception.consigneeName case final consignee?)
-          RecordField(label: 'Recibió', value: consignee),
+          RecordField(label: context.l10n.shipmentsRecibio, value: consignee),
         RecordField(
-          label: 'Cajas',
+          label: context.l10n.boxesCajas,
           value:
               '${shrinkage.received} de ${shrinkage.totalBoxes} llegaron bien',
         ),
         // El porcentaje lo calcula el servidor y aquí se enseña sin adjetivos:
         // cuánta merma es demasiada es un criterio de la coordinación.
         RecordField(
-          label: 'Merma',
+          label: context.l10n.shipmentsMerma,
           value: '${shrinkage.shrinkagePct}% · ${shrinkage.notReceived} cajas',
         ),
         if (reception.notes case final notes?)
-          RecordField(label: 'Notas de la recepción', value: notes),
+          RecordField(
+            label: context.l10n.shipmentsNotasDeLaRecepcion,
+            value: notes,
+          ),
       ],
     );
   }

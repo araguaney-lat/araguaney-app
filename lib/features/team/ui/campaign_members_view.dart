@@ -85,7 +85,7 @@ class _CampaignMembersViewState extends ConsumerState<CampaignMembersView> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Sacar de la campaña'),
+        title: Text(context.l10n.teamSacarDeLaCampana),
         content: Text(
           '$name dejará de participar en esta campaña. Sigue en el centro y '
           'se le puede volver a sumar.',
@@ -93,11 +93,11 @@ class _CampaignMembersViewState extends ConsumerState<CampaignMembersView> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancelar'),
+            child: Text(context.l10n.actionCancel),
           ),
           FilledButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Sacar'),
+            child: Text(context.l10n.teamSacar),
           ),
         ],
       ),
@@ -130,12 +130,12 @@ class _CampaignMembersViewState extends ConsumerState<CampaignMembersView> {
     final campaign = _selected(campaigns);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Campañas')),
+      appBar: AppBar(title: Text(context.l10n.teamCampanas)),
       floatingActionButton: canManage && campaign != null
           ? FloatingActionButton.extended(
               onPressed: () => _add(campaign.id),
               icon: const Icon(Icons.person_add_alt),
-              label: const Text('Sumar'),
+              label: Text(context.l10n.teamSumar),
             )
           : null,
       body: Column(
@@ -144,7 +144,9 @@ class _CampaignMembersViewState extends ConsumerState<CampaignMembersView> {
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
             child: DropdownButtonFormField<String>(
               initialValue: _campaignId,
-              decoration: const InputDecoration(labelText: 'Campaña'),
+              decoration: InputDecoration(
+                labelText: context.l10n.intakeCampana,
+              ),
               items: [
                 for (final option in campaigns)
                   DropdownMenuItem(value: option.id, child: Text(option.name)),
@@ -232,7 +234,7 @@ class _Member extends StatelessWidget {
     trailing: onRemove == null
         ? null
         : IconButton(
-            tooltip: 'Sacar de la campaña',
+            tooltip: context.l10n.teamSacarDeLaCampana,
             icon: const Icon(Icons.person_remove_outlined),
             onPressed: onRemove,
           ),

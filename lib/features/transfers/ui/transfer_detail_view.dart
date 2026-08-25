@@ -57,24 +57,24 @@ class TransferDetailView extends ConsumerWidget {
     return showDialog<String>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('¿Por qué se rechaza?'),
+        title: Text(context.l10n.transfersPorQueSeRechaza),
         content: TextField(
           controller: controller,
           autofocus: true,
           maxLines: 3,
-          decoration: const InputDecoration(
-            labelText: 'Motivo',
-            helperText: 'Lo leerá el centro que la pidió',
+          decoration: InputDecoration(
+            labelText: context.l10n.center_applicationsMotivo,
+            helperText: context.l10n.transfersLoLeeraElCentroQue,
           ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancelar'),
+            child: Text(context.l10n.actionCancel),
           ),
           FilledButton(
             onPressed: () => Navigator.of(context).pop(controller.text.trim()),
-            child: const Text('Rechazar'),
+            child: Text(context.l10n.actionReject),
           ),
         ],
       ),
@@ -103,7 +103,7 @@ class TransferDetailView extends ConsumerWidget {
     };
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Transferencia')),
+      appBar: AppBar(title: Text(context.l10n.transfersTransferencia)),
       body: switch (transfer) {
         AsyncData(:final value) => _Fields(
           transfer: value,
@@ -149,24 +149,27 @@ class _Fields extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 8),
       children: [
         RecordField(
-          label: 'Estado',
+          label: context.l10n.boxesEstado,
           value: transferStatusLabel(context.l10n, transfer.status),
         ),
         RecordField(
-          label: 'Dirección',
+          label: context.l10n.center_applicationsDireccion,
           value: switch (direction) {
             TransferDirection.incoming => 'Entrante, hacia este centro',
             TransferDirection.outgoing => 'Saliente, desde este centro',
             TransferDirection.other => 'Entre otros centros',
           },
         ),
-        RecordField(label: 'Cajas', value: '${transfer.boxes.length}'),
         RecordField(
-          label: 'Solicitada',
+          label: context.l10n.boxesCajas,
+          value: '${transfer.boxes.length}',
+        ),
+        RecordField(
+          label: context.l10n.transferStatusRequested,
           value: formatShortDate(transfer.createdAt),
         ),
         if (transfer.notes case final notes?)
-          RecordField(label: 'Notas', value: notes),
+          RecordField(label: context.l10n.intakeNotas, value: notes),
         const Divider(),
         for (final box in transfer.boxes)
           ListTile(
@@ -181,7 +184,7 @@ class _Fields extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
             child: Text(
-              'Historial',
+              context.l10n.transfersHistorial,
               style: Theme.of(context).textTheme.titleMedium,
             ),
           ),
@@ -224,8 +227,7 @@ class _Actions extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(bottom: 8),
               child: Text(
-                'Mover una transferencia necesita conexión: la mueven dos '
-                'centros, y sin señal no se sabe qué hizo el otro.',
+                context.l10n.transfersMoverUnaTransferenciaNecesitaConexion,
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodySmall,
               ),

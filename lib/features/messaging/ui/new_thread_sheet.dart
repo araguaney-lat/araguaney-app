@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/ui/sheet_insets.dart';
 import '../../intake/data/intake_providers.dart';
 
@@ -66,24 +67,23 @@ class _NewThreadSheetState extends ConsumerState<NewThreadSheet> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Nuevo hilo de campaña',
+              context.l10n.messagingNuevoHiloDeCampana,
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: 8),
             Text(
-              'Lo podrá leer quien participe en la campaña que elijas.',
+              context.l10n.messagingLoPodraLeerQuienParticipe,
               style: Theme.of(context).textTheme.bodySmall,
             ),
             const SizedBox(height: 16),
             if (campaigns.isEmpty)
-              const Text(
-                'No participas en ninguna campaña, así que no hay dónde abrir '
-                'un hilo.',
-              )
+              Text(context.l10n.messagingNoParticipasEnNingunaCampana)
             else
               DropdownButtonFormField<String>(
                 initialValue: _campaignId,
-                decoration: const InputDecoration(labelText: 'Campaña'),
+                decoration: InputDecoration(
+                  labelText: context.l10n.intakeCampana,
+                ),
                 items: [
                   for (final campaign in campaigns)
                     DropdownMenuItem(
@@ -98,7 +98,9 @@ class _NewThreadSheetState extends ConsumerState<NewThreadSheet> {
             const SizedBox(height: 12),
             TextFormField(
               controller: _title,
-              decoration: const InputDecoration(labelText: 'Asunto'),
+              decoration: InputDecoration(
+                labelText: context.l10n.messagingAsunto,
+              ),
               validator: (value) => (value == null || value.trim().isEmpty)
                   ? 'Escribe un asunto'
                   : null,
@@ -107,7 +109,9 @@ class _NewThreadSheetState extends ConsumerState<NewThreadSheet> {
             TextFormField(
               controller: _body,
               maxLines: 4,
-              decoration: const InputDecoration(labelText: 'Mensaje'),
+              decoration: InputDecoration(
+                labelText: context.l10n.messagingMensaje,
+              ),
               validator: (value) => (value == null || value.trim().isEmpty)
                   ? 'Escribe el mensaje'
                   : null,
@@ -117,7 +121,7 @@ class _NewThreadSheetState extends ConsumerState<NewThreadSheet> {
               alignment: Alignment.centerRight,
               child: FilledButton(
                 onPressed: campaigns.isEmpty ? null : _submit,
-                child: const Text('Abrir hilo'),
+                child: Text(context.l10n.messagingAbrirHilo),
               ),
             ),
           ],

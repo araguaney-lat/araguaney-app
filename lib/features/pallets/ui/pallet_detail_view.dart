@@ -41,7 +41,7 @@ class PalletDetailView extends ConsumerWidget {
 
     await Navigator.of(context).push(
       ContinuousScanView.route(
-        title: 'Agregar cajas',
+        title: context.l10n.palletsAgregarCajas,
         hint: 'Apunta a la etiqueta de cada caja sellada.',
         onScanned: (payload) async {
           final scanned = parseScannedCode(payload);
@@ -169,24 +169,36 @@ class _Fields extends StatelessWidget {
     padding: const EdgeInsets.symmetric(vertical: 8),
     children: [
       RecordField(
-        label: 'Estado',
+        label: context.l10n.boxesEstado,
         value: palletStatusLabel(context.l10n, pallet.status),
       ),
-      RecordField(label: 'Cajas', value: '${pallet.boxes.length}'),
+      RecordField(
+        label: context.l10n.boxesCajas,
+        value: '${pallet.boxes.length}',
+      ),
       if (pallet.tareWeightKg case final tare?)
-        RecordField(label: 'Tara', value: '$tare kg'),
+        RecordField(label: context.l10n.palletsTara, value: '$tare kg'),
       if (pallet.boxesWeightKg case final boxes?)
-        RecordField(label: 'Peso de las cajas', value: '$boxes kg'),
+        RecordField(
+          label: context.l10n.palletsPesoDeLasCajas,
+          value: '$boxes kg',
+        ),
       if (pallet.grossWeightKg case final gross?)
-        RecordField(label: 'Peso bruto', value: '$gross kg'),
+        RecordField(label: context.l10n.palletsPesoBruto, value: '$gross kg'),
       // La diferencia la calcula el servidor. Aquí solo se enseña, y sin
       // adjetivos: qué tanto importa lo decide quien coordina.
       if (pallet.weightDiscrepancyKg case final discrepancy?)
-        RecordField(label: 'Diferencia', value: '$discrepancy kg'),
+        RecordField(
+          label: context.l10n.palletsDiferencia,
+          value: '$discrepancy kg',
+        ),
       if (pallet.heightCm case final height?)
-        RecordField(label: 'Altura', value: '$height cm'),
+        RecordField(label: context.l10n.palletsAltura, value: '$height cm'),
       if (pallet.closedAt case final closed?)
-        RecordField(label: 'Cerrada', value: formatShortDate(closed)),
+        RecordField(
+          label: context.l10n.palletStatusClosed,
+          value: formatShortDate(closed),
+        ),
       const Divider(),
       for (final box in pallet.boxes)
         ListTile(
@@ -197,7 +209,7 @@ class _Fields extends StatelessWidget {
           trailing: onRemoveBox == null
               ? null
               : IconButton(
-                  tooltip: 'Quitar de la tarima',
+                  tooltip: context.l10n.palletsQuitarDeLaTarima,
                   icon: const Icon(Icons.remove_circle_outline),
                   onPressed: () => onRemoveBox!(box.code),
                 ),
@@ -258,7 +270,7 @@ class _Actions extends StatelessWidget {
                   child: FilledButton.icon(
                     onPressed: actionable ? onScan : null,
                     icon: const Icon(Icons.qr_code_scanner),
-                    label: const Text('Agregar cajas'),
+                    label: Text(context.l10n.palletsAgregarCajas),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -266,7 +278,7 @@ class _Actions extends StatelessWidget {
                   child: FilledButton.tonalIcon(
                     onPressed: actionable ? onClose : null,
                     icon: const Icon(Icons.lock_outline),
-                    label: const Text('Cerrar'),
+                    label: Text(context.l10n.actionClose),
                   ),
                 ),
               ],
@@ -294,9 +306,9 @@ class _Timeline extends ConsumerWidget {
       AsyncData(:final value) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Padding(
+          Padding(
             padding: EdgeInsets.fromLTRB(16, 16, 16, 4),
-            child: Text('Recorrido'),
+            child: Text(context.l10n.boxesRecorrido),
           ),
           EventTimeline(
             events: value,

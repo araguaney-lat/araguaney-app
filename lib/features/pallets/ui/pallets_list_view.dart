@@ -88,7 +88,7 @@ class _PalletsListViewState extends ConsumerState<PalletsListView> {
           ? FloatingActionButton.extended(
               onPressed: _create,
               icon: const Icon(Icons.add),
-              label: const Text('Nueva tarima'),
+              label: Text(context.l10n.palletsNuevaTarima),
             )
           : null,
       body: RefreshIndicator(
@@ -125,7 +125,7 @@ class _Header extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        const Text('Tarimas'),
+        Text(context.l10n.palletsTarimas),
         // Abiertas y cerradas son las dos cifras que deciden qué hacer ahora:
         // una abierta admite cajas, una cerrada espera un envío.
         Text(
@@ -186,11 +186,10 @@ class _Loaded extends StatelessWidget {
           ),
         ),
         if (shown.isEmpty)
-          const Padding(
+          Padding(
             padding: EdgeInsets.all(32),
             child: Text(
-              'Este centro no tiene tarimas todavía. Una tarima agrupa cajas '
-              'selladas para que viajen juntas.',
+              context.l10n.palletsEsteCentroNoTieneTarimas,
               textAlign: TextAlign.center,
             ),
           ),
@@ -230,7 +229,10 @@ class _PalletRow extends StatelessWidget {
       title: Text(pallet.code),
       subtitle: details.isEmpty ? null : Text(details.join(' · ')),
       trailing: onClose != null
-          ? TextButton(onPressed: onClose, child: const Text('Cerrar'))
+          ? TextButton(
+              onPressed: onClose,
+              child: Text(context.l10n.actionClose),
+            )
           : Chip(label: Text(palletStatusLabel(context.l10n, pallet.status))),
       onTap: () =>
           Navigator.of(context).push(PalletDetailView.route(pallet.id)),

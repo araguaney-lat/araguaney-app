@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/i18n/l10n_extension.dart';
 
 import '../../../core/ui/sheet_insets.dart';
 import '../data/risk_reviews_repository.dart';
@@ -57,7 +58,7 @@ class _ResolveReviewSheetState extends State<ResolveReviewSheet> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Resolver la revisión',
+          context.l10n.risk_reviewsResolverLaRevision,
           style: Theme.of(context).textTheme.titleMedium,
         ),
         const SizedBox(height: 8),
@@ -67,9 +68,9 @@ class _ResolveReviewSheetState extends State<ResolveReviewSheet> {
           controller: _note,
           maxLines: 3,
           maxLength: 1000,
-          decoration: const InputDecoration(
-            labelText: 'Nota (opcional)',
-            helperText: 'Queda con la revisión, para quien la lea después',
+          decoration: InputDecoration(
+            labelText: context.l10n.risk_reviewsNotaOpcional,
+            helperText: context.l10n.risk_reviewsQuedaConLaRevisionPara,
           ),
         ),
         const SizedBox(height: 8),
@@ -78,14 +79,14 @@ class _ResolveReviewSheetState extends State<ResolveReviewSheet> {
             Expanded(
               child: OutlinedButton(
                 onPressed: () => _resolve(RiskResolution.reject),
-                child: const Text('Rechazar'),
+                child: Text(context.l10n.actionReject),
               ),
             ),
             const SizedBox(width: 12),
             Expanded(
               child: FilledButton(
                 onPressed: () => _resolve(RiskResolution.approve),
-                child: const Text('Aprobar'),
+                child: Text(context.l10n.actionApprove),
               ),
             ),
           ],

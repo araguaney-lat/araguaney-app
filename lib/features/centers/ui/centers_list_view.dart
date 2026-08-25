@@ -24,12 +24,12 @@ class CentersListView extends ConsumerWidget {
     final centers = ref.watch(centersProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Centros')),
+      appBar: AppBar(title: Text(context.l10n.centersCentros)),
       floatingActionButton: ref.watch(canListCentersProvider)
           ? FloatingActionButton(
               onPressed: () =>
                   Navigator.of(context).push(CenterFormView.route()),
-              tooltip: 'Nuevo centro',
+              tooltip: context.l10n.centersNuevoCentro,
               child: const Icon(Icons.add),
             )
           : null,
@@ -79,7 +79,7 @@ class _List extends StatelessWidget {
           subtitle: place.isEmpty ? null : Text(place),
           trailing: center.isActive
               ? null
-              : const Chip(label: Text('Desactivado')),
+              : Chip(label: Text(context.l10n.centersDesactivado)),
           onTap: () =>
               Navigator.of(context).push(CenterRecordView.route(center.id)),
         );

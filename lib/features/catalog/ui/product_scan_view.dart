@@ -112,7 +112,7 @@ class _ProductScanViewState extends ConsumerState<ProductScanView> {
       backgroundColor: Colors.transparent,
       foregroundColor: Colors.white,
       elevation: 0,
-      title: const Text('Escanear producto'),
+      title: Text(context.l10n.catalogEscanearProducto),
     ),
     body: ScannerCamera(
       controller: _controller,

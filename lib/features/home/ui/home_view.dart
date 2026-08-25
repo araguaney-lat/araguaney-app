@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/auth/auth_providers.dart';
 import '../../../core/auth/session.dart';
 import '../../../core/i18n/generated/app_localizations.dart';
+import '../../../core/i18n/l10n_extension.dart';
 import '../../dashboard/data/center_dashboard_providers.dart';
 import '../../dashboard/ui/stock_by_category_view.dart';
 import '../../intake/data/intake_providers.dart';
@@ -94,9 +95,7 @@ class _PendingCaptures extends ConsumerWidget {
               ? '1 captura pendiente de enviar'
               : '$pending capturas pendientes de enviar',
         ),
-        subtitle: const Text(
-          'Deja la aplicación abierta hasta que llegue a cero.',
-        ),
+        subtitle: Text(context.l10n.homeDejaLaAplicacionAbiertaHasta),
         trailing: const Icon(Icons.chevron_right),
         onTap: () => Navigator.of(context).push(PendingCapturesView.route()),
       ),
@@ -141,12 +140,12 @@ class _DayGrid extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) => _Grid(
     children: [
       _Tile(
-        label: 'Capturas hoy',
+        label: context.l10n.homeCapturasHoy,
         value: '${ref.watch(todaysIntakeCountProvider)}',
         onTap: () => Navigator.of(context).push(IntakeListView.route()),
       ),
       _Tile(
-        label: 'Stock del centro',
+        label: context.l10n.homeStockDelCentro,
         caption: 'por categoría',
         onTap: () => Navigator.of(context).push(StockByCategoryView.route()),
       ),
@@ -162,17 +161,17 @@ class _CoordinatorGrid extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) => _Grid(
     children: [
       _Tile(
-        label: 'Capturas hoy',
+        label: context.l10n.homeCapturasHoy,
         value: '${ref.watch(todaysIntakeCountProvider)}',
         onTap: () => Navigator.of(context).push(IntakeListView.route()),
       ),
       _Tile(
-        label: 'Tarimas abiertas',
+        label: context.l10n.homeTarimasAbiertas,
         value: '${ref.watch(openPalletCountProvider)}',
         onTap: () => Navigator.of(context).push(PalletsListView.route()),
       ),
       _Tile(
-        label: 'Stock del centro',
+        label: context.l10n.homeStockDelCentro,
         caption: 'por categoría',
         onTap: () => Navigator.of(context).push(StockByCategoryView.route()),
       ),

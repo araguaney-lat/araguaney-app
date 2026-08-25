@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/auth/auth_providers.dart';
+import '../../../core/i18n/generated/app_localizations.dart';
+import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/ui/app_bottom_bar.dart';
 import '../../boxes/ui/boxes_list_view.dart';
 import '../../home/ui/home_view.dart';
@@ -23,10 +25,12 @@ enum ShellTab { home, boxes, messages, menu }
 /// La decide el rol y no la pantalla: quien coordina llega a verificar lo que
 /// otra persona capturó, y quien es voluntariado llega a capturar. Es el mismo
 /// criterio que el backend aplica a los permisos, traído al pulgar.
-({IconData icon, String label}) centerActionFor({required bool coordinates}) =>
-    coordinates
-    ? (icon: Icons.qr_code_scanner, label: 'Escanear')
-    : (icon: Icons.add_box_outlined, label: 'Capturar');
+({IconData icon, String label}) centerActionFor(
+  AppLocalizations l10n, {
+  required bool coordinates,
+}) => coordinates
+    ? (icon: Icons.qr_code_scanner, label: l10n.shellEscanear)
+    : (icon: Icons.add_box_outlined, label: l10n.shellCapturar);
 
 class AppShell extends ConsumerStatefulWidget {
   const AppShell({super.key});
@@ -72,7 +76,7 @@ class _AppShellState extends ConsumerState<AppShell> {
   Widget build(BuildContext context) {
     final coordinates = ref.watch(isCenterCoordinatorProvider);
     final unread = ref.watch(unreadMessagesProvider).valueOrNull ?? 0;
-    final center = centerActionFor(coordinates: coordinates);
+    final center = centerActionFor(context.l10n, coordinates: coordinates);
 
     return Scaffold(
       body: IndexedStack(
@@ -99,14 +103,20 @@ class _AppShellState extends ConsumerState<AppShell> {
           context,
         ).push(coordinates ? ScannerView.route() : IntakeFormView.route()),
         items: [
-          const BottomBarItem(icon: Icons.home_outlined, label: 'Inicio'),
-          const BottomBarItem(icon: Icons.inventory_2_outlined, label: 'Cajas'),
+          BottomBarItem(
+            icon: Icons.home_outlined,
+            label: context.l10n.shellInicio,
+          ),
+          BottomBarItem(
+            icon: Icons.inventory_2_outlined,
+            label: context.l10n.boxesCajas,
+          ),
           BottomBarItem(
             icon: Icons.chat_bubble_outline,
-            label: 'Mensajes',
+            label: context.l10n.messagingMensajes,
             badge: unread,
           ),
-          const BottomBarItem(icon: Icons.menu, label: 'Menú'),
+          BottomBarItem(icon: Icons.menu, label: context.l10n.shellMenu),
         ],
       ),
     );

@@ -25,25 +25,28 @@ class IntakeDetailView extends StatelessWidget {
     body: ListView(
       padding: const EdgeInsets.symmetric(vertical: 8),
       children: [
-        RecordField(label: 'Donante', value: donorLabel(intake) ?? 'Anónimo'),
+        RecordField(
+          label: context.l10n.intakeDonante,
+          value: donorLabel(intake) ?? 'Anónimo',
+        ),
         if (intake.notes case final notes?)
-          RecordField(label: 'Notas', value: notes),
+          RecordField(label: context.l10n.intakeNotas, value: notes),
         const Divider(),
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-          child: Text('Cajas', style: Theme.of(context).textTheme.titleMedium),
+          child: Text(
+            context.l10n.boxesCajas,
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
         ),
         // Una captura recién registrada sí trae sus cajas, porque las devuelve
         // el `POST`. Una abierta desde el historial no: el listado del servidor
         // no las rellena, y por eso aquí se dice en vez de enseñar una sección
         // vacía, que se leería como «esta captura no tuvo cajas».
         if (intake.boxes.isEmpty)
-          const Padding(
+          Padding(
             padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
-            child: Text(
-              'El historial no trae las cajas de esta captura. Búscalas por su '
-              'código en Cajas.',
-            ),
+            child: Text(context.l10n.intakeElHistorialNoTraeLas),
           ),
         for (final box in intake.boxes)
           ListTile(

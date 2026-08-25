@@ -83,10 +83,10 @@ class TeamDirectoryView extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Equipo'),
+        title: Text(context.l10n.shellEquipo),
         actions: [
           IconButton(
-            tooltip: 'Campañas',
+            tooltip: context.l10n.teamCampanas,
             icon: const Icon(Icons.groups_outlined),
             onPressed: () =>
                 Navigator.of(context).push(CampaignMembersView.route()),
@@ -97,7 +97,7 @@ class TeamDirectoryView extends ConsumerWidget {
           ? FloatingActionButton.extended(
               onPressed: () => _invite(context, ref),
               icon: const Icon(Icons.person_add_alt),
-              label: const Text('Sumar'),
+              label: Text(context.l10n.teamSumar),
             )
           : null,
       body: RefreshIndicator(
@@ -153,7 +153,7 @@ class _Person extends StatelessWidget {
     // servidor lo rechaza, y activarla es trabajo de escritorio.
     trailing: onReinvite != null && person.isActive
         ? IconButton(
-            tooltip: 'Reenviar acceso',
+            tooltip: context.l10n.teamReenviarAcceso,
             icon: const Icon(Icons.mail_outline),
             onPressed: onReinvite,
           )

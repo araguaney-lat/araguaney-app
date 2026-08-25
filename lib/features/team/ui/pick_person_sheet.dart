@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/api/generated/models/user_out.dart';
+import '../../../core/i18n/l10n_extension.dart';
 import '../data/team_repository.dart';
 
 /// Elegir a quién sumar a una campaña, de entre el equipo del centro.
@@ -29,7 +30,7 @@ class PickPersonSheet extends StatelessWidget {
         ? Padding(
             padding: const EdgeInsets.all(32),
             child: Text(
-              'No queda nadie del centro por sumar a esta campaña.',
+              context.l10n.teamNoQuedaNadieDelCentro,
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodyMedium,
             ),
@@ -43,7 +44,7 @@ class PickPersonSheet extends StatelessWidget {
                 return Padding(
                   padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
                   child: Text(
-                    'Sumar a la campaña',
+                    context.l10n.teamSumarALaCampana,
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                 );

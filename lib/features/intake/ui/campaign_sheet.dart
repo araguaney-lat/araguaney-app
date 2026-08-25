@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/api/generated/models/campaign_out.dart';
+import '../../../core/i18n/l10n_extension.dart';
 
 /// Elegir a qué campaña se imputa la captura.
 ///
@@ -37,13 +38,17 @@ class CampaignSheet extends StatelessWidget {
       children: [
         ListTile(
           title: Text(
-            'Campaña',
+            context.l10n.intakeCampana,
             style: Theme.of(context).textTheme.titleMedium,
           ),
-          subtitle: const Text('Sin campaña la donación queda en la general'),
+          subtitle: Text(context.l10n.intakeSinCampanaLaDonacionQueda),
         ),
         const Divider(),
-        _Option(label: 'Campaña general', value: null, selected: selected),
+        _Option(
+          label: context.l10n.intakeCampanaGeneral,
+          value: null,
+          selected: selected,
+        ),
         for (final campaign in campaigns)
           _Option(label: campaign.name, value: campaign.id, selected: selected),
       ],

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/api/client_version_providers.dart';
+import '../../../core/i18n/l10n_extension.dart';
 import 'app_version_footer.dart';
 import 'store_link.dart';
 
@@ -46,11 +47,11 @@ class UpdateAvailableView extends ConsumerWidget {
                     height: 72,
                     fit: BoxFit.fitHeight,
                     filterQuality: FilterQuality.medium,
-                    semanticLabel: 'Araguaney',
+                    semanticLabel: context.l10n.appTitle,
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'Hay una versión más nueva',
+                    context.l10n.sessionHayUnaVersionMasNueva2,
                     style: text.headlineSmall,
                     textAlign: TextAlign.center,
                   ),
@@ -69,12 +70,12 @@ class UpdateAvailableView extends ConsumerWidget {
                   const SizedBox(height: 24),
                   FilledButton(
                     onPressed: () => openStore(context, ref),
-                    child: const Text('Actualizar'),
+                    child: Text(context.l10n.sessionActualizar),
                   ),
                   const SizedBox(height: 8),
                   TextButton(
                     onPressed: () => _later(ref),
-                    child: const Text('Más tarde'),
+                    child: Text(context.l10n.sessionMasTarde),
                   ),
                   const SizedBox(height: 24),
                   const AppVersionFooter(),

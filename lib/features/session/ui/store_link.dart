@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/auth/auth_providers.dart';
+import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/platform/open_link.dart';
 
 /// Abre la ficha de esta aplicación en la tienda.
@@ -25,9 +26,7 @@ Future<void> openStore(BuildContext context, WidgetRef ref) async {
   );
   if (!opened && context.mounted) {
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('No se pudo abrir la tienda. Búscala como «Araguaney».'),
-      ),
+      SnackBar(content: Text(context.l10n.sessionNoSePudoAbrirLa)),
     );
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../../core/db/app_database.dart';
+import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/ui/confirm_button.dart';
 import '../../../core/ui/record_field.dart';
 import '../../../core/ui/sheet_insets.dart';
@@ -122,7 +123,10 @@ class _BoxDraftSheetState extends State<BoxDraftSheet> {
         padding: EdgeInsets.fromLTRB(16, 8, 16, sheetBottomInset(context)),
         child: SizedBox(
           width: double.infinity,
-          child: ConfirmButton(label: 'Guardar', onPressed: _save),
+          child: ConfirmButton(
+            label: context.l10n.actionSave,
+            onPressed: _save,
+          ),
         ),
       ),
       body: Form(
@@ -134,12 +138,15 @@ class _BoxDraftSheetState extends State<BoxDraftSheet> {
               Card(
                 child: Column(
                   children: [
-                    RecordField(label: 'Producto', value: product.displayName),
+                    RecordField(
+                      label: context.l10n.boxesProducto,
+                      value: product.displayName,
+                    ),
                     OverflowBar(
                       children: [
                         TextButton(
                           onPressed: _pickProduct,
-                          child: const Text('Cambiar'),
+                          child: Text(context.l10n.intakeCambiar),
                         ),
                       ],
                     ),
@@ -154,12 +161,14 @@ class _BoxDraftSheetState extends State<BoxDraftSheet> {
               OutlinedButton.icon(
                 onPressed: _pickProduct,
                 icon: const Icon(Icons.search),
-                label: const Text('Elegir producto'),
+                label: Text(context.l10n.intakeElegirProducto),
               ),
             const SizedBox(height: 16),
             TextFormField(
               controller: _quantity,
-              decoration: const InputDecoration(labelText: 'Cantidad'),
+              decoration: InputDecoration(
+                labelText: context.l10n.boxesCantidad,
+              ),
               keyboardType: TextInputType.number,
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               validator: (value) {
@@ -173,9 +182,9 @@ class _BoxDraftSheetState extends State<BoxDraftSheet> {
             const SizedBox(height: 12),
             TextFormField(
               controller: _unit,
-              decoration: const InputDecoration(
-                labelText: 'Unidad',
-                helperText: 'Cajas, frascos, sobres…',
+              decoration: InputDecoration(
+                labelText: context.l10n.intakeUnidad,
+                helperText: context.l10n.intakeCajasFrascosSobres,
               ),
               validator: (value) => (value == null || value.trim().isEmpty)
                   ? 'Indica la unidad'
@@ -184,12 +193,14 @@ class _BoxDraftSheetState extends State<BoxDraftSheet> {
             const SizedBox(height: 12),
             TextFormField(
               controller: _batch,
-              decoration: const InputDecoration(labelText: 'Lote (opcional)'),
+              decoration: InputDecoration(
+                labelText: context.l10n.intakeLoteOpcional,
+              ),
             ),
             const SizedBox(height: 12),
             ListTile(
               contentPadding: EdgeInsets.zero,
-              title: const Text('Caducidad'),
+              title: Text(context.l10n.boxesCaducidad),
               subtitle: Text(
                 _expiry == null ? 'Sin fecha' : formatShortDate(_expiry!),
               ),
@@ -199,8 +210,8 @@ class _BoxDraftSheetState extends State<BoxDraftSheet> {
             const SizedBox(height: 12),
             TextFormField(
               controller: _weight,
-              decoration: const InputDecoration(
-                labelText: 'Peso en kg (opcional)',
+              decoration: InputDecoration(
+                labelText: context.l10n.intakePesoEnKgOpcional,
               ),
               keyboardType: const TextInputType.numberWithOptions(
                 decimal: true,
@@ -208,8 +219,7 @@ class _BoxDraftSheetState extends State<BoxDraftSheet> {
             ),
             const SizedBox(height: 8),
             Text(
-              'Una caja lleva un solo producto, un lote y una caducidad. Si '
-              'recibiste dos cosas distintas, agrega dos cajas.',
+              context.l10n.intakeUnaCajaLlevaUnSolo,
               style: Theme.of(context).textTheme.bodySmall,
             ),
           ],

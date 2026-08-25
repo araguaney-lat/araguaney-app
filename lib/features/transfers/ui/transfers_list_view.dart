@@ -95,7 +95,7 @@ class _Header extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        const Text('Transferencias'),
+        Text(context.l10n.shellTransferencias),
         Text(
           waiting == 0
               ? 'Ninguna espera tu decisión'

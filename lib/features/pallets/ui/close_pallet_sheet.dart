@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/ui/sheet_insets.dart';
 
 /// Peso bruto y altura con los que se cierra una tarima.
@@ -58,26 +59,28 @@ class _ClosePalletSheetState extends State<ClosePalletSheet> {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Cerrar tarima', style: Theme.of(context).textTheme.titleMedium),
+        Text(
+          context.l10n.palletsCerrarTarima,
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
         const SizedBox(height: 8),
         Text(
-          'Una tarima cerrada ya no admite cajas. Pésala completa, con la '
-          'tarima incluida.',
+          context.l10n.palletsUnaTarimaCerradaYaNo,
           style: Theme.of(context).textTheme.bodySmall,
         ),
         const SizedBox(height: 16),
         TextField(
           controller: _weight,
-          decoration: const InputDecoration(
-            labelText: 'Peso bruto en kg (opcional)',
+          decoration: InputDecoration(
+            labelText: context.l10n.palletsPesoBrutoEnKgOpcional,
           ),
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
         ),
         const SizedBox(height: 12),
         TextField(
           controller: _height,
-          decoration: const InputDecoration(
-            labelText: 'Altura en cm (opcional)',
+          decoration: InputDecoration(
+            labelText: context.l10n.palletsAlturaEnCmOpcional,
           ),
           keyboardType: TextInputType.number,
           inputFormatters: [FilteringTextInputFormatter.digitsOnly],
@@ -87,7 +90,7 @@ class _ClosePalletSheetState extends State<ClosePalletSheet> {
           alignment: Alignment.centerRight,
           child: FilledButton(
             onPressed: _close,
-            child: const Text('Cerrar tarima'),
+            child: Text(context.l10n.palletsCerrarTarima),
           ),
         ),
       ],

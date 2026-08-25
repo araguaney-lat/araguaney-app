@@ -36,7 +36,7 @@ class CenterRecordView extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Centro'),
+        title: Text(context.l10n.accountCentro),
         actions: [
           if (editable != null)
             IconButton(
@@ -44,7 +44,7 @@ class CenterRecordView extends ConsumerWidget {
                 context,
               ).push(CenterFormView.route(existing: editable)),
               icon: const Icon(Icons.edit_outlined),
-              tooltip: 'Editar',
+              tooltip: context.l10n.centersEditar,
             ),
         ],
       ),
@@ -89,20 +89,30 @@ class _Body extends StatelessWidget {
         // repetirlo dos veces no informa de nada.
         if (center.legalName case final legal?
             when legal.isNotEmpty && legal != center.name)
-          RecordField(label: 'Razón social', value: legal),
-        if (place.isNotEmpty) RecordField(label: 'Dónde', value: place),
+          RecordField(label: context.l10n.centersRazonSocial, value: legal),
+        if (place.isNotEmpty)
+          RecordField(label: context.l10n.centersDonde, value: place),
         if (center.address case final value? when value.isNotEmpty)
-          RecordField(label: 'Dirección', value: value),
+          RecordField(
+            label: context.l10n.center_applicationsDireccion,
+            value: value,
+          ),
         if (center.contactName case final value? when value.isNotEmpty)
-          RecordField(label: 'Contacto', value: value),
+          RecordField(
+            label: context.l10n.center_applicationsContacto,
+            value: value,
+          ),
         if (center.contactEmail case final value? when value.isNotEmpty)
-          RecordField(label: 'Correo', value: value),
+          RecordField(label: context.l10n.sessionCorreo, value: value),
         if (center.contactPhone case final value? when value.isNotEmpty)
-          RecordField(label: 'Teléfono', value: value),
+          RecordField(
+            label: context.l10n.center_applicationsTelefono,
+            value: value,
+          ),
         if (!center.isActive)
-          const Padding(
+          Padding(
             padding: EdgeInsets.only(top: 16),
-            child: Text('Este centro está desactivado.'),
+            child: Text(context.l10n.centersEsteCentroEstaDesactivado),
           ),
       ],
     );

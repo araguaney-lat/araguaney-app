@@ -51,11 +51,11 @@ class _ApplicationQueueViewState extends ConsumerState<ApplicationQueueView> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancelar'),
+            child: Text(context.l10n.actionCancel),
           ),
           FilledButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Aprobar'),
+            child: Text(context.l10n.actionApprove),
           ),
         ],
       ),
@@ -75,7 +75,10 @@ class _ApplicationQueueViewState extends ConsumerState<ApplicationQueueView> {
       onCreated: (resolved) {
         final id = resolved.createdCenterId;
         if (id == null) return null;
-        return (label: 'Ver centro', route: CenterRecordView.route(id));
+        return (
+          label: context.l10n.center_applicationsVerCentro,
+          route: CenterRecordView.route(id),
+        );
       },
     );
   }
@@ -139,7 +142,7 @@ class _ApplicationQueueViewState extends ConsumerState<ApplicationQueueView> {
     final queue = ref.watch(applicationQueueProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Solicitudes')),
+      appBar: AppBar(title: Text(context.l10n.center_applicationsSolicitudes)),
       body: switch (queue) {
         AsyncData(value: ApplicationsRead(:final value)) when value.isEmpty =>
           const _Message('Ninguna postulación espera una decisión.'),
@@ -240,18 +243,30 @@ class _ApplicationCard extends StatelessWidget {
             // una ficha para saber quién respalda un centro convierte una cola
             // de tres en tres navegaciones.
             RecordField(
-              label: 'Contacto',
+              label: context.l10n.center_applicationsContacto,
               value: '${application.contactName} · ${application.contactEmail}',
             ),
             if (application.contactPhone case final phone?
                 when phone.isNotEmpty)
-              RecordField(label: 'Teléfono', value: phone),
+              RecordField(
+                label: context.l10n.center_applicationsTelefono,
+                value: phone,
+              ),
             if (application.address case final address? when address.isNotEmpty)
-              RecordField(label: 'Dirección', value: address),
+              RecordField(
+                label: context.l10n.center_applicationsDireccion,
+                value: address,
+              ),
             if (application.backingOrg case final org? when org.isNotEmpty)
-              RecordField(label: 'Respaldo', value: org),
+              RecordField(
+                label: context.l10n.center_applicationsRespaldo,
+                value: org,
+              ),
             if (application.socialUrl case final social? when social.isNotEmpty)
-              RecordField(label: 'Redes', value: social),
+              RecordField(
+                label: context.l10n.center_applicationsRedes,
+                value: social,
+              ),
             if (application.message case final message?
                 when message.isNotEmpty) ...[
               const SizedBox(height: 8),
@@ -267,14 +282,14 @@ class _ApplicationCard extends StatelessWidget {
                   Expanded(
                     child: FilledButton(
                       onPressed: onApprove,
-                      child: const Text('Aprobar'),
+                      child: Text(context.l10n.actionApprove),
                     ),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
                     child: OutlinedButton(
                       onPressed: onReject,
-                      child: const Text('Rechazar'),
+                      child: Text(context.l10n.actionReject),
                     ),
                   ),
                 ],

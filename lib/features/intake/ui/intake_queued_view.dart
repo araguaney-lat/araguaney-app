@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/i18n/l10n_extension.dart';
 
 import '../../boxes/ui/box_label_view.dart';
 import '../domain/intake_draft.dart';
@@ -23,7 +24,7 @@ class IntakeQueuedView extends StatelessWidget {
     final withoutCode = draft.boxes.length - withCode.length;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Captura guardada')),
+      appBar: AppBar(title: Text(context.l10n.intakeCapturaGuardada)),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
@@ -33,7 +34,7 @@ class IntakeQueuedView extends StatelessWidget {
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
-                  'Se enviará sola cuando haya conexión',
+                  context.l10n.intakeSeEnviaraSolaCuandoHaya,
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
               ),
@@ -41,14 +42,13 @@ class IntakeQueuedView extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            'No hace falta volver a capturarla ni recordar enviarla. Sale una '
-            'sola vez aunque se reintente varias.',
+            context.l10n.intakeNoHaceFaltaVolverA,
             style: Theme.of(context).textTheme.bodySmall,
           ),
           const SizedBox(height: 24),
           if (withCode.isNotEmpty) ...[
             Text(
-              'Etiqueta estas cajas ahora',
+              context.l10n.intakeEtiquetaEstasCajasAhora,
               style: Theme.of(context).textTheme.titleSmall,
             ),
             const SizedBox(height: 8),
@@ -88,7 +88,7 @@ class IntakeQueuedView extends StatelessWidget {
           const SizedBox(height: 24),
           FilledButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Terminar'),
+            child: Text(context.l10n.actionFinish),
           ),
         ],
       ),

@@ -28,7 +28,7 @@ class ProfileView extends ConsumerWidget {
     final account = ref.watch(myAccountProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Perfil y seguridad')),
+      appBar: AppBar(title: Text(context.l10n.accountPerfilYSeguridad)),
       body: RefreshIndicator(
         onRefresh: () async => ref.invalidate(myAccountProvider),
         child: switch (account) {
@@ -56,24 +56,27 @@ class _Loaded extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) => ListView(
     padding: const EdgeInsets.symmetric(vertical: 8),
     children: [
-      RecordField(label: 'Nombre', value: profile.fullName ?? '—'),
-      RecordField(label: 'Usuario', value: profile.username),
-      RecordField(label: 'Correo', value: profile.email),
+      RecordField(
+        label: context.l10n.accountNombre,
+        value: profile.fullName ?? '—',
+      ),
+      RecordField(label: context.l10n.accountUsuario, value: profile.username),
+      RecordField(label: context.l10n.sessionCorreo, value: profile.email),
       if (profile.centerName case final center?)
-        RecordField(label: 'Centro', value: center),
+        RecordField(label: context.l10n.accountCentro, value: center),
       if (profile.centerRole case final role?)
-        RecordField(label: 'Rol', value: _roleLabel(role)),
+        RecordField(label: context.l10n.accountRol, value: _roleLabel(role)),
       Padding(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
         child: OutlinedButton(
           onPressed: () => _rename(context, ref, profile.fullName ?? ''),
-          child: const Text('Cambiar mi nombre'),
+          child: Text(context.l10n.accountCambiarMiNombre),
         ),
       ),
       const Divider(height: 32),
       ListTile(
-        title: const Text('Contraseña'),
-        subtitle: const Text('Cámbiala cuando quieras, no solo cuando toca'),
+        title: Text(context.l10n.sessionContrasena),
+        subtitle: Text(context.l10n.accountCambialaCuandoQuierasNoSolo),
         trailing: const Icon(Icons.chevron_right),
         onTap: () => Navigator.of(context).push(
           MaterialPageRoute<void>(
@@ -102,20 +105,22 @@ class _Loaded extends ConsumerWidget {
     final name = await showDialog<String>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Tu nombre'),
+        title: Text(context.l10n.accountTuNombre),
         content: TextField(
           controller: controller,
           autofocus: true,
-          decoration: const InputDecoration(labelText: 'Nombre completo'),
+          decoration: InputDecoration(
+            labelText: context.l10n.accountNombreCompleto,
+          ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancelar'),
+            child: Text(context.l10n.actionCancel),
           ),
           FilledButton(
             onPressed: () => Navigator.of(context).pop(controller.text.trim()),
-            child: const Text('Guardar'),
+            child: Text(context.l10n.actionSave),
           ),
         ],
       ),
@@ -141,7 +146,7 @@ class _TotpTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => ListTile(
-    title: const Text('Verificación en dos pasos'),
+    title: Text(context.l10n.sessionVerificacionEnDosPasos),
     subtitle: Text(
       enabled
           ? 'Activada: al entrar se te pide un código'
@@ -167,32 +172,31 @@ class _TotpTile extends ConsumerWidget {
     final code = await showDialog<String>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('¿Desactivar la verificación?'),
+        title: Text(context.l10n.accountDesactivarLaVerificacion),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text(
-              'Después de esto, tu contraseña será lo único que proteja la '
-              'cuenta. Escribe un código de tu aplicación para confirmarlo.',
-            ),
+            Text(context.l10n.accountDespuesDeEstoTuContrasena),
             const SizedBox(height: 12),
             TextField(
               controller: controller,
               autofocus: true,
               keyboardType: TextInputType.number,
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-              decoration: const InputDecoration(labelText: 'Código'),
+              decoration: InputDecoration(
+                labelText: context.l10n.accountCodigo,
+              ),
             ),
           ],
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Conservar'),
+            child: Text(context.l10n.accountConservar),
           ),
           FilledButton(
             onPressed: () => Navigator.of(context).pop(controller.text.trim()),
-            child: const Text('Desactivar'),
+            child: Text(context.l10n.accountDesactivar),
           ),
         ],
       ),
@@ -219,7 +223,7 @@ class _TermsTile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) => ListTile(
     leading: const Icon(Icons.assignment_outlined),
-    title: const Text('Términos pendientes de aceptar'),
+    title: Text(context.l10n.accountTerminosPendientesDeAceptar),
     trailing: const Icon(Icons.chevron_right),
     onTap: () async {
       final outcome = await ref

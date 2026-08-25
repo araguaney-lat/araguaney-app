@@ -52,7 +52,9 @@ class _IncidentsListViewState extends ConsumerState<IncidentsListView> {
       case IncidentsRead():
         ref.invalidate(centerIncidentsProvider);
         messenger.showSnackBar(
-          const SnackBar(content: Text('La incidencia quedó cerrada.')),
+          SnackBar(
+            content: Text(context.l10n.incidentsLaIncidenciaQuedoCerrada),
+          ),
         );
       case IncidentsRefused(:final failure):
         messenger.showSnackBar(
@@ -67,7 +69,7 @@ class _IncidentsListViewState extends ConsumerState<IncidentsListView> {
     final canResolve = ref.watch(canResolveIncidentsProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Incidencias')),
+      appBar: AppBar(title: Text(context.l10n.incidentsIncidencias)),
       body: switch (incidents) {
         AsyncData(value: IncidentsRead(:final value)) when value.isEmpty =>
           const _Message('No hay incidencias registradas.'),
@@ -127,9 +129,9 @@ class _List extends ConsumerWidget {
               onResolve: () => onResolve(incident),
             ),
           if (closed.isNotEmpty) ...[
-            const Padding(
+            Padding(
               padding: EdgeInsets.fromLTRB(16, 24, 16, 8),
-              child: Text('Ya cerradas'),
+              child: Text(context.l10n.incidentsYaCerradas),
             ),
             for (final incident in closed)
               _IncidentCard(
@@ -222,7 +224,7 @@ class _IncidentCard extends StatelessWidget {
                   onPressed: () => Navigator.of(
                     context,
                   ).push(ShipmentRecordView.route(incident.shipmentId)),
-                  child: const Text('Ver envío'),
+                  child: Text(context.l10n.incidentsVerEnvio),
                 ),
               ],
             ),
@@ -233,7 +235,7 @@ class _IncidentCard extends StatelessWidget {
                       width: double.infinity,
                       child: FilledButton(
                         onPressed: onResolve,
-                        child: const Text('Cerrar'),
+                        child: Text(context.l10n.actionClose),
                       ),
                     ),
           ],

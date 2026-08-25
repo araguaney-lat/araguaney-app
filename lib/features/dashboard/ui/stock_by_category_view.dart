@@ -28,7 +28,7 @@ class StockByCategoryView extends ConsumerWidget {
     final national = ref.watch(isNationalAdminProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Stock por categoría')),
+      appBar: AppBar(title: Text(context.l10n.dashboardStockPorCategoria)),
       body: RefreshIndicator(
         onRefresh: () async => ref.invalidate(centerAggregatesProvider),
         child: switch (aggregates) {

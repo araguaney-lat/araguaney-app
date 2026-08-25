@@ -65,11 +65,11 @@ class _ShipmentsListViewState extends ConsumerState<ShipmentsListView> {
     final shipments = ref.watch(shipmentsProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Envíos')),
+      appBar: AppBar(title: Text(context.l10n.shellEnvios)),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _create,
         icon: const Icon(Icons.add),
-        label: const Text('Nuevo envío'),
+        label: Text(context.l10n.shipmentsNuevoEnvio),
       ),
       body: RefreshIndicator(
         onRefresh: () async => ref.invalidate(shipmentsProvider),
@@ -146,11 +146,10 @@ class _Loaded extends StatelessWidget {
           ),
         ),
         if (shown.isEmpty)
-          const Padding(
+          Padding(
             padding: EdgeInsets.all(32),
             child: Text(
-              'Todavía no hay envíos. Uno se abre cuando hay tarimas cerradas '
-              'esperando salir.',
+              context.l10n.shipmentsTodaviaNoHayEnviosUno,
               textAlign: TextAlign.center,
             ),
           ),

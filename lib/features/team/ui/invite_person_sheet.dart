@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/i18n/l10n_extension.dart';
 
 import '../../../core/ui/sheet_insets.dart';
 
@@ -71,13 +72,12 @@ class _InvitePersonSheetState extends State<InvitePersonSheet> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Sumar a alguien al centro',
+            context.l10n.teamSumarAAlguienAlCentro,
             style: Theme.of(context).textTheme.titleMedium,
           ),
           const SizedBox(height: 8),
           Text(
-            'Recibirá un correo con su acceso. La contraseña la genera el '
-            'servidor y no se ve desde aquí.',
+            context.l10n.teamRecibiraUnCorreoConSu,
             style: Theme.of(context).textTheme.bodySmall,
           ),
           const SizedBox(height: 16),
@@ -85,7 +85,7 @@ class _InvitePersonSheetState extends State<InvitePersonSheet> {
             controller: _email,
             keyboardType: TextInputType.emailAddress,
             autocorrect: false,
-            decoration: const InputDecoration(labelText: 'Correo'),
+            decoration: InputDecoration(labelText: context.l10n.sessionCorreo),
             validator: (value) {
               final text = value?.trim() ?? '';
               if (text.isEmpty) return 'Escribe el correo';
@@ -98,7 +98,9 @@ class _InvitePersonSheetState extends State<InvitePersonSheet> {
           TextFormField(
             controller: _username,
             autocorrect: false,
-            decoration: const InputDecoration(labelText: 'Nombre de usuario'),
+            decoration: InputDecoration(
+              labelText: context.l10n.teamNombreDeUsuario,
+            ),
             validator: (value) => (value == null || value.trim().isEmpty)
                 ? 'Escribe el nombre de usuario'
                 : null,
@@ -107,19 +109,22 @@ class _InvitePersonSheetState extends State<InvitePersonSheet> {
           TextFormField(
             controller: _fullName,
             textCapitalization: TextCapitalization.words,
-            decoration: const InputDecoration(
-              labelText: 'Nombre y apellido (opcional)',
+            decoration: InputDecoration(
+              labelText: context.l10n.teamNombreYApellidoOpcional,
             ),
           ),
           const SizedBox(height: 12),
           DropdownButtonFormField<String>(
             initialValue: _role,
-            decoration: const InputDecoration(labelText: 'Rol'),
-            items: const [
-              DropdownMenuItem(value: 'volunteer', child: Text('Voluntariado')),
+            decoration: InputDecoration(labelText: context.l10n.accountRol),
+            items: [
+              DropdownMenuItem(
+                value: 'volunteer',
+                child: Text(context.l10n.teamVoluntariado),
+              ),
               DropdownMenuItem(
                 value: 'coordinator',
-                child: Text('Coordinación'),
+                child: Text(context.l10n.teamCoordinacion),
               ),
             ],
             onChanged: (value) => setState(() => _role = value ?? 'volunteer'),
@@ -129,7 +134,7 @@ class _InvitePersonSheetState extends State<InvitePersonSheet> {
             alignment: Alignment.centerRight,
             child: FilledButton(
               onPressed: _submit,
-              child: const Text('Enviar invitación'),
+              child: Text(context.l10n.teamEnviarInvitacion),
             ),
           ),
         ],

@@ -61,7 +61,7 @@ class _ForgotPasswordViewState extends ConsumerState<ForgotPasswordView> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: const Text('Recuperar el acceso')),
+    appBar: AppBar(title: Text(context.l10n.sessionRecuperarElAcceso)),
     body: SafeArea(
       child: Center(
         child: SingleChildScrollView(
@@ -82,8 +82,7 @@ class _ForgotPasswordViewState extends ConsumerState<ForgotPasswordView> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          'Escribe el correo de tu cuenta y te enviamos un enlace para elegir '
-          'una contraseña nueva.',
+          context.l10n.sessionEscribeElCorreoDeTu,
           style: Theme.of(context).textTheme.bodyLarge,
         ),
         const SizedBox(height: 24),
@@ -92,7 +91,7 @@ class _ForgotPasswordViewState extends ConsumerState<ForgotPasswordView> {
           keyboardType: TextInputType.emailAddress,
           autocorrect: false,
           onFieldSubmitted: (_) => _submit(),
-          decoration: const InputDecoration(labelText: 'Correo'),
+          decoration: InputDecoration(labelText: context.l10n.sessionCorreo),
           validator: (value) => (value == null || value.trim().isEmpty)
               ? 'Escribe tu correo'
               : null,
@@ -109,7 +108,7 @@ class _ForgotPasswordViewState extends ConsumerState<ForgotPasswordView> {
                   dimension: 20,
                   child: CircularProgressIndicator(strokeWidth: 2),
                 )
-              : const Text('Enviar el enlace'),
+              : Text(context.l10n.sessionEnviarElEnlace),
         ),
       ],
     ),
@@ -135,15 +134,14 @@ class _Sent extends StatelessWidget {
       ),
       const SizedBox(height: 12),
       Text(
-        'El enlace abre en el navegador y ahí eliges la contraseña nueva. '
-        'Después vuelve aquí para entrar.',
+        context.l10n.sessionElEnlaceAbreEnEl,
         textAlign: TextAlign.center,
         style: Theme.of(context).textTheme.bodyMedium,
       ),
       const SizedBox(height: 24),
       FilledButton(
         onPressed: () => Navigator.of(context).pop(),
-        child: const Text('Volver'),
+        child: Text(context.l10n.sessionVolver),
       ),
     ],
   );

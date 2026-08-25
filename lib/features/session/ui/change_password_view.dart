@@ -66,7 +66,7 @@ class _ChangePasswordViewState extends ConsumerState<ChangePasswordView> {
         ScaffoldMessenger.of(context)
           ..hideCurrentSnackBar()
           ..showSnackBar(
-            const SnackBar(content: Text('Contraseña actualizada.')),
+            SnackBar(content: Text(context.l10n.sessionContrasenaActualizada)),
           );
       }
     } on Object catch (error) {
@@ -88,7 +88,7 @@ class _ChangePasswordViewState extends ConsumerState<ChangePasswordView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Cambia tu contraseña'),
+        title: Text(context.l10n.sessionCambiaTuContrasena),
         automaticallyImplyLeading: !widget.forced,
       ),
       body: SafeArea(
@@ -114,8 +114,8 @@ class _ChangePasswordViewState extends ConsumerState<ChangePasswordView> {
                     TextFormField(
                       controller: _current,
                       obscureText: true,
-                      decoration: const InputDecoration(
-                        labelText: 'Contraseña actual',
+                      decoration: InputDecoration(
+                        labelText: context.l10n.sessionContrasenaActual,
                       ),
                       validator: (value) => (value == null || value.isEmpty)
                           ? 'Escribe tu contraseña actual'
@@ -125,8 +125,8 @@ class _ChangePasswordViewState extends ConsumerState<ChangePasswordView> {
                     TextFormField(
                       controller: _next,
                       obscureText: true,
-                      decoration: const InputDecoration(
-                        labelText: 'Contraseña nueva',
+                      decoration: InputDecoration(
+                        labelText: context.l10n.sessionContrasenaNueva,
                       ),
                       validator: (value) => (value == null || value.isEmpty)
                           ? 'Escribe tu contraseña nueva'
@@ -137,8 +137,8 @@ class _ChangePasswordViewState extends ConsumerState<ChangePasswordView> {
                       controller: _confirm,
                       obscureText: true,
                       onFieldSubmitted: (_) => _submit(),
-                      decoration: const InputDecoration(
-                        labelText: 'Repite la contraseña nueva',
+                      decoration: InputDecoration(
+                        labelText: context.l10n.sessionRepiteLaContrasenaNueva,
                       ),
                       // Lo único que se valida aquí: que las dos coincidan. Es
                       // un dedazo que el servidor no puede detectar.

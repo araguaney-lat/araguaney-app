@@ -46,10 +46,10 @@ class _TotpChallengeViewState extends ConsumerState<TotpChallengeView> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Verificación en dos pasos'),
+        title: Text(context.l10n.sessionVerificacionEnDosPasos),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          tooltip: 'Volver al inicio de sesión',
+          tooltip: context.l10n.sessionVolverAlInicioDeSesion,
           onPressed: () =>
               ref.read(sessionControllerProvider.notifier).cancelTotp(),
         ),
@@ -65,7 +65,7 @@ class _TotpChallengeViewState extends ConsumerState<TotpChallengeView> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Text(
-                    'Escribe el código de tu aplicación de autenticación.',
+                    context.l10n.sessionEscribeElCodigoDeTu,
                     style: Theme.of(context).textTheme.bodyLarge,
                     textAlign: TextAlign.center,
                   ),
@@ -79,8 +79,8 @@ class _TotpChallengeViewState extends ConsumerState<TotpChallengeView> {
                     style: Theme.of(context).textTheme.headlineSmall,
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     onSubmitted: (_) => _submit(),
-                    decoration: const InputDecoration(
-                      labelText: 'Código de 6 dígitos',
+                    decoration: InputDecoration(
+                      labelText: context.l10n.sessionCodigoDeDigitos,
                       counterText: '',
                     ),
                   ),
@@ -96,7 +96,7 @@ class _TotpChallengeViewState extends ConsumerState<TotpChallengeView> {
                             dimension: 20,
                             child: CircularProgressIndicator(strokeWidth: 2),
                           )
-                        : const Text('Verificar'),
+                        : Text(context.l10n.sessionVerificar),
                   ),
                 ],
               ),

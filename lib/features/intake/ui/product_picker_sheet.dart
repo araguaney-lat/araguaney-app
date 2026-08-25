@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/db/app_database.dart';
+import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/ui/category_label.dart';
 import '../../../core/ui/sheet_insets.dart';
 import '../../catalog/data/catalog_providers.dart';
@@ -48,9 +49,9 @@ class _ProductPickerSheetState extends ConsumerState<ProductPickerSheet> {
             child: TextField(
               key: const Key('product-search'),
               autofocus: true,
-              decoration: const InputDecoration(
-                labelText: 'Buscar producto',
-                helperText: 'Por nombre, marca o principio activo',
+              decoration: InputDecoration(
+                labelText: context.l10n.intakeBuscarProducto,
+                helperText: context.l10n.intakePorNombreMarcaOPrincipio,
                 prefixIcon: Icon(Icons.search),
               ),
               onChanged: (value) => setState(() => _search = value),
@@ -69,7 +70,7 @@ class _ProductPickerSheetState extends ConsumerState<ProductPickerSheet> {
                 }
               },
               icon: const Icon(Icons.barcode_reader),
-              label: const Text('Escanear código de barras'),
+              label: Text(context.l10n.intakeEscanearCodigoDeBarras),
             ),
           ),
           if (categories.isNotEmpty)
@@ -135,9 +136,7 @@ class _NoMatches extends StatelessWidget {
     child: Padding(
       padding: const EdgeInsets.all(32),
       child: Text(
-        'Ningún producto del catálogo coincide. Si falta algo que sí existe, '
-        'sincroniza con conexión: el catálogo local es el que el servidor '
-        'sirvió para esta campaña.',
+        context.l10n.intakeNingunProductoDelCatalogoCoincide,
         textAlign: TextAlign.center,
         style: Theme.of(context).textTheme.bodyMedium,
       ),

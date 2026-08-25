@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/api/client_version_gate.dart';
 import '../../../core/api/client_version_providers.dart';
 import '../../../core/auth/auth_providers.dart';
+import '../../../core/i18n/l10n_extension.dart';
 
 /// La versión instalada, al pie.
 ///
@@ -45,7 +46,7 @@ class AppVersionFooter extends ConsumerWidget {
         if (outdated) ...[
           const SizedBox(height: 4),
           Text(
-            'Hay una versión más nueva disponible.',
+            context.l10n.sessionHayUnaVersionMasNueva,
             style: theme.textTheme.bodySmall,
             textAlign: TextAlign.center,
           ),

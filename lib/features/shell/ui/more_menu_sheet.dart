@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/auth/auth_providers.dart';
+import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/ui/sheet_insets.dart';
 import '../../account/ui/profile_view.dart';
 import '../../center_applications/data/center_applications_providers.dart';
@@ -68,73 +69,73 @@ class MoreMenuSheet extends ConsumerWidget {
                   child: const Icon(Icons.cloud_upload_outlined),
                 )
               : const Icon(Icons.cloud_upload_outlined),
-          title: const Text('Pendientes de envío'),
+          title: Text(context.l10n.intakePendientesDeEnvio),
           onTap: () => _go(context, PendingCapturesView.route()),
         ),
         ListTile(
           leading: const Icon(Icons.person_outline),
-          title: const Text('Perfil y seguridad'),
+          title: Text(context.l10n.accountPerfilYSeguridad),
           onTap: () => _go(context, ProfileView.route()),
         ),
         ListTile(
           leading: const Icon(Icons.list_alt_outlined),
-          title: const Text('Capturas'),
+          title: Text(context.l10n.shellCapturas),
           onTap: () => _go(context, IntakeListView.route()),
         ),
         ListTile(
           leading: const Icon(Icons.donut_small_outlined),
-          title: const Text('Stock por categoría'),
+          title: Text(context.l10n.dashboardStockPorCategoria),
           onTap: () => _go(context, StockByCategoryView.route()),
         ),
         ListTile(
           leading: const Icon(Icons.pallet),
-          title: const Text('Tarimas'),
+          title: Text(context.l10n.palletsTarimas),
           onTap: () => _go(context, PalletsListView.route()),
         ),
         if (coordinates)
           ListTile(
             leading: const Icon(Icons.local_shipping_outlined),
-            title: const Text('Envíos'),
+            title: Text(context.l10n.shellEnvios),
             onTap: () => _go(context, ShipmentsListView.route()),
           ),
         ListTile(
           leading: const Icon(Icons.swap_horiz),
-          title: const Text('Transferencias'),
+          title: Text(context.l10n.shellTransferencias),
           onTap: () => _go(context, TransfersListView.route()),
         ),
         if (coordinates)
           ListTile(
             leading: const Icon(Icons.flag_outlined),
-            title: const Text('Revisiones de riesgo'),
+            title: Text(context.l10n.shellRevisionesDeRiesgo),
             onTap: () => _go(context, RiskReviewsView.route()),
           ),
         if (coordinates)
           ListTile(
             leading: const Icon(Icons.report_gmailerrorred_outlined),
-            title: const Text('Incidencias'),
+            title: Text(context.l10n.incidentsIncidencias),
             onTap: () => _go(context, IncidentsListView.route()),
           ),
         if (ref.watch(canReviewApplicationsProvider))
           ListTile(
             leading: const Icon(Icons.inbox_outlined),
-            title: const Text('Solicitudes'),
+            title: Text(context.l10n.center_applicationsSolicitudes),
             onTap: () => _go(context, ApplicationQueueView.route()),
           ),
         if (ref.watch(canListCentersProvider))
           ListTile(
             leading: const Icon(Icons.apartment_outlined),
-            title: const Text('Centros'),
+            title: Text(context.l10n.centersCentros),
             onTap: () => _go(context, CentersListView.route()),
           ),
         ListTile(
           leading: const Icon(Icons.people_outline),
-          title: const Text('Equipo'),
+          title: Text(context.l10n.shellEquipo),
           onTap: () => _go(context, TeamDirectoryView.route()),
         ),
         const Divider(),
         ListTile(
           leading: const Icon(Icons.logout),
-          title: const Text('Cerrar sesión'),
+          title: Text(context.l10n.shellCerrarSesion),
           onTap: () {
             Navigator.of(context).pop();
             ref.read(sessionControllerProvider.notifier).logOut();

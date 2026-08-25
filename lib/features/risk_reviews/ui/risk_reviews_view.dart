@@ -102,9 +102,9 @@ class _Header extends StatelessWidget {
     crossAxisAlignment: CrossAxisAlignment.start,
     mainAxisSize: MainAxisSize.min,
     children: [
-      const Text('Revisiones'),
+      Text(context.l10n.risk_reviewsRevisiones),
       Text(
-        'Capturas marcadas que esperan una decisión',
+        context.l10n.risk_reviewsCapturasMarcadasQueEsperanUna,
         style: Theme.of(context).textTheme.bodySmall,
       ),
     ],
@@ -131,11 +131,10 @@ class _Loaded extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
       children: [
         if (pending.isEmpty)
-          const Padding(
+          Padding(
             padding: EdgeInsets.symmetric(vertical: 24),
             child: Text(
-              'Nada espera una decisión. Aquí aparecen las capturas que el '
-              'servidor marcó para que alguien las mire.',
+              context.l10n.risk_reviewsNadaEsperaUnaDecisionAqui,
               textAlign: TextAlign.center,
             ),
           ),
@@ -147,7 +146,10 @@ class _Loaded extends StatelessWidget {
           ),
         if (settled.isNotEmpty) ...[
           const SizedBox(height: 8),
-          Text('Ya resueltas', style: Theme.of(context).textTheme.titleSmall),
+          Text(
+            context.l10n.risk_reviewsYaResueltas,
+            style: Theme.of(context).textTheme.titleSmall,
+          ),
           const SizedBox(height: 8),
           for (final review in settled) _SettledRow(review: review),
         ],
@@ -182,7 +184,7 @@ class _ReviewCard extends StatelessWidget {
           children: [
             if (highlighted) ...[
               Text(
-                'La del aviso que abriste',
+                context.l10n.risk_reviewsLaDelAvisoQueAbriste,
                 style: theme.textTheme.labelSmall,
               ),
               const SizedBox(height: 6),
@@ -213,7 +215,7 @@ class _ReviewCard extends StatelessWidget {
                 width: double.infinity,
                 child: OutlinedButton(
                   onPressed: onResolve,
-                  child: const Text('Aprobar o rechazar'),
+                  child: Text(context.l10n.risk_reviewsAprobarORechazar),
                 ),
               ),
             ],

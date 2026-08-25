@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/api/generated/models/intake_out.dart';
+import '../../../core/i18n/l10n_extension.dart';
 import '../../boxes/ui/box_label_view.dart';
 
 /// Lo que se ve cuando el servidor aceptó la captura.
@@ -18,7 +19,7 @@ class IntakeSubmittedView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: const Text('Captura registrada')),
+    appBar: AppBar(title: Text(context.l10n.intakeCapturaRegistrada)),
     body: ListView(
       padding: const EdgeInsets.all(16),
       children: [
@@ -37,7 +38,7 @@ class IntakeSubmittedView extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         Text(
-          'Etiqueta cada caja con su código antes de moverla.',
+          context.l10n.intakeEtiquetaCadaCajaConSu,
           style: Theme.of(context).textTheme.bodySmall,
         ),
         const SizedBox(height: 16),
@@ -54,7 +55,7 @@ class IntakeSubmittedView extends StatelessWidget {
         const SizedBox(height: 24),
         FilledButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Terminar'),
+          child: Text(context.l10n.actionFinish),
         ),
       ],
     ),

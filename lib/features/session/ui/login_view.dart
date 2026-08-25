@@ -66,13 +66,13 @@ class _LoginViewState extends ConsumerState<LoginView> {
                     const _ArrivingMark(),
                     const SizedBox(height: 16),
                     Text(
-                      'Araguaney',
+                      context.l10n.appTitle,
                       style: Theme.of(context).textTheme.headlineMedium,
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Inicia sesión para operar tu centro de acopio.',
+                      context.l10n.sessionIniciaSesionParaOperarTu,
                       style: Theme.of(context).textTheme.bodyMedium,
                       textAlign: TextAlign.center,
                     ),
@@ -83,8 +83,8 @@ class _LoginViewState extends ConsumerState<LoginView> {
                       enableSuggestions: false,
                       keyboardType: TextInputType.emailAddress,
                       textInputAction: TextInputAction.next,
-                      decoration: const InputDecoration(
-                        labelText: 'Correo o usuario',
+                      decoration: InputDecoration(
+                        labelText: context.l10n.sessionCorreoOUsuario,
                       ),
                       validator: (value) =>
                           (value == null || value.trim().isEmpty)
@@ -98,7 +98,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
                       textInputAction: TextInputAction.done,
                       onFieldSubmitted: (_) => _submit(),
                       decoration: InputDecoration(
-                        labelText: 'Contraseña',
+                        labelText: context.l10n.sessionContrasena,
                         suffixIcon: IconButton(
                           onPressed: () => setState(
                             () => _obscurePassword = !_obscurePassword,
@@ -129,7 +129,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
                               dimension: 20,
                               child: CircularProgressIndicator(strokeWidth: 2),
                             )
-                          : const Text('Entrar'),
+                          : Text(context.l10n.sessionEntrar),
                     ),
                     const SizedBox(height: 8),
                     TextButton(
@@ -138,7 +138,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
                           : () => Navigator.of(
                               context,
                             ).push(ForgotPasswordView.route()),
-                      child: const Text('¿Olvidaste tu contraseña?'),
+                      child: Text(context.l10n.sessionOlvidasteTuContrasena),
                     ),
                     const _RegisterCenterLink(),
                     const SizedBox(height: 24),
@@ -211,11 +211,11 @@ class _RegisterCenterLink extends ConsumerWidget {
         );
         if (!opened && context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('No se pudo abrir el navegador.')),
+            SnackBar(content: Text(context.l10n.sessionNoSePudoAbrirEl)),
           );
         }
       },
-      child: const Text('¿Tu centro aún no está registrado?'),
+      child: Text(context.l10n.sessionTuCentroAunNoEsta),
     );
   }
 }
@@ -299,7 +299,7 @@ class _ArrivingMarkState extends State<_ArrivingMark>
           // más ancho que alto.
           fit: BoxFit.fitHeight,
           filterQuality: FilterQuality.medium,
-          semanticLabel: 'Araguaney',
+          semanticLabel: context.l10n.appTitle,
         ),
       ),
     );

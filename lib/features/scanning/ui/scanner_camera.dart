@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
+import '../../../core/i18n/l10n_extension.dart';
+
 /// La cámara, con su manejo de permiso y su linterna.
 ///
 /// Existe porque hay dos pantallas que escanean y sus diferencias están en qué
@@ -107,7 +109,7 @@ class ScannerError extends StatelessWidget {
           const SizedBox(height: 16),
           FilledButton(
             onPressed: () => onRetry(),
-            child: const Text('Reintentar'),
+            child: Text(context.l10n.actionRetry),
           ),
         ],
       ),

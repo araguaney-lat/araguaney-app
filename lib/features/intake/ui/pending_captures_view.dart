@@ -71,7 +71,7 @@ class _PendingCapturesViewState extends ConsumerState<PendingCapturesView> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('¿Descartar esta captura?'),
+        title: Text(context.l10n.intakeDescartarEstaCaptura),
         content: Text(
           'Se borra del dispositivo y no se envía. Lo que se registró en '
           'papel o en las cajas de ${row.summary} no se recupera desde aquí.',
@@ -79,11 +79,11 @@ class _PendingCapturesViewState extends ConsumerState<PendingCapturesView> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Conservar'),
+            child: Text(context.l10n.accountConservar),
           ),
           FilledButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Descartar'),
+            child: Text(context.l10n.intakeDescartar),
           ),
         ],
       ),
@@ -165,9 +165,9 @@ class _Header extends StatelessWidget {
     crossAxisAlignment: CrossAxisAlignment.start,
     mainAxisSize: MainAxisSize.min,
     children: [
-      const Text('Pendientes de envío'),
+      Text(context.l10n.intakePendientesDeEnvio),
       Text(
-        'Nada se pierde: todo espera aquí',
+        context.l10n.intakeNadaSePierdeTodoEspera,
         style: Theme.of(context).textTheme.bodySmall,
       ),
     ],
@@ -199,15 +199,21 @@ class _ReadinessStrip extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Expanded(
-          child: _Cell(label: 'Productos descargados', value: products),
+          child: _Cell(
+            label: context.l10n.intakeProductosDescargados,
+            value: products,
+          ),
         ),
         const SizedBox(width: 9),
         Expanded(
-          child: _Cell(label: 'Códigos apartados', value: codes),
+          child: _Cell(
+            label: context.l10n.intakeCodigosApartados,
+            value: codes,
+          ),
         ),
         const SizedBox(width: 9),
         Expanded(
-          child: _Cell(label: 'Capturas en cola', value: queued),
+          child: _Cell(label: context.l10n.intakeCapturasEnCola, value: queued),
         ),
       ],
     ),
@@ -295,13 +301,16 @@ class _ActionsState extends ConsumerState<_Actions> {
   Widget build(BuildContext context) => Row(
     children: [
       Expanded(
-        child: ConfirmButton(label: 'Sincronizar', onPressed: widget.onSync),
+        child: ConfirmButton(
+          label: context.l10n.intakeSincronizar,
+          onPressed: widget.onSync,
+        ),
       ),
       const SizedBox(width: 9),
       Expanded(
         child: OutlinedButton(
           onPressed: _reserving ? null : _topUp,
-          child: const Text('Reservar códigos'),
+          child: Text(context.l10n.intakeReservarCodigos),
         ),
       ),
     ],
@@ -371,14 +380,14 @@ class _QueuedCard extends StatelessWidget {
                   Expanded(
                     child: OutlinedButton(
                       onPressed: onRetry,
-                      child: const Text('Reintentar'),
+                      child: Text(context.l10n.actionRetry),
                     ),
                   ),
                   const SizedBox(width: 9),
                   Expanded(
                     child: TextButton(
                       onPressed: onDiscard,
-                      child: const Text('Descartar'),
+                      child: Text(context.l10n.intakeDescartar),
                     ),
                   ),
                 ],
@@ -432,8 +441,7 @@ class _Empty extends StatelessWidget {
   Widget build(BuildContext context) => Padding(
     padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 16),
     child: Text(
-      'No hay capturas esperando. Las que se hagan sin señal aparecerán '
-      'aquí hasta que se envíen.',
+      context.l10n.intakeNoHayCapturasEsperandoLas,
       textAlign: TextAlign.center,
       style: Theme.of(context).textTheme.bodyMedium,
     ),

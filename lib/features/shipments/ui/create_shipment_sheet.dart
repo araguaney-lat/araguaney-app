@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/api/generated/models/shipment_create.dart';
+import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/ui/confirm_button.dart';
 import '../../../core/ui/sheet_insets.dart';
 
@@ -67,11 +68,16 @@ class _CreateShipmentSheetState extends State<CreateShipmentSheet> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text('Nuevo envío', style: Theme.of(context).textTheme.titleLarge),
+          Text(
+            context.l10n.shipmentsNuevoEnvio,
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
           const SizedBox(height: 16),
           TextFormField(
             controller: _destination,
-            decoration: const InputDecoration(labelText: 'Destino'),
+            decoration: InputDecoration(
+              labelText: context.l10n.shipmentsDestino,
+            ),
             validator: (value) => (value == null || value.trim().isEmpty)
                 ? 'Escribe a dónde va'
                 : null,
@@ -79,26 +85,31 @@ class _CreateShipmentSheetState extends State<CreateShipmentSheet> {
           const SizedBox(height: 12),
           TextFormField(
             controller: _carrier,
-            decoration: const InputDecoration(
-              labelText: 'Transportista (opcional)',
+            decoration: InputDecoration(
+              labelText: context.l10n.shipmentsTransportistaOpcional,
             ),
           ),
           const SizedBox(height: 12),
           TextFormField(
             controller: _reference,
-            decoration: const InputDecoration(
-              labelText: 'Referencia (opcional)',
-              helperText: 'Guía, contenedor, lo que sirva para encontrarlo',
+            decoration: InputDecoration(
+              labelText: context.l10n.shipmentsReferenciaOpcional,
+              helperText: context.l10n.shipmentsGuiaContenedorLoQueSirva,
             ),
           ),
           const SizedBox(height: 12),
           TextFormField(
             controller: _notes,
             maxLines: 2,
-            decoration: const InputDecoration(labelText: 'Notas (opcional)'),
+            decoration: InputDecoration(
+              labelText: context.l10n.intakeNotasOpcional,
+            ),
           ),
           const SizedBox(height: 20),
-          ConfirmButton(label: 'Abrir el envío', onPressed: _save),
+          ConfirmButton(
+            label: context.l10n.shipmentsAbrirElEnvio,
+            onPressed: _save,
+          ),
         ],
       ),
     ),

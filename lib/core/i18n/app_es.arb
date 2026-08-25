@@ -235,5 +235,1013 @@
   "manifestFailed": "No se pudo obtener el manifiesto.",
   "@manifestFailed": {
     "description": "El trabajo del manifiesto no terminó bien y el servidor no dijo por qué."
+  },
+  "sessionHayUnaVersionMasNueva": "Hay una versión más nueva disponible.",
+  "@sessionHayUnaVersionMasNueva": {
+    "description": "Pantalla: app_version_footer."
+  },
+  "sessionContrasenaActualizada": "Contraseña actualizada.",
+  "@sessionContrasenaActualizada": {
+    "description": "Pantalla: change_password_view."
+  },
+  "sessionCambiaTuContrasena": "Cambia tu contraseña",
+  "@sessionCambiaTuContrasena": {
+    "description": "Pantalla: change_password_view."
+  },
+  "sessionContrasenaActual": "Contraseña actual",
+  "@sessionContrasenaActual": {
+    "description": "Pantalla: change_password_view."
+  },
+  "sessionContrasenaNueva": "Contraseña nueva",
+  "@sessionContrasenaNueva": {
+    "description": "Pantalla: change_password_view."
+  },
+  "sessionRepiteLaContrasenaNueva": "Repite la contraseña nueva",
+  "@sessionRepiteLaContrasenaNueva": {
+    "description": "Pantalla: change_password_view."
+  },
+  "sessionRecuperarElAcceso": "Recuperar el acceso",
+  "@sessionRecuperarElAcceso": {
+    "description": "Pantalla: forgot_password_view."
+  },
+  "sessionEscribeElCorreoDeTu": "Escribe el correo de tu cuenta y te enviamos un enlace para elegir una contraseña nueva.",
+  "@sessionEscribeElCorreoDeTu": {
+    "description": "Pantalla: forgot_password_view."
+  },
+  "sessionCorreo": "Correo",
+  "@sessionCorreo": {
+    "description": "Pantalla: forgot_password_view."
+  },
+  "sessionEnviarElEnlace": "Enviar el enlace",
+  "@sessionEnviarElEnlace": {
+    "description": "Pantalla: forgot_password_view."
+  },
+  "sessionElEnlaceAbreEnEl": "El enlace abre en el navegador y ahí eliges la contraseña nueva. Después vuelve aquí para entrar.",
+  "@sessionElEnlaceAbreEnEl": {
+    "description": "Pantalla: forgot_password_view."
+  },
+  "sessionVolver": "Volver",
+  "@sessionVolver": {
+    "description": "Pantalla: forgot_password_view."
+  },
+  "sessionIniciaSesionParaOperarTu": "Inicia sesión para operar tu centro de acopio.",
+  "@sessionIniciaSesionParaOperarTu": {
+    "description": "Pantalla: login_view."
+  },
+  "sessionCorreoOUsuario": "Correo o usuario",
+  "@sessionCorreoOUsuario": {
+    "description": "Pantalla: login_view."
+  },
+  "sessionContrasena": "Contraseña",
+  "@sessionContrasena": {
+    "description": "Pantalla: login_view."
+  },
+  "sessionEntrar": "Entrar",
+  "@sessionEntrar": {
+    "description": "Pantalla: login_view."
+  },
+  "sessionOlvidasteTuContrasena": "¿Olvidaste tu contraseña?",
+  "@sessionOlvidasteTuContrasena": {
+    "description": "Pantalla: login_view."
+  },
+  "sessionNoSePudoAbrirEl": "No se pudo abrir el navegador.",
+  "@sessionNoSePudoAbrirEl": {
+    "description": "Pantalla: login_view."
+  },
+  "sessionTuCentroAunNoEsta": "¿Tu centro aún no está registrado?",
+  "@sessionTuCentroAunNoEsta": {
+    "description": "Pantalla: login_view."
+  },
+  "sessionNoSePudoAbrirLa": "No se pudo abrir la tienda. Búscala como «Araguaney».",
+  "@sessionNoSePudoAbrirLa": {
+    "description": "Pantalla: store_link."
+  },
+  "sessionVerificacionEnDosPasos": "Verificación en dos pasos",
+  "@sessionVerificacionEnDosPasos": {
+    "description": "Pantalla: totp_challenge_view."
+  },
+  "sessionVolverAlInicioDeSesion": "Volver al inicio de sesión",
+  "@sessionVolverAlInicioDeSesion": {
+    "description": "Pantalla: totp_challenge_view."
+  },
+  "sessionEscribeElCodigoDeTu": "Escribe el código de tu aplicación de autenticación.",
+  "@sessionEscribeElCodigoDeTu": {
+    "description": "Pantalla: totp_challenge_view."
+  },
+  "sessionCodigoDeDigitos": "Código de 6 dígitos",
+  "@sessionCodigoDeDigitos": {
+    "description": "Pantalla: totp_challenge_view."
+  },
+  "sessionVerificar": "Verificar",
+  "@sessionVerificar": {
+    "description": "Pantalla: totp_challenge_view."
+  },
+  "sessionHayUnaVersionMasNueva2": "Hay una versión más nueva",
+  "@sessionHayUnaVersionMasNueva2": {
+    "description": "Pantalla: update_available_view."
+  },
+  "sessionActualizar": "Actualizar",
+  "@sessionActualizar": {
+    "description": "Pantalla: update_available_view."
+  },
+  "sessionMasTarde": "Más tarde",
+  "@sessionMasTarde": {
+    "description": "Pantalla: update_available_view."
+  },
+  "sessionEstaVersionYaNoFunciona": "Esta versión ya no funciona",
+  "@sessionEstaVersionYaNoFunciona": {
+    "description": "Pantalla: update_required_view."
+  },
+  "sessionActualizaAraguaneyParaSeguirOperando": "Actualiza Araguaney para seguir operando tu centro. Las capturas que tengas guardadas sin enviar siguen en el teléfono y se envían cuando actualices.",
+  "@sessionActualizaAraguaneyParaSeguirOperando": {
+    "description": "Pantalla: update_required_view."
+  },
+  "catalogEscanearProducto": "Escanear producto",
+  "@catalogEscanearProducto": {
+    "description": "Pantalla: product_scan_view."
+  },
+  "dashboardStockPorCategoria": "Stock por categoría",
+  "@dashboardStockPorCategoria": {
+    "description": "Pantalla: stock_by_category_view."
+  },
+  "accountPerfilYSeguridad": "Perfil y seguridad",
+  "@accountPerfilYSeguridad": {
+    "description": "Pantalla: profile_view."
+  },
+  "accountNombre": "Nombre",
+  "@accountNombre": {
+    "description": "Pantalla: profile_view."
+  },
+  "accountUsuario": "Usuario",
+  "@accountUsuario": {
+    "description": "Pantalla: profile_view."
+  },
+  "accountCentro": "Centro",
+  "@accountCentro": {
+    "description": "Pantalla: profile_view."
+  },
+  "accountRol": "Rol",
+  "@accountRol": {
+    "description": "Pantalla: profile_view."
+  },
+  "accountCambiarMiNombre": "Cambiar mi nombre",
+  "@accountCambiarMiNombre": {
+    "description": "Pantalla: profile_view."
+  },
+  "accountCambialaCuandoQuierasNoSolo": "Cámbiala cuando quieras, no solo cuando toca",
+  "@accountCambialaCuandoQuierasNoSolo": {
+    "description": "Pantalla: profile_view."
+  },
+  "accountTuNombre": "Tu nombre",
+  "@accountTuNombre": {
+    "description": "Pantalla: profile_view."
+  },
+  "accountNombreCompleto": "Nombre completo",
+  "@accountNombreCompleto": {
+    "description": "Pantalla: profile_view."
+  },
+  "accountDesactivarLaVerificacion": "¿Desactivar la verificación?",
+  "@accountDesactivarLaVerificacion": {
+    "description": "Pantalla: profile_view."
+  },
+  "accountDespuesDeEstoTuContrasena": "Después de esto, tu contraseña será lo único que proteja la cuenta. Escribe un código de tu aplicación para confirmarlo.",
+  "@accountDespuesDeEstoTuContrasena": {
+    "description": "Pantalla: profile_view."
+  },
+  "accountCodigo": "Código",
+  "@accountCodigo": {
+    "description": "Pantalla: profile_view."
+  },
+  "accountConservar": "Conservar",
+  "@accountConservar": {
+    "description": "Pantalla: profile_view."
+  },
+  "accountDesactivar": "Desactivar",
+  "@accountDesactivar": {
+    "description": "Pantalla: profile_view."
+  },
+  "accountTerminosPendientesDeAceptar": "Términos pendientes de aceptar",
+  "@accountTerminosPendientesDeAceptar": {
+    "description": "Pantalla: profile_view."
+  },
+  "accountEscaneaEsteCodigoConTu": "Escanea este código con tu aplicación de verificación y escribe el número de seis dígitos que te muestre.",
+  "@accountEscaneaEsteCodigoConTu": {
+    "description": "Pantalla: totp_setup_view."
+  },
+  "accountOEscribeloAMano": "O escríbelo a mano",
+  "@accountOEscribeloAMano": {
+    "description": "Pantalla: totp_setup_view."
+  },
+  "accountCodigoDeSeisDigitos": "Código de seis dígitos",
+  "@accountCodigoDeSeisDigitos": {
+    "description": "Pantalla: totp_setup_view."
+  },
+  "accountActivar": "Activar",
+  "@accountActivar": {
+    "description": "Pantalla: totp_setup_view."
+  },
+  "accountYaEstaActivada": "Ya está activada",
+  "@accountYaEstaActivada": {
+    "description": "Pantalla: totp_setup_view."
+  },
+  "accountGuardaEstosCodigosDeRespaldo": "Guarda estos códigos de respaldo fuera de este teléfono. Sirven para entrar si lo pierdes, y no se pueden volver a ver.",
+  "@accountGuardaEstosCodigosDeRespaldo": {
+    "description": "Pantalla: totp_setup_view."
+  },
+  "accountCodigosCopiados": "Códigos copiados.",
+  "@accountCodigosCopiados": {
+    "description": "Pantalla: totp_setup_view."
+  },
+  "accountCopiar": "Copiar",
+  "@accountCopiar": {
+    "description": "Pantalla: totp_setup_view."
+  },
+  "accountLosGuardeEnUnSitio": "Los guardé en un sitio seguro",
+  "@accountLosGuardeEnUnSitio": {
+    "description": "Pantalla: totp_setup_view."
+  },
+  "boxesVerEtiqueta": "Ver etiqueta",
+  "@boxesVerEtiqueta": {
+    "description": "Pantalla: box_detail_view."
+  },
+  "boxesSellarNecesitaConexionOtraPersona": "Sellar necesita conexión: otra persona puede estar moviendo esta caja ahora mismo, y decidirlo a ciegas dejaría dos versiones de la misma caja.",
+  "@boxesSellarNecesitaConexionOtraPersona": {
+    "description": "Pantalla: box_detail_view."
+  },
+  "boxesSellarCaja": "Sellar caja",
+  "@boxesSellarCaja": {
+    "description": "Pantalla: box_detail_view."
+  },
+  "boxesEstado": "Estado",
+  "@boxesEstado": {
+    "description": "Pantalla: box_detail_view."
+  },
+  "boxesProducto": "Producto",
+  "@boxesProducto": {
+    "description": "Pantalla: box_detail_view."
+  },
+  "boxesCantidad": "Cantidad",
+  "@boxesCantidad": {
+    "description": "Pantalla: box_detail_view."
+  },
+  "boxesLote": "Lote",
+  "@boxesLote": {
+    "description": "Pantalla: box_detail_view."
+  },
+  "boxesCaducidad": "Caducidad",
+  "@boxesCaducidad": {
+    "description": "Pantalla: box_detail_view."
+  },
+  "boxesPeso": "Peso",
+  "@boxesPeso": {
+    "description": "Pantalla: box_detail_view."
+  },
+  "boxesMotivoDelRechazo": "Motivo del rechazo",
+  "@boxesMotivoDelRechazo": {
+    "description": "Pantalla: box_detail_view."
+  },
+  "boxesRecorrido": "Recorrido",
+  "@boxesRecorrido": {
+    "description": "Pantalla: box_detail_view."
+  },
+  "boxesPegaLaEtiquetaEnLa": "Pega la etiqueta en la caja antes de moverla.",
+  "@boxesPegaLaEtiquetaEnLa": {
+    "description": "Pantalla: box_label_view."
+  },
+  "boxesCajas": "Cajas",
+  "@boxesCajas": {
+    "description": "Pantalla: boxes_list_view."
+  },
+  "boxesTodas": "Todas",
+  "@boxesTodas": {
+    "description": "Pantalla: boxes_list_view."
+  },
+  "boxesSellar": "Sellar",
+  "@boxesSellar": {
+    "description": "Pantalla: boxes_list_view."
+  },
+  "center_applicationsVerCentro": "Ver centro",
+  "@center_applicationsVerCentro": {
+    "description": "Pantalla: application_queue_view."
+  },
+  "center_applicationsSolicitudes": "Solicitudes",
+  "@center_applicationsSolicitudes": {
+    "description": "Pantalla: application_queue_view."
+  },
+  "center_applicationsContacto": "Contacto",
+  "@center_applicationsContacto": {
+    "description": "Pantalla: application_queue_view."
+  },
+  "center_applicationsTelefono": "Teléfono",
+  "@center_applicationsTelefono": {
+    "description": "Pantalla: application_queue_view."
+  },
+  "center_applicationsDireccion": "Dirección",
+  "@center_applicationsDireccion": {
+    "description": "Pantalla: application_queue_view."
+  },
+  "center_applicationsRespaldo": "Respaldo",
+  "@center_applicationsRespaldo": {
+    "description": "Pantalla: application_queue_view."
+  },
+  "center_applicationsRedes": "Redes",
+  "@center_applicationsRedes": {
+    "description": "Pantalla: application_queue_view."
+  },
+  "center_applicationsElMotivoSeLeEnvia": "El motivo se le envía por correo a quien postuló. Escríbelo para que se entienda sin conocer la plataforma.",
+  "@center_applicationsElMotivoSeLeEnvia": {
+    "description": "Pantalla: reject_application_sheet."
+  },
+  "center_applicationsMotivo": "Motivo",
+  "@center_applicationsMotivo": {
+    "description": "Pantalla: reject_application_sheet."
+  },
+  "centersEditar": "Editar",
+  "@centersEditar": {
+    "description": "Pantalla: center_record_view."
+  },
+  "centersRazonSocial": "Razón social",
+  "@centersRazonSocial": {
+    "description": "Pantalla: center_record_view."
+  },
+  "centersDonde": "Dónde",
+  "@centersDonde": {
+    "description": "Pantalla: center_record_view."
+  },
+  "centersEsteCentroEstaDesactivado": "Este centro está desactivado.",
+  "@centersEsteCentroEstaDesactivado": {
+    "description": "Pantalla: center_record_view."
+  },
+  "centersCentros": "Centros",
+  "@centersCentros": {
+    "description": "Pantalla: centers_list_view."
+  },
+  "centersNuevoCentro": "Nuevo centro",
+  "@centersNuevoCentro": {
+    "description": "Pantalla: centers_list_view."
+  },
+  "centersDesactivado": "Desactivado",
+  "@centersDesactivado": {
+    "description": "Pantalla: centers_list_view."
+  },
+  "homeDejaLaAplicacionAbiertaHasta": "Deja la aplicación abierta hasta que llegue a cero.",
+  "@homeDejaLaAplicacionAbiertaHasta": {
+    "description": "Pantalla: home_view."
+  },
+  "homeCapturasHoy": "Capturas hoy",
+  "@homeCapturasHoy": {
+    "description": "Pantalla: home_view."
+  },
+  "homeStockDelCentro": "Stock del centro",
+  "@homeStockDelCentro": {
+    "description": "Pantalla: home_view."
+  },
+  "homeTarimasAbiertas": "Tarimas abiertas",
+  "@homeTarimasAbiertas": {
+    "description": "Pantalla: home_view."
+  },
+  "homeAvisosDelCentro": "Avisos del centro",
+  "@homeAvisosDelCentro": {
+    "description": "Pantalla: push_permission_card."
+  },
+  "homeTeAvisamosCuandoSeAbre": "Te avisamos cuando se abre una revisión sobre una captura de este centro y cuando llega un envío que salió de aquí. Nada más.",
+  "@homeTeAvisamosCuandoSeAbre": {
+    "description": "Pantalla: push_permission_card."
+  },
+  "homeActivarAvisos": "Activar avisos",
+  "@homeActivarAvisos": {
+    "description": "Pantalla: push_permission_card."
+  },
+  "incidentsLaIncidenciaQuedoCerrada": "La incidencia quedó cerrada.",
+  "@incidentsLaIncidenciaQuedoCerrada": {
+    "description": "Pantalla: incidents_list_view."
+  },
+  "incidentsIncidencias": "Incidencias",
+  "@incidentsIncidencias": {
+    "description": "Pantalla: incidents_list_view."
+  },
+  "incidentsYaCerradas": "Ya cerradas",
+  "@incidentsYaCerradas": {
+    "description": "Pantalla: incidents_list_view."
+  },
+  "incidentsVerEnvio": "Ver envío",
+  "@incidentsVerEnvio": {
+    "description": "Pantalla: incidents_list_view."
+  },
+  "incidentsLevantarIncidencia": "Levantar incidencia",
+  "@incidentsLevantarIncidencia": {
+    "description": "Pantalla: report_incident_sheet."
+  },
+  "incidentsTipo": "Tipo",
+  "@incidentsTipo": {
+    "description": "Pantalla: report_incident_sheet."
+  },
+  "incidentsQuePaso": "Qué pasó",
+  "@incidentsQuePaso": {
+    "description": "Pantalla: report_incident_sheet."
+  },
+  "incidentsLoQueVeraQuienTenga": "Lo que verá quien tenga que resolverlo",
+  "@incidentsLoQueVeraQuienTenga": {
+    "description": "Pantalla: report_incident_sheet."
+  },
+  "incidentsLevantar": "Levantar",
+  "@incidentsLevantar": {
+    "description": "Pantalla: report_incident_sheet."
+  },
+  "incidentsCerrarLaIncidencia": "Cerrar la incidencia",
+  "@incidentsCerrarLaIncidencia": {
+    "description": "Pantalla: resolve_incident_sheet."
+  },
+  "incidentsEnQueTermino": "En qué terminó",
+  "@incidentsEnQueTermino": {
+    "description": "Pantalla: resolve_incident_sheet."
+  },
+  "intakeFaltaIdentificarAQuienDona": "Falta identificar a quien dona",
+  "@intakeFaltaIdentificarAQuienDona": {
+    "description": "Pantalla: anonymous_exception_dialog."
+  },
+  "intakePorQueNoFuePosible": "Por qué no fue posible identificar a quien donó",
+  "@intakePorQueNoFuePosible": {
+    "description": "Pantalla: anonymous_exception_dialog."
+  },
+  "intakeRegistrarSinDonante": "Registrar sin donante",
+  "@intakeRegistrarSinDonante": {
+    "description": "Pantalla: anonymous_exception_dialog."
+  },
+  "intakeNoQuisoIdentificarse": "No quiso identificarse",
+  "@intakeNoQuisoIdentificarse": {
+    "description": "Pantalla: anonymous_exception_dialog."
+  },
+  "intakeIdentificar": "Identificar",
+  "@intakeIdentificar": {
+    "description": "Pantalla: anonymous_exception_dialog."
+  },
+  "intakeCambiar": "Cambiar",
+  "@intakeCambiar": {
+    "description": "Pantalla: box_draft_sheet."
+  },
+  "intakeElegirProducto": "Elegir producto",
+  "@intakeElegirProducto": {
+    "description": "Pantalla: box_draft_sheet."
+  },
+  "intakeUnidad": "Unidad",
+  "@intakeUnidad": {
+    "description": "Pantalla: box_draft_sheet."
+  },
+  "intakeCajasFrascosSobres": "Cajas, frascos, sobres…",
+  "@intakeCajasFrascosSobres": {
+    "description": "Pantalla: box_draft_sheet."
+  },
+  "intakeLoteOpcional": "Lote (opcional)",
+  "@intakeLoteOpcional": {
+    "description": "Pantalla: box_draft_sheet."
+  },
+  "intakePesoEnKgOpcional": "Peso en kg (opcional)",
+  "@intakePesoEnKgOpcional": {
+    "description": "Pantalla: box_draft_sheet."
+  },
+  "intakeUnaCajaLlevaUnSolo": "Una caja lleva un solo producto, un lote y una caducidad. Si recibiste dos cosas distintas, agrega dos cajas.",
+  "@intakeUnaCajaLlevaUnSolo": {
+    "description": "Pantalla: box_draft_sheet."
+  },
+  "intakeCampana": "Campaña",
+  "@intakeCampana": {
+    "description": "Pantalla: campaign_sheet."
+  },
+  "intakeSinCampanaLaDonacionQueda": "Sin campaña la donación queda en la general",
+  "@intakeSinCampanaLaDonacionQueda": {
+    "description": "Pantalla: campaign_sheet."
+  },
+  "intakeCampanaGeneral": "Campaña general",
+  "@intakeCampanaGeneral": {
+    "description": "Pantalla: campaign_sheet."
+  },
+  "intakeIdentificarDonante": "Identificar donante",
+  "@intakeIdentificarDonante": {
+    "description": "Pantalla: donor_sheet."
+  },
+  "intakePersona": "Persona",
+  "@intakePersona": {
+    "description": "Pantalla: donor_sheet."
+  },
+  "intakeEmpresa": "Empresa",
+  "@intakeEmpresa": {
+    "description": "Pantalla: donor_sheet."
+  },
+  "intakeApellido": "Apellido",
+  "@intakeApellido": {
+    "description": "Pantalla: donor_sheet."
+  },
+  "intakeElNombreConElQue": "El nombre con el que la empresa dona",
+  "@intakeElNombreConElQue": {
+    "description": "Pantalla: donor_sheet."
+  },
+  "intakeCorreoOpcional": "Correo (opcional)",
+  "@intakeCorreoOpcional": {
+    "description": "Pantalla: donor_sheet."
+  },
+  "intakeTelefonoOpcional": "Teléfono (opcional)",
+  "@intakeTelefonoOpcional": {
+    "description": "Pantalla: donor_sheet."
+  },
+  "intakeAceptaLosTerminosDeDonacion": "Acepta los Términos de Donación",
+  "@intakeAceptaLosTerminosDeDonacion": {
+    "description": "Pantalla: donor_sheet."
+  },
+  "intakeQuienDonaANombreDe": "Quien dona a nombre de una empresa tiene que aceptarlos.",
+  "@intakeQuienDonaANombreDe": {
+    "description": "Pantalla: donor_sheet."
+  },
+  "intakeDonante": "Donante",
+  "@intakeDonante": {
+    "description": "Pantalla: intake_detail_view."
+  },
+  "intakeNotas": "Notas",
+  "@intakeNotas": {
+    "description": "Pantalla: intake_detail_view."
+  },
+  "intakeElHistorialNoTraeLas": "El historial no trae las cajas de esta captura. Búscalas por su código en Cajas.",
+  "@intakeElHistorialNoTraeLas": {
+    "description": "Pantalla: intake_detail_view."
+  },
+  "intakeNotasOpcional": "Notas (opcional)",
+  "@intakeNotasOpcional": {
+    "description": "Pantalla: intake_form_view."
+  },
+  "intakeRegistrarEntrada": "Registrar entrada",
+  "@intakeRegistrarEntrada": {
+    "description": "Pantalla: intake_form_view."
+  },
+  "intakeAnadirCaja": "Añadir caja",
+  "@intakeAnadirCaja": {
+    "description": "Pantalla: intake_form_view."
+  },
+  "intakeRegistrar": "Registrar",
+  "@intakeRegistrar": {
+    "description": "Pantalla: intake_form_view."
+  },
+  "intakeEstaCapturaQuedaLigadaA": "Esta captura queda ligada a la donación que escaneaste. Registra lo que llegó: lo que declaró quien donó es otra cosa.",
+  "@intakeEstaCapturaQuedaLigadaA": {
+    "description": "Pantalla: intake_form_view."
+  },
+  "intakeQuitar": "Quitar",
+  "@intakeQuitar": {
+    "description": "Pantalla: intake_form_view."
+  },
+  "intakeDonanteOpcional": "Donante (opcional)",
+  "@intakeDonanteOpcional": {
+    "description": "Pantalla: intake_form_view."
+  },
+  "intakeUnNombreSueltoSinRegistrar": "Un nombre suelto, sin registrar a la persona",
+  "@intakeUnNombreSueltoSinRegistrar": {
+    "description": "Pantalla: intake_form_view."
+  },
+  "intakeTodaviaNoAgregasteNingunaCaja": "Todavía no agregaste ninguna caja. Sin cajas no hay captura.",
+  "@intakeTodaviaNoAgregasteNingunaCaja": {
+    "description": "Pantalla: intake_form_view."
+  },
+  "intakeQuitarCaja": "Quitar caja",
+  "@intakeQuitarCaja": {
+    "description": "Pantalla: intake_form_view."
+  },
+  "intakeCapturasDelCentro": "Capturas del centro",
+  "@intakeCapturasDelCentro": {
+    "description": "Pantalla: intake_list_view."
+  },
+  "intakeNuevaCaptura": "Nueva captura",
+  "@intakeNuevaCaptura": {
+    "description": "Pantalla: intake_list_view."
+  },
+  "intakeCapturaGuardada": "Captura guardada",
+  "@intakeCapturaGuardada": {
+    "description": "Pantalla: intake_queued_view."
+  },
+  "intakeSeEnviaraSolaCuandoHaya": "Se enviará sola cuando haya conexión",
+  "@intakeSeEnviaraSolaCuandoHaya": {
+    "description": "Pantalla: intake_queued_view."
+  },
+  "intakeNoHaceFaltaVolverA": "No hace falta volver a capturarla ni recordar enviarla. Sale una sola vez aunque se reintente varias.",
+  "@intakeNoHaceFaltaVolverA": {
+    "description": "Pantalla: intake_queued_view."
+  },
+  "intakeEtiquetaEstasCajasAhora": "Etiqueta estas cajas ahora",
+  "@intakeEtiquetaEstasCajasAhora": {
+    "description": "Pantalla: intake_queued_view."
+  },
+  "intakeCapturaRegistrada": "Captura registrada",
+  "@intakeCapturaRegistrada": {
+    "description": "Pantalla: intake_submitted_view."
+  },
+  "intakeEtiquetaCadaCajaConSu": "Etiqueta cada caja con su código antes de moverla.",
+  "@intakeEtiquetaCadaCajaConSu": {
+    "description": "Pantalla: intake_submitted_view."
+  },
+  "intakeDescartarEstaCaptura": "¿Descartar esta captura?",
+  "@intakeDescartarEstaCaptura": {
+    "description": "Pantalla: pending_captures_view."
+  },
+  "intakeDescartar": "Descartar",
+  "@intakeDescartar": {
+    "description": "Pantalla: pending_captures_view."
+  },
+  "intakePendientesDeEnvio": "Pendientes de envío",
+  "@intakePendientesDeEnvio": {
+    "description": "Pantalla: pending_captures_view."
+  },
+  "intakeNadaSePierdeTodoEspera": "Nada se pierde: todo espera aquí",
+  "@intakeNadaSePierdeTodoEspera": {
+    "description": "Pantalla: pending_captures_view."
+  },
+  "intakeProductosDescargados": "Productos descargados",
+  "@intakeProductosDescargados": {
+    "description": "Pantalla: pending_captures_view."
+  },
+  "intakeCodigosApartados": "Códigos apartados",
+  "@intakeCodigosApartados": {
+    "description": "Pantalla: pending_captures_view."
+  },
+  "intakeCapturasEnCola": "Capturas en cola",
+  "@intakeCapturasEnCola": {
+    "description": "Pantalla: pending_captures_view."
+  },
+  "intakeSincronizar": "Sincronizar",
+  "@intakeSincronizar": {
+    "description": "Pantalla: pending_captures_view."
+  },
+  "intakeReservarCodigos": "Reservar códigos",
+  "@intakeReservarCodigos": {
+    "description": "Pantalla: pending_captures_view."
+  },
+  "intakeNoHayCapturasEsperandoLas": "No hay capturas esperando. Las que se hagan sin señal aparecerán aquí hasta que se envíen.",
+  "@intakeNoHayCapturasEsperandoLas": {
+    "description": "Pantalla: pending_captures_view."
+  },
+  "intakeBuscarProducto": "Buscar producto",
+  "@intakeBuscarProducto": {
+    "description": "Pantalla: product_picker_sheet."
+  },
+  "intakePorNombreMarcaOPrincipio": "Por nombre, marca o principio activo",
+  "@intakePorNombreMarcaOPrincipio": {
+    "description": "Pantalla: product_picker_sheet."
+  },
+  "intakeEscanearCodigoDeBarras": "Escanear código de barras",
+  "@intakeEscanearCodigoDeBarras": {
+    "description": "Pantalla: product_picker_sheet."
+  },
+  "intakeNingunProductoDelCatalogoCoincide": "Ningún producto del catálogo coincide. Si falta algo que sí existe, sincroniza con conexión: el catálogo local es el que el servidor sirvió para esta campaña.",
+  "@intakeNingunProductoDelCatalogoCoincide": {
+    "description": "Pantalla: product_picker_sheet."
+  },
+  "messagingNuevoHiloDeCampana": "Nuevo hilo de campaña",
+  "@messagingNuevoHiloDeCampana": {
+    "description": "Pantalla: new_thread_sheet."
+  },
+  "messagingLoPodraLeerQuienParticipe": "Lo podrá leer quien participe en la campaña que elijas.",
+  "@messagingLoPodraLeerQuienParticipe": {
+    "description": "Pantalla: new_thread_sheet."
+  },
+  "messagingNoParticipasEnNingunaCampana": "No participas en ninguna campaña, así que no hay dónde abrir un hilo.",
+  "@messagingNoParticipasEnNingunaCampana": {
+    "description": "Pantalla: new_thread_sheet."
+  },
+  "messagingAsunto": "Asunto",
+  "@messagingAsunto": {
+    "description": "Pantalla: new_thread_sheet."
+  },
+  "messagingMensaje": "Mensaje",
+  "@messagingMensaje": {
+    "description": "Pantalla: new_thread_sheet."
+  },
+  "messagingAbrirHilo": "Abrir hilo",
+  "@messagingAbrirHilo": {
+    "description": "Pantalla: new_thread_sheet."
+  },
+  "messagingResponder": "Responder",
+  "@messagingResponder": {
+    "description": "Pantalla: thread_view."
+  },
+  "messagingEnviar": "Enviar",
+  "@messagingEnviar": {
+    "description": "Pantalla: thread_view."
+  },
+  "messagingMensajes": "Mensajes",
+  "@messagingMensajes": {
+    "description": "Pantalla: threads_list_view."
+  },
+  "messagingNuevoHilo": "Nuevo hilo",
+  "@messagingNuevoHilo": {
+    "description": "Pantalla: threads_list_view."
+  },
+  "palletsCerrarTarima": "Cerrar tarima",
+  "@palletsCerrarTarima": {
+    "description": "Pantalla: close_pallet_sheet."
+  },
+  "palletsUnaTarimaCerradaYaNo": "Una tarima cerrada ya no admite cajas. Pésala completa, con la tarima incluida.",
+  "@palletsUnaTarimaCerradaYaNo": {
+    "description": "Pantalla: close_pallet_sheet."
+  },
+  "palletsPesoBrutoEnKgOpcional": "Peso bruto en kg (opcional)",
+  "@palletsPesoBrutoEnKgOpcional": {
+    "description": "Pantalla: close_pallet_sheet."
+  },
+  "palletsAlturaEnCmOpcional": "Altura en cm (opcional)",
+  "@palletsAlturaEnCmOpcional": {
+    "description": "Pantalla: close_pallet_sheet."
+  },
+  "palletsAgregarCajas": "Agregar cajas",
+  "@palletsAgregarCajas": {
+    "description": "Pantalla: pallet_detail_view."
+  },
+  "palletsTara": "Tara",
+  "@palletsTara": {
+    "description": "Pantalla: pallet_detail_view."
+  },
+  "palletsPesoDeLasCajas": "Peso de las cajas",
+  "@palletsPesoDeLasCajas": {
+    "description": "Pantalla: pallet_detail_view."
+  },
+  "palletsPesoBruto": "Peso bruto",
+  "@palletsPesoBruto": {
+    "description": "Pantalla: pallet_detail_view."
+  },
+  "palletsDiferencia": "Diferencia",
+  "@palletsDiferencia": {
+    "description": "Pantalla: pallet_detail_view."
+  },
+  "palletsAltura": "Altura",
+  "@palletsAltura": {
+    "description": "Pantalla: pallet_detail_view."
+  },
+  "palletsQuitarDeLaTarima": "Quitar de la tarima",
+  "@palletsQuitarDeLaTarima": {
+    "description": "Pantalla: pallet_detail_view."
+  },
+  "palletsNuevaTarima": "Nueva tarima",
+  "@palletsNuevaTarima": {
+    "description": "Pantalla: pallets_list_view."
+  },
+  "palletsTarimas": "Tarimas",
+  "@palletsTarimas": {
+    "description": "Pantalla: pallets_list_view."
+  },
+  "palletsEsteCentroNoTieneTarimas": "Este centro no tiene tarimas todavía. Una tarima agrupa cajas selladas para que viajen juntas.",
+  "@palletsEsteCentroNoTieneTarimas": {
+    "description": "Pantalla: pallets_list_view."
+  },
+  "risk_reviewsResolverLaRevision": "Resolver la revisión",
+  "@risk_reviewsResolverLaRevision": {
+    "description": "Pantalla: resolve_review_sheet."
+  },
+  "risk_reviewsNotaOpcional": "Nota (opcional)",
+  "@risk_reviewsNotaOpcional": {
+    "description": "Pantalla: resolve_review_sheet."
+  },
+  "risk_reviewsQuedaConLaRevisionPara": "Queda con la revisión, para quien la lea después",
+  "@risk_reviewsQuedaConLaRevisionPara": {
+    "description": "Pantalla: resolve_review_sheet."
+  },
+  "risk_reviewsRevisiones": "Revisiones",
+  "@risk_reviewsRevisiones": {
+    "description": "Pantalla: risk_reviews_view."
+  },
+  "risk_reviewsCapturasMarcadasQueEsperanUna": "Capturas marcadas que esperan una decisión",
+  "@risk_reviewsCapturasMarcadasQueEsperanUna": {
+    "description": "Pantalla: risk_reviews_view."
+  },
+  "risk_reviewsNadaEsperaUnaDecisionAqui": "Nada espera una decisión. Aquí aparecen las capturas que el servidor marcó para que alguien las mire.",
+  "@risk_reviewsNadaEsperaUnaDecisionAqui": {
+    "description": "Pantalla: risk_reviews_view."
+  },
+  "risk_reviewsYaResueltas": "Ya resueltas",
+  "@risk_reviewsYaResueltas": {
+    "description": "Pantalla: risk_reviews_view."
+  },
+  "risk_reviewsLaDelAvisoQueAbriste": "La del aviso que abriste",
+  "@risk_reviewsLaDelAvisoQueAbriste": {
+    "description": "Pantalla: risk_reviews_view."
+  },
+  "risk_reviewsAprobarORechazar": "Aprobar o rechazar",
+  "@risk_reviewsAprobarORechazar": {
+    "description": "Pantalla: risk_reviews_view."
+  },
+  "scanningLinterna": "Linterna",
+  "@scanningLinterna": {
+    "description": "Pantalla: continuous_scan_view."
+  },
+  "scanningCadaCajaQueLeasAparece": "Cada caja que leas aparece aquí, con lo que respondió el servidor.",
+  "@scanningCadaCajaQueLeasAparece": {
+    "description": "Pantalla: continuous_scan_view."
+  },
+  "scanningEsteCodigoNoEsDe": "Este código no es de Araguaney",
+  "@scanningEsteCodigoNoEsDe": {
+    "description": "Pantalla: scan_result_sheet."
+  },
+  "scanningNoSePudoConsultar": "No se pudo consultar",
+  "@scanningNoSePudoConsultar": {
+    "description": "Pantalla: scan_result_sheet."
+  },
+  "scanningAbrirFicha": "Abrir ficha",
+  "@scanningAbrirFicha": {
+    "description": "Pantalla: scan_result_sheet."
+  },
+  "scanningCapturarEstaDonacion": "Capturar esta donación",
+  "@scanningCapturarEstaDonacion": {
+    "description": "Pantalla: scan_result_sheet."
+  },
+  "scanningEscanearQr": "Escanear QR",
+  "@scanningEscanearQr": {
+    "description": "Pantalla: scanner_view."
+  },
+  "shellEscanear": "Escanear",
+  "@shellEscanear": {
+    "description": "Pantalla: app_shell."
+  },
+  "shellCapturar": "Capturar",
+  "@shellCapturar": {
+    "description": "Pantalla: app_shell."
+  },
+  "shellInicio": "Inicio",
+  "@shellInicio": {
+    "description": "Pantalla: app_shell."
+  },
+  "shellMenu": "Menú",
+  "@shellMenu": {
+    "description": "Pantalla: app_shell."
+  },
+  "shellCapturas": "Capturas",
+  "@shellCapturas": {
+    "description": "Pantalla: more_menu_sheet."
+  },
+  "shellEnvios": "Envíos",
+  "@shellEnvios": {
+    "description": "Pantalla: more_menu_sheet."
+  },
+  "shellTransferencias": "Transferencias",
+  "@shellTransferencias": {
+    "description": "Pantalla: more_menu_sheet."
+  },
+  "shellRevisionesDeRiesgo": "Revisiones de riesgo",
+  "@shellRevisionesDeRiesgo": {
+    "description": "Pantalla: more_menu_sheet."
+  },
+  "shellEquipo": "Equipo",
+  "@shellEquipo": {
+    "description": "Pantalla: more_menu_sheet."
+  },
+  "shellCerrarSesion": "Cerrar sesión",
+  "@shellCerrarSesion": {
+    "description": "Pantalla: more_menu_sheet."
+  },
+  "shipmentsNuevoEnvio": "Nuevo envío",
+  "@shipmentsNuevoEnvio": {
+    "description": "Pantalla: create_shipment_sheet."
+  },
+  "shipmentsDestino": "Destino",
+  "@shipmentsDestino": {
+    "description": "Pantalla: create_shipment_sheet."
+  },
+  "shipmentsTransportistaOpcional": "Transportista (opcional)",
+  "@shipmentsTransportistaOpcional": {
+    "description": "Pantalla: create_shipment_sheet."
+  },
+  "shipmentsReferenciaOpcional": "Referencia (opcional)",
+  "@shipmentsReferenciaOpcional": {
+    "description": "Pantalla: create_shipment_sheet."
+  },
+  "shipmentsGuiaContenedorLoQueSirva": "Guía, contenedor, lo que sirva para encontrarlo",
+  "@shipmentsGuiaContenedorLoQueSirva": {
+    "description": "Pantalla: create_shipment_sheet."
+  },
+  "shipmentsAbrirElEnvio": "Abrir el envío",
+  "@shipmentsAbrirElEnvio": {
+    "description": "Pantalla: create_shipment_sheet."
+  },
+  "shipmentsPreparandoElManifiesto": "Preparando el manifiesto…",
+  "@shipmentsPreparandoElManifiesto": {
+    "description": "Pantalla: shipment_record_view."
+  },
+  "shipmentsNoSePudoAbrirEl": "No se pudo abrir el manifiesto en este teléfono.",
+  "@shipmentsNoSePudoAbrirEl": {
+    "description": "Pantalla: shipment_record_view."
+  },
+  "shipmentsElManifiestoSigueArmandoseVuelve": "El manifiesto sigue armándose. Vuelve a pedirlo en un momento.",
+  "@shipmentsElManifiestoSigueArmandoseVuelve": {
+    "description": "Pantalla: shipment_record_view."
+  },
+  "shipmentsManifiesto": "Manifiesto",
+  "@shipmentsManifiesto": {
+    "description": "Pantalla: shipment_record_view."
+  },
+  "shipmentsIncidencia": "Incidencia",
+  "@shipmentsIncidencia": {
+    "description": "Pantalla: shipment_record_view."
+  },
+  "shipmentsTransportista": "Transportista",
+  "@shipmentsTransportista": {
+    "description": "Pantalla: shipment_record_view."
+  },
+  "shipmentsAnadirTarima": "Añadir tarima",
+  "@shipmentsAnadirTarima": {
+    "description": "Pantalla: shipment_record_view."
+  },
+  "shipmentsQuitarDelEnvio": "Quitar del envío",
+  "@shipmentsQuitarDelEnvio": {
+    "description": "Pantalla: shipment_record_view."
+  },
+  "shipmentsTodaviaNo": "Todavía no",
+  "@shipmentsTodaviaNo": {
+    "description": "Pantalla: shipment_record_view."
+  },
+  "shipmentsRecibio": "Recibió",
+  "@shipmentsRecibio": {
+    "description": "Pantalla: shipment_record_view."
+  },
+  "shipmentsMerma": "Merma",
+  "@shipmentsMerma": {
+    "description": "Pantalla: shipment_record_view."
+  },
+  "shipmentsNotasDeLaRecepcion": "Notas de la recepción",
+  "@shipmentsNotasDeLaRecepcion": {
+    "description": "Pantalla: shipment_record_view."
+  },
+  "shipmentsTodaviaNoHayEnviosUno": "Todavía no hay envíos. Uno se abre cuando hay tarimas cerradas esperando salir.",
+  "@shipmentsTodaviaNoHayEnviosUno": {
+    "description": "Pantalla: shipments_list_view."
+  },
+  "teamSacarDeLaCampana": "Sacar de la campaña",
+  "@teamSacarDeLaCampana": {
+    "description": "Pantalla: campaign_members_view."
+  },
+  "teamSacar": "Sacar",
+  "@teamSacar": {
+    "description": "Pantalla: campaign_members_view."
+  },
+  "teamCampanas": "Campañas",
+  "@teamCampanas": {
+    "description": "Pantalla: campaign_members_view."
+  },
+  "teamSumar": "Sumar",
+  "@teamSumar": {
+    "description": "Pantalla: campaign_members_view."
+  },
+  "teamSumarAAlguienAlCentro": "Sumar a alguien al centro",
+  "@teamSumarAAlguienAlCentro": {
+    "description": "Pantalla: invite_person_sheet."
+  },
+  "teamRecibiraUnCorreoConSu": "Recibirá un correo con su acceso. La contraseña la genera el servidor y no se ve desde aquí.",
+  "@teamRecibiraUnCorreoConSu": {
+    "description": "Pantalla: invite_person_sheet."
+  },
+  "teamNombreDeUsuario": "Nombre de usuario",
+  "@teamNombreDeUsuario": {
+    "description": "Pantalla: invite_person_sheet."
+  },
+  "teamNombreYApellidoOpcional": "Nombre y apellido (opcional)",
+  "@teamNombreYApellidoOpcional": {
+    "description": "Pantalla: invite_person_sheet."
+  },
+  "teamVoluntariado": "Voluntariado",
+  "@teamVoluntariado": {
+    "description": "Pantalla: invite_person_sheet."
+  },
+  "teamCoordinacion": "Coordinación",
+  "@teamCoordinacion": {
+    "description": "Pantalla: invite_person_sheet."
+  },
+  "teamEnviarInvitacion": "Enviar invitación",
+  "@teamEnviarInvitacion": {
+    "description": "Pantalla: invite_person_sheet."
+  },
+  "teamNoQuedaNadieDelCentro": "No queda nadie del centro por sumar a esta campaña.",
+  "@teamNoQuedaNadieDelCentro": {
+    "description": "Pantalla: pick_person_sheet."
+  },
+  "teamSumarALaCampana": "Sumar a la campaña",
+  "@teamSumarALaCampana": {
+    "description": "Pantalla: pick_person_sheet."
+  },
+  "teamReenviarAcceso": "Reenviar acceso",
+  "@teamReenviarAcceso": {
+    "description": "Pantalla: team_directory_view."
+  },
+  "transfersPorQueSeRechaza": "¿Por qué se rechaza?",
+  "@transfersPorQueSeRechaza": {
+    "description": "Pantalla: transfer_detail_view."
+  },
+  "transfersLoLeeraElCentroQue": "Lo leerá el centro que la pidió",
+  "@transfersLoLeeraElCentroQue": {
+    "description": "Pantalla: transfer_detail_view."
+  },
+  "transfersTransferencia": "Transferencia",
+  "@transfersTransferencia": {
+    "description": "Pantalla: transfer_detail_view."
+  },
+  "transfersHistorial": "Historial",
+  "@transfersHistorial": {
+    "description": "Pantalla: transfer_detail_view."
+  },
+  "transfersMoverUnaTransferenciaNecesitaConexion": "Mover una transferencia necesita conexión: la mueven dos centros, y sin señal no se sabe qué hizo el otro.",
+  "@transfersMoverUnaTransferenciaNecesitaConexion": {
+    "description": "Pantalla: transfer_detail_view."
   }
 }
