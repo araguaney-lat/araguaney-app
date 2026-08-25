@@ -1,3 +1,4 @@
+import 'package:araguaney_app/core/i18n/generated/app_localizations.dart';
 import 'package:araguaney_app/core/ui/brand_splash.dart';
 import 'package:araguaney_app/core/ui/theme/app_colors.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +10,13 @@ void main() {
     // Desde Android 12 hay dos dueños de esa pantalla y la del sistema no
     // admite texto. Cualquier cosa añadida aquí se ve como un cambio a mitad
     // del arranque, que es exactamente lo que se quiso evitar.
-    await tester.pumpWidget(const MaterialApp(home: BrandSplash()));
+    await tester.pumpWidget(
+      const MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: BrandSplash(),
+      ),
+    );
 
     expect(find.byType(Text), findsNothing);
     expect(find.byType(Image), findsOneWidget);
@@ -23,6 +30,9 @@ void main() {
     for (final mode in [ThemeMode.light, ThemeMode.dark]) {
       await tester.pumpWidget(
         MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+
           themeMode: mode,
           theme: ThemeData.light(),
           darkTheme: ThemeData.dark(),

@@ -1,6 +1,7 @@
 import 'package:araguaney_app/core/ui/status_labels.dart';
 import 'package:araguaney_app/features/transfers/domain/transfer_actions.dart';
 import 'package:flutter_test/flutter_test.dart';
+import '../../support/l10n.dart';
 
 void main() {
   Set<TransferAction> actionsFor({
@@ -149,8 +150,13 @@ void main() {
     });
   });
 
-  test('every status has a Spanish name, and unknown ones survive', () {
-    expect(transferStatusLabel(TransferStatus.inTransit), 'En tránsito');
-    expect(transferStatusLabel('SOMETHING_NEW'), 'SOMETHING_NEW');
+  test('every status has a name, and unknown ones survive', () async {
+    // Un estado que esta version no conoce se enseña crudo a proposito: el
+    // contrato es aditivo y un binario viejo puede recibir uno nuevo. Verlo
+    // dice «esto es nuevo» en vez de inventar una traduccion.
+    final l10n = await spanish();
+
+    expect(transferStatusLabel(l10n, TransferStatus.inTransit), 'En tránsito');
+    expect(transferStatusLabel(l10n, 'SOMETHING_NEW'), 'SOMETHING_NEW');
   });
 }

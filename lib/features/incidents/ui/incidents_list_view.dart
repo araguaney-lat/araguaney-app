@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/api/generated/models/incident_out.dart';
+import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/ui/relative_time.dart';
 import '../../../core/ui/status_labels.dart';
 import '../../shipments/ui/shipment_record_view.dart';
@@ -210,7 +211,11 @@ class _IncidentCard extends StatelessWidget {
             const SizedBox(height: 12),
             Row(
               children: [
-                Chip(label: Text(incidentStatusLabel(incident.status))),
+                Chip(
+                  label: Text(
+                    incidentStatusLabel(context.l10n, incident.status),
+                  ),
+                ),
                 const Spacer(),
                 // El envío al que pertenece: es donde se puede mirar qué pasó.
                 TextButton(

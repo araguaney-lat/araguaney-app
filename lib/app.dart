@@ -20,7 +20,10 @@ class AraguaneyApp extends StatelessWidget {
       // día.
       darkTheme: AppTheme.dark,
       themeMode: ThemeMode.system,
-      locale: const Locale('es'),
+      // Sin `locale` fijo: `supportedLocales` sale de los ARB, hoy solo
+      // español, así que el sistema resuelve a español pase lo que pase.
+      // Fijarlo aquí era lo que había que quitar para que añadir un idioma sea
+      // un archivo y no una migración — ver la fase 31.
       supportedLocales: AppLocalizations.supportedLocales,
       localizationsDelegates: const [
         AppLocalizations.delegate,

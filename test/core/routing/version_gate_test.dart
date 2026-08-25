@@ -3,6 +3,7 @@ import 'package:araguaney_app/core/api/client_version_providers.dart';
 import 'package:araguaney_app/core/api/update_prompt_memory.dart';
 import 'package:araguaney_app/core/auth/auth_providers.dart';
 import 'package:araguaney_app/core/db/db_providers.dart';
+import 'package:araguaney_app/core/i18n/generated/app_localizations.dart';
 import 'package:araguaney_app/core/platform/open_link.dart';
 import 'package:araguaney_app/core/push/push_providers.dart';
 import 'package:araguaney_app/core/routing/session_gate.dart';
@@ -52,7 +53,11 @@ void main() {
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
-        child: const MaterialApp(home: SessionGate()),
+        child: const MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: SessionGate(),
+        ),
       ),
     );
     await tester.pumpAndSettle();
@@ -157,7 +162,11 @@ void main() {
       await tester.pumpWidget(
         UncontrolledProviderScope(
           container: container,
-          child: const MaterialApp(home: SessionGate()),
+          child: const MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: SessionGate(),
+          ),
         ),
       );
       await tester.pumpAndSettle();

@@ -9,6 +9,7 @@ import '../../../core/api/generated/models/qr_event_out.dart';
 import '../../../core/api/generated/models/reception_out.dart';
 import '../../../core/api/generated/models/shipment_detail_out.dart';
 import '../../../core/auth/auth_providers.dart';
+import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/platform/open_link.dart';
 import '../../../core/ui/confirm_button.dart';
 import '../../../core/ui/record_field.dart';
@@ -206,7 +207,7 @@ class _Body extends ConsumerWidget {
       children: [
         RecordField(
           label: 'Estado',
-          value: shipmentStatusLabel(shipment.status),
+          value: shipmentStatusLabel(context.l10n, shipment.status),
         ),
         RecordField(label: 'Destino', value: shipment.destination),
         if (shipment.carrier case final carrier?)
@@ -502,7 +503,10 @@ class _Event extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final described = describeEvent(event, statusLabel: shipmentStatusLabel);
+    final described = describeEvent(
+      event,
+      statusLabel: (status) => shipmentStatusLabel(context.l10n, status),
+    );
 
     return ListTile(
       dense: true,

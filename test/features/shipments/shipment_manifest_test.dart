@@ -8,6 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 import '../../support/fake_api.dart';
 import '../../support/fake_http_adapter.dart';
 import '../../support/fixtures.dart';
+import '../../support/l10n.dart';
 
 void main() {
   ShipmentsRepository repositoryOn(FakeHttpAdapter adapter) {
@@ -118,7 +119,8 @@ void main() {
   });
 
   group('reading the journey', () {
-    test('a milestone reads by its name', () {
+    test('a milestone reads by its name', () async {
+      final l10n = await spanish();
       final described = describeEvent(
         QrEventOut(
           fromStatus: 'SHIPPED',
@@ -127,14 +129,15 @@ void main() {
           note: 'Sin inspección',
           ts: testNow,
         ),
-        statusLabel: shipmentStatusLabel,
+        statusLabel: (status) => shipmentStatusLabel(l10n, status),
       );
 
       expect(described.title, 'Liberado de aduana');
       expect(described.note, 'Sin inspección');
     });
 
-    test('a state change reads in the language it is operated in', () {
+    test('a state change reads in the language it is operated in', () async {
+      final l10n = await spanish();
       // Este test fijaba «CLOSED → IN_TRANSIT», que estaba mal dos veces: la
       // clave cruda no es lo que una persona debe leer, y `IN_TRANSIT` no es
       // un estado de envio sino de transferencia —`SHIPMENT_STATUSES` es
@@ -147,7 +150,7 @@ void main() {
           note: null,
           ts: testNow,
         ),
-        statusLabel: shipmentStatusLabel,
+        statusLabel: (status) => shipmentStatusLabel(l10n, status),
       );
 
       expect(described.title, 'Cerrado → Despachado');

@@ -2,6 +2,7 @@ import 'package:araguaney_app/core/api/api_providers.dart';
 import 'package:araguaney_app/core/api/generated/clients/dashboard_api.dart';
 import 'package:araguaney_app/core/api/generated/rest_client.dart';
 import 'package:araguaney_app/core/auth/auth_providers.dart';
+import 'package:araguaney_app/core/i18n/generated/app_localizations.dart';
 import 'package:araguaney_app/core/ui/category_label.dart';
 import 'package:araguaney_app/features/dashboard/data/center_dashboard_repository.dart';
 import 'package:araguaney_app/features/dashboard/ui/stock_by_category_view.dart';
@@ -80,7 +81,11 @@ void main() {
       await tester.pumpWidget(
         UncontrolledProviderScope(
           container: container,
-          child: const MaterialApp(home: StockByCategoryView()),
+          child: const MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: StockByCategoryView(),
+          ),
         ),
       );
       await tester.pumpAndSettle();

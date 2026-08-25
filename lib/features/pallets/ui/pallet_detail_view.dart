@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/api/api_error_mapper.dart';
 import '../../../core/api/generated/models/pallet_detail_out.dart';
 import '../../../core/connectivity/connectivity_controller.dart';
+import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/ui/event_timeline.dart';
 import '../../../core/ui/record_field.dart';
 import '../../../core/ui/status_labels.dart';
@@ -164,7 +165,10 @@ class _Fields extends StatelessWidget {
   Widget build(BuildContext context) => ListView(
     padding: const EdgeInsets.symmetric(vertical: 8),
     children: [
-      RecordField(label: 'Estado', value: palletStatusLabel(pallet.status)),
+      RecordField(
+        label: 'Estado',
+        value: palletStatusLabel(context.l10n, pallet.status),
+      ),
       RecordField(label: 'Cajas', value: '${pallet.boxes.length}'),
       if (pallet.tareWeightKg case final tare?)
         RecordField(label: 'Tara', value: '$tare kg'),
@@ -185,7 +189,7 @@ class _Fields extends StatelessWidget {
         ListTile(
           title: Text(box.code),
           subtitle: Text(
-            '${box.quantity} ${box.unit} · ${boxStatusLabel(box.status)}',
+            '${box.quantity} ${box.unit} · ${boxStatusLabel(context.l10n, box.status)}',
           ),
           trailing: onRemoveBox == null
               ? null
@@ -291,7 +295,10 @@ class _Timeline extends ConsumerWidget {
             padding: EdgeInsets.fromLTRB(16, 16, 16, 4),
             child: Text('Recorrido'),
           ),
-          EventTimeline(events: value, statusLabel: palletStatusLabel),
+          EventTimeline(
+            events: value,
+            statusLabel: (status) => palletStatusLabel(context.l10n, status),
+          ),
         ],
       ),
       _ => const SizedBox.shrink(),

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/api/api_error_mapper.dart';
 import '../../../core/api/generated/models/transfer_out.dart';
 import '../../../core/auth/auth_providers.dart';
+import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/ui/record_field.dart';
 import '../../../core/ui/status_labels.dart';
 import '../../centers/data/centers_providers.dart';
@@ -220,7 +221,9 @@ class _TransferRow extends ConsumerWidget {
         TransferDirection.other => 'Entre otros centros',
       }),
       subtitle: Text(other == null ? date : '$other · $date'),
-      trailing: Chip(label: Text(transferStatusLabel(transfer.status))),
+      trailing: Chip(
+        label: Text(transferStatusLabel(context.l10n, transfer.status)),
+      ),
       onTap: () =>
           Navigator.of(context).push(TransferDetailView.route(transfer.id)),
     );

@@ -1,4 +1,5 @@
 import 'package:araguaney_app/core/config/app_config.dart';
+import 'package:araguaney_app/core/i18n/generated/app_localizations.dart';
 import 'package:araguaney_app/features/boxes/ui/box_label_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -20,7 +21,11 @@ void main() {
 
   testWidgets('the label shows the code and its QR', (tester) async {
     await tester.pumpWidget(
-      const MaterialApp(home: BoxLabelView(code: 'BX-0007')),
+      const MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: BoxLabelView(code: 'BX-0007'),
+      ),
     );
     await tester.pumpAndSettle();
 

@@ -2,6 +2,7 @@ import 'package:araguaney_app/core/api/api_providers.dart';
 import 'package:araguaney_app/core/api/generated/models/center_out.dart';
 import 'package:araguaney_app/core/api/generated/rest_client.dart';
 import 'package:araguaney_app/core/auth/auth_providers.dart';
+import 'package:araguaney_app/core/i18n/generated/app_localizations.dart';
 import 'package:araguaney_app/features/centers/data/centers_providers.dart';
 import 'package:araguaney_app/features/centers/ui/center_form_view.dart';
 import 'package:araguaney_app/features/centers/ui/centers_list_view.dart';
@@ -68,7 +69,11 @@ void main() {
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
-        child: const MaterialApp(home: CentersListView()),
+        child: const MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: CentersListView(),
+        ),
       ),
     );
     await tester.pumpAndSettle();
@@ -155,7 +160,11 @@ void main() {
       await tester.pumpWidget(
         UncontrolledProviderScope(
           container: container,
-          child: const MaterialApp(home: TransfersListView()),
+          child: const MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: TransfersListView(),
+          ),
         ),
       );
       await tester.pumpAndSettle();
@@ -221,6 +230,9 @@ void main() {
         UncontrolledProviderScope(
           container: container,
           child: MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+
             home: CenterFormView(
               existing: existing == null ? null : CenterOut.fromJson(existing),
             ),

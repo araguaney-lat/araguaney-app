@@ -2,6 +2,7 @@ import 'package:araguaney_app/core/api/client_version_gate.dart';
 import 'package:araguaney_app/core/api/client_version_providers.dart';
 import 'package:araguaney_app/core/auth/auth_providers.dart';
 import 'package:araguaney_app/core/db/db_providers.dart';
+import 'package:araguaney_app/core/i18n/generated/app_localizations.dart';
 import 'package:araguaney_app/core/platform/open_link.dart';
 import 'package:araguaney_app/core/push/push_providers.dart';
 import 'package:araguaney_app/features/session/ui/login_view.dart';
@@ -48,6 +49,9 @@ void main() {
       UncontrolledProviderScope(
         container: container,
         child: MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+
           home: MediaQuery(
             data: MediaQueryData(disableAnimations: disableAnimations),
             child: const LoginView(),

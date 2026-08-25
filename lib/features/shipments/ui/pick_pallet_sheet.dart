@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/api/generated/models/pallet_out.dart';
+import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/ui/record_field.dart';
 import '../../../core/ui/sheet_insets.dart';
 import '../../../core/ui/status_labels.dart';
@@ -74,7 +75,7 @@ class _List extends StatelessWidget {
             title: Text(pallet.code),
             subtitle: Text(
               [
-                palletStatusLabel(pallet.status),
+                palletStatusLabel(context.l10n, pallet.status),
                 if (pallet.closedAt case final closed?)
                   'cerrada ${formatShortDate(closed)}',
                 if (pallet.heightCm case final height?) '$height cm',

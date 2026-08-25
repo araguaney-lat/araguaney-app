@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/api/api_error_mapper.dart';
 import '../../../core/api/generated/models/risk_review_out.dart';
 import '../../../core/auth/auth_providers.dart';
+import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/ui/record_field.dart';
 import '../../../core/ui/status_labels.dart';
 import '../data/risk_reviews_providers.dart';
@@ -236,7 +237,7 @@ class _SettledRow extends StatelessWidget {
     subtitle: Text(
       [formatShortDate(review.createdAt), ?review.reviewNote].join(' · '),
     ),
-    trailing: Chip(label: Text(reviewStatusLabel(review.status))),
+    trailing: Chip(label: Text(reviewStatusLabel(context.l10n, review.status))),
   );
 }
 

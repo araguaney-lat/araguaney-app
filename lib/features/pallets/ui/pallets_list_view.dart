@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/api/api_error_mapper.dart';
 import '../../../core/api/generated/models/pallet_out.dart';
 import '../../../core/connectivity/connectivity_controller.dart';
+import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/ui/record_field.dart';
 import '../../../core/ui/status_labels.dart';
 import '../data/pallets_providers.dart';
@@ -174,7 +175,9 @@ class _Loaded extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(right: 8),
                     child: ChoiceChip(
-                      label: Text('${palletStatusLabel(value)} · $count'),
+                      label: Text(
+                        '${palletStatusLabel(context.l10n, value)} · $count',
+                      ),
                       selected: status == value,
                       onSelected: (chosen) => onStatus(chosen ? value : null),
                     ),
@@ -228,7 +231,7 @@ class _PalletRow extends StatelessWidget {
       subtitle: details.isEmpty ? null : Text(details.join(' · ')),
       trailing: onClose != null
           ? TextButton(onPressed: onClose, child: const Text('Cerrar'))
-          : Chip(label: Text(palletStatusLabel(pallet.status))),
+          : Chip(label: Text(palletStatusLabel(context.l10n, pallet.status))),
       onTap: () =>
           Navigator.of(context).push(PalletDetailView.route(pallet.id)),
     );

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/connectivity/connectivity_controller.dart';
 import '../../../core/db/app_database.dart';
 import '../../../core/db/daos/boxes_dao.dart';
+import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/sync/sync_coordinator.dart';
 import '../../../core/sync/sync_outcome.dart';
 import '../../../core/ui/event_timeline.dart';
@@ -163,7 +164,10 @@ class _BoxFields extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.symmetric(vertical: 8),
       children: [
-        RecordField(label: 'Estado', value: boxStatusLabel(status)),
+        RecordField(
+          label: 'Estado',
+          value: boxStatusLabel(context.l10n, status),
+        ),
         RecordField(
           label: 'Producto',
           value: item.productName ?? 'No descargado en este dispositivo',
@@ -209,7 +213,10 @@ class _Timeline extends ConsumerWidget {
             padding: EdgeInsets.fromLTRB(16, 16, 16, 4),
             child: Text('Recorrido'),
           ),
-          EventTimeline(events: value, statusLabel: boxStatusLabel),
+          EventTimeline(
+            events: value,
+            statusLabel: (status) => boxStatusLabel(context.l10n, status),
+          ),
         ],
       ),
       // Un fallo aquí no rompe la ficha: lo que se vino a ver ya está arriba.

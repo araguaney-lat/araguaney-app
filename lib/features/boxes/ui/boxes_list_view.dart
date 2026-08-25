@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/connectivity/connectivity_controller.dart';
 import '../../../core/db/daos/boxes_dao.dart';
+import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/sync/sync_coordinator.dart';
 import '../../../core/sync/sync_outcome.dart';
 import '../../../core/ui/stale_data_banner.dart';
@@ -155,7 +156,8 @@ class _StatusFilter extends StatelessWidget {
           ),
           for (final status in [...known, ...extra])
             _Chip(
-              label: '${boxStatusLabel(status)} · ${counts[status]}',
+              label:
+                  '${boxStatusLabel(context.l10n, status)} · ${counts[status]}',
               selected: selected == status,
               onTap: () => onSelected(status),
             ),
@@ -200,7 +202,7 @@ class _NoneInFilter extends StatelessWidget {
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 64),
         child: Text(
-          'Ninguna caja en estado «${boxStatusLabel(status)}».',
+          'Ninguna caja en estado «${boxStatusLabel(context.l10n, status)}».',
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.bodyMedium,
         ),
@@ -293,7 +295,7 @@ class _BoxRow extends ConsumerWidget {
               onPressed: () => _seal(context, ref),
               child: const Text('Sellar'),
             )
-          : Chip(label: Text(boxStatusLabel(item.box.status))),
+          : Chip(label: Text(boxStatusLabel(context.l10n, item.box.status))),
       onTap: () => Navigator.of(
         context,
       ).push(BoxDetailView.route(boxId: item.box.id, code: item.box.code)),

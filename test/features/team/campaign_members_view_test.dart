@@ -2,6 +2,7 @@ import 'package:araguaney_app/core/api/api_providers.dart';
 import 'package:araguaney_app/core/api/generated/models/campaign_out.dart';
 import 'package:araguaney_app/core/api/generated/rest_client.dart';
 import 'package:araguaney_app/core/auth/auth_providers.dart';
+import 'package:araguaney_app/core/i18n/generated/app_localizations.dart';
 import 'package:araguaney_app/features/intake/data/intake_providers.dart';
 import 'package:araguaney_app/features/team/ui/campaign_members_view.dart';
 import 'package:flutter/material.dart';
@@ -44,7 +45,11 @@ void main() {
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
-        child: const MaterialApp(home: CampaignMembersView()),
+        child: const MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: CampaignMembersView(),
+        ),
       ),
     );
     await tester.pumpAndSettle();

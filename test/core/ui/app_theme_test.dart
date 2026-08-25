@@ -1,3 +1,4 @@
+import 'package:araguaney_app/core/i18n/generated/app_localizations.dart';
 import 'package:araguaney_app/core/ui/theme/app_colors.dart';
 import 'package:araguaney_app/core/ui/theme/app_theme.dart';
 import 'package:araguaney_app/core/ui/theme/app_typography.dart';
@@ -136,6 +137,9 @@ void main() {
       ]) {
         await tester.pumpWidget(
           MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+
             theme: theme,
             home: Scaffold(
               body: Column(

@@ -5,6 +5,7 @@ import '../../../core/api/api_error_mapper.dart';
 import '../../../core/api/generated/models/transfer_detail_out.dart';
 import '../../../core/auth/auth_providers.dart';
 import '../../../core/connectivity/connectivity_controller.dart';
+import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/ui/record_field.dart';
 import '../../../core/ui/status_labels.dart';
 import '../data/transfers_providers.dart';
@@ -149,7 +150,7 @@ class _Fields extends StatelessWidget {
       children: [
         RecordField(
           label: 'Estado',
-          value: transferStatusLabel(transfer.status),
+          value: transferStatusLabel(context.l10n, transfer.status),
         ),
         RecordField(
           label: 'Dirección',
@@ -172,7 +173,7 @@ class _Fields extends StatelessWidget {
             dense: true,
             title: Text(box.code),
             subtitle: Text(
-              '${box.quantity} ${box.unit} · ${boxStatusLabel(box.status)}',
+              '${box.quantity} ${box.unit} · ${boxStatusLabel(context.l10n, box.status)}',
             ),
           ),
         if (transfer.events.isNotEmpty) ...[
@@ -188,8 +189,8 @@ class _Fields extends StatelessWidget {
             ListTile(
               dense: true,
               title: Text(
-                '${transferStatusLabel(event.fromStatus ?? '—')} → '
-                '${transferStatusLabel(event.toStatus)}',
+                '${transferStatusLabel(context.l10n, event.fromStatus ?? '—')} → '
+                '${transferStatusLabel(context.l10n, event.toStatus)}',
               ),
               subtitle: Text(
                 [formatShortDate(event.ts), ?event.note].join(' · '),

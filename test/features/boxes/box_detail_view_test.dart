@@ -1,6 +1,7 @@
 import 'package:araguaney_app/core/api/generated/clients/boxes_api.dart';
 import 'package:araguaney_app/core/connectivity/connectivity_controller.dart';
 import 'package:araguaney_app/core/db/app_database.dart';
+import 'package:araguaney_app/core/i18n/generated/app_localizations.dart';
 import 'package:araguaney_app/features/boxes/data/boxes_providers.dart';
 import 'package:araguaney_app/features/boxes/data/boxes_repository.dart';
 import 'package:araguaney_app/features/boxes/ui/box_detail_view.dart';
@@ -52,6 +53,9 @@ void main() {
       UncontrolledProviderScope(
         container: container,
         child: MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+
           home: BoxDetailView(boxId: boxId, code: 'CJ-0001'),
         ),
       ),

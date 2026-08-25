@@ -4,8 +4,228 @@
   "@appTitle": {
     "description": "Nombre de la aplicación, visible en el lanzador y la barra de título."
   },
-  "homePlaceholderMessage": "Cliente móvil de Araguaney en desarrollo.",
-  "@homePlaceholderMessage": {
-    "description": "Mensaje temporal de la pantalla inicial durante el desarrollo del scaffold."
+  "actionCancel": "Cancelar",
+  "@actionCancel": {
+    "description": "Botón que descarta una acción sin hacerla."
+  },
+  "actionSave": "Guardar",
+  "@actionSave": {
+    "description": "Botón que confirma una edición."
+  },
+  "actionClose": "Cerrar",
+  "@actionClose": {
+    "description": "Botón que cierra algo: una caja, una tarima, una incidencia."
+  },
+  "actionRetry": "Reintentar",
+  "@actionRetry": {
+    "description": "Botón que repite una operación que falló."
+  },
+  "actionApprove": "Aprobar",
+  "@actionApprove": {
+    "description": "Botón que acepta una solicitud."
+  },
+  "actionReject": "Rechazar",
+  "@actionReject": {
+    "description": "Botón que niega una solicitud, siempre con un motivo."
+  },
+  "actionFinish": "Terminar",
+  "@actionFinish": {
+    "description": "Botón que cierra un flujo de varios pasos."
+  },
+  "boxStatusDraft": "Sin sellar",
+  "@boxStatusDraft": {
+    "description": "Estado de una caja que todavía no se selló. No es «borrador»: la caja existe y tiene contenido, solo no está cerrada."
+  },
+  "boxStatusSealed": "Sellada",
+  "@boxStatusSealed": {
+    "description": "Estado de una caja cerrada y contada."
+  },
+  "boxStatusShipped": "Enviada",
+  "@boxStatusShipped": {
+    "description": "Estado de una caja que salió en un envío."
+  },
+  "boxStatusRejected": "Rechazada",
+  "@boxStatusRejected": {
+    "description": "Estado de una caja que no se aceptó."
+  },
+  "palletStatusOpen": "Abierta",
+  "@palletStatusOpen": {
+    "description": "Estado de una tarima que todavía admite cajas."
+  },
+  "palletStatusClosed": "Cerrada",
+  "@palletStatusClosed": {
+    "description": "Estado de una tarima que ya no admite cajas."
+  },
+  "palletStatusShipped": "Enviada",
+  "@palletStatusShipped": {
+    "description": "Estado de una tarima que salió en un envío."
+  },
+  "shipmentStatusOpen": "Abierto",
+  "@shipmentStatusOpen": {
+    "description": "Estado de un envío que todavía admite tarimas."
+  },
+  "shipmentStatusClosed": "Cerrado",
+  "@shipmentStatusClosed": {
+    "description": "Estado de un envío cerrado que todavía no salió."
+  },
+  "shipmentStatusShipped": "Despachado",
+  "@shipmentStatusShipped": {
+    "description": "Estado de un envío que ya salió."
+  },
+  "shipmentStatusDelivered": "Entregado",
+  "@shipmentStatusDelivered": {
+    "description": "Estado de un envío que llegó a su destino."
+  },
+  "shipmentStatusReconciled": "Conciliado",
+  "@shipmentStatusReconciled": {
+    "description": "Estado final: lo recibido se cuadró con lo enviado."
+  },
+  "transferStatusRequested": "Solicitada",
+  "@transferStatusRequested": {
+    "description": "Transferencia propuesta, esperando respuesta."
+  },
+  "transferStatusApproved": "Aprobada",
+  "@transferStatusApproved": {
+    "description": "Transferencia aceptada, todavía no despachada."
+  },
+  "transferStatusInTransit": "En tránsito",
+  "@transferStatusInTransit": {
+    "description": "Transferencia que ya salió y no ha llegado."
+  },
+  "transferStatusReceived": "Recibida",
+  "@transferStatusReceived": {
+    "description": "Transferencia que llegó a su destino."
+  },
+  "transferStatusRejected": "Rechazada",
+  "@transferStatusRejected": {
+    "description": "Transferencia que el otro centro no aceptó."
+  },
+  "reviewStatusPending": "Pendiente",
+  "@reviewStatusPending": {
+    "description": "Revisión que espera una decisión."
+  },
+  "reviewStatusApproved": "Aprobada",
+  "@reviewStatusApproved": {
+    "description": "Revisión resuelta a favor de la captura."
+  },
+  "reviewStatusRejected": "Rechazada",
+  "@reviewStatusRejected": {
+    "description": "Revisión resuelta en contra de la captura."
+  },
+  "incidentStatusOpen": "Abierta",
+  "@incidentStatusOpen": {
+    "description": "Incidencia que nadie ha cerrado."
+  },
+  "incidentStatusResolved": "Resuelta",
+  "@incidentStatusResolved": {
+    "description": "Incidencia cerrada con una nota."
+  },
+  "incidentTypeWeightDiff": "Diferencia de peso",
+  "@incidentTypeWeightDiff": {
+    "description": "Tipo de incidencia."
+  },
+  "incidentTypeMissingBox": "Caja faltante",
+  "@incidentTypeMissingBox": {
+    "description": "Tipo de incidencia."
+  },
+  "incidentTypeDamage": "Daño",
+  "@incidentTypeDamage": {
+    "description": "Tipo de incidencia."
+  },
+  "incidentTypeCustoms": "Retención en aduana",
+  "@incidentTypeCustoms": {
+    "description": "Tipo de incidencia."
+  },
+  "incidentTypeOther": "Otra",
+  "@incidentTypeOther": {
+    "description": "Tipo de incidencia."
+  },
+  "failureNetwork": "No hay conexión con el servidor. Revisa tu señal e inténtalo de nuevo.",
+  "@failureNetwork": {
+    "description": "Sin red, DNS, tiempo agotado o conexión cortada."
+  },
+  "failureSessionExpired": "Tu sesión expiró. Inicia sesión de nuevo.",
+  "@failureSessionExpired": {
+    "description": "Un 401 genérico, cuando sí había sesión."
+  },
+  "failureForbidden": "No tienes permiso para hacer esta operación.",
+  "@failureForbidden": {
+    "description": "Un 403 sin código propio: no hay nada que la persona pueda hacer."
+  },
+  "failureNotFound": "No encontramos lo que buscabas.",
+  "@failureNotFound": {
+    "description": "Un 404."
+  },
+  "failureRateLimited": "Demasiadas peticiones seguidas. Espera un momento e inténtalo de nuevo.",
+  "@failureRateLimited": {
+    "description": "Un 429 sin código propio."
+  },
+  "failureServer": "El servidor tuvo un problema. Inténtalo de nuevo en un momento.",
+  "@failureServer": {
+    "description": "Un 5xx."
+  },
+  "failureUnexpected": "Ocurrió un error inesperado.",
+  "@failureUnexpected": {
+    "description": "Cualquier cosa que no encaje en las anteriores."
+  },
+  "refusalInvalidCredentials": "El correo o la contraseña no coinciden.",
+  "@refusalInvalidCredentials": {
+    "description": "Credenciales incorrectas al iniciar sesión. No dice cuál de las dos falló."
+  },
+  "refusalAccountLocked": "Demasiados intentos fallidos. Espera un momento antes de volver a intentarlo.",
+  "@refusalAccountLocked": {
+    "description": "Cuenta bloqueada por intentos. No menciona cuántos ni por cuánto tiempo."
+  },
+  "refusalAccountDisabled": "Esa cuenta está desactivada.",
+  "@refusalAccountDisabled": {
+    "description": "Cuenta inhabilitada."
+  },
+  "refusalEmailNotVerified": "Tienes que verificar tu correo antes de operar.",
+  "@refusalEmailNotVerified": {
+    "description": "Correo sin verificar."
+  },
+  "refusalSelfReview": "No puedes resolver una revisión que abriste tú. Escala a la coordinación nacional.",
+  "@refusalSelfReview": {
+    "description": "Quien levantó una revisión no puede cerrarla."
+  },
+  "refusalNotCampaignMember": "No participas en esa campaña. Pide que te sumen para poder capturar en ella.",
+  "@refusalNotCampaignMember": {
+    "description": "Capturar en una campaña ajena."
+  },
+  "refusalEmailTaken": "Ese correo ya tiene una cuenta.",
+  "@refusalEmailTaken": {
+    "description": "Correo repetido al invitar."
+  },
+  "refusalUsernameTaken": "Ese nombre de usuario ya está tomado.",
+  "@refusalUsernameTaken": {
+    "description": "Usuario repetido al invitar."
+  },
+  "refusalInvalidRole": "El rol tiene que ser coordinación o voluntariado.",
+  "@refusalInvalidRole": {
+    "description": "Rol no permitido al invitar: administración nacional no se reparte desde aquí."
+  },
+  "refusalProtectedCampaign": "De la campaña general no se puede sacar a nadie: es donde entra todo lo que no pertenece a otra campaña.",
+  "@refusalProtectedCampaign": {
+    "description": "La campaña general no admite bajas."
+  },
+  "donationStatusPendingEmail": "Sin confirmar",
+  "@donationStatusPendingEmail": {
+    "description": "Donación registrada en la web cuyo correo no se ha confirmado."
+  },
+  "donationStatusRegistered": "Registrada",
+  "@donationStatusRegistered": {
+    "description": "Donación confirmada que todavía no llegó a un centro."
+  },
+  "donationStatusReceived": "Recibida",
+  "@donationStatusReceived": {
+    "description": "Donación que un centro ya recibió."
+  },
+  "donationStatusCancelled": "Cancelada",
+  "@donationStatusCancelled": {
+    "description": "Donación que quien la registró canceló."
+  },
+  "donationStatusExpired": "Caducada",
+  "@donationStatusExpired": {
+    "description": "Donación que nunca llegó y venció su plazo."
   }
 }

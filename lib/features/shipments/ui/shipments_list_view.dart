@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/api/api_error_mapper.dart';
 import '../../../core/api/generated/models/shipment_out.dart';
+import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/ui/record_field.dart';
 import '../../../core/ui/status_labels.dart';
 import '../data/shipments_providers.dart';
@@ -132,7 +133,9 @@ class _Loaded extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(right: 8),
                     child: ChoiceChip(
-                      label: Text('${shipmentStatusLabel(value)} · $count'),
+                      label: Text(
+                        '${shipmentStatusLabel(context.l10n, value)} · $count',
+                      ),
                       selected: status == value,
                       onSelected: (chosen) => onStatus(chosen ? value : null),
                     ),
@@ -159,7 +162,9 @@ class _Loaded extends StatelessWidget {
                 ?shipment.reference,
               ].join(' · '),
             ),
-            trailing: Chip(label: Text(shipmentStatusLabel(shipment.status))),
+            trailing: Chip(
+              label: Text(shipmentStatusLabel(context.l10n, shipment.status)),
+            ),
             onTap: () => Navigator.of(
               context,
             ).push(ShipmentRecordView.route(shipment.id)),

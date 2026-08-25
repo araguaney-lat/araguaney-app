@@ -4,6 +4,7 @@ import '../../../core/api/generated/models/box_public_out.dart';
 import '../../../core/api/generated/models/donation_out.dart';
 import '../../../core/api/generated/models/pallet_public_out.dart';
 import '../../../core/db/app_database.dart';
+import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/ui/category_label.dart';
 import '../../../core/ui/confirm_button.dart';
 import '../../../core/ui/record_field.dart';
@@ -129,7 +130,10 @@ class _CachedBox extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        _Headline(code: box.code, status: boxStatusLabel(box.status)),
+        _Headline(
+          code: box.code,
+          status: boxStatusLabel(context.l10n, box.status),
+        ),
         const SizedBox(height: 8),
         if (productName case final name?)
           Text(name, style: theme.textTheme.titleMedium),
@@ -167,7 +171,10 @@ class _PublicBox extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        _Headline(code: box.code, status: boxStatusLabel(box.status)),
+        _Headline(
+          code: box.code,
+          status: boxStatusLabel(context.l10n, box.status),
+        ),
         const SizedBox(height: 8),
         Text(box.displayName, style: theme.textTheme.titleMedium),
         Text(
@@ -201,7 +208,10 @@ class _Pallet extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        _Headline(code: pallet.code, status: palletStatusLabel(pallet.status)),
+        _Headline(
+          code: pallet.code,
+          status: palletStatusLabel(context.l10n, pallet.status),
+        ),
         const SizedBox(height: 8),
         Text(pallet.centerName, style: theme.textTheme.titleMedium),
         Text(
@@ -236,7 +246,7 @@ class _Donation extends StatelessWidget {
       children: [
         _Headline(
           code: donation.code,
-          status: donationStatusLabel(donation.status),
+          status: donationStatusLabel(context.l10n, donation.status),
         ),
         const SizedBox(height: 8),
         Text(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/api/generated/models/intake_out.dart';
+import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/ui/record_field.dart';
 import '../../../core/ui/status_labels.dart';
 import '../../boxes/ui/box_label_view.dart';
@@ -48,7 +49,7 @@ class IntakeDetailView extends StatelessWidget {
           ListTile(
             title: Text(box.code),
             subtitle: Text(
-              '${box.quantity} ${box.unit} · ${boxStatusLabel(box.status)}',
+              '${box.quantity} ${box.unit} · ${boxStatusLabel(context.l10n, box.status)}',
             ),
             trailing: const Icon(Icons.qr_code_2),
             onTap: () =>
