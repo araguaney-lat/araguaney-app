@@ -6,6 +6,7 @@ import '../../../core/api/generated/models/transfer_out.dart';
 import '../../../core/auth/auth_providers.dart';
 import '../../../core/ui/record_field.dart';
 import '../../../core/ui/status_labels.dart';
+import '../../centers/data/centers_providers.dart';
 import '../data/transfers_providers.dart';
 import '../domain/transfer_actions.dart';
 import 'transfer_detail_view.dart';
@@ -17,11 +18,14 @@ import 'transfer_detail_view.dart';
 /// solo importa después de saber cuál de los dos es. Por eso el filtro es la
 /// dirección y no el estado, al revés que en cajas o envíos.
 ///
-/// **El otro centro no se nombra.** El contrato manda identificadores y los dos
-/// endpoints de centros exigen administración nacional, así que quien coordina
-/// —que es quien usa esta pantalla— no puede resolver el nombre ni desde aquí
-/// ni desde el servidor. Enseñar un identificador sería peor que no enseñar
-/// nada. Es la petición 3 de `backend-requests.md`.
+/// **El otro centro se nombra solo cuando la sesión puede resolverlo.** El
+/// contrato manda identificadores y los dos endpoints de centros exigen
+/// administración nacional, así que quien coordina —que es quien más usa esta
+/// pantalla— sigue sin poder resolver el nombre, y la fila calla en vez de
+/// enseñar un identificador. Para una administración nacional, que sí puede
+/// listarlos, callar era perder algo a cambio de nada. La petición 3 de
+/// `backend-requests.md` sigue siendo el arreglo de verdad: los nombres en el
+/// contrato, para todo el mundo.
 class TransfersListView extends ConsumerStatefulWidget {
   const TransfersListView({super.key});
 
@@ -176,29 +180,46 @@ String _directionLabel(TransferDirection direction) => switch (direction) {
   TransferDirection.other => 'De otros centros',
 };
 
-class _TransferRow extends StatelessWidget {
+class _TransferRow extends ConsumerWidget {
   const _TransferRow({required this.transfer, required this.direction});
 
   final TransferOut transfer;
   final TransferDirection direction;
 
   @override
-  Widget build(BuildContext context) => ListTile(
-    leading: Icon(switch (direction) {
-      TransferDirection.incoming => Icons.call_received,
-      TransferDirection.outgoing => Icons.call_made,
-      TransferDirection.other => Icons.swap_horiz,
-    }),
-    title: Text(switch (direction) {
-      TransferDirection.incoming => 'Entrante',
-      TransferDirection.outgoing => 'Saliente',
-      TransferDirection.other => 'Entre otros centros',
-    }),
-    subtitle: Text(formatShortDate(transfer.createdAt)),
-    trailing: Chip(label: Text(transferStatusLabel(transfer.status))),
-    onTap: () =>
-        Navigator.of(context).push(TransferDetailView.route(transfer.id)),
-  );
+  Widget build(BuildContext context, WidgetRef ref) {
+    // El otro centro se nombra **solo si esta sesión puede resolverlo**. Para
+    // una coordinación el mapa viene vacío y la fila queda exactamente como
+    // estaba: la dirección y la fecha, sin nombre y sin hueco. Enseñar un
+    // identificador sería peor que no enseñar nada, y por eso la petición 3
+    // —los nombres en el contrato de la transferencia— sigue siendo el arreglo
+    // de verdad para quien no puede listarlos.
+    final names = ref.watch(centerNamesProvider);
+    final otherId = switch (direction) {
+      TransferDirection.incoming => transfer.fromCenterId,
+      TransferDirection.outgoing => transfer.toCenterId,
+      TransferDirection.other => null,
+    };
+    final other = otherId == null ? null : names[otherId];
+    final date = formatShortDate(transfer.createdAt);
+
+    return ListTile(
+      leading: Icon(switch (direction) {
+        TransferDirection.incoming => Icons.call_received,
+        TransferDirection.outgoing => Icons.call_made,
+        TransferDirection.other => Icons.swap_horiz,
+      }),
+      title: Text(switch (direction) {
+        TransferDirection.incoming => 'Entrante',
+        TransferDirection.outgoing => 'Saliente',
+        TransferDirection.other => 'Entre otros centros',
+      }),
+      subtitle: Text(other == null ? date : '$other · $date'),
+      trailing: Chip(label: Text(transferStatusLabel(transfer.status))),
+      onTap: () =>
+          Navigator.of(context).push(TransferDetailView.route(transfer.id)),
+    );
+  }
 }
 
 class _Message extends StatelessWidget {
