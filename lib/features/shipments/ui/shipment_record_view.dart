@@ -122,7 +122,9 @@ class ShipmentRecordView extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(shipment.valueOrNull?.reference ?? 'Envío'),
+        title: Text(
+          shipment.valueOrNull?.reference ?? context.l10n.shipmentRecordTitle,
+        ),
         actions: [
           IconButton(
             tooltip: context.l10n.manifestLabel,
@@ -243,8 +245,7 @@ class _Body extends ConsumerWidget {
         for (final warning in shipment.heightWarnings) _Note(warning),
         const Divider(),
         _SectionTitle('Tarimas'),
-        if (shipment.pallets.isEmpty)
-          const _Note('Este envío todavía no lleva ninguna tarima.'),
+        if (shipment.pallets.isEmpty) _Note(context.l10n.shipmentNoPallets),
         for (final pallet in shipment.pallets)
           _PalletRow(
             pallet: pallet,
@@ -261,39 +262,37 @@ class _Body extends ConsumerWidget {
             ),
           ),
         const Divider(),
-        _SectionTitle('Recepción'),
+        _SectionTitle(context.l10n.receptionHeading),
         switch (reception) {
           AsyncData(value: final value?) => _Reception(reception: value),
-          AsyncData() => const _Note(
-            'Todavía no se registró la recepción de este envío.',
-          ),
-          AsyncError() => const _Note('No se pudo consultar la recepción.'),
+          AsyncData() => _Note(context.l10n.receptionNotRegistered),
+          AsyncError() => _Note(context.l10n.receptionUnavailable),
           _ => const _Note('Consultando…'),
         },
         const Divider(),
         _SectionTitle('Recorrido'),
         switch (events) {
-          AsyncData(:final value) when value.isEmpty => const _Note(
-            'Todavía no hay hitos anotados para este envío.',
+          AsyncData(:final value) when value.isEmpty => _Note(
+            context.l10n.milestonesEmpty,
           ),
           AsyncData(:final value) => Column(
             children: [for (final event in value) _Event(event: event)],
           ),
-          AsyncError() => const _Note('No se pudo consultar el recorrido.'),
+          AsyncError() => _Note(context.l10n.timelineUnavailable),
           _ => const _Note('Consultando…'),
         },
         const Divider(),
         _SectionTitle('Incidencias'),
         switch (incidents) {
-          AsyncData(:final value) when value.isEmpty => const _Note(
-            'Ninguna incidencia levantada sobre este envío.',
+          AsyncData(:final value) when value.isEmpty => _Note(
+            context.l10n.incidentsEmptyForShipment,
           ),
           AsyncData(:final value) => Column(
             children: [
               for (final incident in value) _Incident(incident: incident),
             ],
           ),
-          AsyncError() => const _Note('No se pudieron consultar.'),
+          AsyncError() => _Note(context.l10n.incidentsUnavailable),
           _ => const _Note('Consultando…'),
         },
         const SizedBox(height: 80),
@@ -373,7 +372,7 @@ class _AdvanceState extends ConsumerState<_Advance> {
   @override
   Widget build(BuildContext context) {
     final label = switch (widget.shipment.status) {
-      'OPEN' => 'Cerrar el envío',
+      'OPEN' => context.l10n.shipmentCloseAction,
       'CLOSED' => 'Despachar',
       _ => null,
     };
@@ -401,14 +400,21 @@ class _AdvanceState extends ConsumerState<_Advance> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(closing ? '¿Cerrar el envío?' : '¿Despachar el envío?'),
+        title: Text(
+          closing
+              ? context.l10n.shipmentCloseConfirmTitle
+              : context.l10n.shipmentDispatchConfirmTitle,
+        ),
         content: Text(
           closing
-              ? 'Deja de admitir tarimas. Lleva $pallets '
-                    '${pallets == 1 ? 'tarima' : 'tarimas'} a '
-                    '${shipment.destination}.'
-              : 'Queda registrado que salió hacia ${shipment.destination}, '
-                    'con $pallets ${pallets == 1 ? 'tarima' : 'tarimas'}.',
+              ? context.l10n.shipmentCloseExplanation(
+                  pallets,
+                  shipment.destination,
+                )
+              : context.l10n.shipmentDispatchExplanation(
+                  pallets,
+                  shipment.destination,
+                ),
         ),
         actions: [
           TextButton(

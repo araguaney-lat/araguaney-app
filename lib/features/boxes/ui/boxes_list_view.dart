@@ -74,9 +74,7 @@ class _BoxesListViewState extends ConsumerState<BoxesListView> {
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
                 child: Text(
-                  all.length == 1
-                      ? '1 caja en el centro'
-                      : '${all.length} cajas en el centro',
+                  context.l10n.boxesInCenter(all.length),
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
               ),
@@ -240,12 +238,13 @@ class _BoxRow extends ConsumerWidget {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Sellar ${item.box.code}'),
+        title: Text(context.l10n.sealBoxConfirmTitle(item.box.code)),
         content: Text(
-          '${item.productName ?? 'Producto no descargado'} · '
-          '${item.box.quantity} ${item.box.unit}.\n\n'
-          'Una caja sellada ya no admite cambios: es la que se pone en una '
-          'tarima y viaja.',
+          context.l10n.sealBoxConfirmBody(
+            item.productName ?? context.l10n.productNotCached,
+            '${item.box.quantity}',
+            item.box.unit,
+          ),
         ),
         actions: [
           TextButton(
@@ -323,9 +322,8 @@ class _EmptyView extends ConsumerWidget {
               const SizedBox(height: 16),
               Text(
                 offline
-                    ? 'Sin conexión y sin cajas descargadas. Conéctate una vez '
-                          'para poder consultarlas después sin señal.'
-                    : 'Este centro todavía no tiene cajas registradas.',
+                    ? context.l10n.boxesOfflineNoneCached
+                    : context.l10n.boxesEmpty,
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodyMedium,
               ),

@@ -77,22 +77,17 @@ class _ProductScanViewState extends ConsumerState<ProductScanView> {
       case BarcodeProductFound(:final product):
         Navigator.of(context).pop(product);
       case BarcodeOnlyDescribed(:final prefill):
-        _say(
-          'Ese código es ${prefill.displayName}, pero ese producto no está en '
-          'el catálogo. Elígelo a mano.',
-        );
+        _say(context.l10n.productNotInCatalogue(prefill.displayName));
       case BarcodeUnresolved(:final failure):
         _say(failure.operatorMessage(context.l10n));
     }
   }
 
   void _explainQr(String raw) => _say(switch (parseScannedCode(raw)) {
-    BoxCode() => 'Eso es la etiqueta de una caja, no el producto.',
-    PalletCode() => 'Eso es la etiqueta de una tarima, no el producto.',
-    DonationCode() => 'Eso es el código de una donación, no el producto.',
-    UnrecognizedCode() =>
-      'Ese código lleva a una página del fabricante. El que identifica el '
-          'producto es el de barras.',
+    BoxCode() => context.l10n.barcodeIsBoxLabel,
+    PalletCode() => context.l10n.barcodeIsPalletLabel,
+    DonationCode() => context.l10n.barcodeIsDonationCode,
+    UnrecognizedCode() => context.l10n.barcodeIsManufacturerUrl,
   });
 
   void _say(String message) {
@@ -117,9 +112,7 @@ class _ProductScanViewState extends ConsumerState<ProductScanView> {
     body: ScannerCamera(
       controller: _controller,
       onDetect: _onDetect,
-      overlay: const ScannerViewfinder(
-        hint: 'Apunta al código de barras del envase, no al QR.',
-      ),
+      overlay: ScannerViewfinder(hint: context.l10n.barcodeAimAtPackage),
     ),
   );
 }

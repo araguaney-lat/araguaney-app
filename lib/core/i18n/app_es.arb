@@ -1243,5 +1243,305 @@
   "transferNeedsConnection": "Mover una transferencia necesita conexión: la mueven dos centros, y sin señal no se sabe qué hizo el otro.",
   "@transferNeedsConnection": {
     "description": "Screen: transfer_detail_view."
+  },
+  "roleVolunteerLabel": "Voluntariado",
+  "@roleVolunteerLabel": {
+    "description": "The volunteer role, as shown on the home screen."
+  },
+  "roleCoordinatorLabel": "Coordinación",
+  "@roleCoordinatorLabel": {
+    "description": "The coordinator role, as shown on the home screen."
+  },
+  "roleNationalAdminLabel": "Administración nacional",
+  "@roleNationalAdminLabel": {
+    "description": "The national administration role, as shown on the home screen."
+  },
+  "byCategoryCaption": "por categoría",
+  "@byCategoryCaption": {
+    "description": "Caption under a home tile: the number is broken down by category."
+  },
+  "homePendingCaptures": "{count, plural, =1{1 captura pendiente de enviar} other{{count} capturas pendientes de enviar}}",
+  "@homePendingCaptures": {
+    "description": "How many captures are waiting for a connection.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "homePendingReviews": "{count, plural, =1{1 revisión espera tu decisión} other{{count} revisiones esperan tu decisión}}",
+  "@homePendingReviews": {
+    "description": "How many risk reviews are waiting for a decision.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "applicationsPendingCount": "{count, plural, =1{Un centro espera aprobación} other{{count} centros esperan aprobación}}",
+  "@applicationsPendingCount": {
+    "description": "How many centre applications are waiting.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "boxesInCenter": "{count, plural, =1{1 caja en el centro} other{{count} cajas en el centro}}",
+  "@boxesInCenter": {
+    "description": "How many boxes the centre holds.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "offlineReadyWithoutCodes": "Sin códigos de caja reservados: sin señal no vas a poder sellar. {products} productos descargados.",
+  "@offlineReadyWithoutCodes": {
+    "description": "Warning on the home screen: the catalogue is cached but there are no box codes, so sealing offline is impossible.",
+    "placeholders": {
+      "products": {
+        "type": "int"
+      }
+    }
+  },
+  "offlineReady": "Listo para trabajar sin señal: {products} productos y {codes} códigos descargados.",
+  "@offlineReady": {
+    "description": "Confirmation on the home screen that the device can work without a signal.",
+    "placeholders": {
+      "products": {
+        "type": "int"
+      },
+      "codes": {
+        "type": "int"
+      }
+    }
+  },
+  "shipmentRecordTitle": "Envío",
+  "@shipmentRecordTitle": {
+    "description": "Title of a shipment's record."
+  },
+  "shipmentNoPallets": "Este envío todavía no lleva ninguna tarima.",
+  "@shipmentNoPallets": {
+    "description": "A shipment that has been opened but is still empty."
+  },
+  "receptionHeading": "Recepción",
+  "@receptionHeading": {
+    "description": "Section heading: what arrived at the other end."
+  },
+  "receptionNotRegistered": "Todavía no se registró la recepción de este envío.",
+  "@receptionNotRegistered": {
+    "description": "Nobody has registered what arrived yet."
+  },
+  "receptionUnavailable": "No se pudo consultar la recepción.",
+  "@receptionUnavailable": {
+    "description": "The reception could not be fetched."
+  },
+  "milestonesEmpty": "Todavía no hay hitos anotados para este envío.",
+  "@milestonesEmpty": {
+    "description": "No milestones have been written on the journey."
+  },
+  "timelineUnavailable": "No se pudo consultar el recorrido.",
+  "@timelineUnavailable": {
+    "description": "The journey could not be fetched."
+  },
+  "incidentsEmptyForShipment": "Ninguna incidencia levantada sobre este envío.",
+  "@incidentsEmptyForShipment": {
+    "description": "Nothing has been reported wrong about this shipment."
+  },
+  "incidentsUnavailable": "No se pudieron consultar.",
+  "@incidentsUnavailable": {
+    "description": "The incidents could not be fetched."
+  },
+  "shipmentCloseAction": "Cerrar el envío",
+  "@shipmentCloseAction": {
+    "description": "Button that stops a shipment taking pallets."
+  },
+  "shipmentCloseConfirmTitle": "¿Cerrar el envío?",
+  "@shipmentCloseConfirmTitle": {
+    "description": "Confirmation before closing a shipment."
+  },
+  "shipmentDispatchConfirmTitle": "¿Despachar el envío?",
+  "@shipmentDispatchConfirmTitle": {
+    "description": "Confirmation before dispatching a shipment."
+  },
+  "applicationsEmpty": "Ninguna postulación espera una decisión.",
+  "@applicationsEmpty": {
+    "description": "Nothing in the centre application queue."
+  },
+  "scanBoxNotCached": "Esta caja no está descargada en el dispositivo. Se muestra su ficha pública, que trae menos datos que el registro del centro.",
+  "@scanBoxNotCached": {
+    "description": "A scanned box that is not in the local cache: only the public record is available."
+  },
+  "donationItemsAreDeclared": "Lo que se registra es lo que llegó. Los artículos de arriba son lo que declaró quien donó, y no se convierten en cajas solos.",
+  "@donationItemsAreDeclared": {
+    "description": "What a donor declared is not what gets captured: somebody still counts what actually arrived."
+  },
+  "boxesOfflineNoneCached": "Sin conexión y sin cajas descargadas. Conéctate una vez para poder consultarlas después sin señal.",
+  "@boxesOfflineNoneCached": {
+    "description": "Offline with an empty cache: there is nothing to read."
+  },
+  "boxesEmpty": "Este centro todavía no tiene cajas registradas.",
+  "@boxesEmpty": {
+    "description": "The centre has never sealed a box."
+  },
+  "barcodeAimAtPackage": "Apunta al código de barras del envase, no al QR.",
+  "@barcodeAimAtPackage": {
+    "description": "Instruction on the product scanner."
+  },
+  "barcodeIsBoxLabel": "Eso es la etiqueta de una caja, no el producto.",
+  "@barcodeIsBoxLabel": {
+    "description": "The scanner read a box label while looking for a product."
+  },
+  "barcodeIsPalletLabel": "Eso es la etiqueta de una tarima, no el producto.",
+  "@barcodeIsPalletLabel": {
+    "description": "The scanner read a pallet label while looking for a product."
+  },
+  "barcodeIsDonationCode": "Eso es el código de una donación, no el producto.",
+  "@barcodeIsDonationCode": {
+    "description": "The scanner read a donation code while looking for a product."
+  },
+  "barcodeIsManufacturerUrl": "Ese código lleva a una página del fabricante. El que identifica el producto es el de barras.",
+  "@barcodeIsManufacturerUrl": {
+    "description": "A QR on the package that points at a website rather than identifying the product."
+  },
+  "shipmentCloseExplanation": "{pallets, plural, =1{Deja de admitir tarimas. Lleva 1 tarima a {destination}.} other{Deja de admitir tarimas. Lleva {pallets} tarimas a {destination}.}}",
+  "@shipmentCloseExplanation": {
+    "description": "What closing a shipment does, with how many pallets it carries and where they go.",
+    "placeholders": {
+      "pallets": {
+        "type": "int"
+      },
+      "destination": {
+        "type": "String"
+      }
+    }
+  },
+  "shipmentDispatchExplanation": "{pallets, plural, =1{Queda registrado que salió hacia {destination}, con 1 tarima.} other{Queda registrado que salió hacia {destination}, con {pallets} tarimas.}}",
+  "@shipmentDispatchExplanation": {
+    "description": "What dispatching a shipment does.",
+    "placeholders": {
+      "pallets": {
+        "type": "int"
+      },
+      "destination": {
+        "type": "String"
+      }
+    }
+  },
+  "shrinkageArrivedWell": "{received} de {total} llegaron bien",
+  "@shrinkageArrivedWell": {
+    "description": "How many boxes of a shipment arrived without incident.",
+    "placeholders": {
+      "received": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "applicationApproveConfirmTitle": "¿Aprobar {center}?",
+  "@applicationApproveConfirmTitle": {
+    "description": "Confirmation before approving a centre application.",
+    "placeholders": {
+      "center": {
+        "type": "String"
+      }
+    }
+  },
+  "applicationApproveExplanation": "Se crea el centro, se da de alta a {contact} como su coordinación, y le llega por correo una contraseña temporal a {email}.\n\nNo se puede deshacer desde aquí.",
+  "@applicationApproveExplanation": {
+    "description": "The three things approving does, named before it happens.",
+    "placeholders": {
+      "contact": {
+        "type": "String"
+      },
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "applicationApproved": "{center} quedó aprobado.",
+  "@applicationApproved": {
+    "description": "Confirmation after approving.",
+    "placeholders": {
+      "center": {
+        "type": "String"
+      }
+    }
+  },
+  "applicationRejected": "Se le avisó a {contact}.",
+  "@applicationRejected": {
+    "description": "Confirmation after rejecting: the reason was emailed.",
+    "placeholders": {
+      "contact": {
+        "type": "String"
+      }
+    }
+  },
+  "productNotInCatalogue": "Ese código es {product}, pero ese producto no está en el catálogo. Elígelo a mano.",
+  "@productNotInCatalogue": {
+    "description": "A barcode resolved to a product the local catalogue does not carry.",
+    "placeholders": {
+      "product": {
+        "type": "String"
+      }
+    }
+  },
+  "scanRawContent": "Se leyó:\n\n{raw}",
+  "@scanRawContent": {
+    "description": "What a scanned code contained, when it is not one of ours.",
+    "placeholders": {
+      "raw": {
+        "type": "String"
+      }
+    }
+  },
+  "donationRegisteredOn": "Registrada el {date}",
+  "@donationRegisteredOn": {
+    "description": "When a pre-registered donation was created.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "andMoreItems": "y {count} más",
+  "@andMoreItems": {
+    "description": "How many declared items are not shown.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sealBoxConfirmTitle": "Sellar {code}",
+  "@sealBoxConfirmTitle": {
+    "description": "Confirmation before sealing, naming the box.",
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "sealBoxConfirmBody": "{product} · {quantity} {unit}.\n\nUna caja sellada ya no admite cambios: es la que se pone en una tarima y viaja.",
+  "@sealBoxConfirmBody": {
+    "description": "What is inside the box about to be sealed, and why sealing is not undoable.",
+    "placeholders": {
+      "product": {
+        "type": "String"
+      },
+      "quantity": {
+        "type": "String"
+      },
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "productNotCached": "Producto no descargado",
+  "@productNotCached": {
+    "description": "Stands in for a product name the device never downloaded."
   }
 }

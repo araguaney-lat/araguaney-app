@@ -36,17 +36,23 @@ class _ApplicationQueueViewState extends ConsumerState<ApplicationQueueView> {
   String? _deciding;
 
   Future<void> _approve(CenterApplicationOut application) async {
+    // Se toma antes de abrir el diálogo: después de esperarlo, este contexto
+    // puede haber dejado de estar montado.
+    final l10n = context.l10n;
     // Aprobar hace tres cosas irreversibles desde aquí, así que se nombran las
     // tres antes de hacerlas. Una confirmación que solo dice «¿seguro?» no
     // informa de nada.
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('¿Aprobar ${application.centerName}?'),
+        title: Text(
+          context.l10n.applicationApproveConfirmTitle(application.centerName),
+        ),
         content: Text(
-          'Se crea el centro, se da de alta a ${application.contactName} como '
-          'su coordinación, y le llega por correo una contraseña temporal a '
-          '${application.contactEmail}.\n\nNo se puede deshacer desde aquí.',
+          context.l10n.applicationApproveExplanation(
+            application.contactName,
+            application.contactEmail,
+          ),
         ),
         actions: [
           TextButton(
@@ -67,7 +73,7 @@ class _ApplicationQueueViewState extends ConsumerState<ApplicationQueueView> {
       () => ref
           .read(centerApplicationsRepositoryProvider)
           .approve(application.id),
-      done: '${application.centerName} quedó aprobado.',
+      done: l10n.applicationApproved(application.centerName),
       // Aprobar crea un centro, y `created_center_id` viene en la respuesta.
       // Ofrecerlo cierra el paso siguiente real: quien acaba de aprobar suele
       // querer mirar —o corregir— lo que se acaba de crear, con la postulación
@@ -84,6 +90,7 @@ class _ApplicationQueueViewState extends ConsumerState<ApplicationQueueView> {
   }
 
   Future<void> _reject(CenterApplicationOut application) async {
+    final l10n = context.l10n;
     final reason = await RejectApplicationSheet.show(
       context,
       centerName: application.centerName,
@@ -95,7 +102,7 @@ class _ApplicationQueueViewState extends ConsumerState<ApplicationQueueView> {
       () => ref
           .read(centerApplicationsRepositoryProvider)
           .reject(application.id, reason),
-      done: 'Se le avisó a ${application.contactName}.',
+      done: l10n.applicationRejected(application.contactName),
     );
   }
 
@@ -145,7 +152,7 @@ class _ApplicationQueueViewState extends ConsumerState<ApplicationQueueView> {
       appBar: AppBar(title: Text(context.l10n.applicationsTitle)),
       body: switch (queue) {
         AsyncData(value: ApplicationsRead(:final value)) when value.isEmpty =>
-          const _Message('Ninguna postulación espera una decisión.'),
+          _Message(context.l10n.applicationsEmpty),
         AsyncData(value: ApplicationsRead(:final value)) => RefreshIndicator(
           onRefresh: () async => ref.invalidate(applicationQueueProvider),
           child: ListView(
@@ -185,9 +192,7 @@ class _Header extends StatelessWidget {
   Widget build(BuildContext context) => Padding(
     padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
     child: Text(
-      pending == 1
-          ? 'Un centro espera aprobación'
-          : '$pending centros esperan aprobación',
+      context.l10n.applicationsPendingCount(pending),
       style: Theme.of(context).textTheme.bodyMedium,
     ),
   );

@@ -75,7 +75,7 @@ class ScanResultSheet extends StatelessWidget {
       ScanNotRecognized(:final raw) => _Message(
         icon: Icons.help_outline,
         title: context.l10n.scanUnknownCode,
-        text: 'Se leyó:\n\n$raw',
+        text: context.l10n.scanRawContent(raw),
       ),
       ScanResolutionFailed(:final failure) => _Message(
         icon: Icons.error_outline,
@@ -190,10 +190,7 @@ class _PublicBox extends StatelessWidget {
           style: theme.textTheme.bodySmall,
         ),
         const SizedBox(height: 12),
-        const _Notice(
-          'Esta caja no está descargada en el dispositivo. Se muestra su ficha '
-          'pública, que trae menos datos que el registro del centro.',
-        ),
+        _Notice(context.l10n.scanBoxNotCached),
       ],
     );
   }
@@ -253,7 +250,9 @@ class _Donation extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         Text(
-          'Registrada el ${formatShortDate(donation.createdAt)}',
+          context.l10n.donationRegisteredOn(
+            formatShortDate(donation.createdAt),
+          ),
           style: theme.textTheme.bodySmall,
         ),
         const SizedBox(height: 12),
@@ -263,12 +262,12 @@ class _Donation extends StatelessWidget {
             style: theme.textTheme.bodySmall,
           ),
         if (items.length > 4)
-          Text('y ${items.length - 4} más', style: theme.textTheme.bodySmall),
+          Text(
+            context.l10n.andMoreItems(items.length - 4),
+            style: theme.textTheme.bodySmall,
+          ),
         const SizedBox(height: 12),
-        const _Notice(
-          'Lo que se registra es lo que llegó. Los artículos de arriba son lo '
-          'que declaró quien donó, y no se convierten en cajas solos.',
-        ),
+        _Notice(context.l10n.donationItemsAreDeclared),
         const SizedBox(height: 12),
         SizedBox(
           width: double.infinity,
