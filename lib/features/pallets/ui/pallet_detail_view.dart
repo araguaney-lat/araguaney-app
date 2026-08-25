@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/api/api_error_mapper.dart';
 import '../../../core/api/generated/models/pallet_detail_out.dart';
 import '../../../core/connectivity/connectivity_controller.dart';
+import '../../../core/ui/event_timeline.dart';
 import '../../../core/ui/record_field.dart';
 import '../../../core/ui/status_labels.dart';
 import '../../scanning/domain/scanned_code.dart';
@@ -194,6 +195,8 @@ class _Fields extends StatelessWidget {
                   onPressed: () => onRemoveBox!(box.code),
                 ),
         ),
+      // El recorrido, al final: se consulta cuando algo no cuadra.
+      _Timeline(id: pallet.id),
     ],
   );
 }
@@ -265,5 +268,33 @@ class _Actions extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+/// El recorrido de la tarima, por lo mismo que el de una caja: responde qué le
+/// pasó a lo que alguien tiene delante. Un fallo aquí no rompe la ficha.
+class _Timeline extends ConsumerWidget {
+  const _Timeline({required this.id});
+
+  final String id;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final events = ref.watch(palletEventsProvider(id));
+
+    return switch (events) {
+      AsyncData(:final value) when value.isEmpty => const SizedBox.shrink(),
+      AsyncData(:final value) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Padding(
+            padding: EdgeInsets.fromLTRB(16, 16, 16, 4),
+            child: Text('Recorrido'),
+          ),
+          EventTimeline(events: value, statusLabel: palletStatusLabel),
+        ],
+      ),
+      _ => const SizedBox.shrink(),
+    };
   }
 }

@@ -1,6 +1,7 @@
 import 'package:araguaney_app/core/api/generated/clients/exports_api.dart';
 import 'package:araguaney_app/core/api/generated/clients/shipments_api.dart';
 import 'package:araguaney_app/core/api/generated/models/qr_event_out.dart';
+import 'package:araguaney_app/core/ui/status_labels.dart';
 import 'package:araguaney_app/features/shipments/data/shipments_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -118,31 +119,38 @@ void main() {
 
   group('reading the journey', () {
     test('a milestone reads by its name', () {
-      final described = describeShipmentEvent(
+      final described = describeEvent(
         QrEventOut(
-          fromStatus: 'IN_TRANSIT',
-          toStatus: 'IN_TRANSIT',
+          fromStatus: 'SHIPPED',
+          toStatus: 'SHIPPED',
           milestone: 'CUSTOMS_CLEARED',
           note: 'Sin inspección',
           ts: testNow,
         ),
+        statusLabel: shipmentStatusLabel,
       );
 
       expect(described.title, 'Liberado de aduana');
       expect(described.note, 'Sin inspección');
     });
 
-    test('a state change reads as the transition it was', () {
-      final described = describeShipmentEvent(
+    test('a state change reads in the language it is operated in', () {
+      // Este test fijaba «CLOSED → IN_TRANSIT», que estaba mal dos veces: la
+      // clave cruda no es lo que una persona debe leer, y `IN_TRANSIT` no es
+      // un estado de envio sino de transferencia —`SHIPMENT_STATUSES` es
+      // OPEN, CLOSED, SHIPPED, DELIVERED, RECONCILED. Traducir las etiquetas
+      // fue lo que destapo el fixture inventado.
+      final described = describeEvent(
         QrEventOut(
           fromStatus: 'CLOSED',
-          toStatus: 'IN_TRANSIT',
+          toStatus: 'SHIPPED',
           note: null,
           ts: testNow,
         ),
+        statusLabel: shipmentStatusLabel,
       );
 
-      expect(described.title, 'CLOSED → IN_TRANSIT');
+      expect(described.title, 'Cerrado → Despachado');
     });
 
     test('a milestone this version does not know still reads', () {

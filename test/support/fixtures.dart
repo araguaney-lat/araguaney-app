@@ -384,7 +384,7 @@ Map<String, Object?> exportJobJson({
 
 Map<String, Object?> qrEventJson({
   String? fromStatus,
-  String toStatus = 'IN_TRANSIT',
+  String toStatus = 'SHIPPED',
   String? milestone,
   String? note,
   DateTime? ts,

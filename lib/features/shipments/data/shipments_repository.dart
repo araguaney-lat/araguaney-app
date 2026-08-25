@@ -189,13 +189,22 @@ class ShipmentsRepository {
 /// Un hito y un cambio de estado llegan por el mismo sitio y se distinguen en
 /// que el hito no mueve el estado. Mostrarlos igual haría ilegible la línea de
 /// tiempo justo donde más se consulta: cuando algo se retrasó.
-({String title, String? note, DateTime at}) describeShipmentEvent(
-  QrEventOut event,
-) {
+///
+/// **El estado se traduce con la tabla que corresponda al objeto.** Un mismo
+/// `QrEventOut` describe el recorrido de un envío, de una caja o de una tarima,
+/// y las tres tienen vocabularios distintos. Antes de pedirla como parámetro
+/// esta función pintaba la clave cruda —«OPEN → CLOSED»— en la única pantalla
+/// que la usaba, que es la octava vez que este repositorio paga lo mismo.
+({String title, String? note, DateTime at}) describeEvent(
+  QrEventOut event, {
+  required String Function(String) statusLabel,
+}) {
   final milestone = event.milestone;
+  final from = event.fromStatus;
   final title = milestone != null
       ? milestoneLabel(milestone)
-      : '${event.fromStatus ?? '—'} → ${event.toStatus}';
+      : '${from == null ? '—' : statusLabel(from)} → '
+            '${statusLabel(event.toStatus)}';
 
   return (title: title, note: event.note, at: event.ts);
 }

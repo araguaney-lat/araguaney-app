@@ -502,7 +502,7 @@ class _Event extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final described = describeShipmentEvent(event);
+    final described = describeEvent(event, statusLabel: shipmentStatusLabel);
 
     return ListTile(
       dense: true,

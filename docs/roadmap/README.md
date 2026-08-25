@@ -37,8 +37,8 @@ divides by.
 
 ```mermaid
 pie title Tasks completed (223 tasks, backlog aside)
-    "Done" : 139
-    "Pending" : 83
+    "Done" : 143
+    "Pending" : 79
     "Partial" : 1
     "Blocked or external" : 0
 ```
@@ -68,7 +68,7 @@ pie title Tasks completed (223 tasks, backlog aside)
 | 20 | [Campaigns](phase-20-campaigns.md) | 0 | 5 | ⬜ 0% |
 | 21 | [Centres](phase-21-centers.md) | 4 | 1 | 🟨 80% |
 | 22 | [The centre application queue](phase-22-center-applications.md) | 5 | 1 | 🟨 83% |
-| 23 | [Incidents and the audit log](phase-23-incidents-and-audit.md) | 0 | 6 | ⬜ 0% |
+| 23 | [Incidents and the audit log](phase-23-incidents-and-audit.md) | 4 | 2 | 🟨 67% |
 | 24 | [Users beyond one centre](phase-24-users-beyond-a-center.md) | 0 | 6 | ⬜ 0% |
 | 25 | [The studio](phase-25-the-studio.md) | 1 | 2 | 🟨 33% |
 | 26 | [The shipment, from dispatch to delivery](phase-26-shipment-to-delivery.md) | 0 | 6 | ⬜ 0% |
@@ -76,7 +76,7 @@ pie title Tasks completed (223 tasks, backlog aside)
 | 28 | [The requests board](phase-28-the-requests-board.md) | 1 | 3 | 🟨 25% |
 | 29 | [The minimum version gate](phase-29-the-version-gate.md) | 7 | 2 | 🟨 78% |
 | 30 | [Writing as a national administrator](phase-30-writing-as-national-admin.md) | 1 | 6 | 🟨 14% |
-| **Total** (Phase 10 aside) | | **139** | **84** | **🟢 62%** |
+| **Total** (Phase 10 aside) | | **143** | **80** | **🟢 64%** |
 
 ## What is missing, and how that is kept honest
 

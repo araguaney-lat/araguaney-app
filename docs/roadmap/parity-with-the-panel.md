@@ -81,7 +81,7 @@ Roles are the panel's own, from `nav-config.ts`.
 | Centros | 🟡 read, created and edited; deactivating stays on the panel — [Phase 21](phase-21-centers.md) |
 | Usuarios | ❌ [Phase 24](phase-24-users-beyond-a-center.md) |
 | Postulaciones de centro | ✅ [Phase 22](phase-22-center-applications.md) |
-| Incidencias | ❌ [Phase 23](phase-23-incidents-and-audit.md) |
+| Incidencias | ✅ [Phase 23](phase-23-incidents-and-audit.md) |
 | Auditoría | ❌ [Phase 23](phase-23-incidents-and-audit.md) |
 
 ### The studio, the superadmin console
