@@ -3,19 +3,18 @@ import 'dart:ui';
 
 import 'package:flutter_test/flutter_test.dart';
 
-/// El idioma con el que corren todas las pruebas.
+/// The language every test runs in.
 ///
-/// Hasta la fase 31 daba igual: había un solo ARB, así que el sistema resolvía
-/// a español pasara lo que pasara y cada prueba podía afirmar el texto en
-/// español sin decir por qué. Con el inglés declarado, el teléfono simulado
-/// resuelve a inglés y doscientas afirmaciones dejaron de tener sentido a la
-/// vez.
+/// Until phase 31 it made no difference: there was a single ARB, so the system
+/// resolved to Spanish whatever happened and every test could assert Spanish
+/// text without saying why. With English declared, the simulated phone resolves
+/// to English and two hundred assertions stopped making sense at once.
 ///
-/// Se fija aquí y no en cada prueba porque **el idioma no es lo que ninguna de
-/// ellas comprueba**: comprueban comportamiento, y el texto es cómo lo miran.
-/// Que la aplicación siga al teléfono, y que se pueda elegir otro, sí se
-/// comprueba — en `test/core/i18n/language_test.dart`, que es el único sitio
-/// donde el idioma es el asunto.
+/// It is pinned here and not in each test because **the language is not what
+/// any of them checks**: they check behaviour, and the text is how they look at
+/// it. That the application follows the phone, and that another can be chosen,
+/// is checked — in `test/core/i18n/language_test.dart`, which is the only place
+/// where the language is the subject.
 Future<void> testExecutable(FutureOr<void> Function() testMain) async {
   final binding = TestWidgetsFlutterBinding.ensureInitialized();
   binding.platformDispatcher

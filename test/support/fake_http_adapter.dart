@@ -3,18 +3,18 @@ import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 
-/// Adaptador HTTP falso para probar interceptores sin red.
+/// A fake HTTP adapter for testing interceptors without a network.
 ///
-/// Se prefiere sobre un doble de `Dio` completo porque deja intacta la cadena
-/// real de interceptores: lo que se prueba es el comportamiento de dio con
-/// nuestro código dentro, no una imitación de dio.
+/// It is preferred over a double of the whole `Dio` because it leaves the real
+/// interceptor chain intact: what is tested is dio's behaviour with our code
+/// inside it, not an imitation of dio.
 class FakeHttpAdapter implements HttpClientAdapter {
   FakeHttpAdapter(this.handler);
 
-  /// Recibe la petición y decide con qué responder.
+  /// Receives the request and decides what to answer with.
   final FakeResponse Function(RequestOptions options) handler;
 
-  /// Todas las peticiones que pasaron, en orden.
+  /// Every request that went through, in order.
   final List<RequestOptions> requests = [];
 
   @override
@@ -47,7 +47,6 @@ class FakeResponse {
   final int statusCode;
   final Object? body;
 
-  /// Permite solapar peticiones concurrentes en las pruebas de renovación
-  /// única.
+  /// Allows concurrent requests to overlap in the single-renewal tests.
   final Duration? delay;
 }

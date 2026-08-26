@@ -21,7 +21,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    // Sin sesión guardada, la primera pantalla es el inicio de sesión.
+    // With no stored session, the first screen is the sign-in one.
     expect(find.text('Araguaney'), findsOneWidget);
     expect(
       find.text('Inicia sesión para operar tu centro de acopio.'),

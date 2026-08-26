@@ -48,7 +48,8 @@ void main() {
     });
 
     test('build metadata does not affect precedence', () {
-      // pubspec.yaml produce "1.2.0+37"; el "+37" no participa en la comparación.
+      // pubspec.yaml produces "1.2.0+37"; the "+37" takes no part in the
+      // comparison.
       expect(
         ClientVersionGate.evaluate(
           currentVersion: '1.2.0+37',
@@ -60,7 +61,7 @@ void main() {
     });
 
     test('fails open when the server publishes nothing usable', () {
-      // Un fallo de la comprobación no puede dejar sin trabajar a un centro.
+      // A failure of the check cannot stop a centre working.
       expect(
         ClientVersionGate.evaluate(
           currentVersion: '1.0.0',

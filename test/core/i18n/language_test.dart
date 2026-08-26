@@ -5,12 +5,11 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-/// El único sitio donde el idioma es el asunto.
+/// The only place where the language is the subject.
 ///
-/// Las demás pruebas afirman texto en español porque `flutter_test_config.dart`
-/// fija el idioma del teléfono simulado; aquí se comprueba lo contrario, que es
-/// lo que la fase 31 añadió: que el teléfono manda, y que se le puede llevar la
-/// contraria.
+/// The other tests assert Spanish text because `flutter_test_config.dart` pins
+/// the simulated phone's language; here the opposite is checked, which is what
+/// phase 31 added: that the phone decides, and that it can be overruled.
 void main() {
   Future<void> pumpApp(
     WidgetTester tester, {
@@ -69,16 +68,16 @@ void main() {
   testWidgets('a language the application does not have falls back', (
     tester,
   ) async {
-    // Nada se ofrece a medio traducir: un teléfono en francés recibe el primer
-    // idioma declarado, entero, en vez de una mezcla.
+    // Nothing is offered half translated: a phone in French gets the first
+    // declared language, whole, instead of a mixture.
     await pumpApp(tester, phone: const Locale('fr'));
 
     expect(find.byType(Text), findsOneWidget);
   });
 
   testWidgets('what somebody chose beats what the phone says', (tester) async {
-    // El caso que existe de verdad: un dispositivo de centro que configuró una
-    // persona y usa otra.
+    // The case that really exists: a centre device set up by one person and
+    // used by another.
     await pumpApp(
       tester,
       phone: const Locale('en'),
@@ -104,15 +103,15 @@ void main() {
 
   group('the two files say the same things', () {
     test('every key of the template exists in English', () async {
-      // Un idioma a medias es peor que uno que no está: la pantalla saldría
-      // mitad en cada uno.
+      // A half-done language is worse than one that is not there: the screen
+      // would come out half in each.
       final es = await AppLocalizations.delegate.load(const Locale('es'));
       final en = await AppLocalizations.delegate.load(const Locale('en'));
 
       expect(en.runtimeType.toString(), 'AppLocalizationsEn');
       expect(es.appTitle, en.appTitle);
-      // `gen-l10n` falla la compilación si falta una clave, así que llegar
-      // hasta aquí ya lo demuestra; esto lo deja escrito.
+      // `gen-l10n` fails the build if a key is missing, so getting this far
+      // already proves it; this writes it down.
       expect(en.navHome, 'Home');
       expect(es.navHome, 'Inicio');
     });

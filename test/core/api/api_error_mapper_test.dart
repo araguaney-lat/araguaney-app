@@ -50,8 +50,8 @@ void main() {
     test(
       'falls back to the status code when the body carries no envelope',
       () async {
-        // Una página de error de un proxy no trae el sobre del backend; el mapeo
-        // no puede depender de que el cuerpo tenga la forma esperada.
+        // A proxy's error page does not carry the backend's envelope; the
+        // mapping cannot depend on the body having the expected shape.
         final failure = ApiErrorMapper.fromDioException(
           _badResponse(503, '<html>Service Unavailable</html>'),
         );
@@ -115,8 +115,8 @@ void main() {
 
   group('retry policy', () {
     test('business rejections are not retryable', () async {
-      // La cola de captura sin conexión depende de esta distinción: reintentar
-      // un rechazo de negocio daría la misma respuesta para siempre.
+      // The offline capture queue depends on this distinction: retrying a
+      // business refusal would give the same answer forever.
       final failure = ApiErrorMapper.fromDioException(
         _badResponse(422, _envelope('EXPIRY_TOO_SOON', 'Vida útil corta')),
       );

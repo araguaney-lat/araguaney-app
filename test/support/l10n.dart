@@ -2,10 +2,10 @@ import 'dart:ui';
 
 import 'package:araguaney_app/core/i18n/generated/app_localizations.dart';
 
-/// Los textos, para pruebas que no montan un widget.
+/// The texts, for tests that do not mount a widget.
 ///
-/// Una tabla de etiquetas ya no es una función pura sobre una cadena: recibe el
-/// idioma. Probarla exige cargarlo, y cargarlo es una línea que no conviene
-/// repetir en cada archivo.
+/// A table of labels is no longer a pure function over a string: it takes the
+/// language. Testing it means loading it, and loading it is a line not worth
+/// repeating in every file.
 Future<AppLocalizations> spanish() =>
     AppLocalizations.delegate.load(const Locale('es'));

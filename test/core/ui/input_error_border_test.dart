@@ -4,25 +4,26 @@ import 'package:araguaney_app/core/ui/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-/// El estado de error de un campo, que durante seis fases no lo declaró nadie.
+/// A field's error state, which for six phases nobody declared.
 ///
-/// `InputDecorator` elige `enabledBorder` cuando el campo está en reposo y
-/// `focusedBorder` cuando tiene el foco, y los dos salían del tema. Pero con un
-/// error de validación busca `errorBorder` —y `focusedErrorBorder` si además
-/// tiene el foco—, que el tema no declaraba; entonces cae al respaldo, que es
-/// el `border` que cada pantalla le haya pasado a mano. Cinco pantallas de
-/// sesión le pasaban el cuadrado de Material.
+/// `InputDecorator` picks `enabledBorder` when the field is at rest and
+/// `focusedBorder` when it has focus, and both came from the theme. But with a
+/// validation error it looks for `errorBorder` — and `focusedErrorBorder` if it
+/// also has focus — which the theme did not declare; then it falls back, and
+/// the fallback is whatever `border` each screen passed by hand. Five session
+/// screens were passing Material's square.
 ///
-/// El resultado no se veía en ninguna captura porque solo aparece cuando
-/// alguien escribe mal la contraseña, que es precisamente lo rutinario.
+/// The result showed in no screenshot because it only appears when somebody
+/// types their password wrong, which is precisely the routine case.
 void main() {
-  /// Devuelve el borde que **se está pintando**, no el que se declaró.
+  /// Returns the border that **is being painted**, not the one that was
+  /// declared.
   ///
-  /// La diferencia es justo lo que este archivo prueba: `decoration.border` es
-  /// solo el respaldo, y leerlo daría por bueno un tema que nunca se dibuja.
-  /// El que se pinta vive en el pintor de `_BorderContainer`, que es privado;
-  /// se llega por `dynamic` igual que en las pruebas del propio Flutter,
-  /// porque los nombres de sus campos no lo son.
+  /// That difference is exactly what this file tests: `decoration.border` is
+  /// only the fallback, and reading it would pass a theme that is never drawn.
+  /// The one that gets painted lives in `_BorderContainer`'s painter, which is
+  /// private; it is reached through `dynamic` as in Flutter's own tests,
+  /// because its field names are not.
   InputBorder paintedBorder(WidgetTester tester) {
     final painter = tester
         .widget<CustomPaint>(
@@ -98,8 +99,8 @@ void main() {
       testWidgets('a border a screen passes cannot undo the error state', (
         tester,
       ) async {
-        // Esto es lo que fallaba: cinco pantallas pasaban el cuadrado de
-        // Material y, al no haber `errorBorder`, el respaldo era ese.
+        // This is what was failing: five screens passed Material's square and,
+        // with no `errorBorder`, that was the fallback.
         await pumpField(
           tester,
           theme: theme,

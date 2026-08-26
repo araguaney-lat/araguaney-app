@@ -8,23 +8,23 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   group('the palette is written, not derived', () {
     test('the design values survive into the theme', () {
-      // `ColorScheme.fromSeed` inventaba cada tono a partir de una semilla, y
-      // ninguno de estos aparecía en la aplicación.
+      // `ColorScheme.fromSeed` invented every tone from a seed, and none of
+      // these appeared in the application.
       expect(AppTheme.light.colorScheme.primary, AppColors.blue);
       expect(AppTheme.light.scaffoldBackgroundColor, AppColors.cream);
       expect(AppTheme.dark.scaffoldBackgroundColor, AppColors.darkApp);
     });
 
     test('blue navigates and gold confirms, in both themes', () {
-      // La regla del diseño, y la que se rompe sin darse cuenta: un botón de
-      // confirmar en azul enseña lo contrario en todas las demás pantallas.
+      // The design's rule, and the one that gets broken without noticing: a
+      // confirm button in blue teaches the opposite on every other screen.
       for (final theme in [AppTheme.light, AppTheme.dark]) {
         final palette = theme.extension<AppPalette>()!;
-        // El tema ya no fija el fondo del botón: hacerlo alcanzaba también a
-        // la variante tonal. Lo que sostiene la regla es que el azul sea el
-        // primario del esquema, que es de donde Material lo toma. Que un
-        // botón lo pinte de verdad lo comprueba «a tonal button is not a
-        // primary one», que lee el color dibujado y no el declarado.
+        // The theme no longer pins the button's background: doing so reached
+        // the tonal variant too. What holds the rule up is blue being the
+        // scheme's primary, which is where Material takes it from. That a
+        // button really paints it is checked by «a tonal button is not a
+        // primary one», which reads the drawn colour and not the declared one.
         expect(theme.colorScheme.primary, isNot(theme.colorScheme.secondary));
         expect(
           theme.floatingActionButtonTheme.backgroundColor,
@@ -48,8 +48,8 @@ void main() {
     });
 
     test('weight travels as an axis, because both faces are variable', () {
-      // Un solo archivo por familia: pedir negrita no puede significar cargar
-      // otro tipo de letra que no está empaquetado.
+      // A single file per family: asking for bold cannot mean loading another
+      // typeface that is not packaged.
       final title = AppTheme.light.textTheme.titleLarge!;
 
       expect(title.fontVariations, isNotEmpty);
@@ -68,8 +68,8 @@ void main() {
     });
 
     test('the bar palette comes from the theme in both', () {
-      // Vivía incrustada en la barra porque no había dónde ponerla; ahora
-      // cambia con el tema como todo lo demás.
+      // It used to be embedded in the bar because there was nowhere to put it;
+      // now it changes with the theme like everything else.
       expect(AppTheme.light.extension<AppPalette>()!.bar, AppColors.goldSoft);
       expect(
         AppTheme.dark.extension<AppPalette>()!.bar,
@@ -92,9 +92,9 @@ void main() {
 
   group('what is pressed has corners, not a pill', () {
     test('the three button kinds share one radius, in both themes', () {
-      // Una pastilla no se alinea con el campo ni con la tarjeta que tiene al
-      // lado. El radio es el mismo que el de los campos a proposito: un solo
-      // valor para todo lo interactivo.
+      // A pill does not line up with the field or with the card next to it. The
+      // radius is the same as the fields' on purpose: one value for everything
+      // interactive.
       const expected = BorderRadius.all(Radius.circular(12));
 
       for (final theme in [AppTheme.light, AppTheme.dark]) {
@@ -112,8 +112,8 @@ void main() {
     });
 
     test('cards stay a little more open than what is pressed', () {
-      // Es lo que separa una superficie de una accion: si compartieran radio,
-      // una tarjeta parecería pulsable.
+      // It is what separates a surface from an action: if they shared a radius,
+      // a card would look tappable.
       final card = AppTheme.light.cardTheme.shape! as RoundedRectangleBorder;
       final button =
           AppTheme.light.filledButtonTheme.style!.shape!.resolve({})!
@@ -128,9 +128,9 @@ void main() {
 
   group('a tonal button is not a primary one', () {
     testWidgets('the two variants differ, in both themes', (tester) async {
-      // Fijar `backgroundColor` en `FilledButtonThemeData` alcanzaba a las dos
-      // variantes, asi que un boton que pedia tonal se pintaba identico a uno
-      // primario y la jerarquia entre ambos desaparecia.
+      // Pinning `backgroundColor` in `FilledButtonThemeData` reached both
+      // variants, so a button that asked to be tonal was painted identically to
+      // a primary one and the hierarchy between them disappeared.
       for (final (name, theme) in [
         ('claro', AppTheme.light),
         ('oscuro', AppTheme.dark),

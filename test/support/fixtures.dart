@@ -2,7 +2,8 @@ import 'package:araguaney_app/core/api/generated/models/campaign_out.dart';
 import 'package:araguaney_app/core/api/generated/models/center_out.dart';
 import 'package:araguaney_app/core/db/app_database.dart';
 
-/// Momento fijo para que las pruebas no dependan del reloj de quien las corre.
+/// A fixed moment, so the tests do not depend on the clock of whoever runs
+/// them.
 final testNow = DateTime.utc(2026, 8, 10, 12);
 
 ProductTypeRow productTypeRow({
@@ -30,7 +31,7 @@ BoxRow boxRow({
   int quantity = 10,
   String unit = 'unidad',
 
-  /// Los de `BOX_STATUSES` en el backend: DRAFT, SEALED, SHIPPED, REJECTED.
+  /// Those of `BOX_STATUSES` in the backend: DRAFT, SEALED, SHIPPED, REJECTED.
   String status = 'DRAFT',
   DateTime? createdAt,
   DateTime? sealedAt,
@@ -85,8 +86,8 @@ Map<String, Object?> intakeJson({
   'boxes': boxes ?? [intakeBoxJson()],
 };
 
-/// La caja tal como la devuelve una captura: sin `center_id` ni `pallet_id`,
-/// que a esa altura todavía no existen.
+/// The box as a capture returns it: with no `center_id` and no `pallet_id`,
+/// which do not exist yet at that point.
 Map<String, Object?> intakeBoxJson({
   String id = 'box-1',
   String code = 'BX-0001',
@@ -189,7 +190,7 @@ Map<String, Object?> riskReviewJson({
   String kind = 'ATYPICAL_VOLUME',
   String? reason,
 
-  /// El backend usa `PENDING`; el resto de estados llegan de resolver.
+  /// The backend uses `PENDING`; the other states arrive from resolving.
   String status = 'PENDING',
 }) => {
   'id': id,
@@ -475,7 +476,7 @@ Map<String, Object?> donationPhotoJson({String id = 'photo-1'}) => {
   'created_at': testNow.toIso8601String(),
 };
 
-/// Un centro del contrato, para pantallas que eligen uno.
+/// A centre from the contract, for screens that choose one.
 CenterOut centerOut({
   required String id,
   required String name,

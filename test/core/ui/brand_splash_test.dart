@@ -7,9 +7,9 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   testWidgets('the first frame carries no text, so it cannot differ from the '
       'system splash', (tester) async {
-    // Desde Android 12 hay dos dueños de esa pantalla y la del sistema no
-    // admite texto. Cualquier cosa añadida aquí se ve como un cambio a mitad
-    // del arranque, que es exactamente lo que se quiso evitar.
+    // Since Android 12 that screen has two owners and the system's takes no
+    // text. Anything added here reads as a change halfway through the launch,
+    // which is exactly what this set out to avoid.
     await tester.pumpWidget(
       const MaterialApp(
         localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -25,8 +25,9 @@ void main() {
   testWidgets('its gold is written down, not taken from the theme', (
     tester,
   ) async {
-    // El tema tiene versión clara y oscura; el splash del sistema es el mismo
-    // en las dos. Seguir al tema haría que en oscuro cambiara de color solo.
+    // The theme has a light and a dark version; the system splash is the same
+    // in both. Following the theme would make it change colour by itself in
+    // dark.
     for (final mode in [ThemeMode.light, ThemeMode.dark]) {
       await tester.pumpWidget(
         MaterialApp(
@@ -39,7 +40,7 @@ void main() {
           home: const BrandSplash(),
         ),
       );
-      // Acotado al widget: `MaterialApp` monta los suyos, transparentes.
+      // Scoped to the widget: `MaterialApp` mounts its own, transparent.
       final box = tester.widget<ColoredBox>(
         find.descendant(
           of: find.byType(BrandSplash),

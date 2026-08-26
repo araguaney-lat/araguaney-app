@@ -23,12 +23,12 @@ import '../../support/l10n.dart';
     overrides: [
       authRepositoryProvider.overrideWithValue(repository),
       tokenStorageProvider.overrideWithValue(storage),
-      // El registro del destino de avisos sale por aquí. Sin sobrescribirlo,
-      // abrir sesión intentaría hablar con el servidor de dispositivos.
+      // Registering the notice destination goes out through here. Without
+      // overriding it, signing in would try to talk to the devices server.
       onSessionStartedProvider.overrideWithValue(onStarted ?? () async {}),
       onSessionEndingProvider.overrideWithValue(onEnding ?? () async {}),
-      // Sin esto, iniciar sesión abriría la base de verdad y con ella un canal
-      // de plataforma que en una prueba unitaria no existe.
+      // Without this, signing in would open the real database and with it a
+      // platform channel that does not exist in a unit test.
       readModelResetProvider.overrideWithValue(
         (readModelReset ?? FakeReadModelReset()).call,
       ),
@@ -73,9 +73,10 @@ void main() {
     test(
       'a restored session keeps the role the token does not carry',
       () async {
-        // `POST /v1/auth/refresh` devuelve solo los tokens. Sin preguntar quién
-        // es, quien coordina un centro reaparecía como voluntariado en cada
-        // reinicio: sin sus acciones y sin su rol, hasta volver a entrar.
+        // `POST /v1/auth/refresh` returns the tokens only. Without asking who
+        // it is, whoever coordinates a centre reappeared as a volunteer at
+        // every restart: without their actions and without their role, until
+        // signing in again.
         final repository = FakeAuthRepository(
           refreshToken: buildToken(centerRole: null),
         )..meCenterRole = 'coordinator';
@@ -92,8 +93,8 @@ void main() {
     );
 
     test('without an answer the session opens with no role at all', () async {
-      // Ofrecer de menos es la dirección segura: el servidor sigue decidiendo
-      // en cada llamada, y una acción que no se ofrece no rompe nada.
+      // Offering too little is the safe direction: the server goes on deciding
+      // on every call, and an action that is not offered breaks nothing.
       final repository = FakeAuthRepository(
         refreshToken: buildToken(centerRole: null),
       )..meError = unauthorized;
@@ -124,8 +125,8 @@ void main() {
     });
 
     test('stores the rotated refresh token, replacing the old one', () async {
-      // El backend rota el refresh en cada uso; guardar el anterior dejaría en
-      // el dispositivo una credencial ya revocada.
+      // The backend rotates the refresh on every use; storing the previous one
+      // would leave an already revoked credential on the device.
       final storage = FakeTokenStorage(stored: 'refresh-old');
       final built = _build(
         repository: FakeAuthRepository(
@@ -143,8 +144,8 @@ void main() {
     test(
       'a network failure keeps the credential for when signal returns',
       () async {
-        // Sin señal no se puede volver a iniciar sesión: borrar la credencial
-        // dejaría el dispositivo inservible justo donde más falta hace.
+        // With no signal there is no signing in again: deleting the credential
+        // would leave the device useless exactly where it is needed most.
         final storage = FakeTokenStorage(stored: 'refresh-live');
         final built = _build(
           repository: FakeAuthRepository(
@@ -226,8 +227,8 @@ void main() {
     test(
       'a second factor pauses the login without persisting anything',
       () async {
-        // El token parcial caduca en minutos y no es una sesión: escribirlo en el
-        // almacén seguro sería guardar una credencial que no abre nada.
+        // The partial token expires in minutes and is not a session: writing it
+        // to secure storage would be keeping a credential that opens nothing.
         final storage = FakeTokenStorage();
         final built = _build(
           repository: FakeAuthRepository(
@@ -264,9 +265,9 @@ void main() {
     });
 
     test('restoring a session does not register again', () async {
-      // Registrar es idempotente, así que repetirlo en cada arranque sería una
-      // petición de más: quien vuelve a abrir la aplicación sigue siendo el
-      // destino que registró al entrar.
+      // Registering is idempotent, so repeating it at every launch would be one
+      // request too many: whoever reopens the application is still the
+      // destination they registered on the way in.
       var registered = 0;
       final built = _build(
         repository: FakeAuthRepository(refreshToken: buildToken()),
@@ -280,9 +281,9 @@ void main() {
     });
 
     test('closing a session drops it **before** the session is gone', () async {
-      // El endpoint de baja exige justo la sesión que se está entregando: si el
-      // borrado ocurriera antes, la llamada saldría sin credenciales y el
-      // teléfono seguiría recibiendo los avisos de quien acaba de salir.
+      // The unregister endpoint requires the very session being handed back: if
+      // the deletion happened first, the call would go out with no credentials
+      // and the phone would go on receiving the notices of whoever just left.
       final storage = FakeTokenStorage(stored: 'refresh-1');
       late ProviderContainer container;
       SessionState? stateWhenDropped;
@@ -309,7 +310,7 @@ void main() {
     test(
       'an expired session cannot drop it, and does not pretend to',
       () async {
-        // La llamada exige una sesión válida y eso es justo lo que se perdió.
+        // The call requires a valid session and that is exactly what was lost.
         var dropped = 0;
         final built = _build(
           repository: FakeAuthRepository(),
@@ -327,9 +328,9 @@ void main() {
 
   group('rate limiting at the door', () {
     test('too many attempts is never reported as a bad password', () async {
-      // El límite del inicio de sesión no se cuenta por persona: en el arranque
-      // de un turno lo puede agotar el centro entero, y quien reciba el rechazo
-      // tiene la contraseña correcta.
+      // The sign-in limit is not counted per person: at the start of a shift the
+      // whole centre can exhaust it, and whoever gets the refusal has the right
+      // password.
       final repository = FakeAuthRepository(
         loginError: const RateLimitFailure(
           code: 'RATE_LIMIT_EXCEEDED',
@@ -356,11 +357,11 @@ void main() {
     test(
       'a real credentials rejection says the credentials do not match',
       () async {
-        // El servidor contesta 401 con `INVALID_CREDENTIALS` y un mensaje en
-        // inglés —«Invalid credentials»—, no un rechazo de regla de negocio en
-        // español. Este fixture decía lo segundo, así que fijaba una respuesta
-        // que el servidor no manda; con la real, la pantalla llegó a decir «Tu
-        // sesión expiró» a quien todavía no tenía sesión.
+        // The server answers 401 with `INVALID_CREDENTIALS` and a message in
+        // English — «Invalid credentials» — not a business-rule refusal in
+        // Spanish. This fixture said the second, so it pinned an answer the
+        // server does not send; with the real one, the screen got as far as
+        // telling somebody who had no session yet that theirs had expired.
         final repository = FakeAuthRepository(
           loginError: const UnauthorizedFailure(
             code: 'INVALID_CREDENTIALS',
@@ -391,9 +392,9 @@ void main() {
     test(
       'a locked account is not told that it is not their password',
       () async {
-        // El limite global no es culpa de quien lo recibe; el bloqueo por
-        // intentos fallidos si tiene que ver con lo que se escribio. Son dos
-        // rechazos con el mismo tipo y distinto codigo.
+        // The global limit is not the fault of whoever receives it; a block for
+        // failed attempts does have to do with what was typed. They are two
+        // refusals with the same type and a different code.
         const locked = RateLimitFailure(
           code: 'ACCOUNT_LOCKED',
           message: 'Too many failed attempts.',
@@ -439,9 +440,9 @@ void main() {
 
       final state = built.container.read(sessionControllerProvider);
       expect(state, isA<SessionAwaitingTotp>());
-      // El estado lleva el fallo y la pantalla lo redacta; aquí se comprueba
-      // que llega entero el mensaje del servidor, que es lo que describe algo
-      // que quien teclea puede corregir.
+      // The state carries the failure and the screen words it; what is checked
+      // here is that the server's message arrives whole, because it is the one
+      // that describes something whoever types can correct.
       expect(
         loginFailureMessage(
           await spanish(),
@@ -453,8 +454,8 @@ void main() {
     });
 
     test('an expired partial token returns to the login screen', () async {
-      // Seguir tecleando códigos contra una puerta ya cerrada no lleva a
-      // ninguna parte.
+      // Going on typing codes against a door that is already shut leads
+      // nowhere.
       final repository = FakeAuthRepository(
         loginResult: const LoginNeedsTotp('partial-abc'),
         totpError: unauthorized,

@@ -35,15 +35,15 @@ void main() {
       expect(request.path, '/v1/devices');
       final body = request.data as Map<String, dynamic>;
       expect(body['token'], 'fcm-token-1');
-      // Retrofit deja los objetos anidados sin serializar hasta que dio los
-      // codifica; leerlo tipado es más fiel que asumir la cadena.
+      // Retrofit leaves the nested objects unserialised until dio encodes
+      // them; reading it typed is truer than assuming the string.
       expect(body['platform'], DeviceTokenRegisterPlatform.android);
       expect(body['app_version'], '1.2.3');
     });
 
     test('without a token there is nothing to register, and that is fine', () {
-      // Es el sabor `foss`, un permiso denegado o un teléfono sin servicios de
-      // Google. Ninguno es un error.
+      // It is the `foss` flavour, a denied permission or a phone without Google
+      // services. None of them is an error.
       push.token = null;
       final adapter = okAdapter();
 
@@ -52,7 +52,8 @@ void main() {
     });
 
     test('a failure never reaches whoever is logging in', () async {
-      // Sin señal al arrancar un turno esto falla, y la persona entra igual.
+      // With no signal at the start of a shift this fails, and the person signs
+      // in anyway.
       final done = await registrarOn(OfflineHttpAdapter()).register();
 
       expect(done, isFalse);
@@ -72,8 +73,9 @@ void main() {
     });
 
     test('a token that was not ours answers 200 and that is a success', () {
-      // El servidor responde igual exista o no, para no revelar si un token
-      // ajeno está registrado. Aquí eso no es un caso a distinguir.
+      // The server answers the same whether or not it exists, so as not to
+      // reveal whether somebody else's token is registered. Here that is not a
+      // case to tell apart.
       expect(registrarOn(okAdapter()).unregister(), completion(isTrue));
     });
 
@@ -99,7 +101,7 @@ void main() {
     });
 
     test('a rotated token is registered without a new session', () async {
-      // Cada rotación deja muerta la dirección anterior.
+      // Every rotation leaves the previous address dead.
       final adapter = okAdapter();
       await binderOn(adapter).onSessionStarted();
 
@@ -120,8 +122,8 @@ void main() {
       push.rotate('fcm-token-3');
       await Future<void>.delayed(const Duration(milliseconds: 20));
 
-      // Registro de apertura y baja de cierre; la rotación posterior no
-      // pertenece a nadie.
+      // A registration on opening and an unregistration on closing; the
+      // rotation afterwards belongs to nobody.
       expect(adapter.requests.map((r) => r.path), [
         '/v1/devices',
         '/v1/devices/unregister',
@@ -131,7 +133,7 @@ void main() {
     test(
       'opening twice does not leave two listeners on the same token',
       () async {
-        // Un cambio de contraseña renueva la sesión sin cerrarla.
+        // A password change renews the session without closing it.
         final adapter = okAdapter();
         final binder = binderOn(adapter);
         await binder.onSessionStarted();
@@ -140,7 +142,7 @@ void main() {
         push.rotate('fcm-token-2');
         await Future<void>.delayed(const Duration(milliseconds: 20));
 
-        // Dos aperturas y una sola rotación registrada.
+        // Two openings and a single registered rotation.
         expect(adapter.requests, hasLength(3));
       },
     );

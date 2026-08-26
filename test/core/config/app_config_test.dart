@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   group('AppConfig', () {
     test('defaults to dev flavor when APP_FLAVOR is not provided', () {
-      // Sin --dart-define en el entorno de test, aplica el default.
+      // With no --dart-define in the test environment, the default applies.
       expect(AppConfig.flavor, AppFlavor.dev);
     });
 

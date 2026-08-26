@@ -25,8 +25,9 @@ void main() {
       overrides: [
         pushServiceProvider.overrideWithValue(push),
         restClientProvider.overrideWithValue(RestClient(fakeDio(adapter))),
-        // La ficha de envío pregunta el rol para decidir si ofrece levantar
-        // una incidencia; sin sesión, preguntarlo levanta el árbol entero.
+        // The shipment record asks for the role to decide whether to offer
+        // raising an incident; with no session, asking brings up the whole
+        // tree.
         isCenterCoordinatorProvider.overrideWithValue(false),
         isNationalAdminProvider.overrideWithValue(false),
       ],
@@ -66,7 +67,8 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Revisiones'), findsOneWidget);
-    // El motivo es justo lo que el aviso no dice, y por eso se viene aquí.
+    // The reason is exactly what the notice does not say, and that is why
+    // people come here.
     expect(
       find.textContaining('Caducidad por debajo del mínimo'),
       findsOneWidget,
@@ -75,7 +77,8 @@ void main() {
   });
 
   testWidgets('a delivered shipment opens its record', (tester) async {
-    // La ficha pide tres cosas: el envío, su recepción y sus incidencias.
+    // The record asks for three things: the shipment, its reception and its
+    // incidents.
     final adapter = FakeHttpAdapter((options) {
       if (options.path.endsWith('/reception')) {
         return FakeResponse(200, receptionJson());
@@ -99,8 +102,8 @@ void main() {
   });
 
   testWidgets('an unknown notice navigates nowhere', (tester) async {
-    // El texto lo compuso el servidor y ya se mostró; abrir una pantalla
-    // cualquiera sería peor que no abrir ninguna.
+    // The server composed the text and it has already been shown; opening some
+    // arbitrary screen would be worse than opening none.
     final adapter = FakeHttpAdapter((_) => FakeResponse(200, const []));
     await pumpRouter(tester, adapter);
 
