@@ -1,28 +1,29 @@
 import 'package:flutter/material.dart';
 
-/// Cuánto hay que dejar libre bajo el contenido de una hoja inferior.
+/// How much room has to be left free below a bottom sheet's content.
 ///
-/// Son **dos** obstáculos y hay que sumarlos, no elegir uno:
+/// There are **two** obstacles and they have to be added up, not chosen
+/// between:
 ///
-/// - El teclado, cuando está abierto (`viewInsets`).
-/// - La barra de navegación del sistema (`padding`), que en un teléfono con
-///   tres botones ocupa una franja alta y con navegación por gestos apenas
-///   nada. Un emulador configurado con gestos no enseña este problema: el botón
-///   se ve perfectamente ahí y queda medio tapado en el teléfono de al lado.
+/// - The keyboard, when it is open (`viewInsets`).
+/// - The system navigation bar (`padding`), which on a three-button phone takes
+///   a tall strip and with gesture navigation takes almost nothing. An emulator
+///   set up with gestures does not show this problem: the button looks perfect
+///   there and ends up half covered on the phone next to it.
 ///
-/// Sumar `padding` y no `viewPadding` es lo que evita contarlo dos veces:
-/// cuando el teclado está abierto, `padding.bottom` vale cero porque el teclado
-/// ya cubre la barra, y lo que queda es la altura del teclado.
+/// Adding `padding` and not `viewPadding` is what avoids counting it twice:
+/// when the keyboard is open, `padding.bottom` is zero because the keyboard
+/// already covers the bar, and what is left is the keyboard's height.
 ///
-/// Existe como función y no como una línea copiada en cada hoja porque estaba
-/// copiada en seis, todas sumando solo el teclado.
+/// It exists as a function and not as a line copied into every sheet because it
+/// was copied into six, all of them adding the keyboard alone.
 ///
-/// `showModalBottomSheet(useSafeArea: true)` **no** resuelve esto: protege el
-/// borde superior y deja el inferior a cargo de la hoja.
+/// `showModalBottomSheet(useSafeArea: true)` does **not** solve this: it
+/// protects the top edge and leaves the bottom one to the sheet.
 ///
-/// En una pantalla completa no hace falta: ahí `SafeArea` sí aparta la barra
-/// del sistema, y lo único que hay que añadirle es el teclado. Esta función es
-/// para las hojas, que es donde `SafeArea` no llega.
+/// On a full screen it is not needed: there `SafeArea` does move the system bar
+/// out of the way, and the only thing to add is the keyboard. This function is
+/// for the sheets, which is where `SafeArea` does not reach.
 double sheetBottomInset(BuildContext context, {double base = 16}) =>
     base +
     MediaQuery.paddingOf(context).bottom +

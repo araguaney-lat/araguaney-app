@@ -6,25 +6,26 @@ import '../../intake/data/intake_providers.dart';
 import '../../pallets/data/pallets_providers.dart';
 import '../../risk_reviews/data/risk_reviews_providers.dart';
 
-/// Revisiones que esperan una decisión.
+/// Reviews waiting for a decision.
 ///
-/// El servidor devuelve las del centro; aquí solo se cuentan las que siguen
-/// pendientes, porque una resuelta ya no le pide nada a nadie.
+/// The server returns the centre's; only the ones still pending are counted
+/// here, because a resolved one asks nothing of anybody.
 final pendingReviewCountProvider = Provider<int>((ref) {
   final reviews = ref.watch(riskReviewsProvider).valueOrNull ?? const [];
   return reviews.where((review) => review.status == 'PENDING').length;
 });
 
-/// Tarimas abiertas: las que todavía admiten cajas.
+/// Open pallets: the ones that still take boxes.
 final openPalletCountProvider = Provider<int>((ref) {
   final pallets = ref.watch(palletsProvider).valueOrNull ?? const [];
   return pallets.where((pallet) => pallet.closedAt == null).length;
 });
 
-/// Capturas registradas hoy en el centro.
+/// Captures registered at the centre today.
 ///
-/// Se filtra por fecha local y no por la del servidor: quien pregunta «cuántas
-/// van hoy» piensa en su jornada, que empieza cuando amanece donde está.
+/// It filters by the local date and not the server's: whoever asks «how many so
+/// far today» is thinking of their shift, which starts when the sun comes up
+/// where they are.
 final todaysIntakeCountProvider = Provider<int>((ref) {
   final intakes = ref.watch(intakesProvider).valueOrNull ?? const <IntakeOut>[];
   final now = DateTime.now();
@@ -34,13 +35,14 @@ final todaysIntakeCountProvider = Provider<int>((ref) {
   }).length;
 });
 
-/// Cuánto se puede trabajar sin señal ahora mismo.
+/// How much work can be done without signal right now.
 ///
-/// Las dos cifras que deciden si una jornada sin conexión es posible: el
-/// catálogo que se puede consultar y los códigos de caja reservados que se
-/// pueden gastar. Cero códigos con cero señal significa no poder sellar nada.
+/// The two figures that decide whether a shift without a connection is
+/// possible: the catalogue that can be consulted and the reserved box codes
+/// that can be spent. Zero codes with zero signal means being unable to seal
+/// anything.
 final offlineReadinessProvider = Provider<({int products, int codes})>((ref) {
-  // Sin categoría: el catálogo entero, que es lo que se descargó.
+  // With no category: the whole catalogue, which is what was downloaded.
   final products =
       ref.watch(productTypesProvider(null)).valueOrNull?.length ?? 0;
   final codes = ref.watch(availableBoxCodesProvider).valueOrNull ?? 0;

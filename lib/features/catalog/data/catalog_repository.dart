@@ -10,11 +10,12 @@ import '../../../core/db/daos/sync_markers_dao.dart';
 import '../../../core/sync/sync_outcome.dart';
 import 'product_type_mapper.dart';
 
-/// Cómo terminó una operación sobre el catálogo que exigió el servidor.
+/// How an operation on the catalogue that required the server ended.
 ///
-/// Leer el catálogo cacheado no pasa por aquí: eso es un `Stream` de Drift que
-/// no falla. Esto es para lo que solo el servidor sabe —buscar más allá de lo
-/// descargado— y para lo que solo el servidor puede autorizar.
+/// Reading the cached catalogue does not come through here: that is a Drift
+/// `Stream` that does not fail. This is for what only the server knows —
+/// searching beyond what was downloaded — and for what only the server can
+/// authorise.
 sealed class CatalogOutcome<T> {
   const CatalogOutcome();
 }
@@ -30,17 +31,17 @@ final class CatalogRefused<T> extends CatalogOutcome<T> {
 
   final ApiFailure failure;
 
-  /// Si el rechazo es «no te toca». Crear, editar y promover exigen
-  /// administración nacional, así que una coordinación recibe un 403; la
-  /// interfaz no ofrece esos botones, y esto es la red por si acaso.
+  /// Whether the refusal is «not your place». Creating, editing and promoting
+  /// require national administration, so a coordination gets a 403; the
+  /// interface does not offer those buttons, and this is the net just in case.
   bool get isForbidden => failure is ForbiddenFailure;
 }
 
-/// Catálogo de tipos de producto, primero desde el cache.
+/// The catalogue of product types, from the cache first.
 ///
-/// Leer siempre sale de Drift; la red solo escribe. Así una pantalla se pinta
-/// igual de rápido con señal y sin ella, y el sitio donde el catálogo cambia es
-/// uno solo.
+/// Reading always comes out of Drift; the network only writes. That way a
+/// screen paints just as fast with signal and without it, and the place where
+/// the catalogue changes is a single one.
 class CatalogRepository {
   CatalogRepository({
     required ProductTypesApi api,
@@ -64,12 +65,12 @@ class CatalogRepository {
   Stream<SyncMarkerRow?> watchSyncMarker() =>
       _db.syncMarkersDao.watch(SyncResource.productTypes);
 
-  /// Trae el catálogo visible y **sustituye** el local por completo.
+  /// Fetches the visible catalogue and **replaces** the local one entirely.
   ///
-  /// La sustitución es la invariante que importa: el catálogo local tiene que
-  /// seguir siendo el que el servidor acepta. Si un tipo de producto dejó de
-  /// ser visible para esta campaña, ofrecerlo sin señal produciría una captura
-  /// que el servidor va a rechazar cuando por fin se envíe.
+  /// The replacement is the invariant that matters: the local catalogue has to
+  /// go on being the one the server accepts. If a product type stopped being
+  /// visible for this campaign, offering it without signal would produce a
+  /// capture the server is going to refuse when it finally gets sent.
   Future<SyncOutcome> refresh() async {
     try {
       final items = await _productTypes.listProductTypesV1ProductTypesGet();
@@ -80,8 +81,8 @@ class CatalogRepository {
       return SyncSucceeded(at: at, itemCount: items.length);
     } on Object catch (error) {
       final failure = ApiErrorMapper.fromAny(error);
-      // El cache anterior sigue en pie: se registra por qué no se pudo
-      // refrescar, no se borra lo que había.
+      // The previous cache stands: why it could not be refreshed is recorded,
+      // what was there is not deleted.
       await _db.syncMarkersDao.markFailed(
         SyncResource.productTypes,
         failure.code,
@@ -90,12 +91,13 @@ class CatalogRepository {
     }
   }
 
-  /// Busca en el catálogo **del servidor**.
+  /// Searches the **server's** catalogue.
   ///
-  /// El cache responde lo que se descargó, que es lo visible para esta campaña
-  /// y hasta la última sincronización. Esto responde el resto, y por eso solo
-  /// se llama cuando lo local no alcanza: quien busca «paracetamol» y no lo ve
-  /// necesita saber si no existe o si no está aquí.
+  /// The cache answers with what was downloaded, which is what is visible for
+  /// this campaign and up to the last sync. This answers the rest, and that is
+  /// why it is only called when the local one did not suffice: whoever searches
+  /// for «paracetamol» and does not see it needs to know whether it does not
+  /// exist or is simply not here.
   Future<CatalogOutcome<List<ProductTypeRow>>> search(
     String query, {
     String? category,
@@ -107,12 +109,12 @@ class CatalogRepository {
     return items.map(toProductTypeRow).toList(growable: false);
   });
 
-  /// La ficha del servidor, que es la que puede estar más fresca que el cache.
+  /// The server's record, which is the one that can be fresher than the cache.
   Future<CatalogOutcome<ProductTypeOut>> byId(String id) =>
       _guard(() => _productTypes.getProductTypeV1ProductTypesPtIdGet(ptId: id));
 
-  /// Los códigos de barras de un producto. Son varios a propósito: el mismo
-  /// producto en dos presentaciones, o reetiquetado en la importación.
+  /// A product's barcodes. There are several on purpose: the same product in
+  /// two presentations, or relabelled on import.
   Future<CatalogOutcome<List<ProductGtinOut>>> gtins(String id) => _guard(
     () => _productTypes.listProductGtinsV1ProductTypesPtIdGtinsGet(ptId: id),
   );
@@ -132,20 +134,21 @@ class CatalogRepository {
     ),
   );
 
-  /// Acepta en el catálogo de la plataforma un producto que era de una campaña.
+  /// Accepts into the platform's catalogue a product that belonged to a
+  /// campaign.
   ///
-  /// El servidor lo hace poniendo su `campaign_id` en nulo. Va aparte de editar
-  /// porque aceptar una propuesta es una decisión, y esconderla dentro de un
-  /// botón de guardar la haría invisible.
+  /// The server does it by setting its `campaign_id` to null. It goes apart
+  /// from editing because accepting a proposal is a decision, and hiding it
+  /// inside a save button would make it invisible.
   Future<CatalogOutcome<ProductTypeOut>> promote(String id) => _write(
     () =>
         _productTypes.promoteProductTypeV1ProductTypesPtIdPromotePost(ptId: id),
   );
 
-  /// Desliga un código de barras de un producto.
+  /// Unlinks a barcode from a product.
   ///
-  /// Es como se corrige un escaneo que apuntaba a lo que no era. No borra el
-  /// producto ni el código: deshace la relación entre los dos.
+  /// It is how a scan that pointed at the wrong thing is corrected. It deletes
+  /// neither the product nor the code: it undoes the relation between the two.
   Future<CatalogOutcome<void>> unlinkGtin({
     required String productId,
     required String gtinId,
@@ -156,11 +159,11 @@ class CatalogRepository {
     ),
   );
 
-  /// Una escritura que además deja el cache local al día.
+  /// A write that also leaves the local cache up to date.
   ///
-  /// Sin esto, un producto recién creado no existe para la captura hasta la
-  /// siguiente sincronización — y se crea justo cuando alguien lo tiene en la
-  /// mano y lo va a capturar ahora.
+  /// Without this, a freshly created product does not exist for the capture
+  /// until the next sync — and it is created exactly when somebody is holding
+  /// it and is going to capture it now.
   Future<CatalogOutcome<ProductTypeOut>> _write(
     Future<ProductTypeOut> Function() call,
   ) async {

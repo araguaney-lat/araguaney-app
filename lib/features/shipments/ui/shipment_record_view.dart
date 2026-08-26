@@ -26,12 +26,12 @@ import 'add_milestone_sheet.dart';
 import 'pick_pallet_sheet.dart';
 import 'register_reception_view.dart';
 
-/// Ficha de un envío, de solo lectura, con lo que llegó y lo que no.
+/// A shipment's record, read-only, with what arrived and what did not.
 ///
-/// Llegó antes que el resto de la fase 10 porque un aviso de entrega necesitaba
-/// dónde aterrizar. Ahora cuenta la historia completa desde el lado del centro
-/// que envió: la recepción dice qué llegó bien, las incidencias qué no, y
-/// levantar una es lo único que se escribe desde aquí.
+/// It came before the rest of phase 10 because a delivery notice needed
+/// somewhere to land. Now it tells the whole story from the sending centre's
+/// side: the reception says what arrived well, the incidents what did not, and
+/// raising one is the only thing written from here.
 final shipmentProvider = FutureProvider.family<ShipmentDetailOut, String>(
   (ref, id) => ref
       .watch(restClientProvider)
@@ -48,18 +48,19 @@ class ShipmentRecordView extends ConsumerWidget {
     builder: (_) => ShipmentRecordView(shipmentId: shipmentId),
   );
 
-  /// Pide el manifiesto y lo abre.
+  /// Asks for the manifest and opens it.
   ///
-  /// El servidor no devuelve el PDF: devuelve un trabajo, y el documento llega
-  /// cuando termina de armarse. Si tarda más de lo que este sondeo espera, se
-  /// dice — el trabajo sigue vivo allá y volver a pedirlo lo recoge.
+  /// The server does not return the PDF: it returns a job, and the document
+  /// arrives when it finishes being assembled. If it takes longer than this
+  /// polling waits, that is said — the job is still alive over there and asking
+  /// again picks it up.
   Future<void> _document(
     BuildContext context,
     WidgetRef ref,
     ShipmentDocument document,
   ) async {
-    // Se toma antes de esperar: después de un await este contexto puede
-    // haber dejado de estar montado.
+    // Taken before waiting: after an await this context may have stopped being
+    // mounted.
     final l10n = context.l10n;
     final messenger = ScaffoldMessenger.of(context)
       ..showSnackBar(SnackBar(content: Text(l10n.manifestPreparing)));
@@ -69,8 +70,8 @@ class ShipmentRecordView extends ConsumerWidget {
         .document(shipmentId, document);
     if (!context.mounted) return;
 
-    // El aviso de espera se retira antes de decir cómo terminó: si no, la
-    // respuesta se encola detrás de él y llega cuando ya nadie mira.
+    // The waiting notice is withdrawn before saying how it ended: otherwise
+    // the answer queues up behind it and arrives when nobody is looking.
     messenger.hideCurrentSnackBar();
 
     switch (outcome) {
@@ -86,8 +87,8 @@ class ShipmentRecordView extends ConsumerWidget {
           SnackBar(content: Text(l10n.manifestStillWorking)),
         );
       case DocumentFailed(:final failure, :final serverError):
-        // El fallo de la llamada manda; si no lo hubo, las palabras del
-        // servidor; y si tampoco, lo único que se puede decir con certeza.
+        // The call's failure wins; if there was none, the server's words; and
+        // if not those either, the only thing that can be said for certain.
         messenger.showSnackBar(
           SnackBar(
             content: Text(
@@ -100,7 +101,8 @@ class ShipmentRecordView extends ConsumerWidget {
     }
   }
 
-  /// Anota un hito y lo deja en el recorrido, que ya sabía leerlos.
+  /// Records a milestone and leaves it in the journey, which already knew how
+  /// to read them.
   Future<void> _milestone(BuildContext context, WidgetRef ref) async {
     final chosen = await AddMilestoneSheet.show(context);
     if (chosen == null || !context.mounted) return;
@@ -136,10 +138,10 @@ class ShipmentRecordView extends ConsumerWidget {
           shipment.valueOrNull?.reference ?? context.l10n.shipmentRecordTitle,
         ),
         actions: [
-          // Anotar un hito exige administración nacional, igual que entregar y
-          // que la recepción. Se ofrece siempre que el rol lo permita: el
-          // servidor acepta un hito en cualquier estado, y poner aquí una
-          // condición propia sería inventar una regla suya.
+          // Recording a milestone requires national administration, like
+          // delivering and like the reception. It is offered whenever the role
+          // allows it: the server accepts a milestone in any state, and putting
+          // a condition of our own here would be inventing a rule of its.
           if (ref.watch(isNationalAdminProvider))
             IconButton(
               tooltip: context.l10n.milestoneAddTitle,
@@ -215,8 +217,9 @@ class _Body extends ConsumerWidget {
   final ShipmentDetailOut shipment;
   final String shipmentId;
 
-  /// Meter una tarima. Se elige de las cerradas que no viajan ya en otro
-  /// envío; el filtro lo hace la hoja, y el servidor lo vuelve a comprobar.
+  /// Adding a pallet. It is chosen from the closed ones that are not already
+  /// travelling in another shipment; the sheet does the filtering, and the
+  /// server checks it again.
   Future<void> _addPallet(
     BuildContext context,
     WidgetRef ref,
@@ -277,9 +280,10 @@ class _Body extends ConsumerWidget {
           ),
         if (shipment.notes case final notes?)
           RecordField(label: context.l10n.notesLabel, value: notes),
-        // Los avisos de altura los calcula el servidor contra el perfil del
-        // envío, y avisan sin bloquear. La aplicación los repite tal cual: el
-        // umbral es suyo y aquí no se interpreta.
+        // The height warnings are computed by the server against the
+        // shipment's profile, and they warn without blocking. The application
+        // repeats them as they are: the threshold is its own and nothing is
+        // interpreted here.
         for (final warning in shipment.heightWarnings) _Note(warning),
         const Divider(),
         _SectionTitle(context.l10n.palletsTitle),
@@ -342,7 +346,7 @@ class _Body extends ConsumerWidget {
   }
 }
 
-/// Una tarima dentro del envío.
+/// A pallet inside the shipment.
 class _PalletRow extends ConsumerWidget {
   const _PalletRow({
     required this.pallet,
@@ -353,8 +357,9 @@ class _PalletRow extends ConsumerWidget {
   final PalletDetailOut pallet;
   final String shipmentId;
 
-  /// Solo mientras el envío sigue abierto. Cerrado ya no admite cambios, y
-  /// ofrecer un botón que el servidor va a rechazar es peor que no tenerlo.
+  /// Only while the shipment is still open. Once closed it takes no more
+  /// changes, and offering a button the server is going to refuse is worse than
+  /// not having it.
   final bool removable;
 
   @override
@@ -393,11 +398,11 @@ class _PalletRow extends ConsumerWidget {
   }
 }
 
-/// Lo único que se puede hacer avanzar desde aquí, y solo lo siguiente.
+/// The only thing that can be moved forward from here, and only the next step.
 ///
-/// Cerrar deja de admitir tarimas; despachar dice que el envío salió. Las dos
-/// van en una sola dirección y el servidor no las deshace, así que las dos
-/// preguntan antes y nombran lo que está en juego.
+/// Closing stops accepting pallets; dispatching says the shipment left. Both go
+/// one way only and the server does not undo them, so both ask first and name
+/// what is at stake.
 class _Advance extends ConsumerStatefulWidget {
   const _Advance({required this.shipment});
 
@@ -412,9 +417,10 @@ class _AdvanceState extends ConsumerState<_Advance> {
 
   @override
   Widget build(BuildContext context) {
-    // Cerrar y despachar son del centro que envía; entregar y registrar la
-    // recepción exigen administración nacional. El servidor reparte así los
-    // cuatro pasos y la barra no ofrece lo que va a responder 403.
+    // Closing and dispatching belong to the sending centre; delivering and
+    // recording the reception require national administration. That is how the
+    // server splits the four steps, and the bar does not offer what it is going
+    // to answer 403 to.
     final national = ref.watch(isNationalAdminProvider);
     final reception = ref
         .watch(shipmentReceptionProvider(widget.shipment.id))
@@ -424,8 +430,8 @@ class _AdvanceState extends ConsumerState<_Advance> {
       'OPEN' => context.l10n.shipmentCloseAction,
       'CLOSED' => context.l10n.shipmentDispatchAction,
       'SHIPPED' when national => context.l10n.shipmentDeliveredAction,
-      // La recepción se registra una sola vez: con una ya escrita el paso
-      // desaparece en vez de fallar con un 409.
+      // The reception is recorded once only: with one already written the step
+      // disappears instead of failing with a 409.
       'DELIVERED' when national && reception == null =>
         context.l10n.receptionRegisterAction,
       _ => null,
@@ -449,8 +455,8 @@ class _AdvanceState extends ConsumerState<_Advance> {
   Future<void> _advance(String label) async {
     final shipment = widget.shipment;
 
-    // Registrar la recepción no es un paso de un botón: es una pantalla, caja
-    // por caja.
+    // Recording the reception is not a one-button step: it is a screen, box by
+    // box.
     if (shipment.status == 'DELIVERED') {
       final registered = await Navigator.of(
         context,
@@ -529,9 +535,9 @@ class _AdvanceState extends ConsumerState<_Advance> {
 
   /// `SHIPPED` → `DELIVERED`.
   ///
-  /// Dice que llegó y nada más: **qué** llegó lo registra la recepción, que es
-  /// el paso siguiente. Decir las dos cosas con un botón sería declarar
-  /// recibido lo que nadie ha contado todavía.
+  /// It says it arrived and nothing more: **what** arrived is recorded by the
+  /// reception, which is the next step. Saying both things with one button
+  /// would declare received what nobody has counted yet.
   Future<void> _markDelivered(ShipmentDetailOut shipment) async {
     final confirmed = await showDialog<bool>(
       context: context,
@@ -570,10 +576,10 @@ class _AdvanceState extends ConsumerState<_Advance> {
   }
 }
 
-/// Levantar una incidencia sobre este envío.
+/// Raising an incident about this shipment.
 ///
-/// La llaman dos sitios: el botón flotante, y lo que la recepción encontró —
-/// que es donde alguien acaba de ver que las cajas no cuadran.
+/// Two places call it: the floating button, and what the reception found —
+/// which is where somebody has just seen that the boxes do not add up.
 Future<void> reportShipmentIncident(
   BuildContext context,
   WidgetRef ref,
@@ -610,7 +616,7 @@ class _Reception extends StatelessWidget {
 
   final ReceptionOut reception;
 
-  /// La campaña del envío, para poder mirar su merma desde aquí.
+  /// The shipment's campaign, so its shrinkage can be looked at from here.
   final String? campaignId;
 
   @override
@@ -632,17 +638,18 @@ class _Reception extends StatelessWidget {
             shrinkage.totalBoxes,
           ),
         ),
-        // El porcentaje lo calcula el servidor y aquí se enseña sin adjetivos:
-        // cuánta merma es demasiada es un criterio de la coordinación.
+        // The percentage is computed by the server and shown here without
+        // adjectives: how much shrinkage is too much is coordination's
+        // judgement.
         RecordField(
           label: context.l10n.shrinkageLabel,
           value:
               '${shrinkage.shrinkagePct}% · '
               '${context.l10n.boxCount(shrinkage.notReceived)}',
         ),
-        // Lo que la recepción encontró se responde con una incidencia, y se
-        // levanta desde aquí y no desde el botón de abajo: el sitio donde
-        // alguien lo descubre es este.
+        // What the reception found is answered with an incident, and it is
+        // raised from here and not from the button below: this is the place
+        // where somebody discovers it.
         if (shrinkage.notReceived > 0)
           Consumer(
             builder: (context, ref, _) => ListTile(
@@ -654,8 +661,8 @@ class _Reception extends StatelessWidget {
                   reportShipmentIncident(context, ref, reception.shipmentId),
             ),
           ),
-        // La merma de la campaña se mira desde aquí, que es donde alguien
-        // acaba de descubrir que algo no cuadra.
+        // The campaign's shrinkage is looked at from here, which is where
+        // somebody has just discovered that something does not add up.
         if (campaignId case final campaign?)
           ListTile(
             dense: true,
@@ -702,9 +709,9 @@ class _Incident extends StatelessWidget {
   );
 }
 
-/// Un paso del recorrido. Los hitos se leen con su nombre; los cambios de
-/// estado, como la transición que fueron. Anotar hitos exige administración
-/// nacional, así que aquí solo se leen.
+/// One step of the journey. Milestones are read by their name; state changes,
+/// as the transition they were. Recording milestones requires national
+/// administration, so here they are only read.
 class _Event extends StatelessWidget {
   const _Event({required this.event});
 

@@ -6,17 +6,17 @@ import '../api/generated/models/device_token_register_platform.dart';
 import '../api/generated/models/device_token_unregister.dart';
 import 'push_service.dart';
 
-/// Le dice al servidor dónde entregar los avisos de quien tiene la sesión.
+/// Tells the server where to deliver the notices of whoever has the session.
 ///
-/// Las dos operaciones son idempotentes en el backend, así que aquí no se lleva
-/// cuenta de si ya se registró: el caso normal es registrar un token que ya
-/// existe, y el servidor lo reasigna a quien acaba de entrar. Eso es lo que
-/// resuelve el teléfono compartido de un centro, y no hace falta nada especial
-/// del lado de la aplicación.
+/// Both operations are idempotent on the backend, so nothing here keeps track
+/// of whether it already registered: the normal case is registering a token
+/// that already exists, and the server reassigns it to whoever just signed in.
+/// That is what solves a centre's shared phone, and it needs nothing special on
+/// the application's side.
 ///
-/// **Ninguno de los dos métodos lanza.** Un registro fallido no puede impedir
-/// entrar, y una baja fallida no puede dejar a alguien atrapado dentro de una
-/// sesión que quiere cerrar.
+/// **Neither method throws.** A failed registration cannot stop somebody
+/// signing in, and a failed unregistration cannot trap somebody inside a
+/// session they want to close.
 class DeviceRegistrar {
   DeviceRegistrar({
     required DevicesApi api,
@@ -33,10 +33,11 @@ class DeviceRegistrar {
   final String _version;
   final DeviceTokenRegisterPlatform _platform;
 
-  /// Registra la dirección de este dispositivo. Devuelve si llegó a hacerlo.
+  /// Registers this device's address. Returns whether it managed to.
   ///
-  /// Sin token no hay nada que registrar y no es un error: es el sabor `foss`,
-  /// o un permiso denegado, o un dispositivo sin servicios de Google.
+  /// With no token there is nothing to register, and that is not an error: it
+  /// is the `foss` flavour, or a denied permission, or a device without Google
+  /// services.
   Future<bool> register([String? knownToken]) async {
     final token = knownToken ?? await _pushService.currentToken();
     if (token == null || token.isEmpty) return false;
@@ -51,31 +52,32 @@ class DeviceRegistrar {
       );
       return true;
     } on Object {
-      // Sin señal en el arranque de un turno, esto falla y la persona entra
-      // igual. La siguiente sesión —o la siguiente rotación— vuelve a
-      // intentarlo, y el registro es idempotente.
+      // With no signal at the start of a shift this fails and the person
+      // signs in anyway. The next session — or the next rotation — tries
+      // again, and registering is idempotent.
       return false;
     }
   }
 
-  /// Da de baja la dirección de este dispositivo.
+  /// Unregisters this device's address.
   ///
-  /// Se llama al cerrar sesión y **antes** de borrarla, porque el endpoint
-  /// exige la sesión que se está entregando. No es limpieza opcional: en un
-  /// teléfono que se comparte, saltárselo le entregaría a la siguiente persona
-  /// los avisos de la anterior.
+  /// It is called on sign-out and **before** the session is cleared, because
+  /// the endpoint requires the very session being handed back. It is not
+  /// optional tidying: on a shared phone, skipping it would hand the previous
+  /// person's notices to the next one.
   ///
-  /// Si falla —sin señal, típicamente— el cierre de sesión continúa. La ventana
-  /// que eso abre se cierra sola: mientras no haya sesión nadie está mirando
-  /// avisos, y en cuanto alguien entre, registrar reasigna el token a quien
-  /// acaba de entrar.
+  /// If it fails — typically with no signal — signing out carries on. The
+  /// window that opens closes by itself: while there is no session nobody is
+  /// looking at notices, and as soon as somebody signs in, registering
+  /// reassigns the token to them.
   Future<bool> unregister([String? knownToken]) async {
     final token = knownToken ?? await _pushService.currentToken();
     if (token == null || token.isEmpty) return false;
 
     try {
-      // Un token ajeno responde 200 y no hace nada, para no revelar si existe.
-      // Aquí eso es un éxito, no un caso a distinguir.
+      // Somebody else's token answers 200 and does nothing, so as not to
+      // reveal whether it exists. Here that is a success, not a case to tell
+      // apart.
       await _devices.unregisterDeviceV1DevicesUnregisterPost(
         body: DeviceTokenUnregister(token: token),
       );
@@ -88,8 +90,8 @@ class DeviceRegistrar {
   static DeviceTokenRegisterPlatform _currentPlatform() {
     if (Platform.isAndroid) return DeviceTokenRegisterPlatform.android;
     if (Platform.isIOS) return DeviceTokenRegisterPlatform.ios;
-    // El contrato solo reconoce esas dos. Cualquier otra cosa no es un destino
-    // de avisos que el servidor sepa alcanzar.
+    // The contract only recognises those two. Anything else is not a notice
+    // destination the server knows how to reach.
     return DeviceTokenRegisterPlatform.$unknown;
   }
 }

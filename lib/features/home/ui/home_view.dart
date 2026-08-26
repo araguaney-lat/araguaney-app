@@ -16,15 +16,15 @@ import '../../risk_reviews/ui/risk_reviews_view.dart';
 import '../data/home_providers.dart';
 import 'push_permission_card.dart';
 
-/// El destino «Inicio» de la barra inferior.
+/// The bottom bar's «Inicio» destination.
 ///
-/// Dos pantallas, no una: quien coordina llega a decidir sobre lo que otra
-/// persona capturó, y quien es voluntariado llega a capturar. Mostrarles lo
-/// mismo obliga a las dos a buscar lo suyo entre lo ajeno.
+/// Two screens, not one: whoever coordinates comes to decide about what
+/// somebody else captured, and whoever volunteers comes to capture. Showing
+/// them the same thing forces both to hunt for theirs among the other's.
 ///
-/// Lo que ordena ambas es la misma regla: arriba va lo que espera una decisión
-/// o se puede perder, y después lo que solo se consulta. Un número que nadie
-/// va a mirar no gana un sitio por ser fácil de calcular.
+/// What orders both is the same rule: at the top goes what is waiting for a
+/// decision or can be lost, and after it what is only consulted. A number
+/// nobody is going to look at does not earn a place by being easy to compute.
 class HomeView extends ConsumerWidget {
   const HomeView({super.key});
 
@@ -87,10 +87,10 @@ class HomeView extends ConsumerWidget {
   }
 }
 
-/// Lo único que se puede perder: capturas que no salieron.
+/// The only thing that can be lost: captures that did not go out.
 ///
-/// Va primero y no se puede cerrar. Una captura en cola no es un aviso, es
-/// trabajo hecho que todavía no existe para nadie más.
+/// It comes first and cannot be dismissed. A queued capture is not a notice, it
+/// is work done that does not exist yet for anybody else.
 class _PendingCaptures extends ConsumerWidget {
   const _PendingCaptures();
 
@@ -112,11 +112,11 @@ class _PendingCaptures extends ConsumerWidget {
   }
 }
 
-/// Lo que espera una decisión de coordinación.
+/// What is waiting for a coordination decision.
 ///
-/// El aviso no dice por qué se levantó la revisión: eso se lee dentro, y en una
-/// pantalla de inicio que alguien puede mirar por encima del hombro no tiene
-/// nada que hacer.
+/// The notice does not say why the review was raised: that is read inside, and
+/// on a home screen somebody may glance at over a shoulder it has no business
+/// being.
 class _PendingReviews extends ConsumerWidget {
   const _PendingReviews();
 
@@ -137,7 +137,7 @@ class _PendingReviews extends ConsumerWidget {
   }
 }
 
-/// La jornada de quien captura.
+/// The shift of whoever captures.
 class _DayGrid extends ConsumerWidget {
   const _DayGrid();
 
@@ -158,7 +158,7 @@ class _DayGrid extends ConsumerWidget {
   );
 }
 
-/// Lo que coordina alguien que no captura.
+/// What somebody who does not capture coordinates.
 class _CoordinatorGrid extends ConsumerWidget {
   const _CoordinatorGrid();
 
@@ -184,11 +184,12 @@ class _CoordinatorGrid extends ConsumerWidget {
   );
 }
 
-/// El peso sellado del centro.
+/// The centre's sealed weight.
 ///
-/// Es lo que el servidor agrega para este centro: cajas selladas. Se dice
-/// «sellado» y no «total» porque lo capturado sin sellar no pesa aquí, y quien
-/// prepare un envío con este número tiene que saberlo.
+/// It is what the server aggregates for this centre: sealed boxes. It says
+/// «sealed» and not «total» because what was captured without being sealed does
+/// not weigh here, and whoever prepares a shipment with this number has to know
+/// that.
 class _CenterWeight extends ConsumerWidget {
   const _CenterWeight();
 
@@ -213,11 +214,12 @@ class _CenterWeight extends ConsumerWidget {
   }
 }
 
-/// Cuánto aguanta el dispositivo sin señal.
+/// How long the device holds out without signal.
 ///
-/// Las dos cifras que deciden si se puede trabajar en un sótano: catálogo
-/// descargado y códigos de caja reservados. Sin códigos no se sella nada, y eso
-/// se descubre en el peor momento si no se dice antes.
+/// The two figures that decide whether work in a basement is possible: the
+/// downloaded catalogue and the reserved box codes. With no codes nothing gets
+/// sealed, and that is discovered at the worst moment if it is not said
+/// beforehand.
 class _OfflineReadiness extends ConsumerWidget {
   const _OfflineReadiness();
 
@@ -225,12 +227,12 @@ class _OfflineReadiness extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final ready = ref.watch(offlineReadinessProvider);
 
-    // Se toca para llegar a donde se reponen los códigos. Decir «sin códigos
-    // no vas a poder sellar» sin ofrecer el camino para arreglarlo dejaba el
-    // aviso siendo solo un reproche: reservar solo estaba dentro de la
-    // pantalla de pendientes, y esa solo aparecía si ya había algo en la cola
-    // — es decir, nunca antes de bajar al sótano, que es el único momento en
-    // que reservar sirve de algo.
+    // It is tapped to reach where the codes are topped up. Saying «with no
+    // codes you will not be able to seal» without offering the road to fix it
+    // left the notice as nothing but a reproach: reserving lived only inside
+    // the pending screen, and that only appeared if there was already something
+    // in the queue — that is, never before going down to the basement, which is
+    // the only moment reserving is any use.
     return InkWell(
       onTap: () => Navigator.of(context).push(PendingCapturesView.route()),
       child: Padding(
@@ -253,17 +255,17 @@ class _OfflineReadiness extends ConsumerWidget {
   }
 }
 
-/// El nombre con el árbol delante.
+/// The name with the tree in front.
 ///
-/// Solo aquí. En las demás pantallas el título dice qué se está haciendo
-/// —«Cajas», «Registrar entrada»— y anteponerle una marca lo convertiría en
-/// decoración repetida; el inicio es la única pantalla cuyo título es el
-/// nombre de la aplicación.
+/// Only here. On the other screens the title says what is being done —
+/// «Cajas», «Registrar entrada» — and putting a brand in front of it would turn
+/// it into repeated decoration; home is the only screen whose title is the
+/// application's name.
 ///
-/// El activo es un archivo aparte y pequeño: el del splash mide más de medio
-/// mega porque se dibuja a pantalla completa, y decodificarlo entero para
-/// veintiocho píxeles en cada arranque sería caro en el tipo de teléfono al
-/// que va esto.
+/// The asset is a separate, small file: the splash's weighs more than half a
+/// megabyte because it is drawn full screen, and decoding all of it for
+/// twenty-eight pixels at every launch would be expensive on the kind of phone
+/// this is meant for.
 class _Wordmark extends StatelessWidget {
   const _Wordmark(this.title);
 
@@ -276,8 +278,8 @@ class _Wordmark extends StatelessWidget {
       Image.asset(
         'assets/icon/ic_mark.png',
         height: 30,
-        // El alto es el que manda: el árbol es más ancho que alto y dejarlo
-        // ajustarse solo lo dejaría más bajo que el texto.
+        // Height is what decides: the tree is wider than it is tall, and
+        // letting it size itself would leave it shorter than the text.
         fit: BoxFit.fitHeight,
         filterQuality: FilterQuality.medium,
       ),

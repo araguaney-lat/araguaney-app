@@ -5,17 +5,17 @@ import '../../../core/i18n/l10n_extension.dart';
 import 'app_version_footer.dart';
 import 'store_link.dart';
 
-/// El muro: esta compilación ya no la soporta el backend.
+/// The wall: this build is no longer supported by the backend.
 ///
-/// **Es la única pantalla de la aplicación de la que no se sale.** No hay
-/// flecha atrás, no hay «continuar de todos modos» y no hay forma de llegar al
-/// acceso, porque el contrato ya no garantiza que lo que esta versión mande se
-/// entienda igual. Dejar seguir «bajo tu responsabilidad» trasladaría a quien
-/// opera una decisión que no tiene cómo evaluar, y el costo de equivocarse lo
-/// paga el inventario de un centro.
+/// **It is the only screen in the application that cannot be left.** There is
+/// no back arrow, no «carry on anyway» and no way to reach the sign-in screen,
+/// because the contract no longer guarantees that what this version sends is
+/// understood the same way. Letting people carry on «at your own risk» would
+/// hand whoever operates a decision they have no way to weigh, and the cost of
+/// getting it wrong is paid by a centre's inventory.
 ///
-/// Solo se llega aquí cuando el servidor lo dijo. Un fallo de la comprobación
-/// nunca trae a nadie a esta pantalla: ver `clientVersionStatusProvider`.
+/// It is only reached when the server said so. A failure of the check never
+/// brings anybody to this screen: see `clientVersionStatusProvider`.
 class UpdateRequiredView extends ConsumerWidget {
   const UpdateRequiredView({super.key});
 

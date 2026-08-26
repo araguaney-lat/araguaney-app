@@ -3,11 +3,11 @@ import '../api/api_failure.dart';
 import '../api/generated/models/token.dart';
 import '../api/generated/models/user_out.dart';
 
-/// Sesión activa de una persona operadora.
+/// The active session of somebody operating.
 ///
-/// Es inmutable: renovar el token produce una sesión nueva, nunca modifica la
-/// existente. Así, quien esté leyendo la sesión durante una renovación no ve un
-/// estado a medias.
+/// It is immutable: renewing the token produces a new session and never changes
+/// the existing one. That way, anybody reading the session during a renewal
+/// never sees a half-written state.
 class Session {
   const Session({
     required this.accessToken,
@@ -20,16 +20,17 @@ class Session {
     required this.mustAcceptTerms,
   });
 
-  /// El token no lleva identidad, así que [userId] se resuelve aparte y se
-  /// inyecta aquí. Es nulo cuando no se pudo confirmar quién es.
+  /// The token carries no identity, so [userId] is resolved separately and
+  /// injected here. It is null when who they are could not be confirmed.
   ///
-  /// Los datos de identidad se toman del token, y de [identity] cuando el
-  /// token no los trae.
+  /// Identity comes from the token, and from [identity] when the token does not
+  /// carry it.
   ///
-  /// `POST /v1/auth/refresh` devuelve solo los tokens: ni rol de centro ni
-  /// centro. Como restaurar la sesión al abrir la aplicación pasa por ahí, sin
-  /// este relleno quien coordina un centro reaparecía como voluntariado en cada
-  /// reinicio —sin su rol, sin sus acciones— hasta volver a iniciar sesión.
+  /// `POST /v1/auth/refresh` answers with the tokens alone: no centre role and
+  /// no centre. Restoring the session when the application opens goes through
+  /// there, so without this filling in, somebody coordinating a centre came
+  /// back as volunteering on every restart — no role, none of their actions —
+  /// until they signed in again.
   factory Session.fromToken(Token token, {String? userId, UserOut? identity}) =>
       Session(
         accessToken: token.accessToken,
@@ -45,28 +46,29 @@ class Session {
   final String accessToken;
   final String? refreshToken;
 
-  /// Quién abrió la sesión. Es la clave del alcance del cache y, en la fase
-  /// siguiente, de la cola de captura.
+  /// Who opened the session. It is the key the cache is scoped by and, from
+  /// the next phase on, the capture queue too.
   final String? userId;
 
-  /// Rol de plataforma del boilerplate: `user`, `admin` o `superadmin`.
+  /// The boilerplate's platform role: `user`, `admin` or `superadmin`.
   final String? role;
 
-  /// Centro al que pertenece. Nulo en una administración nacional, que ve todo.
+  /// The centre they belong to. Null for a national administration, which sees
+  /// everything.
   final String? centerId;
 
-  /// Rol de dominio: `volunteer`, `coordinator` o `national_admin`.
+  /// The domain role: `volunteer`, `coordinator` or `national_admin`.
   final String? centerRole;
 
-  /// El servidor exige cambiar la contraseña antes de operar.
+  /// The server requires the password to be changed before operating.
   final bool mustChangePassword;
 
-  /// El servidor pide aceptar los términos. No bloquea operaciones en el
-  /// backend, así que aquí se conserva como dato y no como puerta.
+  /// The server asks for the terms to be accepted. It blocks nothing on the
+  /// backend, so it is kept here as a fact rather than as a gate.
   final bool mustAcceptTerms;
 
-  /// La cola de captura sin conexión es por usuario, y en un dispositivo
-  /// compartido el centro es parte de esa identidad.
+  /// The offline capture queue is per user, and on a shared device the centre
+  /// is part of that identity.
   Session copyWith({String? accessToken, String? refreshToken}) => Session(
     accessToken: accessToken ?? this.accessToken,
     refreshToken: refreshToken ?? this.refreshToken,
@@ -79,32 +81,32 @@ class Session {
   );
 }
 
-/// Estado de la sesión en el dispositivo.
+/// The state of the session on the device.
 sealed class SessionState {
   const SessionState();
 }
 
-/// Todavía no se sabe: se está leyendo el almacén seguro al arrancar.
+/// Not known yet: the secure store is being read at start-up.
 class SessionRestoring extends SessionState {
   const SessionRestoring();
 }
 
-/// No hay sesión. [failure] explica por qué, cuando hay un porqué.
+/// There is no session. [failure] says why, when there is a why.
 ///
-/// Lleva el fallo y no una frase: redactar aquí obligaría a que el controlador
-/// —que no tiene contexto— eligiera un idioma, y esta aplicación va a tener
-/// varios. La pantalla, que sí lo tiene, la redacta con
-/// `loginFailureMessage`.
+/// It carries the failure rather than a sentence: writing one here would make
+/// the controller — which has no context — pick a language, and this
+/// application has more than one. The screen, which does have context, writes
+/// it with `loginFailureMessage`.
 class SessionAbsent extends SessionState {
   const SessionAbsent({this.failure});
 
   final ApiFailure? failure;
 }
 
-/// Credenciales correctas, falta el segundo factor.
+/// The credentials are right and the second factor is missing.
 ///
-/// El token parcial vive solo en memoria y caduca en minutos: no es una sesión
-/// y no se persiste.
+/// The partial token lives in memory only and expires in minutes: it is not a
+/// session and it is not persisted.
 class SessionAwaitingTotp extends SessionState {
   const SessionAwaitingTotp({required this.partialToken, this.failure});
 
@@ -112,8 +114,8 @@ class SessionAwaitingTotp extends SessionState {
   final ApiFailure? failure;
 }
 
-/// Hay sesión. Si [Session.mustChangePassword] es cierto, la interfaz interpone
-/// el cambio de contraseña antes de dejar operar.
+/// There is a session. If [Session.mustChangePassword] is true, the interface
+/// puts the password change in the way before letting anybody operate.
 class SessionActive extends SessionState {
   const SessionActive(this.session);
 

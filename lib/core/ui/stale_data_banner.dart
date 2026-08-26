@@ -6,12 +6,12 @@ import '../i18n/generated/app_localizations.dart';
 import '../i18n/l10n_extension.dart';
 import 'relative_time.dart';
 
-/// Aviso de que lo que se ve puede no ser lo último.
+/// A notice that what is on screen may not be the latest.
 ///
-/// Aparece cuando no hay conexión o cuando el último intento de refrescar
-/// falló. Callarse en esos casos sería peor que mostrar datos viejos: quien
-/// opera decide distinto si sabe que la caja que está mirando se sincronizó
-/// ayer.
+/// It appears when there is no connection or when the last refresh attempt
+/// failed. Staying quiet in those cases would be worse than showing old data:
+/// whoever operates decides differently when they know the box they are looking
+/// at was synced yesterday.
 class StaleDataBanner extends ConsumerWidget {
   const StaleDataBanner({
     super.key,
@@ -23,8 +23,7 @@ class StaleDataBanner extends ConsumerWidget {
   final DateTime? lastSyncedAt;
   final String? lastFailureCode;
 
-  /// Reloj inyectable para que las pruebas no dependan del momento en que se
-  /// corren.
+  /// An injectable clock so tests do not depend on the moment they run.
   final DateTime Function()? now;
 
   @override

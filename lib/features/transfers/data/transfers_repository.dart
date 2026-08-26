@@ -25,16 +25,16 @@ final class TransferRefused extends TransferOutcome {
   final ApiFailure failure;
 }
 
-/// Participación en transferencias entre centros.
+/// Taking part in transfers between centres.
 ///
-/// Todas las transiciones exigen conexión y coordinación, y ninguna se encola:
-/// una transferencia la mueven dos centros a la vez, y decidir sin señal
-/// dejaría dos versiones del mismo movimiento.
+/// Every transition requires a connection and coordination, and none is queued:
+/// a transfer is moved by two centres at once, and deciding without signal
+/// would leave two versions of the same movement.
 ///
-/// **Crear una transferencia sí está aquí desde la fase 27.** Estuvo fuera
-/// mientras esta aplicación no podía leer la lista de centros, que era el único
-/// bloqueo real: elegir cajas selladas escaneándolas no es trabajo de
-/// escritorio, es lo que mejor hace un teléfono.
+/// **Creating a transfer has been here since phase 27.** It was out while this
+/// application could not read the list of centres, which was the only real
+/// blocker: choosing sealed boxes by scanning them is not desk work, it is what
+/// a phone does best.
 class TransfersRepository {
   TransfersRepository({
     required TransfersApi transfers,
@@ -48,13 +48,13 @@ class TransfersRepository {
   Future<List<TransferOut>> list() =>
       _transfersApi.listTransfersV1TransfersGet();
 
-  /// Propone mover **estas cajas** a otro centro.
+  /// Proposes moving **these boxes** to another centre.
   ///
-  /// `box_ids` y no cantidades: una transferencia mueve bultos concretos, y el
-  /// servidor comprueba uno por uno que estén sellados, sin tarima, en el
-  /// centro de origen y libres de otra transferencia. Nada de eso se repite
-  /// aquí; lo que sí hace la pantalla es no dejar armar una lista que ya se
-  /// sabe que va a ser rechazada entera.
+  /// `box_ids` and not quantities: a transfer moves specific loads, and the
+  /// server checks one by one that they are sealed, off a pallet, at the origin
+  /// centre and free of another transfer. None of that is repeated here; what
+  /// the screen does do is not let a list be built that is already known to be
+  /// refused wholesale.
   Future<TransferOutcome> create({
     required String fromCenterId,
     required String toCenterId,
@@ -77,8 +77,8 @@ class TransfersRepository {
     }
   }
 
-  /// Pide el manifiesto de la transferencia. Mismo camino que el del envío: el
-  /// servidor arma el documento aparte y aquí se espera a que esté.
+  /// Asks for the transfer's manifest. Same road as the shipment's: the server
+  /// assembles the document apart and here we wait for it to be ready.
   Future<DocumentOutcome> manifest(
     String transferId, {
     Future<void> Function(Duration) wait = Future.delayed,
@@ -94,11 +94,11 @@ class TransfersRepository {
   Future<TransferDetailOut> detail(String transferId) =>
       _transfersApi.getTransferV1TransfersTransferIdGet(transferId: transferId);
 
-  /// Ejecuta la transición que corresponda.
+  /// Runs whichever transition belongs.
   ///
-  /// Se despacha aquí y no en la pantalla para que el mapa entre acción y
-  /// endpoint viva en un solo sitio: son cuatro rutas distintas para lo que
-  /// desde arriba es un solo gesto.
+  /// It is dispatched here and not in the screen so the map between action and
+  /// endpoint lives in one place: they are four different routes for what from
+  /// above is a single gesture.
   Future<TransferOutcome> perform({
     required TransferAction action,
     required String transferId,

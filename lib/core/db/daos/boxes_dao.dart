@@ -6,12 +6,11 @@ import '../tables/product_types_table.dart';
 
 part 'boxes_dao.g.dart';
 
-/// Una caja con el nombre del producto ya resuelto.
+/// A box with its product's name already resolved.
 ///
-/// El nombre puede faltar: la ventana de cajas y el catálogo se sincronizan por
-/// separado, así que una caja puede llegar antes que su tipo de producto. La
-/// interfaz muestra el código en ese caso, que es lo que está impreso en la
-/// etiqueta.
+/// The name can be missing: the box window and the catalogue sync separately,
+/// so a box can arrive before its product type. The interface shows the code in
+/// that case, which is what is printed on the label.
 class BoxWithProduct {
   const BoxWithProduct({required this.box, this.productName});
 
@@ -23,7 +22,7 @@ class BoxWithProduct {
 class BoxesDao extends DatabaseAccessor<AppDatabase> with _$BoxesDaoMixin {
   BoxesDao(super.db);
 
-  /// Cajas cacheadas, las más recientes primero.
+  /// The cached boxes, most recent first.
   ///
   /// [centerId] narrows them to one centre. The cache holds whatever the server
   /// served, and for a national administrator that is every centre's boxes —
@@ -52,7 +51,7 @@ class BoxesDao extends DatabaseAccessor<AppDatabase> with _$BoxesDaoMixin {
     );
   }
 
-  /// Una caja con su producto, para el detalle.
+  /// One box with its product, for the record.
   Stream<BoxWithProduct?> watchWithProduct(String id) {
     final query = select(boxes).join([
       leftOuterJoin(
@@ -74,7 +73,8 @@ class BoxesDao extends DatabaseAccessor<AppDatabase> with _$BoxesDaoMixin {
   Stream<BoxRow?> watchById(String id) =>
       (select(boxes)..where((t) => t.id.equals(id))).watchSingleOrNull();
 
-  /// Busca por el código impreso en la etiqueta, que es lo que trae un escaneo.
+  /// Looks up by the code printed on the label, which is what a scan
+  /// carries.
   Future<BoxRow?> findByCode(String code) =>
       (select(boxes)..where((t) => t.code.equals(code))).getSingleOrNull();
 
@@ -87,15 +87,15 @@ class BoxesDao extends DatabaseAccessor<AppDatabase> with _$BoxesDaoMixin {
     return row.read(total) ?? 0;
   }
 
-  /// Sustituye la ventana cacheada por [rows].
+  /// Replaces the cached window with [rows].
   ///
-  /// Igual que el catálogo: lo que el servidor dejó de servir dentro de la
-  /// ventana desaparece, para que la lista no acumule cajas fantasma.
+  /// Same as the catalogue: whatever the server stopped serving inside the
+  /// window disappears, so the list does not accumulate ghost boxes.
   Future<void> replaceAll(Iterable<BoxRow> rows) => transaction(() async {
     await delete(boxes).go();
     await batch((b) => b.insertAll(boxes, rows));
   });
 
-  /// Guarda una caja suelta, la que se abrió desde el detalle.
+  /// Stores a single box, the one opened from a record.
   Future<void> upsert(BoxRow row) => into(boxes).insertOnConflictUpdate(row);
 }

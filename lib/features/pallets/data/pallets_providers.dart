@@ -12,7 +12,7 @@ final palletsRepositoryProvider = Provider<PalletsRepository>(
   (ref) => PalletsRepository(ref.watch(restClientProvider).pallets),
 );
 
-/// Las tarimas que se ven, que son las del centro en el que se trabaja.
+/// The pallets that are seen, which are those of the centre being worked in.
 ///
 /// The server scopes this by itself for a session that belongs to a centre.
 /// A national administrator receives every centre's, and coordinating a pallet
@@ -31,13 +31,13 @@ final palletDetailProvider = FutureProvider.family<PalletDetailOut, String>(
   (ref, id) => ref.watch(palletsRepositoryProvider).detail(id),
 );
 
-/// Si quien tiene la sesión puede modificar tarimas. El backend exige
-/// coordinación en todas las escrituras de tarima.
+/// Whether whoever holds the session can modify pallets. The backend requires
+/// coordination on every pallet write.
 final canOperatePalletsProvider = Provider<bool>(
   (ref) => ref.watch(isCenterCoordinatorProvider),
 );
 
-/// El recorrido de una tarima, por lo mismo que el de una caja.
+/// A pallet's journey, for the same reason as a box's.
 final palletEventsProvider = FutureProvider.family<List<QrEventOut>, String>(
   (ref, palletId) => ref
       .watch(restClientProvider)

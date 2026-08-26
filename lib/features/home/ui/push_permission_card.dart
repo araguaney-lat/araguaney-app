@@ -5,20 +5,21 @@ import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/push/push_providers.dart';
 import '../../../core/push/push_service.dart';
 
-/// Invitación a activar los avisos, con el motivo delante.
+/// An invitation to turn notices on, with the reason in front.
 ///
-/// No se pregunta al entrar. Un diálogo del sistema nada más iniciar sesión
-/// llega sin contexto y se deniega por reflejo, y en Android una denegación es
-/// casi definitiva: la aplicación no puede volver a preguntar. Así que primero
-/// se dice qué avisos llegan y quien lee decide si abre el diálogo.
+/// It does not ask on the way in. A system dialog right after signing in
+/// arrives with no context and is denied by reflex, and on Android a denial is
+/// close to final: the application cannot ask again. So first it says which
+/// notices arrive and whoever reads decides whether to open the dialog.
 ///
-/// Desaparece en cuanto hay una decisión, sea cual sea. Denegar no deja una
-/// tarjeta insistiendo: quien no los quiere ya lo dijo.
+/// It disappears as soon as there is a decision, whichever it is. Denying does
+/// not leave a card insisting: somebody who does not want them has already said
+/// so.
 ///
-/// «Hay una decisión» lo decide [shouldOfferPushProvider] y no el estado que
-/// reporta el sistema. En Android ese estado no distingue a quien denegó de
-/// quien nunca fue preguntado, y esta tarjeta —que solo se pintaba en el estado
-/// `notDetermined`— no llegaba a mostrarse nunca.
+/// «There is a decision» is decided by [shouldOfferPushProvider] and not by the
+/// state the system reports. On Android that state does not tell somebody who
+/// denied from somebody who was never asked, and this card — which was only
+/// painted in the `notDetermined` state — never got shown at all.
 class PushPermissionCard extends ConsumerStatefulWidget {
   const PushPermissionCard({super.key});
 
@@ -31,18 +32,19 @@ class _PushPermissionCardState extends ConsumerState<PushPermissionCard> {
 
   Future<void> _ask() async {
     setState(() => _asking = true);
-    // Se anota antes de preguntar, no después: si el diálogo del sistema mata
-    // la aplicación por lo que sea, la persona ya vio la invitación y volver a
-    // ponerla delante sería insistir.
+    // It is recorded before asking, not after: if the system dialog kills the
+    // application for whatever reason, the person has already seen the
+    // invitation and putting it in front of them again would be insisting.
     await ref.read(pushPromptMemoryProvider).markOffered();
 
     final granted =
         await ref.read(pushServiceProvider).requestPermission() ==
         PushPermission.granted;
 
-    // Con el permiso recién concedido puede existir un token que antes no
-    // existía —en iOS es el caso normal—, así que se vuelve a registrar el
-    // destino. Registrar es idempotente: si ya estaba, no cuesta nada.
+    // With the permission just granted there may be a token that did not exist
+    // before — on iOS that is the normal case — so the destination is
+    // registered again. Registering is idempotent: if it was already there, it
+    // costs nothing.
     if (granted) await ref.read(onSessionStartedProvider)();
 
     if (!mounted) return;

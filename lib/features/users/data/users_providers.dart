@@ -10,24 +10,24 @@ final usersRepositoryProvider = Provider<UsersRepository>(
   (ref) => UsersRepository(ref.watch(restClientProvider).studio),
 );
 
-/// Si esta sesión administra personas más allá de su centro.
+/// Whether this session administers people beyond its own centre.
 ///
-/// Copia `require_user_manager`, que es más ancha que la consola: la plataforma
-/// **o** la operación nacional. Un centro invita a su propia gente por otra
-/// ruta, y eso ya funciona desde la fase 14.
+/// It copies `require_user_manager`, which is wider than the console: the
+/// platform **or** the national operation. A centre invites its own people
+/// through another route, and that has worked since phase 14.
 final canManageUsersProvider = Provider<bool>((ref) {
   if (ref.watch(isNationalAdminProvider)) return true;
   final state = ref.watch(sessionControllerProvider);
   return state is SessionActive && state.session.role == 'superadmin';
 });
 
-/// Qué se le pide al servidor: lo que él sabe filtrar.
+/// What is asked of the server: what it knows how to filter by.
 typedef UserFilter = ({String? centerId, String? centerRole, bool? isActive});
 
-/// Una página de personas.
+/// One page of people.
 ///
-/// El desplazamiento vive en la pantalla y no aquí: pedir la siguiente página
-/// es un gesto de quien mira, no un estado del repositorio.
+/// The scrolling lives in the screen and not here: asking for the next page is
+/// a gesture of whoever is looking, not a state of the repository.
 final usersPageProvider =
     FutureProvider.family<UsersOutcome<List<UserOut>>, UserFilter>(
       (ref, filter) => ref

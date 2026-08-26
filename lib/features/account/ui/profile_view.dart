@@ -14,11 +14,11 @@ import '../data/account_providers.dart';
 import '../data/account_repository.dart';
 import 'totp_setup_view.dart';
 
-/// Quién eres y cómo está protegida tu cuenta.
+/// Who you are and how your account is protected.
 ///
-/// Se consulta en línea siempre. Un perfil cacheado enseñaría un rol o un
-/// centro que pudieron cambiar, y aquí eso no es un detalle: es lo que alguien
-/// mira para saber qué puede hacer.
+/// It is always looked up online. A cached profile would show a role or a
+/// centre that may have changed, and here that is not a detail: it is what
+/// somebody looks at to know what they can do.
 class ProfileView extends ConsumerWidget {
   const ProfileView({super.key});
 
@@ -145,24 +145,23 @@ class _Loaded extends ConsumerWidget {
   }
 }
 
-/// En qué idioma se ve la aplicación.
+/// Which language the application is seen in.
 ///
-/// **Seguir al teléfono es el caso por defecto y aparece primero.** Nadie
-/// eligió este idioma dentro de la aplicación: lo eligió al configurar su
-/// teléfono, y volver a preguntarlo sería tratarlo como una decisión que no
-/// tomó.
+/// **Following the phone is the default case and appears first.** Nobody chose
+/// this language inside the application: they chose it when setting up their
+/// phone, and asking again would treat it as a decision they did not take.
 ///
-/// Elegirlo a mano existe para el caso que sí ocurre: un dispositivo de centro
-/// que configuró una persona y usa otra.
+/// Choosing by hand exists for the case that does happen: a centre device set
+/// up by one person and used by another.
 class _LanguageTile extends ConsumerWidget {
   const _LanguageTile();
 
-  /// Cómo se llama cada idioma, **en ese idioma**.
+  /// What each language is called, **in that language**.
   ///
-  /// Sale del ARB y no de una constante aquí porque un nombre de idioma no se
-  /// traduce: «Español» es «Español» en la lista inglesa, y esa es justo la
-  /// gracia de un selector — que quien solo lee uno encuentre el suyo. Cada
-  /// archivo de idioma repite los nombres tal cual, a propósito.
+  /// It comes from the ARB and not from a constant here because a language name
+  /// is not translated: «Español» is «Español» in the English list, and that is
+  /// exactly the point of a picker — that somebody who reads only one finds
+  /// theirs. Each language file repeats the names as they are, on purpose.
   static String _name(AppLocalizations l10n, String code) => switch (code) {
     'es' => l10n.languageNameEs,
     'en' => l10n.languageNameEn,
@@ -238,10 +237,10 @@ class _TotpTile extends ConsumerWidget {
     },
   );
 
-  /// Quitarlo pide un código, igual que ponerlo.
+  /// Removing it asks for a code, just like adding it.
   ///
-  /// No es un trámite de más: es lo que impide que quien encuentre un teléfono
-  /// desbloqueado desactive la segunda barrera antes de llevarse la cuenta.
+  /// It is not a formality: it is what stops whoever finds an unlocked phone
+  /// turning off the second barrier before walking away with the account.
   Future<void> _disable(BuildContext context, WidgetRef ref) async {
     final controller = TextEditingController();
     final code = await showDialog<String>(
@@ -288,8 +287,8 @@ class _TotpTile extends ConsumerWidget {
   }
 }
 
-/// El servidor pide aceptar los términos y **no bloquea** por ello, así que
-/// aquí tampoco: se ofrece, no se interpone.
+/// The server asks for the terms to be accepted and **does not block** over it,
+/// so neither does this: it is offered, not interposed.
 class _TermsTile extends ConsumerWidget {
   const _TermsTile();
 

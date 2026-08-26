@@ -1,11 +1,12 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 
-/// Lo que el sistema operativo sabe de la red: si hay alguna interfaz levantada.
+/// What the operating system knows about the network: whether any interface is
+/// up.
 ///
-/// Es una interfaz propia para que las pruebas no necesiten un canal de
-/// plataforma, y para que el resto del código no dependa del paquete.
+/// It is an interface of our own so tests do not need a platform channel, and
+/// so the rest of the code does not depend on the package.
 abstract interface class ConnectivityProbe {
-  /// Cambios de interfaz. `true` cuando hay alguna levantada.
+  /// Interface changes. `true` when one is up.
   Stream<bool> get onInterfaceChanged;
 
   Future<bool> hasInterface();

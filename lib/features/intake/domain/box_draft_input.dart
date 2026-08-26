@@ -1,12 +1,12 @@
 import '../../../core/api/generated/models/box_draft.dart';
 import '../../../core/db/app_database.dart';
 
-/// Una caja en construcción dentro del formulario de captura.
+/// A box under construction inside the capture form.
 ///
-/// Que una caja tenga **un** tipo de producto, **un** lote y **una** caducidad
-/// no es una regla que esta clase imponga: es la forma de `BoxDraft` en el
-/// contrato. La interfaz no puede mezclar dos productos en una caja porque no
-/// hay dónde escribir el segundo.
+/// That a box has **one** product type, **one** batch and **one** expiry date
+/// is not a rule this class imposes: it is the shape of `BoxDraft` in the
+/// contract. The interface cannot mix two products in one box because there is
+/// nowhere to write the second.
 class BoxDraftInput {
   const BoxDraftInput({
     required this.productType,
@@ -19,8 +19,8 @@ class BoxDraftInput {
     this.gtin,
   });
 
-  /// El tipo de producto del catálogo local, con su nombre, para que la lista
-  /// pueda mostrarlo sin volver a consultar.
+  /// The product type from the local catalogue, with its name, so the list can
+  /// show it without looking it up again.
   final ProductTypeRow productType;
   final int quantity;
   final String unit;
@@ -28,8 +28,8 @@ class BoxDraftInput {
   final DateTime? expiryDate;
   final String? weightKg;
 
-  /// Código reservado de antemano. En línea lo asigna el servidor; existe aquí
-  /// porque la captura sin conexión de la fase 06 gasta códigos reservados.
+  /// A code reserved beforehand. Online the server assigns it; it exists here
+  /// because phase 06's offline capture spends reserved codes.
   final String? code;
   final String? gtin;
 

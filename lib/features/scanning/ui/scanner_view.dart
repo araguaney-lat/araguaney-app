@@ -15,11 +15,12 @@ import 'scan_result_sheet.dart';
 import 'scanner_camera.dart';
 import 'scanner_viewfinder.dart';
 
-/// La cámara, a pantalla completa.
+/// The camera, full screen.
 ///
-/// Lo leído aparece en una hoja **sobre** la cámara y no en otra pantalla:
-/// comprobar una tarima es escanear una caja tras otra, y cada respuesta
-/// costaba entrar y salir. Cerrar la hoja deja apuntando otra vez.
+/// What was read appears in a sheet **over** the camera and not on another
+/// screen: checking a pallet means scanning one box after another, and every
+/// answer cost entering and leaving. Closing the sheet leaves you pointing
+/// again.
 class ScannerView extends ConsumerStatefulWidget {
   const ScannerView({super.key});
 
@@ -34,8 +35,9 @@ class _ScannerViewState extends ConsumerState<ScannerView> {
   final _controller = ScannerCamera.buildController();
   final _throttle = ScanThrottle();
 
-  /// Mientras una lectura se resuelve, las demás se ignoran: la cámara sigue
-  /// entregando cuadros y sin esto se abrirían dos hojas encimadas.
+  /// While one read is being resolved, the rest are ignored: the camera goes on
+  /// delivering frames and without this two sheets would open on top of each
+  /// other.
   bool _resolving = false;
   bool _torchOn = false;
 
@@ -70,15 +72,15 @@ class _ScannerViewState extends ConsumerState<ScannerView> {
     );
     if (!mounted) return;
 
-    // Al cerrar la hoja, reapuntar a la misma etiqueta tiene que funcionar:
-    // quien la cierra suele querer justamente eso.
+    // On closing the sheet, pointing at the same label again has to work:
+    // whoever closes it usually wants exactly that.
     _throttle.reset();
     _resolving = false;
   }
 
-  /// La fila de una caja guarda el identificador del tipo de producto y no su
-  /// nombre. Se resuelve contra el catálogo local; si ya no está, no se enseña
-  /// nada en lugar de enseñar un identificador.
+  /// A box's row stores the product type's identifier and not its name. It is
+  /// resolved against the local catalogue; if it is no longer there, nothing is
+  /// shown rather than an identifier.
   String? _productNameFor(ScanResolution resolution) {
     if (resolution case CachedBoxFound(:final box)) {
       final catalog = ref.read(productTypesProvider(null)).valueOrNull ?? [];
@@ -89,16 +91,16 @@ class _ScannerViewState extends ConsumerState<ScannerView> {
     return null;
   }
 
-  /// La acción principal de la hoja, cuando hay una ficha detrás que hace algo
-  /// que la hoja no puede.
+  /// The sheet's main action, when there is a record behind it that does
+  /// something the sheet cannot.
   VoidCallback? _openFor(ScanResolution resolution) => switch (resolution) {
     CachedBoxFound(:final box) => () {
       Navigator.of(context)
         ..pop()
         ..push(BoxDetailView.route(boxId: box.id, code: box.code));
     },
-    // Antes terminaba en la captura, saltándose la recepción: identificar una
-    // donación y ponerse a capturar deja sin registrar que llegó.
+    // It used to end at the capture, skipping the reception: identifying a
+    // donation and starting to capture leaves it unrecorded that it arrived.
     DonationFound(:final donation) => () {
       Navigator.of(context)
         ..pop()
@@ -113,8 +115,8 @@ class _ScannerViewState extends ConsumerState<ScannerView> {
       backgroundColor: Colors.black,
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        // Transparente y sobre la imagen: la cámara ocupa la pantalla entera y
-        // una barra sólida le robaba una franja sin dar nada a cambio.
+        // Transparent and over the image: the camera fills the whole screen and
+        // a solid bar stole a strip from it giving nothing back.
         backgroundColor: Colors.transparent,
         foregroundColor: Colors.white,
         elevation: 0,

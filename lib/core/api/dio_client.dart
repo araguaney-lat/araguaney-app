@@ -3,13 +3,13 @@ import 'package:dio/dio.dart';
 import '../config/app_config.dart';
 import 'api_error_mapper.dart';
 
-/// Construye el `Dio` que usa toda la aplicación.
+/// Builds the `Dio` the whole application uses.
 ///
-/// Ninguna pantalla crea su propio cliente: la URL base, los tiempos de espera
-/// y la traducción de errores se deciden una vez y aquí. Es el equivalente al
-/// `apiFetch` centralizado de la aplicación web.
+/// No screen creates its own client: the base URL, the timeouts and the error
+/// translation are decided once, here. It is the equivalent of the web
+/// application's central `apiFetch`.
 abstract final class DioClient {
-  /// Margen para una red de centro de acopio, no para una oficina con fibra.
+  /// Headroom for a collection centre's network, not for an office on fibre.
   static const Duration _connectTimeout = Duration(seconds: 15);
   static const Duration _receiveTimeout = Duration(seconds: 30);
 
@@ -26,9 +26,9 @@ abstract final class DioClient {
         contentType: Headers.jsonContentType,
         responseType: ResponseType.json,
         headers: {
-          // Identifica al cliente en los registros del servidor. Saber qué
-          // versión hizo una petición es la diferencia entre diagnosticar un
-          // problema y adivinarlo.
+          // Identifies the client in the server's logs. Knowing which
+          // version made a request is the difference between diagnosing a
+          // problem and guessing at it.
           'User-Agent': 'AraguaneyApp/$appVersion (${AppConfig.flavor.name})',
         },
       ),
@@ -36,9 +36,9 @@ abstract final class DioClient {
 
     dio.interceptors
       ..addAll(interceptors)
-      // El traductor va al final: convierte cualquier DioException en un
-      // ApiFailure antes de que salga de esta capa, para que ninguna pantalla
-      // tenga que conocer dio.
+      // The translator goes last: it turns any DioException into an
+      // ApiFailure before it leaves this layer, so that no screen has to know
+      // about dio.
       ..add(
         InterceptorsWrapper(
           onError: (error, handler) => handler.reject(

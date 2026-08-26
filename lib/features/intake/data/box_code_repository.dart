@@ -4,12 +4,13 @@ import '../../../core/api/generated/models/box_code_reserve_in.dart';
 import '../../../core/db/app_database.dart';
 import '../../../core/sync/sync_outcome.dart';
 
-/// Códigos de caja apartados con señal para gastarse sin ella.
+/// Box codes set aside while there is signal, to be spent without it.
 ///
-/// Sin código no hay etiqueta imprimible, y en un centro con prisa nadie vuelve
-/// a tocar una caja ya cerrada para etiquetarla después: o sale con su etiqueta
-/// o sale sin ella para siempre. Por eso el bloque se pide **antes** de bajar
-/// al sótano, que es el único momento en que se puede pedir.
+/// With no code there is no printable label, and in a centre in a hurry nobody
+/// goes back to a sealed box to label it later: either it leaves with its label
+/// or it leaves without one for good. That is why the block is asked for
+/// **before** going down to the basement, which is the only moment it can be
+/// asked for.
 class BoxCodeRepository {
   BoxCodeRepository({
     required BoxesApi api,
@@ -26,11 +27,11 @@ class BoxCodeRepository {
   Stream<int> watchAvailable(String userId, {String? centerId}) =>
       _db.boxCodesDao.watchAvailable(userId, centerId: centerId);
 
-  /// Pide un bloque al servidor y lo guarda.
+  /// Asks the server for a block and stores it.
   ///
-  /// Cuántos códigos caben en una petición lo decide el backend; aquí no se
-  /// replica ese límite. Si pide de más, contesta y esta capa muestra su
-  /// motivo.
+  /// How many codes fit in one request is the backend's decision; that limit is
+  /// not repeated here. If it asks for too many, the server answers and this
+  /// layer shows its reason.
   ///
   /// [centerId] is the centre the block is asked for, and the same one it is
   /// stored under. A session that belongs to a centre leaves it null: the
@@ -56,11 +57,11 @@ class BoxCodeRepository {
     }
   }
 
-  /// Toma códigos del bloque local para una captura sin señal.
+  /// Takes codes from the local block for a capture made with no signal.
   ///
-  /// Puede devolver menos de los pedidos. Quedarse sin códigos no impide
-  /// capturar —perder la captura sería mucho peor—, solo impide etiquetar esas
-  /// cajas hasta que la captura llegue al servidor.
+  /// It may return fewer than asked for. Running out of codes does not stop the
+  /// capture — losing it would be far worse — it only stops those boxes being
+  /// labelled until the capture reaches the server.
   Future<List<String>> take(
     int count, {
     required String userId,

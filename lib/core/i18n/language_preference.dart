@@ -3,19 +3,19 @@ import 'dart:ui';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-/// En qué idioma se ve la aplicación.
+/// Which language the application is seen in.
 ///
-/// **El del teléfono es el caso por defecto y no una opción más.** Quien
-/// captura no eligió este idioma: lo eligió al configurar su teléfono, y la
-/// aplicación no tiene por qué preguntárselo otra vez.
+/// **The phone's is the default case and not one more option.** Whoever
+/// captures did not choose this language here: they chose it when setting up
+/// their phone, and the application has no reason to ask again.
 ///
-/// Elegirlo a mano existe para el caso que sí ocurre: un dispositivo compartido
-/// de centro, configurado por alguien, que usa gente que lee otra cosa.
+/// Choosing by hand exists for the case that does happen: a centre's shared
+/// device, set up by somebody, used by people who read something else.
 abstract interface class LanguagePreference {
-  /// El idioma elegido, o nulo para «el del teléfono».
+  /// The chosen language, or null for «el del teléfono».
   Future<String?> read();
 
-  /// Nulo vuelve a seguir al teléfono.
+  /// Null goes back to following the phone.
   Future<void> write(String? languageCode);
 }
 
@@ -55,11 +55,11 @@ final languagePreferenceProvider = Provider<LanguagePreference>(
   (ref) => const PrefsLanguagePreference(),
 );
 
-/// El idioma con el que se dibuja la aplicación.
+/// The language the application is drawn in.
 ///
-/// Nulo significa «el que diga el sistema», que es lo que `MaterialApp` hace
-/// cuando `locale` es nulo. No hay un valor intermedio: o se eligió uno, o
-/// manda el teléfono.
+/// Null means «el que diga el sistema», which is what `MaterialApp` does when
+/// `locale` is null. There is no value in between: either one was chosen, or
+/// the phone decides.
 class LanguageController extends AsyncNotifier<Locale?> {
   @override
   Future<Locale?> build() async {

@@ -14,20 +14,20 @@ import '../../intake/data/intake_providers.dart';
 import '../data/reports_providers.dart';
 import '../data/reports_repository.dart';
 
-/// Cómo va la campaña, en una pantalla.
+/// How the campaign is going, on one screen.
 ///
-/// **No es el informe del panel hecho estrecho.** Un teléfono que enseña doce
-/// columnas no enseña ninguna, así que aquí van los números sobre los que
-/// alguien hace algo, en el orden de las dos preguntas que una coordinación le
-/// hace a un teléfono: «¿nos falta algo?» y «¿llegó lo que mandamos?».
+/// **It is not the panel's report made narrow.** A phone that shows twelve
+/// columns shows none, so what goes here are the numbers somebody acts on, in
+/// the order of the two questions a coordination asks a phone: «are we missing
+/// anything?» and «did what we sent arrive?».
 ///
-/// La hoja de cálculo no se dibuja: se le pide al servidor y se le entrega al
-/// visor del sistema, igual que un manifiesto.
+/// The spreadsheet is not drawn: it is asked of the server and handed to the
+/// system's viewer, like a manifest.
 class ReportsView extends ConsumerWidget {
   const ReportsView({super.key, this.campaignId});
 
-  /// La campaña con la que abrir. Se usa al llegar desde la recepción de un
-  /// envío, que ya sabe de cuál es la merma que alguien fue a buscar.
+  /// The campaign to open with. It is used when arriving from a shipment's
+  /// reception, which already knows whose shrinkage somebody went looking for.
   final String? campaignId;
 
   static Route<void> route({String? campaignId}) => MaterialPageRoute<void>(
@@ -149,7 +149,7 @@ class _CampaignPicker extends ConsumerWidget {
       );
 }
 
-/// El peso reunido y, si la campaña puso una meta, cuánto falta.
+/// The weight gathered and, if the campaign set a goal, how much is left.
 class _Weight extends ConsumerWidget {
   const _Weight({required this.campaignId});
 
@@ -182,12 +182,12 @@ class _Weight extends ConsumerWidget {
   }
 }
 
-/// Los números que se miran primero.
+/// The numbers that are looked at first.
 ///
-/// Diez llegan del servidor y aquí van seis: las cajas por estado, lo capturado
-/// y lo enviado. Los otros cuatro —centros activos, unidades, tasa de
-/// rechazo— o los responde otra sección o son del país, y una rejilla de diez
-/// celdas en un teléfono es una rejilla que nadie lee.
+/// Ten arrive from the server and six go here: the boxes by state, what was
+/// captured and what was shipped. The other four — active centres, units,
+/// refusal rate — are either answered by another section or belong to the
+/// country, and a grid of ten cells on a phone is a grid nobody reads.
 class _Summary extends ConsumerWidget {
   const _Summary({required this.campaignId});
 
@@ -255,10 +255,10 @@ class _Cell extends StatelessWidget {
   );
 }
 
-/// La diferencia entre lo que salió y lo que llegó.
+/// The difference between what left and what arrived.
 ///
-/// Es el informe que se gana el sitio en un teléfono: quien lo necesita está
-/// delante de las cajas que no cuadran.
+/// It is the report that earns its place on a phone: whoever needs it is
+/// standing in front of the boxes that do not add up.
 class _Shrinkage extends ConsumerWidget {
   const _Shrinkage({required this.campaignId});
 
@@ -363,7 +363,7 @@ class _Pair extends StatelessWidget {
       Text('$label: $value', style: Theme.of(context).textTheme.bodyMedium);
 }
 
-/// "¿Nos falta algo?", que se responde por categoría.
+/// "Are we missing anything?", which is answered by category.
 class _ByCategory extends ConsumerWidget {
   const _ByCategory({required this.campaignId});
 
@@ -439,11 +439,11 @@ class _Countries extends ConsumerWidget {
   }
 }
 
-/// Los últimos días con movimiento.
+/// The last days with movement.
 ///
-/// **Se enseñan los siete más recientes y la pantalla lo dice.** Una serie
-/// entera en un teléfono es una lista que se desplaza sola; recortarla en
-/// silencio sería peor, porque parecería que no hubo más.
+/// **The seven most recent are shown and the screen says so.** A whole series
+/// on a phone is a list that scrolls forever; trimming it in silence would be
+/// worse, because it would look as though there had been no more.
 class _Activity extends ConsumerWidget {
   const _Activity({required this.campaignId});
 

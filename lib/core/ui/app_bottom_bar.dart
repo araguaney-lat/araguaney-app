@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'theme/app_theme.dart';
 
-/// Un destino de la barra.
+/// One destination on the bar.
 class BottomBarItem {
   const BottomBarItem({
     required this.icon,
@@ -13,21 +13,22 @@ class BottomBarItem {
   final IconData icon;
   final String label;
 
-  /// Cuántas cosas esperan detrás de este destino. Cero no dibuja nada.
+  /// How many things are waiting behind this destination. Zero draws
+  /// nothing.
   final int badge;
 }
 
-/// La barra inferior con su acción central elevada.
+/// The bottom bar with its raised central action.
 ///
-/// Cuatro destinos y un botón: el central no es una pestaña, es la acción de la
-/// jornada, y por eso está elevado y no lleva etiqueta —el icono carga todo el
-/// significado—. Qué acción sea depende del rol y lo decide quien usa esta
-/// barra, no la barra.
+/// Four destinations and a button: the central one is not a tab, it is the
+/// action of the shift, and that is why it is raised and carries no label — the
+/// icon holds all the meaning. Which action it is depends on the role and is
+/// decided by whoever uses this bar, not by the bar.
 ///
-/// Se escribe a mano en vez de usar `NavigationBar` porque el diseño pide un
-/// círculo que se sale de la barra con un anillo del color de la barra detrás,
-/// y el componente de Material no permite ni ese solape ni la pastilla de 44×26
-/// alrededor del icono activo.
+/// It is written by hand instead of using `NavigationBar` because the design
+/// asks for a circle that overflows the bar with a ring in the bar's own colour
+/// behind it, and the Material component allows neither that overlap nor the
+/// 44×26 pill around the active icon.
 class AppBottomBar extends StatelessWidget {
   const AppBottomBar({
     super.key,
@@ -39,7 +40,7 @@ class AppBottomBar extends StatelessWidget {
     required this.onCenterPressed,
   });
 
-  /// Cuatro destinos: dos a la izquierda del botón y dos a la derecha.
+  /// Four destinations: two to the left of the button and two to the right.
   final List<BottomBarItem> items;
   final int currentIndex;
   final ValueChanged<int> onSelected;
@@ -48,7 +49,7 @@ class AppBottomBar extends StatelessWidget {
   final String centerTooltip;
   final VoidCallback onCenterPressed;
 
-  /// Alto del contenido, sin contar el área segura de abajo.
+  /// The content's height, not counting the safe area below.
   static const _rowHeight = 60.0;
   static const _centerDiameter = 62.0;
 
@@ -67,7 +68,7 @@ class AppBottomBar extends StatelessWidget {
         border: Border(top: BorderSide(color: palette.barBorder)),
       ),
       padding: EdgeInsets.only(bottom: bottomInset > 0 ? bottomInset : 12),
-      // El círculo se sale por arriba: sin esto queda recortado.
+      // The circle overflows at the top: without this it gets clipped.
       clipBehavior: Clip.none,
       child: SizedBox(
         height: _rowHeight,
@@ -122,8 +123,9 @@ class AppBottomBar extends StatelessWidget {
                         decoration: BoxDecoration(
                           color: palette.centerFill,
                           shape: BoxShape.circle,
-                          // El anillo es del color de la barra: es lo que hace
-                          // que el círculo se lea encima y no pegado.
+                          // The ring takes the bar's colour: that is what
+                          // makes the circle read as sitting above it rather
+                          // than stuck to it.
                           border: Border.all(color: palette.bar, width: 4),
                           boxShadow: [
                             BoxShadow(
@@ -246,8 +248,8 @@ class _IconWithBadge extends StatelessWidget {
               border: Border.all(color: ringColor, width: 1.5),
             ),
             child: Text(
-              // Un número de tres cifras no cabe y tampoco aporta: lo que
-              // importa es que hay mucho, no cuánto exactamente.
+              // A three-digit number does not fit and adds nothing either:
+              // what matters is that there are many, not exactly how many.
               badge > 99 ? '99+' : '$badge',
               style: const TextStyle(
                 fontSize: 9.5,

@@ -4,11 +4,11 @@ import '../../../core/api/generated/models/user_out.dart';
 import '../../../core/i18n/l10n_extension.dart';
 import '../data/team_repository.dart';
 
-/// Elegir a quién sumar a una campaña, de entre el equipo del centro.
+/// Choosing who to add to a campaign, from among the centre's team.
 ///
-/// La lista llega ya filtrada: solo cuentas activas que todavía no participan.
-/// Ofrecer a alguien que ya está dentro haría trabajar al servidor para no
-/// cambiar nada.
+/// The list arrives already filtered: only active accounts that do not take
+/// part yet. Offering somebody who is already in would make the server work to
+/// change nothing.
 class PickPersonSheet extends StatelessWidget {
   const PickPersonSheet({super.key, required this.people});
 

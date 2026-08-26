@@ -8,14 +8,15 @@ import '../data/centers_providers.dart';
 import '../data/centers_repository.dart';
 import 'center_form_view.dart';
 
-/// La ficha de un centro.
+/// A centre's record.
 ///
-/// **No es administración.** Los tres casos que la justifican son estrechos y
-/// se parecen entre sí: confirmar a qué centro va una transferencia, encontrar
-/// un contacto cuando un envío se perdió, y ver que un centro recién aprobado
-/// existe. Los tres empiezan lejos de un escritorio.
+/// **It is not administration.** The three cases that justify it are narrow and
+/// resemble one another: confirming which centre a transfer is going to,
+/// finding a contact when a shipment goes missing, and seeing that a freshly
+/// approved centre exists. All three start far from a desk.
 ///
-/// Configurar un centro es del panel, y por eso aquí no hay nada que escribir.
+/// Configuring a centre belongs to the panel, and that is why there is nothing
+/// to write here.
 class CenterRecordView extends ConsumerWidget {
   const CenterRecordView({super.key, required this.centerId});
 
@@ -70,10 +71,10 @@ class _Body extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // El modelo generado trae estos campos anulables aunque el contrato los
-    // liste como requeridos, así que se omite lo que no venga en vez de pintar
-    // una etiqueta sobre nada. Es la misma regla que las demás fichas: el
-    // cliente no rellena un silencio.
+    // The generated model brings these fields nullable even though the
+    // contract lists them as required, so what does not arrive is omitted
+    // instead of painting a label over nothing. It is the same rule as the
+    // other records: the client does not fill in a silence.
     final place = [
       center.stateName,
       center.countryCode,
@@ -84,8 +85,8 @@ class _Body extends StatelessWidget {
       children: [
         Text(center.name, style: Theme.of(context).textTheme.headlineSmall),
         const SizedBox(height: 16),
-        // La razón social solo aparece cuando difiere del nombre de uso:
-        // repetirlo dos veces no informa de nada.
+        // The legal name only appears when it differs from the working name:
+        // repeating it twice informs nobody of anything.
         if (center.legalName case final legal?
             when legal.isNotEmpty && legal != center.name)
           RecordField(label: context.l10n.centerLegalNameLabel, value: legal),

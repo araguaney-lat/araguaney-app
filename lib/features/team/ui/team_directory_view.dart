@@ -11,12 +11,12 @@ import '../data/team_repository.dart';
 import 'campaign_members_view.dart';
 import 'invite_person_sheet.dart';
 
-/// El equipo del centro.
+/// The centre's team.
 ///
-/// Lo lee cualquiera que pertenezca al centro —saber con quién se trabaja no
-/// es un privilegio—, y solo la coordinación suma gente o reenvía un acceso.
-/// El servidor exige ese rol y sigue decidiendo; aquí solo se evita ofrecer un
-/// botón que responderá 403.
+/// Anybody who belongs to the centre reads it — knowing who you work with is
+/// not a privilege — and only coordination adds people or resends an access.
+/// The server requires that role and goes on deciding; here all that is avoided
+/// is offering a button that will answer 403.
 class TeamDirectoryView extends ConsumerWidget {
   const TeamDirectoryView({super.key});
 
@@ -152,8 +152,8 @@ class _Person extends StatelessWidget {
         if (!person.isActive) context.l10n.accountDisabledTag,
       ].join(' · '),
     ),
-    // Reenviar el acceso no se ofrece sobre una cuenta desactivada: el
-    // servidor lo rechaza, y activarla es trabajo de escritorio.
+    // Resending the access is not offered on a deactivated account: the server
+    // refuses it, and activating it is desk work.
     trailing: onReinvite != null && person.isActive
         ? IconButton(
             tooltip: context.l10n.resendAccessAction,

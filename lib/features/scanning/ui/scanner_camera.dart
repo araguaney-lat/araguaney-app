@@ -4,12 +4,12 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import '../../../core/i18n/generated/app_localizations.dart';
 import '../../../core/i18n/l10n_extension.dart';
 
-/// La cámara, con su manejo de permiso y su linterna.
+/// The camera, with its permission handling and its torch.
 ///
-/// Existe porque hay dos pantallas que escanean y sus diferencias están en qué
-/// hacen con lo leído, no en cómo leerlo. Lo que se comparte importa: el texto
-/// que se le enseña a alguien cuando el permiso está denegado tiene que ser el
-/// mismo en las dos, y duplicarlo garantiza que un día dejen de serlo.
+/// It exists because two screens scan and their differences are in what they do
+/// with what was read, not in how to read it. What is shared matters: the text
+/// somebody is shown when the permission is denied has to be the same on both,
+/// and duplicating it guarantees that one day they will stop being so.
 class ScannerCamera extends StatelessWidget {
   const ScannerCamera({
     super.key,
@@ -21,20 +21,20 @@ class ScannerCamera extends StatelessWidget {
   final MobileScannerController controller;
   final void Function(BarcodeCapture capture) onDetect;
 
-  /// Lo que se pinta encima de la imagen: una pista, un registro de lecturas.
+  /// What is painted over the image: a hint, a log of reads.
   final Widget? overlay;
 
-  /// Cada pantalla declara qué espera leer, y el decodificador no intenta nada
-  /// más. No es una validación posterior: un formato que no está en la lista no
-  /// produce una lectura equivocada, produce ninguna.
+  /// Each screen declares what it expects to read, and the decoder tries
+  /// nothing else. It is not a check made afterwards: a format that is not on
+  /// the list does not produce a wrong read, it produces none.
   ///
-  /// Por eso el escáner de cajas y tarimas se queda en QR. Un cartón lleva
-  /// además el código de barras del fabricante, y aceptarlo haría que apuntar
-  /// a nuestra etiqueta pudiera devolver la del laboratorio — un acierto falso,
-  /// que es peor que un fallo claro.
+  /// That is why the box and pallet scanner stays on QR. A cardboard box also
+  /// carries the manufacturer's barcode, and accepting it would mean pointing
+  /// at our label could return the laboratory's — a false hit, which is worse
+  /// than a clear failure.
   ///
-  /// `noDuplicates` evita repetir la misma lectura mientras el teléfono sigue
-  /// encima de la etiqueta.
+  /// `noDuplicates` avoids repeating the same read while the phone is still
+  /// over the label.
   static MobileScannerController buildController({
     List<BarcodeFormat> formats = const [BarcodeFormat.qrCode],
   }) => MobileScannerController(
@@ -42,26 +42,27 @@ class ScannerCamera extends StatelessWidget {
     detectionSpeed: DetectionSpeed.noDuplicates,
   );
 
-  /// Lo que se lee en el envase de un producto.
+  /// What is read on a product's package.
   ///
-  /// Los cuatro lineales cubren los dos sistemas del mundo: EAN-13 y EAN-8
-  /// fuera de Norteamérica —México es `750`, Venezuela `759`— y UPC-A y UPC-E
-  /// en Estados Unidos y Canadá, de donde viene buena parte de lo que se dona.
+  /// The four linear ones cover the world's two systems: EAN-13 and EAN-8
+  /// outside North America — Mexico is `750`, Venezuela `759` — and UPC-A and
+  /// UPC-E in the United States and Canada, where much of what is donated comes
+  /// from.
   ///
-  /// **UPC-E se expande antes de consultarlo** (`gtinFromScan`): su dígito de
-  /// control se calculó sobre el UPC-A de doce del que salió, así que enviarlo
-  /// comprimido produce un escaneo que parece ir bien y que el servidor
-  /// rechaza.
+  /// **UPC-E is expanded before it is looked up** (`gtinFromScan`): its check
+  /// digit was computed over the twelve-digit UPC-A it came from, so sending it
+  /// compressed produces a scan that looks fine and that the server refuses.
   ///
-  /// **DataMatrix no está**: no apareció en ningún envase de la muestra y
-  /// aceptarlo sin interpretar los identificadores GS1 mandaría dígitos
-  /// equivocados.
+  /// **DataMatrix is not there**: it appeared on no package in the sample, and
+  /// accepting it without interpreting the GS1 identifiers would send the wrong
+  /// digits.
   ///
-  /// El QR entra en la lista pero no se consulta nunca: está para poder decir
-  /// qué se leyó. En un envase el QR suele ser del laboratorio —lleva su logo
-  /// dentro— y no identifica el producto; y puede ser también una etiqueta
-  /// nuestra. Sin leerlo, apuntar ahí no haría nada, y no hacer nada es la peor
-  /// respuesta posible cuando no se sabe si falla la cámara o la puntería.
+  /// QR is on the list but is never looked up: it is there so we can say what
+  /// was read. On a package the QR is usually the laboratory's — it carries
+  /// their logo inside — and does not identify the product; and it may also be
+  /// a label of ours. Without reading it, pointing there would do nothing, and
+  /// doing nothing is the worst possible answer when you cannot tell whether
+  /// the camera or your aim is at fault.
   static const productFormats = [
     BarcodeFormat.ean13,
     BarcodeFormat.ean8,
@@ -85,8 +86,8 @@ class ScannerCamera extends StatelessWidget {
   );
 }
 
-/// Sin cámara no hay pantalla que valga: en vez de un rectángulo negro, se
-/// dice qué falta y se ofrece reintentar.
+/// With no camera there is no screen worth having: instead of a black
+/// rectangle, what is missing is said and a retry is offered.
 class ScannerError extends StatelessWidget {
   const ScannerError({super.key, required this.error, required this.onRetry});
 
@@ -124,7 +125,7 @@ class ScannerError extends StatelessWidget {
   };
 }
 
-/// Franja inferior con la instrucción de la pantalla.
+/// A bottom strip with the screen's instruction.
 class ScannerHint extends StatelessWidget {
   const ScannerHint(this.text, {super.key});
 

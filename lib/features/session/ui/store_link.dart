@@ -5,15 +5,15 @@ import '../../../core/auth/auth_providers.dart';
 import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/platform/open_link.dart';
 
-/// Abre la ficha de esta aplicación en la tienda.
+/// Opens this application's page in the store.
 ///
-/// Lo usan las dos pantallas de versión —el muro y el aviso— y por eso vive
-/// aparte: la de arriba no es la clase de lógica que conviene tener dos veces,
-/// porque el día que cambie el esquema cambiaría en una sola.
+/// Both version screens use it — the wall and the notice — and that is why it
+/// lives apart: what is above is not the kind of logic worth having twice,
+/// because the day the scheme changes it would change in only one of them.
 ///
-/// `market://` lo atiende la tienda instalada sin pasar por el navegador. Si no
-/// hay ninguna que lo resuelva —un emulador sin Play, un dispositivo sin
-/// servicios de Google— se cae a la ficha web, que también sirve.
+/// `market://` is handled by the installed store without going through the
+/// browser. If nothing resolves it — an emulator with no Play, a device without
+/// Google services — it falls back to the web page, which also works.
 Future<void> openStore(BuildContext context, WidgetRef ref) async {
   final package = ref.read(appPackageNameProvider);
   final open = ref.read(openLinkProvider);

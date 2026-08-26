@@ -2,16 +2,16 @@ import 'package:flutter/widgets.dart';
 
 import 'generated/app_localizations.dart';
 
-/// Los textos, desde cualquier sitio que tenga un contexto.
+/// The texts, from anywhere that has a context.
 ///
-/// `AppLocalizations.of(context)!` en cada llamada es correcto y se lee mal,
-/// sobre todo dentro de funciones flecha, donde declarar una variable obliga a
-/// convertir el cuerpo. Con esto una etiqueta se pide igual esté donde esté:
-/// `context.l10n.boxStatusSealed`.
+/// `AppLocalizations.of(context)!` at every call site is correct and reads
+/// badly, especially inside arrow functions, where declaring a variable forces
+/// the body to be converted. With this, a label is asked for the same way
+/// wherever it is: `context.l10n.boxStatusSealed`.
 ///
-/// El `!` es seguro porque el delegado está declarado en `MaterialApp` y no hay
-/// ningún widget de esta aplicación fuera de él. Si algún día lo hubiera, es
-/// mejor que reviente donde se escribió que enseñar una cadena vacía.
+/// The `!` is safe because the delegate is declared in `MaterialApp` and no
+/// widget of this application lives outside it. If one ever did, it is better
+/// that it blows up where it was written than that it shows an empty string.
 extension AppLocalizationsX on BuildContext {
   AppLocalizations get l10n => AppLocalizations.of(this)!;
 }

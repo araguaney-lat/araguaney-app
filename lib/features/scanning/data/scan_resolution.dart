@@ -4,24 +4,24 @@ import '../../../core/api/generated/models/donation_out.dart';
 import '../../../core/api/generated/models/pallet_public_out.dart';
 import '../../../core/db/app_database.dart';
 
-/// A dónde lleva un escaneo.
+/// Where a scan leads.
 sealed class ScanResolution {
   const ScanResolution();
 }
 
-/// La caja estaba en el cache: se abre la ficha del operador, la completa, y
-/// funciona sin señal.
+/// The box was in the cache: the operator's record opens, complete, and it
+/// works without signal.
 final class CachedBoxFound extends ScanResolution {
   const CachedBoxFound(this.box);
 
   final BoxRow box;
 }
 
-/// La caja no estaba cacheada y se resolvió por la ficha pública.
+/// The box was not cached and was resolved through the public record.
 ///
-/// Trae menos que el registro del operador. La pantalla lo dice: la diferencia
-/// entre «esto es todo lo que hay» y «esto es lo que se pudo consultar» cambia
-/// lo que alguien decide con ella delante.
+/// It brings less than the operator's record. The screen says so: the
+/// difference between «this is all there is» and «this is what could be looked
+/// up» changes what somebody decides with it in front of them.
 final class PublicBoxFound extends ScanResolution {
   const PublicBoxFound(this.box);
 
@@ -40,15 +40,15 @@ final class DonationFound extends ScanResolution {
   final DonationOut donation;
 }
 
-/// El texto leído no es un código de la plataforma.
+/// The text that was read is not a platform code.
 final class ScanNotRecognized extends ScanResolution {
   const ScanNotRecognized(this.raw);
 
   final String raw;
 }
 
-/// El código parece válido pero no se pudo resolver: sin señal, sin permiso o
-/// el servidor no lo conoce.
+/// The code looks valid but could not be resolved: no signal, no permission, or
+/// the server does not know it.
 final class ScanResolutionFailed extends ScanResolution {
   const ScanResolutionFailed(this.failure);
 

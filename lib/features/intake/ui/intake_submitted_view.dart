@@ -4,10 +4,10 @@ import '../../../core/api/generated/models/intake_out.dart';
 import '../../../core/i18n/l10n_extension.dart';
 import '../../boxes/ui/box_label_view.dart';
 
-/// Lo que se ve cuando el servidor aceptó la captura.
+/// What is seen when the server accepted the capture.
 ///
-/// Su trabajo es que las cajas se etiqueten antes de moverse: los códigos que
-/// asignó el servidor están aquí, cada uno a un toque de su QR.
+/// Its job is getting the boxes labelled before they move: the codes the server
+/// assigned are here, each one a tap away from its QR.
 class IntakeSubmittedView extends StatelessWidget {
   const IntakeSubmittedView({super.key, required this.intake});
 

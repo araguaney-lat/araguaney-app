@@ -1,22 +1,23 @@
 import '../i18n/generated/app_localizations.dart';
 
-/// Copia propia para rechazos que el backend nombra con un código.
+/// Copy of our own for refusals the backend names with a code.
 ///
-/// Existe por dos motivos distintos que dan el mismo resultado:
+/// It exists for two different reasons that lead to the same place:
 ///
-/// 1. **Un rechazo con nombre describe una regla que la persona puede
-///    resolver.** El backend usa `FORBIDDEN` como código genérico para «no te
-///    toca», y códigos propios —`SELF_REVIEW`, `NOT_CAMPAIGN_MEMBER`— cuando el
-///    motivo es una regla concreta. El código es la señal: si el servidor se
-///    tomó el trabajo de nombrarla, hay algo que hacer con esa información.
-/// 2. **Varios de esos mensajes están en inglés** y quien opera lee en español.
+/// 1. **A named refusal describes a rule the person can act on.** The backend
+///    uses `FORBIDDEN` as the generic code for «no te toca», and codes of its
+///    own — `SELF_REVIEW`, `NOT_CAMPAIGN_MEMBER` — when the reason is a
+///    specific rule. The code is the signal: if the server took the trouble to
+///    name it, there is something to do with that information.
+/// 2. **Several of those messages are in English** and whoever operates reads
+///    Spanish.
 ///
-/// Es copia de presentación para códigos nombrados, no una segunda copia de la
-/// regla: aquí no se decide nada, solo se dice. Un código que no esté en esta
-/// tabla no se inventa —ver `ApiFailure.operatorMessage` para qué se muestra
-/// entonces— y la tabla no debería crecer mucho: si lo hace, lo correcto es que
-/// los mensajes vengan del backend en español, que es la petición 6 de
-/// `docs/backend-requests.md`.
+/// It is presentation copy for named codes, not a second copy of the rule:
+/// nothing is decided here, it is only said. A code that is not in this table
+/// is not invented — see `ApiFailure.operatorMessage` for what is shown then —
+/// and the table should not grow much: if it does, the right answer is for the
+/// messages to arrive from the backend already translated, which is request 6
+/// of `docs/backend-requests.md`.
 String? refusalCopyFor(AppLocalizations l10n, String code) => switch (code) {
   'SELF_REVIEW' => l10n.refusalSelfReview,
   'NOT_CAMPAIGN_MEMBER' => l10n.refusalNotCampaignMember,

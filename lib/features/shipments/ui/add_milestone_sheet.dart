@@ -5,15 +5,17 @@ import '../../../core/ui/record_field.dart';
 import '../../../core/ui/sheet_insets.dart';
 import '../data/shipments_repository.dart';
 
-/// Anotar un hito del viaje.
+/// Recording a milestone of the journey.
 ///
-/// Es la operación con el caso móvil más claro de toda la fase, y no está
-/// cerca: alguien está junto a un camión, en un puesto de control, sin
-/// escritorio. Un hito no mueve el estado del envío — registra que algo pasó.
+/// It is the operation with the clearest mobile case in the whole phase, and it
+/// is not close: somebody is next to a lorry, at a checkpoint, with no desk. A
+/// milestone does not move the shipment's state — it records that something
+/// happened.
 ///
-/// **La fecha es opcional y por eso existe.** El reporte del consignatario
-/// suele llegar tarde y describir algo de ayer; obligar a que todo hito sea
-/// «ahora» convertiría el registro en una lista de cuándo alguien tuvo señal.
+/// **The date is optional and that is why it exists.** The consignee's report
+/// usually arrives late and describes something from yesterday; forcing every
+/// milestone to be «ahora» would turn the record into a list of when somebody
+/// had signal.
 class AddMilestoneSheet extends StatefulWidget {
   const AddMilestoneSheet({super.key});
 
@@ -51,7 +53,7 @@ class _AddMilestoneSheetState extends State<AddMilestoneSheet> {
       context: context,
       initialDate: _occurredAt ?? now,
       firstDate: now.subtract(const Duration(days: 365)),
-      // Un hito describe algo que ya pasó.
+      // A milestone describes something that already happened.
       lastDate: now,
     );
     if (chosen != null) setState(() => _occurredAt = chosen);

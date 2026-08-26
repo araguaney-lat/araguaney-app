@@ -10,25 +10,25 @@ import '../../../core/ui/category_label.dart';
 import '../data/catalog_providers.dart';
 import '../data/catalog_repository.dart';
 
-/// Dar de alta un producto, o corregirlo.
+/// Adding a product, or correcting one.
 ///
-/// **Solo lo ve quien administra a nivel nacional**, porque es lo único que el
-/// servidor acepta: `product_type.py` exige ese rol para crear y para editar.
-/// Quien captura llega hasta aquí por otro camino —pedirlo— y no por un
-/// formulario que iba a responder 403.
+/// **Only whoever administers nationally sees it**, because it is all the
+/// server accepts: `product_type.py` requires that role to create and to edit.
+/// Whoever captures reaches this point by another road — asking for it — and
+/// not through a form that was going to answer 403.
 ///
-/// Obligatorios son los dos que el contrato exige, nombre y categoría. Añadir
-/// más sería inventar una regla de negocio en el cliente.
+/// Required are the two the contract requires, name and category. Adding more
+/// would be inventing a business rule in the client.
 class ProductFormView extends ConsumerStatefulWidget {
   const ProductFormView({super.key, this.existing, this.prefill});
 
-  /// Nulo para un alta; el producto a corregir en otro caso.
+  /// Null when adding; the product to correct otherwise.
   final ProductTypeOut? existing;
 
-  /// Lo que Open Food Facts supo del envase escaneado.
+  /// What Open Food Facts knew about the scanned package.
   ///
-  /// Llega como borrador y nada más: son datos de un tercero, y quien los
-  /// confirma es quien tiene el envase delante.
+  /// It arrives as a draft and nothing more: it is a third party's data, and
+  /// whoever confirms it is whoever has the package in front of them.
   final BarcodePrefill? prefill;
 
   static Route<ProductTypeOut> route({
@@ -84,8 +84,8 @@ class _ProductFormViewState extends ConsumerState<ProductFormView> {
     }
   }
 
-  /// Una categoría que esta versión no conoce no puede perderse en un
-  /// desplegable: el contrato es aditivo y el servidor puede haber añadido una.
+  /// A category this version does not know cannot get lost in a dropdown: the
+  /// contract is additive and the server may have added one.
   String _knownCategory(String category) =>
       productCategories.contains(category) ? category : productCategories.first;
 

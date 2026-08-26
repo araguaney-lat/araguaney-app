@@ -9,12 +9,12 @@ import '../../team/data/team_repository.dart';
 import '../data/users_providers.dart';
 import '../data/users_repository.dart';
 
-/// Qué es una persona en la plataforma.
+/// What a person is on the platform.
 ///
-/// Solo lectura y una acción. Cambiar el rol o el centro de alguien tiene
-/// consecuencias que duran más que el momento, y hacerlo desde un teléfono no
-/// es mejor que hacerlo desde un escritorio; reenviarle el acceso, en cambio,
-/// se pide de viva voz delante de ti.
+/// Read-only, and one action. Changing somebody's role or centre has
+/// consequences that outlast the moment, and doing it from a phone is no better
+/// than doing it from a desk; resending their access, on the other hand, is
+/// asked for out loud in front of you.
 class UserRecordView extends ConsumerStatefulWidget {
   const UserRecordView({super.key, required this.user});
 
@@ -71,8 +71,9 @@ class _UserRecordViewState extends ConsumerState<UserRecordView> {
           if (user.centerId case final centerId?)
             RecordField(
               label: context.l10n.centerLabel,
-              // El nombre solo si esta sesión puede resolverlo; si no, nada,
-              // porque un identificador no le dice a nadie de qué centro habla.
+              // The name only if this session can resolve it; otherwise
+              // nothing, because an identifier tells nobody which centre it is
+              // talking about.
               value: centers[centerId] ?? context.l10n.usersCenterUnnamed,
             ),
           if (user.countryCode case final country?)
@@ -83,8 +84,8 @@ class _UserRecordViewState extends ConsumerState<UserRecordView> {
                 ? context.l10n.userActive
                 : context.l10n.accountDisabledTag,
           ),
-          // Dos señales de que una cuenta se usó de verdad: el segundo factor
-          // se activa desde dentro, y los términos se aceptan al entrar.
+          // Two signs that an account was really used: the second factor is
+          // turned on from inside, and the terms are accepted on the way in.
           if (user.totpEnabled)
             RecordField(
               label: context.l10n.totpLabel,
@@ -96,8 +97,8 @@ class _UserRecordViewState extends ConsumerState<UserRecordView> {
               value: context.l10n.userPendingTerms,
             ),
           const SizedBox(height: 16),
-          // Reenviar sobre una cuenta desactivada lo rechaza el servidor, y
-          // activarla es trabajo de escritorio.
+          // Resending on a deactivated account is refused by the server, and
+          // activating it is desk work.
           if (user.isActive)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),

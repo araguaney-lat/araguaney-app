@@ -16,35 +16,35 @@ import '../center/center_providers.dart';
 import '../ui/brand_splash.dart';
 import 'push_router.dart';
 
-/// Decide qué se ve según el estado de la sesión.
+/// Decides what is on screen according to the state of the session.
 ///
-/// La navegación no autenticada no existe: no hay una ruta a la que llegar sin
-/// sesión y luego rebotar, sino un único sitio que decide. Así no queda ninguna
-/// pantalla accesible por descuido desde un enlace o un `pop`.
+/// Unauthenticated navigation does not exist: there is no route to reach
+/// without a session and bounce off, only one place that decides. That way no
+/// screen is left reachable by accident from a link or a `pop`.
 class SessionGate extends ConsumerWidget {
   const SessionGate({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Se interpone antes que la sesión, y solo cuando el servidor lo dijo:
-    // mientras la consulta está en vuelo, o si falló, esto no vale
-    // `updateRequired` y no se ve nada distinto. Nadie se queda fuera por una
-    // petición que no llegó.
-    // `valueOrNull` y no `value`: en un `AsyncError` el segundo **relanza**, y
-    // eso convertiría un fallo de la comprobación en una pantalla de error —
-    // exactamente lo que esta compuerta promete no hacer.
+    // This comes before the session, and only when the server said so: while
+    // the check is in flight, or if it failed, this is not `updateRequired` and
+    // nothing looks different. Nobody is locked out by a request that never
+    // arrived.
+    // `valueOrNull` and not `value`: on an `AsyncError` the second one
+    // **rethrows**, which would turn a failed check into an error screen —
+    // exactly what this gate promises not to do.
     final version = ref.watch(clientVersionStatusProvider).valueOrNull;
 
-    // El muro va primero y no admite nada por delante: por debajo del mínimo el
-    // contrato ya no garantiza que esta compilación se entienda.
+    // The wall goes first and takes nothing ahead of it: below the minimum,
+    // the contract no longer guarantees this build is understood.
     if (version?.status == ClientVersionStatus.updateRequired) {
       return const UpdateRequiredView();
     }
 
-    // El aviso va después, y solo en el arranque. Se descarta para el resto de
-    // la vida del proceso en cuanto alguien lo ve, así que un cambio de sesión
-    // —entrar, cambiar una contraseña obligada— no lo trae de vuelta a mitad de
-    // un turno.
+    // The notice comes after, and only at start-up. It is dismissed for the
+    // rest of the process's life as soon as somebody sees it, so a change of
+    // session — signing in, a forced password change — does not bring it back
+    // halfway through a shift.
     if (version?.status == ClientVersionStatus.updateAvailable &&
         !ref.watch(updatePromptDismissedProvider) &&
         !(ref.watch(updateSnoozedProvider).valueOrNull ?? true)) {
@@ -57,21 +57,21 @@ class SessionGate extends ConsumerWidget {
       SessionRestoring() => const BrandSplash(),
       SessionAbsent() => const LoginView(),
       SessionAwaitingTotp() => const TotpChallengeView(),
-      // El cambio obligatorio se interpone incluso con sesión válida: el
-      // servidor lo exige y saltarlo dejaría viva una clave temporal.
+      // The forced change comes even with a valid session: the server requires
+      // it, and skipping it would leave a temporary password alive.
       SessionActive(:final session) when session.mustChangePassword =>
         const ChangePasswordView(),
-      // Una administración nacional no pertenece a ningún centro, y el servidor
-      // exige que **nombre uno** en cada creación. Preguntarlo aquí y no en el
-      // primer formulario es lo que evita que la aplicación se lea entera como
-      // si funcionara hasta que algo se intenta escribir.
+      // A national administration belongs to no centre, and the server
+      // requires one to be **named** on every create. Asking here rather than
+      // in the first form is what keeps the application from reading as if it
+      // all worked until something is written.
       SessionActive() when ref.watch(workingCenterPendingProvider) =>
         const BrandSplash(),
       SessionActive() when ref.watch(needsWorkingCenterProvider) =>
         const ChooseCenterView(),
-      // El enrutado de avisos envuelve solo esta rama: navegar exige sesión,
-      // y ni el inicio de sesión ni el cambio obligatorio de contraseña se
-      // pueden saltar porque alguien tocara una notificación.
+      // Notice routing wraps this branch only: navigating requires a session,
+      // and neither signing in nor a forced password change can be skipped
+      // because somebody tapped a notification.
       SessionActive() => const PushRouter(child: AppShell()),
     };
   }

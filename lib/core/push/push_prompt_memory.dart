@@ -1,18 +1,18 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
-/// Si ya se le ofreció a esta persona activar los avisos.
+/// Whether this person has already been offered to turn notices on.
 ///
-/// Existe porque Android no lo cuenta. El sistema responde «concedido» o «no
-/// concedido», y «no concedido» tapa dos situaciones que exigen lo contrario la
-/// una de la otra: a quien nunca se le preguntó hay que ofrecerle, y a quien
-/// dijo que no hay que dejarlo en paz. iOS sí las distingue —tiene
-/// `notDetermined`—, así que esta memoria se lleva en los dos por igual y la
-/// interfaz deja de depender de una diferencia entre plataformas.
+/// It exists because Android does not say. The system answers «concedido» or
+/// «no concedido», and «no concedido» covers two situations that call for
+/// opposite things: somebody who was never asked should be offered, and
+/// somebody who said no should be left alone. iOS does tell them apart — it has
+/// `notDetermined` — so this memory is kept on both alike and the interface
+/// stops depending on a difference between platforms.
 ///
-/// No es información sensible ni de la sesión: es del dispositivo, y se va con
-/// la aplicación cuando se desinstala. Por eso vive en las preferencias y no en
-/// el almacén seguro ni en la base de datos, que se limpia al cambiar de
-/// persona.
+/// It is neither sensitive nor session information: it belongs to the device,
+/// and it goes with the application when it is uninstalled. That is why it
+/// lives in the preferences and not in secure storage or in the database, which
+/// is wiped when the person changes.
 abstract interface class PushPromptMemory {
   Future<bool> alreadyOffered();
 

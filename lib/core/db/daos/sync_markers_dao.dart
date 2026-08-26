@@ -5,8 +5,8 @@ import '../tables/sync_markers_table.dart';
 
 part 'sync_markers_dao.g.dart';
 
-/// Recursos que la aplicación sincroniza. Son claves de una tabla, no una
-/// enumeración del dominio: nombran peticiones, no conceptos del backend.
+/// The resources the application syncs. They are keys in a table rather than a
+/// domain enum: they name requests, not the backend's concepts.
 abstract final class SyncResource {
   static const productTypes = 'product_types';
   static const boxes = 'boxes';
@@ -25,12 +25,12 @@ class SyncMarkersDao extends DatabaseAccessor<AppDatabase>
     syncMarkers,
   )..where((t) => t.resource.equals(resource))).getSingleOrNull();
 
-  /// Marca una sincronización exitosa y borra el último fallo: el dato ya no
-  /// está en duda.
+  /// Marks a successful sync and clears the last failure: the data is no
+  /// longer in doubt.
   ///
-  /// El borrado se escribe con `Value(null)` explícito. Un `null` en la clase de
-  /// datos sería indistinguible de «no toques esta columna», y el fallo
-  /// anterior sobreviviría a la sincronización que lo resolvió.
+  /// The clearing is written with an explicit `Value(null)`. A `null` in the
+  /// data class would be indistinguishable from «do not touch this column», and
+  /// the previous failure would outlive the sync that resolved it.
   Future<void> markSynced(String resource, DateTime at) =>
       into(syncMarkers).insertOnConflictUpdate(
         SyncMarkersCompanion.insert(
@@ -40,8 +40,8 @@ class SyncMarkersDao extends DatabaseAccessor<AppDatabase>
         ),
       );
 
-  /// Registra un fallo **sin tocar** la última sincronización correcta: la
-  /// interfaz necesita seguir sabiendo de cuándo son los datos que muestra.
+  /// Records a failure **without touching** the last successful sync: the
+  /// interface still needs to know how old the data it is showing is.
   Future<void> markFailed(String resource, String failureCode) async {
     final current = await read(resource);
     await into(syncMarkers).insertOnConflictUpdate(

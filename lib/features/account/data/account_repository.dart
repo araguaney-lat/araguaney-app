@@ -9,7 +9,7 @@ import '../../../core/api/generated/models/user_out.dart';
 import '../../../core/api/generated/models/user_profile_out.dart';
 import '../../../core/api/generated/models/user_update.dart';
 
-/// Cómo terminó una operación de la cuenta.
+/// How an account operation ended.
 sealed class AccountOutcome<T> {
   const AccountOutcome();
 }
@@ -26,22 +26,22 @@ final class AccountRefused<T> extends AccountOutcome<T> {
   final ApiFailure failure;
 }
 
-/// La cuenta de quien usa la aplicación: quién es, su contraseña y su segundo
-/// factor.
+/// The account of whoever uses the application: who they are, their password
+/// and their second factor.
 ///
-/// Nada de esto se cachea. Son operaciones que exigen señal por naturaleza —no
-/// se cambia una contraseña sin servidor— y guardar un perfil viejo solo serviría
-/// para enseñar un rol que dejó de ser cierto.
+/// None of this is cached. They are operations that require signal by nature —
+/// a password is not changed without a server — and storing an old profile
+/// would only serve to show a role that stopped being true.
 class AccountRepository {
   const AccountRepository(this._auth);
 
   final AuthApi _auth;
 
-  /// Quién es y cómo está protegida su cuenta.
+  /// Who they are and how their account is protected.
   ///
-  /// Son dos peticiones porque son dos vistas distintas del mismo usuario:
-  /// `/me/profile` trae el nombre del centro y las campañas, y `/me` es el
-  /// único que dice si el segundo factor está activo.
+  /// They are two requests because they are two different views of the same
+  /// user: `/me/profile` brings the centre's name and the campaigns, and `/me`
+  /// is the only one that says whether the second factor is on.
   Future<AccountOutcome<({UserProfileOut profile, UserOut account})>>
   overview() => _run(() async {
     final results = await Future.wait([
@@ -64,17 +64,18 @@ class AccountRepository {
     ),
   );
 
-  /// Empieza a activar el segundo factor. Devuelve el secreto y su `otpauth:`,
-  /// que es lo que se dibuja como QR para la aplicación de códigos.
+  /// Starts turning the second factor on. It returns the secret and its
+  /// `otpauth:`, which is what gets drawn as a QR for the code application.
   ///
-  /// No queda activado hasta [confirmTotp]: el servidor exige demostrar que el
-  /// código se genera bien antes de exigirlo al entrar. Sin ese paso, un error
-  /// al copiar el secreto dejaría a la persona fuera de su propia cuenta.
+  /// It is not on until [confirmTotp]: the server requires proof that the code
+  /// is generated correctly before requiring it on the way in. Without that
+  /// step, a mistake copying the secret would leave the person out of their own
+  /// account.
   Future<AccountOutcome<TotpSetupOut>> setUpTotp() =>
       _run(() => _auth.totpSetupV1AuthTotpSetupPost());
 
-  /// Confirma el segundo factor. Devuelve los códigos de respaldo, y es la
-  /// **única** vez que el servidor los entrega.
+  /// Confirms the second factor. It returns the backup codes, and it is the
+  /// **only** time the server hands them over.
   Future<AccountOutcome<List<String>>> confirmTotp(String code) => _run(
     () async => (await _auth.totpConfirmV1AuthTotpConfirmPost(
       body: TotpConfirmIn(code: code),
@@ -86,12 +87,12 @@ class AccountRepository {
         _auth.totpDisableV1AuthTotpDisablePost(body: TotpConfirmIn(code: code)),
   );
 
-  /// Pide el correo de recuperación.
+  /// Asks for the recovery email.
   ///
-  /// El servidor contesta lo mismo exista o no la cuenta, a propósito: decir
-  /// «ese correo no está registrado» convierte esta pantalla en una forma de
-  /// averiguar quién tiene cuenta. La interfaz repite esa respuesta neutra y no
-  /// intenta ser más útil de lo que el servidor quiere ser.
+  /// The server answers the same whether or not the account exists, on purpose:
+  /// saying «that address is not registered» turns this screen into a way of
+  /// finding out who has an account. The interface repeats that neutral answer
+  /// and does not try to be more helpful than the server wants to be.
   Future<AccountOutcome<void>> requestPasswordReset(String email) => _run(
     () => _auth.forgotPasswordV1AuthForgotPasswordPost(
       body: ForgotPasswordRequest(email: email),

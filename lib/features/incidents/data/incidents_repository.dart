@@ -8,11 +8,12 @@ import '../../../core/api/generated/models/incident_resolve.dart';
 import '../../../core/api/generated/models/reception_out.dart';
 import '../../../core/i18n/generated/app_localizations.dart';
 
-/// Tipos de incidencia que reconoce el backend.
+/// The incident types the backend recognises.
 ///
-/// Se nombran aquí para poder ofrecerlos en un desplegable; el servidor sigue
-/// siendo quien valida. Los tres primeros los abre él solo al reconciliar una
-/// recepción, así que en el móvil se levantan sobre todo los dos últimos.
+/// They are named here so they can be offered in a dropdown; the server is
+/// still the one that validates. It opens the first three by itself when
+/// reconciling a reception, so on mobile it is mostly the last two that get
+/// raised.
 abstract final class IncidentType {
   static const weightDifference = 'WEIGHT_DIFF';
   static const missingBox = 'MISSING_BOX';
@@ -29,7 +30,7 @@ abstract final class IncidentType {
   ];
 }
 
-/// Nombre en español de un tipo. Traducción de interfaz, no interpretación.
+/// A type's name in Spanish. Interface translation, not interpretation.
 String incidentTypeLabel(AppLocalizations l10n, String type) => switch (type) {
   IncidentType.weightDifference => l10n.incidentTypeWeightDiff,
   IncidentType.missingBox => l10n.incidentTypeMissingBox,
@@ -55,12 +56,13 @@ final class IncidentRejected extends IncidentOutcome {
   final ApiFailure failure;
 }
 
-/// Incidencias de un envío, y lo que llegó de él.
+/// A shipment's incidents, and what arrived from it.
 ///
-/// Las dos cosas viven juntas porque cuentan la misma historia desde los dos
-/// lados: la recepción dice qué llegó bien, y las incidencias qué no. El centro
-/// que envió puede leer ambas —le importa qué pasó con lo suyo— y puede
-/// levantar incidencias, que es lo que hace quien nota que falta algo.
+/// The two live together because they tell the same story from both sides: the
+/// reception says what arrived well, and the incidents what did not. The centre
+/// that sent it can read both — what happened to its own matters to it — and
+/// can raise incidents, which is what somebody who notices something missing
+/// does.
 class IncidentsRepository {
   IncidentsRepository(this._shipments);
 
@@ -71,10 +73,11 @@ class IncidentsRepository {
         shipmentId: shipmentId,
       );
 
-  /// La recepción registrada, o nulo si el envío todavía no se reconcilió.
+  /// The recorded reception, or null if the shipment has not been reconciled
+  /// yet.
   ///
-  /// Un 404 aquí no es un fallo que mostrar: es la respuesta a «¿ya llegó?»,
-  /// y la respuesta es que todavía no.
+  /// A 404 here is not a failure to show: it is the answer to «has it arrived
+  /// yet?», and the answer is not yet.
   Future<ReceptionOut?> reception(String shipmentId) async {
     try {
       return await _shipments.getReceptionV1ShipmentsShipmentIdReceptionGet(
@@ -111,15 +114,15 @@ class IncidentsRepository {
   }
 }
 
-/// Las incidencias del centro, y cerrarlas.
+/// The centre's incidents, and closing them.
 ///
-/// Va aparte del repositorio de envíos porque responde otra pregunta. Aquel
-/// contesta «qué pasó con este envío»; este contesta «qué hay abierto», que es
-/// lo que nadie podía preguntar: la aplicación sabía **levantar** una
-/// incidencia y no sabía enseñarla, así que quien reportaba un problema no
-/// tenía forma de saber si alguien lo miró.
+/// It goes apart from the shipments repository because it answers a different
+/// question. That one answers «what happened to this shipment»; this one
+/// answers «what is open», which is what nobody could ask: the application knew
+/// how to **raise** an incident and did not know how to show it, so whoever
+/// reported a problem had no way of knowing whether anybody had looked.
 ///
-/// El servidor acota por centro solo: una administración nacional las ve todas.
+/// The server narrows by centre only: a national administration sees them all.
 class CenterIncidentsRepository {
   CenterIncidentsRepository(this._incidents);
 
@@ -135,8 +138,8 @@ class CenterIncidentsRepository {
     }
   }
 
-  /// Cerrar una incidencia. La nota es obligatoria en el contrato, y con razón:
-  /// es lo único que le queda a quien la reportó para saber en qué terminó.
+  /// Closing an incident. The note is required by the contract, and rightly so:
+  /// it is all that is left to whoever reported it to know how it ended.
   Future<IncidentsOutcome<IncidentOut>> resolve(String id, String note) async {
     try {
       return IncidentsRead(

@@ -2,23 +2,24 @@ import 'package:flutter/material.dart';
 
 import 'theme/app_colors.dart';
 
-/// Lo primero que dibuja la aplicación, mientras se lee el almacén seguro y se
-/// restaura la sesión.
+/// The first thing the application draws, while secure storage is read and the
+/// session is restored.
 ///
-/// **Es una copia deliberada del splash del sistema.** Desde Android 12 hay dos
-/// dueños de esa pantalla: el sistema operativo dibuja la suya al arrancar el
-/// proceso y la aplicación dibuja la siguiente en cuanto Flutter tiene un
-/// fotograma. La primera no se puede quitar. Lo único que está en nuestra mano
-/// es que la segunda sea indistinguible, y entonces no se perciben dos
-/// presentaciones sino una que dura un poco más.
+/// **It is a deliberate copy of the system splash.** Since Android 12 that
+/// screen has two owners: the operating system draws its own when the process
+/// starts, and the application draws the next one as soon as Flutter has a
+/// frame. The first cannot be removed. All that is within our reach is making
+/// the second indistinguishable, and then what is perceived is not two
+/// presentations but one that lasts a little longer.
 ///
-/// Por eso no lleva el nombre ni un indicador de progreso: el splash del
-/// sistema solo admite un icono sobre un color —cualquier texto queda fuera de
-/// su máscara circular— y todo lo que se añada aquí se ve como un cambio a
-/// mitad del arranque.
+/// That is why it carries neither the name nor a progress indicator: the system
+/// splash only takes an icon over a colour — any text falls outside its
+/// circular mask — and everything added here reads as a change halfway through
+/// the launch.
 ///
-/// Los colores están escritos y no salen del tema, por la misma razón: el tema
-/// tiene versión clara y oscura y el splash del sistema es el mismo en las dos.
+/// The colours are written out and do not come from the theme, for the same
+/// reason: the theme has a light and a dark version and the system splash is
+/// the same in both.
 class BrandSplash extends StatelessWidget {
   const BrandSplash({super.key});
 

@@ -11,20 +11,21 @@ import '../data/risk_reviews_providers.dart';
 import '../data/risk_reviews_repository.dart';
 import 'resolve_review_sheet.dart';
 
-/// Revisiones de riesgo del centro.
+/// The centre's risk reviews.
 ///
-/// Es el destino de un aviso `risk_review`, y también la única pantalla donde
-/// se puede leer **por qué** se levantó una: el aviso no lo dice a propósito,
-/// porque se lee en una pantalla de bloqueo y a veces con alguien al lado.
+/// It is a `risk_review` notice's destination, and also the only screen where
+/// **why** one was raised can be read: the notice does not say so on purpose,
+/// because it is read on a lock screen and sometimes with somebody standing
+/// next to you.
 ///
-/// Cada tarjeta es una decisión, así que lleva su motivo a la vista y el par
-/// aprobar/rechazar al alcance del pulgar. Las que ya se resolvieron bajan al
-/// final: siguen consultables y dejan de competir con lo que espera.
+/// Each card is a decision, so it carries its reason in sight and the
+/// approve/reject pair within thumb's reach. The ones already resolved go to
+/// the bottom: they stay readable and stop competing with what is waiting.
 class RiskReviewsView extends ConsumerWidget {
   const RiskReviewsView({super.key, this.highlightIntakeId});
 
-  /// La captura que motivó el aviso que trajo a alguien hasta aquí. La revisión
-  /// que le corresponde se marca, para no obligar a buscarla en una lista.
+  /// The capture behind the notice that brought somebody here. The review it
+  /// belongs to is highlighted, so nobody has to hunt for it in a list.
   final String? highlightIntakeId;
 
   static Route<void> route({String? highlightIntakeId}) =>
@@ -32,11 +33,11 @@ class RiskReviewsView extends ConsumerWidget {
         builder: (_) => RiskReviewsView(highlightIntakeId: highlightIntakeId),
       );
 
-  /// Cierra una revisión con lo que decida quien coordina.
+  /// Closes a review with whatever coordination decides.
   ///
-  /// Que otra persona la haya resuelto desde el panel mientras esta pantalla
-  /// estaba abierta es normal: el servidor lo dice y ese texto se muestra tal
-  /// cual, en vez de un error genérico que no explica nada.
+  /// Somebody else having resolved it from the panel while this screen was open
+  /// is normal: the server says so and that text is shown as it is, instead of
+  /// a generic error that explains nothing.
   Future<void> _resolve(
     BuildContext context,
     WidgetRef ref,
@@ -165,7 +166,8 @@ class _ReviewCard extends StatelessWidget {
   final RiskReviewOut review;
   final bool highlighted;
 
-  /// Nulo para quien no coordina: el servidor exige ese rol para resolver.
+  /// Null for somebody who does not coordinate: the server requires that role
+  /// to resolve.
   final VoidCallback? onResolve;
 
   @override
@@ -190,8 +192,8 @@ class _ReviewCard extends StatelessWidget {
             const SizedBox(height: 3),
             Text(
               [
-                // El contrato lo declara como texto, así que solo se lee
-                // como una cuenta cuando de verdad lo es.
+                // The contract declares it as text, so it is only read as a
+                // count when it really is one.
                 if (review.boxes case final boxes?)
                   switch (int.tryParse(boxes)) {
                     final count? => context.l10n.boxCount(count),
@@ -201,9 +203,9 @@ class _ReviewCard extends StatelessWidget {
               ].join(' · '),
               style: theme.textTheme.bodySmall,
             ),
-            // El motivo entre comillas y tal como lo redactó el servidor: es lo
-            // único que explica por qué esta captura está aquí, y reescribirlo
-            // sería opinar sobre una regla que no es nuestra.
+            // The reason in quotes and exactly as the server worded it: it is
+            // all that explains why this capture is here, and rewriting it
+            // would be opining on a rule that is not ours.
             if (review.reason case final reason?) ...[
               const SizedBox(height: 10),
               Text(
@@ -235,8 +237,8 @@ class _ReviewCard extends StatelessWidget {
   }
 }
 
-/// Una revisión ya decidida. Se conserva porque saber que algo se aprobó, y con
-/// qué nota, es la mitad del valor de haberlo marcado.
+/// A review already decided. It is kept because knowing that something was
+/// approved, and with what note, is half the value of having flagged it.
 class _SettledRow extends StatelessWidget {
   const _SettledRow({required this.review});
 

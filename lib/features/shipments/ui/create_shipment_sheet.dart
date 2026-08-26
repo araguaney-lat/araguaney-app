@@ -5,11 +5,11 @@ import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/ui/confirm_button.dart';
 import '../../../core/ui/sheet_insets.dart';
 
-/// Abrir un envío.
+/// Opening a shipment.
 ///
-/// Solo el destino es obligatorio, y es el contrato quien lo decide: un envío
-/// existe para llevar algo a alguna parte, y todo lo demás —transportista,
-/// referencia, notas— puede aparecer después, mientras el envío sigue abierto.
+/// Only the destination is required, and it is the contract that decides so: a
+/// shipment exists to take something somewhere, and everything else — carrier,
+/// reference, notes — can turn up later, while the shipment is still open.
 class CreateShipmentSheet extends StatefulWidget {
   const CreateShipmentSheet({super.key});
 

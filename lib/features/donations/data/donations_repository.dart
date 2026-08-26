@@ -6,18 +6,18 @@ import '../../../core/api/generated/models/donation_out.dart';
 import '../../../core/api/generated/models/product_type_out.dart';
 import '../../../core/api/generated/models/receive_in.dart';
 
-/// Estados en los que el servidor deja una línea de la donación al recibirla.
+/// The states the server leaves a donation line in when it is received.
 ///
-/// Son los tres de `_RECEPTION_STATES`. **Solo se mandan las excepciones**: lo
-/// que no viaja marcado el servidor lo da por recibido, y ese reparto es suyo,
-/// no una comodidad de esta pantalla.
+/// They are the three of `_RECEPTION_STATES`. **Only the exceptions are sent**:
+/// what does not travel marked, the server takes as received, and that split is
+/// its own, not a convenience of this screen.
 abstract final class ReceptionResult {
   static const received = 'RECEIVED';
   static const missing = 'MISSING';
   static const rejected = 'REJECTED';
 }
 
-/// Estados de una donación, tal como los publica el backend.
+/// A donation's states, exactly as the backend publishes them.
 abstract final class DonationStatus {
   static const pendingEmail = 'PENDING_EMAIL';
   static const registered = 'REGISTERED';
@@ -42,33 +42,33 @@ final class DonationsRefused<T> extends DonationsOutcome<T> {
   final ApiFailure failure;
 }
 
-/// Donaciones pre-registradas: las que alguien anunció desde la web y trae al
-/// centro.
+/// Pre-registered donations: the ones somebody announced from the web and
+/// brings to the centre.
 ///
-/// Leer se cachea en la pantalla que lo pide; **recibir exige señal**. Es una
-/// escritura sobre estado compartido, igual que sellar o despachar: dos
-/// personas recibiendo la misma donación desde dos teléfonos producirían dos
-/// verdades sobre las mismas cajas.
+/// Reading is cached by the screen that asks for it; **receiving requires
+/// signal**. It is a write over shared state, like sealing or dispatching: two
+/// people receiving the same donation from two phones would produce two truths
+/// about the same boxes.
 class DonationsRepository {
   DonationsRepository(this._donations);
 
   final DonationsApi _donations;
 
-  /// [incoming] separa las dos preguntas que alguien se hace en un centro: qué
-  /// viene en camino, y qué ya se recibió.
+  /// [incoming] separates the two questions somebody asks in a centre: what is
+  /// on its way, and what has already been received.
   Future<DonationsOutcome<List<DonationOut>>> list({required bool incoming}) =>
       _guard(() => _donations.listDonationsV1DonationsGet(incoming: incoming));
 
-  /// La ficha por su código impreso, que es lo que llega escaneando.
+  /// The record by its printed code, which is what arrives from a scan.
   Future<DonationsOutcome<DonationOut>> byCode(String code) =>
       _guard(() => _donations.getDonationV1DonationsCodeGet(code: code));
 
-  /// Registra la recepción.
+  /// Records the reception.
   ///
-  /// [results] lleva **solo** las líneas que no llegaron completas; [extras],
-  /// lo que vino sin anunciar. [centerId] solo lo pone una administración
-  /// nacional, que no tiene centro propio: para todos los demás el servidor
-  /// toma el del token e ignora lo que se mande.
+  /// [results] carries **only** the lines that did not arrive complete;
+  /// [extras], what came unannounced. [centerId] is set only by a national
+  /// administration, which has no centre of its own: for everybody else the
+  /// server takes it from the token and ignores whatever is sent.
   Future<DonationsOutcome<DonationOut>> receive({
     required String code,
     Map<String, String> results = const {},
@@ -81,12 +81,11 @@ class DonationsRepository {
     ),
   );
 
-  /// Hasta tres productos del catálogo para un renglón que el donante escribió
-  /// a mano.
+  /// Up to three catalogue products for a line the donor wrote by hand.
   ///
-  /// El servidor devuelve lista vacía si la capacidad está apagada o no
-  /// responde. Eso **no es un fallo**: recibir a mano nunca depende de que esto
-  /// conteste, y la pantalla se comporta igual que si no hubiera coincidencias.
+  /// The server returns an empty list if the capability is off or does not
+  /// answer. That is **not a failure**: receiving by hand never depends on this
+  /// answering, and the screen behaves just as it would with no matches.
   Future<DonationsOutcome<List<ProductTypeOut>>> suggestions({
     required String code,
     required String text,
@@ -97,8 +96,8 @@ class DonationsRepository {
     ),
   );
 
-  /// El enlace firmado de una foto. Caduca, así que se pide al mirarla y no se
-  /// guarda.
+  /// A photo's signed link. It expires, so it is asked for when the photo is
+  /// looked at and it is not stored.
   Future<DonationsOutcome<String>> photoUrl({
     required String code,
     required String photoId,
@@ -111,11 +110,11 @@ class DonationsRepository {
     return signed.url;
   });
 
-  /// Le pide al servidor que lea la etiqueta de una foto.
+  /// Asks the server to read a photo's label.
   ///
-  /// Lo que devuelve son **sugerencias**, y el contrato lo dice envolviéndolas
-  /// en `suggested`. Un diccionario vacío es la respuesta normal cuando la
-  /// capacidad está apagada: se teclea como siempre.
+  /// What it returns are **suggestions**, and the contract says so by wrapping
+  /// them in `suggested`. An empty dictionary is the normal answer when the
+  /// capability is off: people type as always.
   Future<DonationsOutcome<Map<String, String>>> readLabel({
     required String code,
     required String photoId,

@@ -13,12 +13,12 @@ import '../../../core/ui/status_labels.dart';
 import '../data/boxes_providers.dart';
 import 'box_label_view.dart';
 
-/// Ficha de una caja, con el mismo contenido que su registro en la web.
+/// A box's record, with the same content as its record on the web.
 ///
-/// La caja puede no estar en el cache: la ventana sincronizada es acotada, y
-/// una etiqueta vieja lleva a una caja que nunca se descargó. En ese caso se
-/// intenta traerla, y si no hay señal la pantalla lo dice en vez de fingir que
-/// no existe.
+/// The box may not be in the cache: the synced window is bounded, and an old
+/// label leads to a box that was never downloaded. In that case it is fetched,
+/// and if there is no signal the screen says so instead of pretending it does
+/// not exist.
 class BoxDetailView extends ConsumerStatefulWidget {
   const BoxDetailView({super.key, required this.boxId, required this.code});
 
@@ -41,9 +41,10 @@ class _BoxDetailViewState extends ConsumerState<BoxDetailView> {
     WidgetsBinding.instance.addPostFrameCallback((_) => _fetch());
   }
 
-  /// El resultado se le pasa al coordinador para que el estado de conexión
-  /// también aprenda de esta petición: si la ficha no llegó por falta de red,
-  /// la pantalla tiene que poder decirlo en vez de dar la caja por inexistente.
+  /// The result is handed to the coordinator so the connection state learns
+  /// from this request too: if the record did not arrive for lack of network,
+  /// the screen has to be able to say so instead of taking the box for
+  /// non-existent.
   Future<void> _fetch() async {
     if (!mounted) return;
     final outcome = await ref
@@ -53,9 +54,9 @@ class _BoxDetailViewState extends ConsumerState<BoxDetailView> {
     ref.read(syncCoordinatorProvider).report([outcome]);
   }
 
-  /// Sellar exige conexión: decide sobre estado compartido que puede estar
-  /// cambiando en otro dispositivo. Sin señal la pantalla lo explica en vez de
-  /// encolar una decisión a ciegas.
+  /// Sealing requires a connection: it decides about shared state that may be
+  /// changing on another device. With no signal the screen explains that
+  /// instead of queueing a blind decision.
   Future<void> _seal() async {
     setState(() => _sealing = true);
     final outcome = await ref.read(boxesRepositoryProvider).seal(widget.boxId);
@@ -97,10 +98,10 @@ class _BoxDetailViewState extends ConsumerState<BoxDetailView> {
         AsyncError() => const _NotCachedView(),
         _ => const Center(child: CircularProgressIndicator()),
       },
-      // Sin sellar no basta: una caja rechazada tampoco lo está y no se sella,
-      // se decide qué hacer con ella. Ofrecerlo aquí mandaba al servidor una
-      // petición que solo podía volver negada, y con el motivo del rechazo
-      // escrito justo encima.
+      // Not sealed is not enough: a refused box is not sealed either and it is
+      // not sealed but decided about. Offering it here sent the server a
+      // request that could only come back denied, with the reason for the
+      // refusal written right above it.
       bottomNavigationBar: switch (box) {
         AsyncData(value: final item?)
             when item.box.sealedAt == null && item.box.status == 'DRAFT' =>
@@ -185,21 +186,21 @@ class _BoxFields extends StatelessWidget {
           RecordField(label: context.l10n.weightLabel, value: '$weight kg'),
         if (item.box.rejectReason case final reason?)
           RecordField(label: context.l10n.rejectReasonLabel, value: reason),
-        // El recorrido, al final: se consulta cuando algo no cuadra, no cada
-        // vez que se abre la ficha. Y **solo con conexión** — la caché guarda
-        // el estado de una caja, no su historia.
+        // The journey, at the end: it is consulted when something does not add
+        // up, not every time the record is opened. And **only with a
+        // connection** — the cache keeps a box's state, not its history.
         _Timeline(id: item.box.id),
       ],
     );
   }
 }
 
-/// El recorrido de la caja.
+/// The box's journey.
 ///
-/// Responde «¿quién selló esto?» sobre el objeto que alguien tiene en la mano,
-/// que es la pregunta que se hace en los malos momentos. Va al final porque no
-/// se consulta cada vez, y calla mientras carga en vez de reservar sitio para
-/// algo que quizá no llegue.
+/// It answers «¿quién selló esto?» about the object somebody is holding, which
+/// is the question asked in the bad moments. It goes at the end because it is
+/// not consulted every time, and it stays quiet while it loads instead of
+/// reserving room for something that may never arrive.
 class _Timeline extends ConsumerWidget {
   const _Timeline({required this.id});
 
@@ -224,7 +225,8 @@ class _Timeline extends ConsumerWidget {
           ),
         ],
       ),
-      // Un fallo aquí no rompe la ficha: lo que se vino a ver ya está arriba.
+      // A failure here does not break the record: what somebody came to see is
+      // already above.
       _ => const SizedBox.shrink(),
     };
   }

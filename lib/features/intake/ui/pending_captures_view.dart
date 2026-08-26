@@ -16,12 +16,12 @@ import '../data/capture_queue_sync.dart';
 import '../data/intake_providers.dart';
 import '../domain/queued_capture_lines.dart';
 
-/// Las capturas que esperan señal.
+/// The captures waiting for signal.
 ///
-/// La pantalla existe para que la cola no sea invisible: una captura que nadie
-/// puede ver es una captura que nadie sabe que se perdió. Nada se descarta solo
-/// —una rechazada se queda aquí con el motivo del servidor— y tanto descartar
-/// como reintentar los pide una persona.
+/// The screen exists so the queue is not invisible: a capture nobody can see is
+/// a capture nobody knows was lost. Nothing is discarded on its own — a refused
+/// one stays here with the server's reason — and both discarding and retrying
+/// are asked for by a person.
 class PendingCapturesView extends ConsumerStatefulWidget {
   const PendingCapturesView({super.key});
 
@@ -51,9 +51,9 @@ class _PendingCapturesViewState extends ConsumerState<PendingCapturesView> {
     );
   }
 
-  /// Qué se le dice a quien pulsó «sincronizar». El motivo del servidor manda
-  /// sobre el recuento: saber que no hay señal es más útil que saber que no se
-  /// envió nada.
+  /// What is said to whoever pressed «sincronizar». The server's reason wins
+  /// over the count: knowing there is no signal is more useful than knowing
+  /// nothing was sent.
   static String _reportMessage(AppLocalizations l10n, QueueFlushReport report) {
     if (report.stoppedBy case final failure?) {
       return failure.operatorMessage(l10n);
@@ -94,9 +94,10 @@ class _PendingCapturesViewState extends ConsumerState<PendingCapturesView> {
     }
   }
 
-  /// Devolver a la cola una captura aparcada. No se pregunta antes porque no
-  /// destruye nada: vuelve a intentarlo con la misma llave de captura, y si el
-  /// motivo sigue en pie el servidor la aparcará otra vez con el mismo texto.
+  /// Putting a parked capture back in the queue. It is not asked about first
+  /// because it destroys nothing: it tries again with the same capture key,
+  /// and if the reason still stands the server will park it again with the same
+  /// text.
   Future<void> _retry(QueuedCaptureRow row) async {
     await ref.read(captureQueueRepositoryProvider).retry(row.captureId);
     if (!mounted) return;
@@ -174,11 +175,11 @@ class _Header extends StatelessWidget {
   );
 }
 
-/// Con qué se cuenta para trabajar sin señal, en tres números.
+/// What there is to work with without signal, in three numbers.
 ///
-/// Están juntos porque se leen juntos: bajar a un sótano con catálogo pero sin
-/// códigos, o con códigos pero con la cola llena, son situaciones distintas y
-/// ninguna se ve mirando un solo número.
+/// They sit together because they are read together: going down to a basement
+/// with a catalogue but no codes, or with codes but a full queue, are different
+/// situations and neither is visible from one number alone.
 class _ReadinessStrip extends StatelessWidget {
   const _ReadinessStrip({
     required this.products,
@@ -190,9 +191,9 @@ class _ReadinessStrip extends StatelessWidget {
   final int codes;
   final int queued;
 
-  // `IntrinsicHeight` para que las tres celdas midan lo mismo: sus rótulos
-  // parten en distinto número de líneas y tres cajas de alturas distintas se
-  // leen como tres cosas distintas, que es justo lo contrario de lo que son.
+  // `IntrinsicHeight` so the three cells measure the same: their labels break
+  // into a different number of lines, and three boxes of different heights read
+  // as three different things, which is exactly the opposite of what they are.
   @override
   Widget build(BuildContext context) => IntrinsicHeight(
     child: Row(
@@ -243,10 +244,10 @@ class _Cell extends StatelessWidget {
               color: palette.noticeInk,
             ),
           ),
-          // Al fondo de la celda, no debajo del rótulo: «Capturas en cola»
-          // cabe en una línea y los otros dos rótulos parten en dos, así que
-          // apoyados arriba los tres números quedaban a distinta altura y la
-          // fila dejaba de leerse como una fila.
+          // At the bottom of the cell, not below the label: «Capturas en cola»
+          // fits on one line and the other two labels break into two, so
+          // resting against the top left the three numbers at different
+          // heights and the row stopped reading as a row.
           const Spacer(),
           Text(
             '$value',
@@ -273,8 +274,9 @@ class _ActionsState extends ConsumerState<_Actions> {
   static const _blockSize = 50;
   bool _reserving = false;
 
-  /// Se reponen **con** señal, que es el único momento en que se puede: quien
-  /// baja a un sótano con el bloque vacío se queda sin etiquetas hasta subir.
+  /// They are topped up **with** signal, which is the only moment it can be
+  /// done: whoever goes down to a basement with an empty block is left without
+  /// labels until they come back up.
   Future<void> _topUp() async {
     final userId = ref.read(currentUserIdProvider);
     if (userId == null) return;
@@ -318,7 +320,7 @@ class _ActionsState extends ConsumerState<_Actions> {
   );
 }
 
-/// Cómo se nombra una captura encolada.
+/// How a queued capture is named.
 ///
 /// The count is rendered here and not stored: the row keeps the number, and the
 /// words for it belong to whatever language the application is in when somebody
@@ -378,8 +380,8 @@ class _QueuedCard extends StatelessWidget {
             if (lines.isNotEmpty) const SizedBox(height: 10),
             for (final line in lines)
               Text('· $line', style: theme.textTheme.bodySmall),
-            // La copia propia si conocemos el código, y si no las palabras
-            // que mandó el servidor. Lo guardado es lo segundo siempre: ver
+            // Our own copy when we know the code, and otherwise the words the
+            // server sent. What is stored is always the second: see
             // `capture_queue_sync`.
             if (refusalCopyFor(context.l10n, row.lastFailureCode ?? '') ??
                     row.lastFailureMessage
@@ -387,9 +389,9 @@ class _QueuedCard extends StatelessWidget {
               const SizedBox(height: 10),
               Text(message, style: theme.textTheme.bodyMedium),
             ],
-            // Reintentar y descartar solo aparecen en una captura aparcada.
-            // Una que sigue esperando señal no necesita que nadie decida nada:
-            // se reintenta sola en cuanto haya red.
+            // Retrying and discarding only appear on a parked capture. One
+            // still waiting for signal needs nobody to decide anything: it
+            // retries itself as soon as there is a network.
             if (rejected) ...[
               const SizedBox(height: 12),
               Row(
@@ -416,11 +418,11 @@ class _QueuedCard extends StatelessWidget {
     );
   }
 
-  /// Cuándo se capturó y cuántas veces se ha intentado.
+  /// When it was captured and how many times it has been attempted.
   ///
-  /// Sin denominador: la cola reintenta mientras haya motivo para hacerlo y no
-  /// tiene un máximo. Escribir «intento 1 de 5» pondría en pantalla un límite
-  /// que este sistema no tiene.
+  /// With no denominator: the queue retries while there is a reason to and has
+  /// no maximum. Writing «intento 1 de 5» would put a limit on screen that this
+  /// system does not have.
   static String _when(AppLocalizations l10n, QueuedCaptureRow row) => [
     formatShortDateTime(row.createdAt),
     if (row.attempts > 0)

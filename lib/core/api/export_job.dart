@@ -3,7 +3,7 @@ import 'api_failure.dart';
 import 'generated/clients/exports_api.dart';
 import 'generated/models/export_job_out.dart';
 
-/// Cómo terminó pedir un documento que el servidor arma aparte.
+/// How asking for a document the server builds separately ended.
 sealed class DocumentOutcome {
   const DocumentOutcome();
 }
@@ -14,8 +14,8 @@ final class DocumentReady extends DocumentOutcome {
   final String downloadUrl;
 }
 
-/// El servidor sigue trabajando. No es un fallo: un manifiesto de un envío
-/// grande tarda, y quien lo pidió puede volver a pedirlo.
+/// The server is still working. It is not a failure: a manifest for a large
+/// shipment takes a while, and whoever asked for it can ask again.
 final class DocumentStillWorking extends DocumentOutcome {
   const DocumentStillWorking();
 }
@@ -23,25 +23,26 @@ final class DocumentStillWorking extends DocumentOutcome {
 final class DocumentFailed extends DocumentOutcome {
   const DocumentFailed({this.failure, this.serverError});
 
-  /// El fallo de la llamada, cuando lo hubo.
+  /// The call's failure, when there was one.
   ///
-  /// Se lleva el fallo y no una frase: redactar en la capa de datos elegiría
-  /// un idioma sin saber en cuál se está mirando.
+  /// It carries the failure and not a sentence: wording it in the data layer
+  /// would pick a language without knowing which one is being read.
   final ApiFailure? failure;
 
-  /// Lo que dijo el servidor cuando el trabajo terminó en error. Son sus
-  /// palabras y viajan tal cual, como cualquier rechazo de regla de negocio.
+  /// What the server said when the job ended in error. They are its words and
+  /// they travel as they are, like any business-rule refusal.
   final String? serverError;
 }
 
-/// Pide un documento y espera a que el servidor lo genere.
+/// Asks for a document and waits for the server to generate it.
 ///
-/// Ninguno de estos endpoints devuelve un archivo: devuelven un trabajo, y el
-/// documento se arma aparte. La espera es la misma para todos, así que vive
-/// aquí y no dentro del envío — que fue donde nació, cuando era el único.
+/// None of these endpoints returns a file: they return a job, and the document
+/// is built separately. The wait is the same for all of them, so it lives here
+/// and not inside the shipment — which is where it was born, when it was the
+/// only one.
 ///
-/// [start] es la llamada que encola el trabajo. [wait] existe para que una
-/// prueba no espere de verdad.
+/// [start] is the call that queues the job. [wait] exists so a test does not
+/// really wait.
 Future<DocumentOutcome> awaitDocument({
   required Future<ExportJobOut> Function() start,
   required ExportsApi exports,

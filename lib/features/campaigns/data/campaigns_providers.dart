@@ -9,16 +9,18 @@ final campaignsRepositoryProvider = Provider<CampaignsRepository>(
   (ref) => CampaignsRepository(ref.watch(restClientProvider).campaigns),
 );
 
-/// Si esta sesión puede mirar las campañas de la plataforma.
+/// Whether this session can look at the platform's campaigns.
 ///
-/// `require_coordinator` en la lista y en la ficha. Quien es voluntariado sigue
-/// eligiendo campaña al capturar —eso va por `mine`, que solo exige rol de
-/// centro— pero no tiene dónde abrirla, así que tampoco se le ofrece.
+/// `require_coordinator` on the list and on the record. Whoever volunteers goes
+/// on choosing a campaign while capturing — that goes through `mine`, which
+/// only requires a centre role — but has nowhere to open it, so it is not
+/// offered either.
 final canBrowseCampaignsProvider = Provider<bool>(
   (ref) => ref.watch(isCenterCoordinatorProvider),
 );
 
-/// Si además puede crearlas y editarlas. Es otro permiso y otro rol.
+/// Whether it can also create and edit them. It is another permission and
+/// another role.
 final canManageCampaignsProvider = Provider<bool>(
   (ref) => ref.watch(isNationalAdminProvider),
 );

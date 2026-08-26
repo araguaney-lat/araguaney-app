@@ -6,12 +6,12 @@ import '../../../core/api/generated/models/pallet_create.dart';
 import '../../../core/api/generated/models/pallet_detail_out.dart';
 import '../../../core/api/generated/models/pallet_out.dart';
 
-/// Cómo terminó una operación sobre una tarima.
+/// How an operation on a pallet ended.
 ///
-/// Se devuelve como valor y no como excepción por la misma razón que en la
-/// captura: el rechazo del servidor casi siempre describe algo que quien opera
-/// puede entender y corregir —una caja que no está sellada, una que ya está en
-/// otra tarima—, y esa frase tiene que llegar entera a la pantalla.
+/// It is returned as a value and not as an exception for the same reason as in
+/// the capture: the server's refusal almost always describes something whoever
+/// operates can understand and correct — a box that is not sealed, one that is
+/// already on another pallet — and that sentence has to reach the screen whole.
 sealed class PalletOutcome<T> {
   const PalletOutcome();
 }
@@ -28,12 +28,12 @@ final class PalletRejected<T> extends PalletOutcome<T> {
   final ApiFailure failure;
 }
 
-/// Operaciones de tarima.
+/// Pallet operations.
 ///
-/// **Todas exigen conexión**, y eso es una regla de dominio, no una limitación:
-/// una tarima es estado compartido que otro dispositivo puede estar cambiando
-/// ahora mismo. Decidir a ciegas produciría dos verdades sobre el mismo bulto,
-/// que es exactamente lo que la frontera de la fase 03 evita.
+/// **They all require a connection**, and that is a domain rule, not a
+/// limitation: a pallet is shared state that another device may be changing
+/// right now. Deciding blind would produce two truths about the same load,
+/// which is exactly what phase 03's boundary avoids.
 class PalletsRepository {
   PalletsRepository(this._pallets);
 
@@ -62,10 +62,10 @@ class PalletsRepository {
     ),
   );
 
-  /// Agrega una caja por su código.
+  /// Adds a box by its code.
   ///
-  /// El contrato declara el cuerpo sin tipar, así que la llave viaja escrita a
-  /// mano; es `code`, verificado contra el router del backend y no supuesto.
+  /// The contract declares the body untyped, so the key travels written by
+  /// hand; it is `code`, checked against the backend's router and not assumed.
   Future<PalletOutcome<PalletDetailOut>> addBox({
     required String palletId,
     required String boxCode,
@@ -86,11 +86,11 @@ class PalletsRepository {
     ),
   );
 
-  /// Cierra la tarima con su peso bruto y su altura.
+  /// Closes the pallet with its gross weight and its height.
   ///
-  /// El servidor compara ese peso con la suma de las cajas y publica la
-  /// diferencia. Aquí no se calcula nada: la discrepancia es suya, igual que el
-  /// criterio de cuándo importa.
+  /// The server compares that weight with the sum of the boxes and publishes
+  /// the difference. Nothing is computed here: the discrepancy is its own, and
+  /// so is the judgement of when it matters.
   Future<PalletOutcome<PalletOut>> close({
     required String palletId,
     String? grossWeightKg,

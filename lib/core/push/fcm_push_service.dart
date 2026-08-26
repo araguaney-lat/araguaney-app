@@ -6,12 +6,12 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'push_destination.dart';
 import 'push_service.dart';
 
-/// **El único archivo del proyecto que importa Firebase.**
+/// **The only file in the project that imports Firebase.**
 ///
-/// Esa concentración es deliberada y tiene un consumidor concreto: el sabor
-/// `foss` se compila desde una rama que borra este archivo, quita las dos
-/// dependencias del `pubspec.yaml` y devuelve [NoopPushService] en el provider.
-/// Cuanto más pequeño sea ese parche, más fácil es mantenerlo al día. Ver
+/// That concentration is deliberate and has a concrete consumer: the `foss`
+/// flavour builds from a branch that deletes this file, drops the two
+/// dependencies from `pubspec.yaml` and returns [NoopPushService] from the
+/// provider. The smaller that patch is, the easier it is to keep current. See
 /// `docs/release/foss.md`.
 class FcmPushService implements PushService {
   FcmPushService({FirebaseMessaging? messaging}) : _instance = messaging;
@@ -21,21 +21,22 @@ class FcmPushService implements PushService {
 
   FirebaseMessaging get _fcm => _instance ??= FirebaseMessaging.instance;
 
-  /// Arranca Firebase. Idempotente: dos aperturas de sesión seguidas no
-  /// inicializan dos veces.
+  /// Starts Firebase. Idempotent: two sign-ins in a row do not initialise it
+  /// twice.
   ///
-  /// **Todo lo demás de esta clase lo llama primero.** Quien la usa no puede
-  /// saber en qué orden se monta la interfaz, y sí ocurre que la pantalla llegue
-  /// antes que el atado de la sesión: cuando eso pasaba, `[core/no-app]` se
-  /// llevaba por delante el enrutado de los avisos y la tarjeta que los ofrece,
-  /// las dos en silencio. Que cada método garantice la inicialización es más
-  /// barato que documentar un orden que nadie puede comprobar.
+  /// **Everything else in this class calls it first.** Callers cannot know what
+  /// order the interface is built in, and the screen does sometimes arrive
+  /// before the session's wiring: when that happened, `[core/no-app]` took out
+  /// both the notice routing and the card that offers notices, silently.
+  /// Having every method guarantee initialisation is cheaper than documenting
+  /// an order nobody can check.
   ///
-  /// **No pide el permiso de notificaciones.** En Android 13 y posteriores el
-  /// token existe con permiso o sin él —lo que falta sin permiso es que el
-  /// sistema muestre el aviso, no que haya dónde entregarlo—, así que registrar
-  /// el destino no depende de una decisión que todavía no se le ha explicado a
-  /// nadie. Pedirlo con su explicación en español es trabajo aparte.
+  /// **It does not ask for the notification permission.** On Android 13 and
+  /// later the token exists with or without it — what is missing without
+  /// permission is the system showing the notice, not somewhere to deliver it —
+  /// so registering the destination does not depend on a decision nobody has
+  /// had explained to them yet. Asking for it, with that explanation, is
+  /// separate work.
   @override
   Future<void> start() async {
     if (_started) return;
@@ -60,27 +61,28 @@ class FcmPushService implements PushService {
     controller.onCancel = subscription.cancel;
   });
 
-  /// Avisos que alguien tocó.
+  /// Notices somebody tapped.
   ///
-  /// Son dos fuentes y las dos importan: la aplicación abierta en segundo plano
-  /// recibe el toque por el flujo, y la aplicación cerrada del todo lo recibe
-  /// como mensaje inicial. Escuchar solo la primera pierde exactamente el caso
-  /// más común —el teléfono en el bolsillo— y es un error que no se nota hasta
-  /// que alguien pregunta por qué la aplicación abrió en la pantalla de inicio.
+  /// There are two sources and both matter: an application open in the
+  /// background gets the tap through the stream, and one closed entirely gets
+  /// it as the initial message. Listening only to the first misses exactly the
+  /// most common case — the phone in a pocket — and it is a mistake nobody
+  /// notices until somebody asks why the application opened on the home
+  /// screen.
   @override
   Stream<PushDestination> get onOpened {
     final tapped = FirebaseMessaging.onMessageOpenedApp.map(_destinationOf);
 
     return Stream.multi((controller) async {
-      // Firebase antes que nada, y aquí y no en quien escucha.
+      // Firebase before anything else, and here rather than in the listener.
       //
-      // Quien se suscribe es la pantalla, que se monta en cuanto hay sesión; y
-      // quien inicializaba Firebase era el atado de la sesión, por otro camino.
-      // Cuando la pantalla ganaba esa carrera, `getInitialMessage()` lanzaba
-      // `[core/no-app]`, la excepción mataba la suscripción, y tocar un aviso
-      // dejaba de navegar durante toda la sesión — sin decir nada. Que la clase
-      // garantice su propia inicialización quita la carrera de raíz; `start()`
-      // es idempotente y no cuesta nada llamarlo de más.
+      // What subscribes is the screen, which is built as soon as there is a
+      // session; what initialised Firebase was the session's wiring, by another
+      // path. When the screen won that race, `getInitialMessage()` threw
+      // `[core/no-app]`, the exception killed the subscription, and tapping a
+      // notice stopped navigating for the whole session — silently. Having the
+      // class guarantee its own initialisation removes the race at the root;
+      // `start()` is idempotent and calling it again costs nothing.
       await start();
 
       final initial = await _fcm.getInitialMessage();
@@ -101,12 +103,12 @@ class FcmPushService implements PushService {
     return _translate(await _fcm.getNotificationSettings());
   }
 
-  /// Pide el permiso del sistema.
+  /// Asks the system for the permission.
   ///
-  /// Quien llama ya explicó para qué sirve; aquí solo se pregunta. En Android
-  /// esto abre el diálogo de notificaciones a partir de la versión 13, y en las
-  /// anteriores devuelve concedido sin preguntar nada, que es como se
-  /// comportaba el sistema entonces.
+  /// The caller has already explained what it is for; this only asks. On
+  /// Android it opens the notifications dialog from version 13 on, and on
+  /// earlier ones it returns granted without asking anything, which is how the
+  /// system behaved then.
   @override
   Future<PushPermission> requestPermission() async {
     await start();
@@ -116,8 +118,8 @@ class FcmPushService implements PushService {
   static PushPermission _translate(NotificationSettings settings) =>
       switch (settings.authorizationStatus) {
         AuthorizationStatus.authorized => PushPermission.granted,
-        // Provisional es el permiso silencioso de iOS: los avisos llegan, sin
-        // sonido y sin pantalla de bloqueo. Llegan, que es lo que importa aquí.
+        // Provisional is iOS's quiet permission: notices arrive, with no
+        // sound and no lock screen. They arrive, which is what matters here.
         AuthorizationStatus.provisional => PushPermission.granted,
         AuthorizationStatus.denied => PushPermission.denied,
         AuthorizationStatus.notDetermined => PushPermission.notDetermined,

@@ -9,11 +9,11 @@ import '../data/campaigns_repository.dart';
 import 'campaign_form_view.dart';
 import 'campaign_record_view.dart';
 
-/// Las campañas de la plataforma.
+/// The platform's campaigns.
 ///
-/// La captura ya deja elegir una; esto es donde se averigua **qué** es la que
-/// se eligió. Hasta ahora la elección se ofrecía y el contexto no: cuándo
-/// empieza, para qué es, quién más está dentro.
+/// The capture already lets one be chosen; this is where you find out **what**
+/// the chosen one is. Until now the choice was offered and the context was not:
+/// when it starts, what it is for, who else is inside.
 class CampaignsListView extends ConsumerWidget {
   const CampaignsListView({super.key});
 

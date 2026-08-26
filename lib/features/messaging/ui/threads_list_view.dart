@@ -10,7 +10,7 @@ import '../data/messaging_repository.dart';
 import 'new_thread_sheet.dart';
 import 'thread_view.dart';
 
-/// Los hilos que esta persona puede leer.
+/// The threads this person can read.
 class ThreadsListView extends ConsumerWidget {
   const ThreadsListView({super.key});
 

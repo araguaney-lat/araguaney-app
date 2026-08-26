@@ -15,21 +15,22 @@ import '../domain/transfer_actions.dart';
 import 'create_transfer_view.dart';
 import 'transfer_detail_view.dart';
 
-/// Transferencias en las que participa este centro.
+/// The transfers this centre takes part in.
 ///
-/// Lo primero que se lee de cada una es si sale o llega: para quien coordina,
-/// «viene hacia mí» y «sale de aquí» son dos trabajos distintos, y el estado
-/// solo importa después de saber cuál de los dos es. Por eso el filtro es la
-/// dirección y no el estado, al revés que en cajas o envíos.
+/// The first thing read of each one is whether it leaves or arrives: for
+/// whoever coordinates, «coming to me» and «leaving here» are two different
+/// jobs, and the state only matters once you know which of the two it is. That
+/// is why the filter is the direction and not the state, unlike boxes or
+/// shipments.
 ///
-/// **El otro centro se nombra solo cuando la sesión puede resolverlo.** El
-/// contrato manda identificadores y los dos endpoints de centros exigen
-/// administración nacional, así que quien coordina —que es quien más usa esta
-/// pantalla— sigue sin poder resolver el nombre, y la fila calla en vez de
-/// enseñar un identificador. Para una administración nacional, que sí puede
-/// listarlos, callar era perder algo a cambio de nada. La petición 3 de
-/// `backend-requests.md` sigue siendo el arreglo de verdad: los nombres en el
-/// contrato, para todo el mundo.
+/// **The other centre is named only when the session can resolve it.** The
+/// contract sends identifiers and both centre endpoints require national
+/// administration, so whoever coordinates — who uses this screen most — still
+/// cannot resolve the name, and the row stays quiet instead of showing an
+/// identifier. For a national administration, which can list them, staying
+/// quiet was losing something in exchange for nothing. Request 3 of
+/// `backend-requests.md` is still the real fix: the names in the contract, for
+/// everybody.
 class TransfersListView extends ConsumerStatefulWidget {
   const TransfersListView({super.key});
 
@@ -55,8 +56,8 @@ class _TransfersListViewState extends ConsumerState<TransfersListView> {
           myCenterId: myCenterId,
         ),
       ),
-      // Proponer exige coordinación —`require_coordinator`— y un centro desde
-      // el que salir: quien no tiene ninguno de los dos no ve el botón.
+      // Proposing requires coordination — `require_coordinator` — and a centre
+      // to leave from: whoever has neither does not see the button.
       floatingActionButton:
           ref.watch(isCenterCoordinatorProvider) && myCenterId != null
           ? FloatingActionButton.extended(
@@ -93,8 +94,9 @@ class _Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Lo que espera una decisión de este centro: solicitadas en las que somos
-    // el origen, que es exactamente cuando el servidor deja aprobar o rechazar.
+    // What is waiting for a decision from this centre: requested ones where we
+    // are the origin, which is exactly when the server allows approving or
+    // rejecting.
     final waiting = transfers.where((transfer) {
       final direction = transferDirection(
         fromCenterId: transfer.fromCenterId,
@@ -178,9 +180,10 @@ class _Loaded extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(32),
             child: Text(
-              // Una administración nacional no pertenece a ningún centro, así
-              // que hablarle de «este centro» describe algo que no existe. Lo
-              // encontró mirar la pantalla con esa sesión, no un test.
+              // A national administration belongs to no centre, so talking to
+              // them about «this centre» describes something that does not
+              // exist. Looking at the screen with that session found it, not a
+              // test.
               myCenterId == null
                   ? context.l10n.transfersEmpty
                   : context.l10n.transfersEmptyForCenter,
@@ -209,12 +212,12 @@ class _TransferRow extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // El otro centro se nombra **solo si esta sesión puede resolverlo**. Para
-    // una coordinación el mapa viene vacío y la fila queda exactamente como
-    // estaba: la dirección y la fecha, sin nombre y sin hueco. Enseñar un
-    // identificador sería peor que no enseñar nada, y por eso la petición 3
-    // —los nombres en el contrato de la transferencia— sigue siendo el arreglo
-    // de verdad para quien no puede listarlos.
+    // The other centre is named **only if this session can resolve it**. For a
+    // coordination the map comes back empty and the row stays exactly as it
+    // was: the direction and the date, with no name and no gap. Showing an
+    // identifier would be worse than showing nothing, and that is why request 3
+    // — the names in the transfer's contract — is still the real fix for
+    // whoever cannot list them.
     final names = ref.watch(centerNamesProvider);
     final otherId = switch (direction) {
       TransferDirection.incoming => transfer.fromCenterId,

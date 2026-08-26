@@ -5,49 +5,51 @@ import '../api/api_failure.dart';
 import '../api/generated/models/token.dart';
 import '../api/generated/models/user_out.dart';
 
-/// Resultado de un intento de inicio de sesión.
+/// The outcome of a sign-in attempt.
 sealed class LoginResult {
   const LoginResult();
 }
 
-/// Credenciales correctas y sin segundo factor: hay sesión.
+/// The credentials are right and there is no second factor: there is a
+/// session.
 class LoginSucceeded extends LoginResult {
   const LoginSucceeded(this.token);
 
   final Token token;
 }
 
-/// Credenciales correctas, falta el código del segundo factor.
+/// The credentials are right and the second-factor code is missing.
 class LoginNeedsTotp extends LoginResult {
   const LoginNeedsTotp(this.partialToken);
 
   final String partialToken;
 }
 
-/// Acceso a los endpoints de sesión del backend.
+/// Access to the backend's session endpoints.
 ///
-/// Casi todo pasa por el cliente generado. El inicio de sesión no puede, y la
-/// razón cambió: el backend ya declara sus dos desenlaces —`Token` en 200 y
-/// `TotpPending` en 202—, pero un método tipado no puede devolver dos tipos
-/// según el estado HTTP. El generador elige uno y descarta el otro.
+/// Nearly everything goes through the generated client. Signing in cannot, and
+/// the reason has changed: the backend does declare its two outcomes — `Token`
+/// on 200 and `TotpPending` on 202 — but a typed method cannot return two types
+/// depending on the HTTP status. The generator picks one and discards the
+/// other.
 ///
-/// Así que la petición se hace aquí a mano y **el cuerpo se lee con los modelos
-/// generados**: la forma sigue viniendo del contrato y no de una copia escrita
-/// a mano que se desincronizaría. Ver `api/README.md`.
+/// So this request is made by hand and **the body is read with the generated
+/// models**: the shape still comes from the contract rather than from a
+/// hand-written copy that would drift out of sync. See `api/README.md`.
 class AuthRepository {
   AuthRepository(this._dio);
 
   final Dio _dio;
 
-  /// La segunda respuesta posible del inicio de sesión: el backend contesta
-  /// 202 con un token parcial cuando la cuenta tiene segundo factor.
+  /// Sign-in's other possible answer: the backend replies 202 with a partial
+  /// token when the account has a second factor.
   static const _totpPendingStatus = 202;
 
   Future<LoginResult> login({
     required String username,
     required String password,
   }) async {
-    // El endpoint usa el formulario estándar de OAuth2, no JSON.
+    // The endpoint takes the standard OAuth2 form, not JSON.
     final response = await _dio.post<Map<String, dynamic>>(
       '/v1/auth/login',
       data: {'username': username.trim(), 'password': password},
@@ -89,13 +91,13 @@ class AuthRepository {
     return Token.fromJson(response.data!);
   }
 
-  /// Quién es la persona detrás de este token.
+  /// Who the person behind this token is.
   ///
-  /// Va con la cabecera puesta a mano y por el cliente **sin sesión**: la
-  /// identidad hay que resolverla *antes* de exponer la sesión al resto de la
-  /// aplicación, y el cliente con sesión saca su token de una sesión que
-  /// todavía no existe. Es el dato que decide si el cache del turno anterior se
-  /// borra.
+  /// The header is set by hand and it goes through the client **without a
+  /// session**: identity has to be resolved *before* the session is exposed to
+  /// the rest of the application, and the client with a session takes its token
+  /// from a session that does not exist yet. This is what decides whether the
+  /// previous shift's cache is cleared.
   Future<UserOut> me(String accessToken) async {
     final response = await _dio.get<Map<String, dynamic>>(
       '/v1/auth/me',
@@ -104,9 +106,9 @@ class AuthRepository {
     return UserOut.fromJson(response.data!);
   }
 
-  /// Renueva la sesión. El backend **rota** el refresh en cada uso, así que
-  /// quien llame tiene que guardar el que viene de vuelta: el anterior queda
-  /// revocado y reutilizarlo delata un robo.
+  /// Renews the session. The backend **rotates** the refresh on every use, so
+  /// the caller has to store the one that comes back: the previous one is
+  /// revoked, and reusing it is what gives a theft away.
   Future<Token> refresh(String refreshToken) async {
     final response = await _dio.post<Map<String, dynamic>>(
       '/v1/auth/refresh',
@@ -126,9 +128,10 @@ class AuthRepository {
     return Token.fromJson(response.data!);
   }
 
-  /// Cierra sesión en el servidor. Nunca propaga un fallo: si la red falla, la
-  /// sesión local se borra igual. Dejar a alguien dentro de la aplicación
-  /// porque el servidor no contestó sería el peor resultado posible.
+  /// Signs out on the server. It never propagates a failure: if the network
+  /// fails, the local session is cleared anyway. Leaving somebody inside the
+  /// application because the server did not answer would be the worst possible
+  /// outcome.
   Future<void> logout(String? refreshToken) async {
     try {
       await _dio.post<void>(
@@ -137,7 +140,7 @@ class AuthRepository {
       );
     } on DioException catch (error) {
       final failure = ApiErrorMapper.fromDioException(error);
-      // Se traga a propósito: el borrado local ocurre en el controlador.
+      // Swallowed on purpose: the local clearing happens in the controller.
       assert(() {
         // ignore: avoid_print
         print('Remote logout failed (${failure.code}); closing locally');

@@ -17,7 +17,7 @@ final threadProvider = FutureProvider.family<ThreadDetailOut, String>(
   (ref, id) => ref.watch(messagingRepositoryProvider).thread(id),
 );
 
-/// Mensajes privados sin leer. Alimenta el acceso desde la pantalla principal.
+/// Unread private messages. It feeds the entry point on the main screen.
 final unreadMessagesProvider = FutureProvider<int>(
   (ref) => ref.watch(messagingRepositoryProvider).unreadCount(),
 );

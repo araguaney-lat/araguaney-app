@@ -10,11 +10,11 @@ import '../data/catalog_providers.dart';
 import '../data/catalog_repository.dart';
 import 'product_form_view.dart';
 
-/// La ficha de un producto del catálogo.
+/// A catalogue product's record.
 ///
-/// Se llega desde la búsqueda y desde un escaneo, y responde la pregunta que
-/// se hace con el envase en la mano: si esto es lo que dice ser, y si el código
-/// que acabo de leer apunta a donde debe.
+/// It is reached from the search and from a scan, and it answers the question
+/// asked with the package in hand: whether this is what it says it is, and
+/// whether the code just read points where it should.
 class ProductRecordView extends ConsumerWidget {
   const ProductRecordView({super.key, required this.productId});
 
@@ -154,9 +154,9 @@ class _Fields extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // El servidor promueve poniendo `campaign_id` en nulo: un producto sin
-    // campaña es del catálogo de la plataforma, y uno con campaña es una
-    // propuesta que todavía vive dentro de ella.
+    // The server promotes by setting `campaign_id` to null: a product with no
+    // campaign belongs to the platform's catalogue, and one with a campaign is
+    // a proposal that still lives inside it.
     final proposed = product.campaignId != null;
 
     return ListView(
@@ -192,9 +192,9 @@ class _Fields extends ConsumerWidget {
             value: context.l10n.controlledYes,
           ),
         const Divider(),
-        // Propuesto o aceptado: es lo que decide si alguien tiene que hacer
-        // algo con esta ficha, así que va con su explicación y no como un
-        // adjetivo suelto.
+        // Proposed or accepted: it is what decides whether somebody has to do
+        // something with this record, so it goes with its explanation and not
+        // as a loose adjective.
         ListTile(
           leading: Icon(proposed ? Icons.pending_outlined : Icons.verified),
           title: Text(

@@ -14,9 +14,9 @@ final shipmentsRepositoryProvider = Provider<ShipmentsRepository>((ref) {
   );
 });
 
-/// Los envíos del centro. Se consultan en línea: coordinar un envío exige
-/// señal de todos modos, y un listado cacheado enseñaría como abierto uno que
-/// otra persona ya despachó.
+/// The centre's shipments. They are looked up online: coordinating a shipment
+/// requires signal anyway, and a cached listing would show as open one that
+/// somebody else has already dispatched.
 /// Narrowed to the working centre, by the same rule as the pallets: what leaves
 /// this warehouse is what somebody standing in it can act on.
 final shipmentsProvider = FutureProvider<List<ShipmentOut>>((ref) async {
@@ -28,7 +28,7 @@ final shipmentsProvider = FutureProvider<List<ShipmentOut>>((ref) async {
       .toList(growable: false);
 });
 
-/// El recorrido del envío: cambios de estado y hitos logísticos.
+/// The shipment's journey: state changes and logistical milestones.
 final shipmentEventsProvider = FutureProvider.family<List<QrEventOut>, String>(
   (ref, shipmentId) =>
       ref.watch(shipmentsRepositoryProvider).events(shipmentId),

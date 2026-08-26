@@ -12,11 +12,11 @@ import '../data/team_providers.dart';
 import '../data/team_repository.dart';
 import 'pick_person_sheet.dart';
 
-/// Quién participa en cada campaña.
+/// Who takes part in each campaign.
 ///
-/// La lista que devuelve el servidor ya viene recortada al propio centro
-/// cuando quien pregunta coordina uno: esta pantalla no filtra nada, muestra
-/// lo que le dieron.
+/// The list the server returns already comes trimmed to the own centre when
+/// whoever asks coordinates one: this screen filters nothing, it shows what it
+/// was given.
 class CampaignMembersView extends ConsumerStatefulWidget {
   const CampaignMembersView({super.key});
 
@@ -42,10 +42,10 @@ class _CampaignMembersViewState extends ConsumerState<CampaignMembersView> {
     final members =
         ref.read(campaignMembersProvider(campaignId)).valueOrNull ??
         const <CampaignMemberOut>[];
-    // Se pide aquí y no en `build`: el directorio solo hace falta cuando
-    // alguien va a sumar, y traerlo antes es una petición que casi nunca se
-    // usa. Si no llega, se dice; abrir una hoja vacía haría creer que el
-    // centro no tiene a nadie más.
+    // Asked for here and not in `build`: the directory is only needed when
+    // somebody is about to add, and fetching it beforehand is a request that is
+    // almost never used. If it does not arrive, that is said; opening an empty
+    // sheet would make people believe the centre has nobody else.
     final List<UserOut> people;
     try {
       people = await ref.read(centerUsersProvider.future);
@@ -185,8 +185,8 @@ class _Members extends ConsumerWidget {
           itemCount: value.length + 1,
           separatorBuilder: (_, _) => const Divider(height: 1),
           itemBuilder: (context, index) {
-            // La campaña general recoge lo que no pertenece a otra: de ahí no
-            // se saca a nadie, y el servidor responde 422 si se intenta.
+            // The general campaign collects what belongs to no other: nobody
+            // is taken out of it, and the server answers 422 if you try.
             if (index == 0) {
               return campaign.isGeneral
                   ? _Note(context.l10n.generalCampaignExplanation)

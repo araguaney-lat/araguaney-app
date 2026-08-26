@@ -12,21 +12,21 @@ import '../../../core/ui/theme/app_theme.dart';
 import '../data/shipments_providers.dart';
 import '../data/shipments_repository.dart';
 
-/// Registrar qué llegó, caja por caja.
+/// Recording what arrived, box by box.
 ///
-/// **Marcar es la excepción.** El servidor da por recibido todo lo que no viene
-/// marcado, así que un envío que llegó entero es un solo botón y lo que viaja
-/// es exactamente lo que alguien miró y decidió. Es el mismo reparto que la
-/// recepción de una donación anunciada, y por la misma razón.
+/// **Marking is the exception.** The server takes everything that is not marked
+/// as received, so a shipment that arrived whole is a single button and what
+/// travels is exactly what somebody looked at and decided. It is the same split
+/// as the reception of an announced donation, and for the same reason.
 ///
-/// Se hace **una sola vez**: corregir una recepción es una incidencia con su
-/// nota, no reescribir lo que ya viajó a un informe. La pantalla lo dice antes
-/// de enviar, no después.
+/// It is done **once only**: correcting a reception is an incident with its
+/// note, not rewriting what has already travelled into a report. The screen
+/// says so before sending, not after.
 ///
-/// El peso de cada tarima es opcional y sirve para dos cosas: queda en el
-/// documento, y el servidor lo compara con lo que pesaba al cerrarse. Si
-/// difieren de más abre una incidencia — cuánto es «de más» es criterio suyo y
-/// no se enseña aquí.
+/// Each pallet's weight is optional and serves two purposes: it stays in the
+/// document, and the server compares it with what it weighed when it was
+/// closed. If they differ by too much it opens an incident — how much «de más»
+/// is, is its own criterion and is not shown here.
 class RegisterReceptionView extends ConsumerStatefulWidget {
   const RegisterReceptionView({super.key, required this.shipment});
 
@@ -46,10 +46,10 @@ class _RegisterReceptionViewState extends ConsumerState<RegisterReceptionView> {
   final _consignee = TextEditingController();
   final _notes = TextEditingController();
 
-  /// Solo las cajas que no llegaron bien, por identificador.
+  /// Only the boxes that did not arrive well, by identifier.
   final _exceptions = <String, String>{};
 
-  /// Lo que pesó cada tarima al llegar, tal como se teclea.
+  /// What each pallet weighed on arrival, exactly as it is typed.
   final _weights = <String, TextEditingController>{};
 
   bool _sending = false;
@@ -128,8 +128,8 @@ class _RegisterReceptionViewState extends ConsumerState<RegisterReceptionView> {
     switch (outcome) {
       case ShipmentDone():
         Navigator.of(context).pop(true);
-      // El motivo es del servidor: que el envío no está entregado, que ya tiene
-      // recepción, que una caja no es de este envío.
+      // The reason is the server's: that the shipment is not delivered, that
+      // it already has a reception, that a box does not belong to it.
       case ShipmentRefused(:final failure):
         ScaffoldMessenger.of(context)
           ..hideCurrentSnackBar()

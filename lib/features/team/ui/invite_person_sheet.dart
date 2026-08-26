@@ -3,7 +3,7 @@ import '../../../core/i18n/l10n_extension.dart';
 
 import '../../../core/ui/sheet_insets.dart';
 
-/// Lo que hace falta para dar de alta a alguien en el centro.
+/// What is needed to add somebody at the centre.
 typedef InviteDraft = ({
   String email,
   String username,
@@ -11,11 +11,11 @@ typedef InviteDraft = ({
   String centerRole,
 });
 
-/// Alta de una persona en el propio centro.
+/// Adding a person at the own centre.
 ///
-/// El centro no se elige: es el de quien tiene la sesión, y el servidor
-/// rechaza cualquier otro. El rol tampoco ofrece administración nacional,
-/// porque el backend no deja crearla desde aquí.
+/// The centre is not chosen: it is that of whoever holds the session, and the
+/// server refuses any other. The role does not offer national administration
+/// either, because the backend does not allow creating one from here.
 class InvitePersonSheet extends StatefulWidget {
   const InvitePersonSheet({super.key});
 
@@ -89,8 +89,9 @@ class _InvitePersonSheetState extends State<InvitePersonSheet> {
             validator: (value) {
               final text = value?.trim() ?? '';
               if (text.isEmpty) return context.l10n.emailRequired;
-              // Comprobación mínima: quien valida de verdad es el servidor, y
-              // una expresión regular más lista rechazaría correos válidos.
+              // A minimal check: the one that really validates is the server,
+              // and a cleverer regular expression would reject valid
+              // addresses.
               return text.contains('@') ? null : context.l10n.emailLooksInvalid;
             },
           ),

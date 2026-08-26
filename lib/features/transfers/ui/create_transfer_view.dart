@@ -16,16 +16,17 @@ import '../data/transfers_providers.dart';
 import '../data/transfers_repository.dart';
 import 'transfer_detail_view.dart';
 
-/// Proponer una transferencia a otro centro.
+/// Proposing a transfer to another centre.
 ///
-/// La aplicación sabía responder una transferencia —aprobarla, rechazarla,
-/// despacharla, recibirla— y no sabía empezar una. Empezarla es la mitad que
-/// arranca frente a un estante, mirando cajas que otro centro necesita más.
+/// The application knew how to answer a transfer — approve it, reject it,
+/// dispatch it, receive it — and did not know how to start one. Starting one is
+/// the half that begins in front of a shelf, looking at boxes another centre
+/// needs more.
 ///
-/// **Las cajas se eligen escaneándolas.** `TransferCreate` lleva `box_ids`: se
-/// mueven bultos concretos, no una cantidad de un producto. Escanear es además
-/// la única forma de elegir que no puede señalar una caja que no está en la
-/// mano.
+/// **The boxes are chosen by scanning them.** `TransferCreate` carries
+/// `box_ids`: specific loads are moved, not a quantity of a product. Scanning
+/// is also the only way of choosing that cannot point at a box that is not in
+/// your hand.
 class CreateTransferView extends ConsumerStatefulWidget {
   const CreateTransferView({super.key});
 
@@ -49,12 +50,13 @@ class _CreateTransferViewState extends ConsumerState<CreateTransferView> {
     super.dispose();
   }
 
-  /// Por qué esta caja no puede ir, mirando lo que el servidor ya dijo de ella.
+  /// Why this box cannot go, judging by what the server already said about it.
   ///
-  /// **No es duplicar la regla del servidor: es leer el estado que él sirvió.**
-  /// Y hace falta porque crear es una sola llamada con toda la lista dentro: una
-  /// caja mala rechaza las veinte, y descubrirlo al final significaría volver a
-  /// escanear desde cero. El servidor sigue decidiendo al crear.
+  /// **It is not duplicating the server's rule: it is reading the state it
+  /// served.** And it is needed because creating is a single call with the
+  /// whole list inside: one bad box refuses all twenty, and finding out at the
+  /// end would mean scanning again from scratch. The server still decides when
+  /// it creates.
   String? _refusalFor(BoxRow box) {
     final l10n = context.l10n;
     if (_boxes.any((chosen) => chosen.id == box.id)) {
@@ -82,9 +84,9 @@ class _CreateTransferViewState extends ConsumerState<CreateTransferView> {
           }
 
           final box = await database.boxesDao.findByCode(scanned.code);
-          // Sin señal y sin la caja descargada no hay nada que decir de ella,
-          // y meterla a ciegas es lo que hace que el servidor rechace la lista
-          // entera al final.
+          // With no signal and the box not downloaded there is nothing to say
+          // about it, and putting it in blind is what makes the server refuse
+          // the whole list at the end.
           if (box == null) {
             return ScanFeedback.rejected(
               '${scanned.code} · ${l10n.transferBoxNotCached}',
@@ -127,8 +129,9 @@ class _CreateTransferViewState extends ConsumerState<CreateTransferView> {
         await Navigator.of(
           context,
         ).pushReplacement(TransferDetailView.route(transfer.id));
-      // El motivo es del servidor: que una caja no está sellada, que ya viaja
-      // en otra transferencia, que no es del centro de origen.
+      // The reason is the server's: that a box is not sealed, that it is
+      // already travelling in another transfer, that it does not belong to the
+      // origin centre.
       case TransferRefused(:final failure):
         ScaffoldMessenger.of(context)
           ..hideCurrentSnackBar()

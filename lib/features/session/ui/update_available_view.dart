@@ -6,22 +6,21 @@ import '../../../core/i18n/l10n_extension.dart';
 import 'app_version_footer.dart';
 import 'store_link.dart';
 
-/// Hay una versión más nueva, y la instalada sigue sirviendo.
+/// There is a newer version, and the installed one still works.
 ///
-/// **Sale solo al abrir la aplicación, nunca a mitad de un turno.** Un aviso
-/// junto a un camión, con alguien escaneando, se descarta sin leerlo — y peor,
-/// enseña a descartar, de modo que el día que llegue el muro llega como una
-/// sorpresa. Al arrancar, en cambio, todavía no se ha empezado nada y el costo
-/// de interrumpir es casi cero. La efectividad de esto no sale de la
-/// frecuencia; sale del momento.
+/// **It only appears when the application opens, never mid-shift.** A notice
+/// next to a lorry, with somebody scanning, is dismissed without being read —
+/// and worse, it teaches dismissing, so the day the wall arrives it arrives as
+/// a surprise. At launch, on the other hand, nothing has been started yet and
+/// the cost of interrupting is close to zero. This is not effective because of
+/// how often it shows; it is effective because of when.
 ///
-/// Dice que las capturas en cola sobreviven porque es el miedo real de quien
-/// tiene trabajo sin enviar, y sin decirlo «Más tarde» es la única respuesta
-/// razonable.
+/// It says the queued captures survive because that is the real fear of
+/// somebody with unsent work, and without saying it «Más tarde» is the only
+/// reasonable answer.
 ///
-/// A diferencia del muro, de aquí **sí se sale**: la versión instalada
-/// funciona, y quien decide seguir no está arriesgando nada que el servidor no
-/// acepte.
+/// Unlike the wall, this one **can be left**: the installed version works, and
+/// whoever decides to carry on is risking nothing the server will not accept.
 class UpdateAvailableView extends ConsumerWidget {
   const UpdateAvailableView({super.key, required this.latest});
 
@@ -85,10 +84,10 @@ class UpdateAvailableView extends ConsumerWidget {
   }
 
   Future<void> _later(WidgetRef ref) async {
-    // El orden importa: primero se quita de en medio, y el registro del
-    // aplazamiento va después. Si escribir en las preferencias fallara, lo peor
-    // que pasa es que el aviso vuelva en el próximo arranque —no que la persona
-    // se quede mirando una pantalla que no se cierra.
+    // The order matters: first it gets out of the way, and recording the snooze
+    // comes after. If writing to the preferences failed, the worst that happens
+    // is the notice coming back at the next launch — not the person left
+    // staring at a screen that will not close.
     ref.read(updatePromptDismissedProvider.notifier).state = true;
     if (latest == null) return;
     await ref.read(updatePromptMemoryProvider).snooze(latest!, DateTime.now());

@@ -23,16 +23,17 @@ final class CampaignRefused<T> extends CampaignOutcome<T> {
   bool get isForbidden => failure is ForbiddenFailure;
 }
 
-/// Las campañas: leerlas, y crearlas para quien puede.
+/// The campaigns: reading them, and creating them for whoever can.
 ///
-/// **El módulo lleva dos permisos distintos y conviene que se note.** Listar y
-/// leer exigen coordinación; crear y editar, administración nacional. El panel
-/// lo parte en dos sitios de su navegación por la misma razón, y aquí se
-/// resuelve no ofreciendo lo que va a responder 403.
+/// **The module carries two different permissions and it is worth it showing.**
+/// Listing and reading require coordination; creating and editing, national
+/// administration. The panel splits it into two places in its navigation for
+/// the same reason, and here it is resolved by not offering what is going to
+/// answer 403.
 ///
-/// `GET /v1/campaigns/mine` no está aquí: lo llama la captura desde la fase 05
-/// y solo exige rol de centro, así que quien es voluntariado sigue eligiendo
-/// campaña aunque no pueda abrir su ficha.
+/// `GET /v1/campaigns/mine` is not here: the capture calls it and has since
+/// phase 05, and it only requires a centre role, so whoever volunteers goes on
+/// choosing a campaign even though they cannot open its record.
 class CampaignsRepository {
   CampaignsRepository(this._campaigns);
 

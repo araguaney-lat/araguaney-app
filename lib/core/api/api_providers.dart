@@ -3,10 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../auth/auth_providers.dart';
 import 'generated/rest_client.dart';
 
-/// Cliente generado sobre el `Dio` con sesión.
+/// The generated client on top of the `Dio` that carries the session.
 ///
-/// Es el único punto de entrada a la API para las features: nadie construye su
-/// propio cliente ni escribe rutas a mano.
+/// It is the features' only entry point to the API: nobody builds their own
+/// client or writes routes by hand.
 final restClientProvider = Provider<RestClient>(
   (ref) => RestClient(ref.watch(apiDioProvider)),
 );

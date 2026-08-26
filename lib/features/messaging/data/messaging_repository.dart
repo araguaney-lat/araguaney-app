@@ -7,11 +7,11 @@ import '../../../core/api/generated/models/thread_detail_out.dart';
 import '../../../core/api/generated/models/thread_out.dart';
 import '../../../core/i18n/generated/app_localizations.dart';
 
-/// Las dos clases de hilo que reconoce el backend.
+/// The two kinds of thread the backend recognises.
 ///
-/// Un hilo `PUBLIC` lo lee cualquier miembro de la campaña; uno `PRIVATE`, solo
-/// sus participantes. Quién puede ver qué lo decide el servidor en cada
-/// petición: aquí el tipo sirve para etiquetar y para elegir qué se crea.
+/// A `PUBLIC` thread is read by any member of the campaign; a `PRIVATE` one,
+/// only by its participants. Who can see what is decided by the server on every
+/// request: here the type serves to label and to choose what gets created.
 abstract final class ThreadType {
   static const public = 'PUBLIC';
   static const private = 'PRIVATE';
@@ -39,15 +39,15 @@ final class MessagingRefused<T> extends MessagingOutcome<T> {
   final ApiFailure failure;
 }
 
-/// Mensajes de la plataforma.
+/// The platform's messages.
 ///
-/// Se consultan en línea y no se cachean: un hilo es una conversación, y una
-/// copia vieja de una conversación es peor que no tenerla — invita a responder
-/// a algo que ya se contestó.
+/// They are looked up online and not cached: a thread is a conversation, and an
+/// old copy of a conversation is worse than not having it — it invites replying
+/// to something already answered.
 ///
-/// Los adjuntos no están aquí. Subirlos exige una URL prefirmada, un selector
-/// de archivos y almacenamiento configurado; lo que sí llega es el texto, que
-/// es lo que se lee y se contesta desde un teléfono.
+/// Attachments are not here. Uploading them requires a presigned URL, a file
+/// picker and configured storage; what does arrive is the text, which is what
+/// gets read and answered from a phone.
 class MessagingRepository {
   MessagingRepository(this._messages);
 
@@ -58,19 +58,20 @@ class MessagingRepository {
   Future<ThreadDetailOut> thread(String threadId) =>
       _messages.getThreadV1MessagesThreadIdGet(threadId: threadId);
 
-  /// Mensajes privados sin leer. Es lo que pinta el contador.
+  /// Unread private messages. It is what paints the counter.
   Future<int> unreadCount() async =>
       (await _messages.getUnreadCountV1MessagesUnreadCountGet()).unread;
 
-  /// Marca el hilo como leído.
+  /// Marks the thread as read.
   ///
-  /// Nunca lanza: abrir un hilo tiene que funcionar aunque el acuse falle, y
-  /// que el contador tarde un rato más en bajar no se lo estropea a nadie.
+  /// It never throws: opening a thread has to work even if the acknowledgement
+  /// fails, and the counter taking a while longer to go down spoils nothing for
+  /// anybody.
   Future<void> markRead(String threadId) async {
     try {
       await _messages.markReadV1MessagesThreadIdReadPatch(threadId: threadId);
     } on Object {
-      // Se reintenta la próxima vez que se abra.
+      // It is retried the next time it is opened.
     }
   }
 
@@ -84,11 +85,12 @@ class MessagingRepository {
     ),
   );
 
-  /// Abre un hilo de campaña.
+  /// Opens a campaign thread.
   ///
-  /// Solo `PUBLIC`: un hilo privado exige elegir destinatarios de entre quienes
-  /// participan en la campaña, y esa selección es trabajo de escritorio. El
-  /// servidor exige además ser miembro de la campaña, y lo sigue decidiendo él.
+  /// `PUBLIC` only: a private thread requires choosing recipients from among
+  /// those taking part in the campaign, and that selection is desk work. The
+  /// server also requires membership of the campaign, and it goes on deciding
+  /// that.
   Future<MessagingOutcome<ThreadOut>> openCampaignThread({
     required String campaignId,
     required String title,

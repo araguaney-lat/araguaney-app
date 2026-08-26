@@ -2,17 +2,17 @@ import '../../../core/api/generated/models/donor_input.dart';
 import '../../../core/api/generated/models/intake_create.dart';
 import 'box_draft_input.dart';
 
-/// Tipos de donante que reconoce el contrato.
+/// The donor types the contract recognises.
 abstract final class DonorType {
   static const natural = 'fisica';
   static const legal = 'moral';
 }
 
-/// Una captura en construcción.
+/// A capture under construction.
 ///
-/// Es inmutable: cada cambio del formulario produce una captura nueva. Importa
-/// más de lo habitual aquí, porque [captureId] tiene que sobrevivir intacto a
-/// todas esas ediciones y a todos los reintentos.
+/// It is immutable: every change to the form produces a new capture. That
+/// matters more than usual here, because [captureId] has to survive all those
+/// edits and all those retries intact.
 class IntakeDraft {
   const IntakeDraft({
     required this.captureId,
@@ -27,9 +27,9 @@ class IntakeDraft {
     this.boxes = const [],
   });
 
-  /// Llave de idempotencia, **generada antes del primer intento** y jamás
-  /// regenerada. Reintentar una captura es el caso normal, no la excepción: el
-  /// servidor devuelve la que ya registró en vez de duplicarla.
+  /// The idempotency key, **generated before the first attempt** and never
+  /// regenerated. Retrying a capture is the normal case, not the exception: the
+  /// server returns the one it already registered instead of duplicating it.
   final String captureId;
 
   /// Where this capture is being registered, when the session has to say so.
@@ -48,22 +48,24 @@ class IntakeDraft {
   final DonorInput? donor;
   final bool donorTermsAccepted;
 
-  /// Nombre suelto del donante, para la operación que todavía no identifica.
+  /// The donor's loose name, for the operation that does not identify yet.
   final String? donanteLibre;
 
-  /// Donación pre-registrada de la que salió esta captura, cuando se llegó
-  /// escaneando un código `DN-`.
+  /// The pre-registered donation this capture came from, when it was reached
+  /// by scanning a `DN-` code.
   final String? donationId;
 
   final String? notes;
 
-  /// Motivo por el que la donación queda anónima cuando el servidor pide
-  /// identificar. Lo escribe quien captura; el servidor lo deja en revisión.
+  /// The reason the donation stays anonymous when the server asks for
+  /// identification. Whoever captures writes it; the server leaves it under
+  /// review.
   final String? anonymousExceptionReason;
 
   final List<BoxDraftInput> boxes;
 
-  /// Sin cajas no hay captura: es el único campo que el contrato exige.
+  /// With no boxes there is no capture: it is the only field the contract
+  /// requires.
   bool get isSubmittable => boxes.isNotEmpty;
 
   IntakeDraft copyWith({
@@ -89,8 +91,9 @@ class IntakeDraft {
     boxes: boxes ?? this.boxes,
   );
 
-  /// Quita al donante identificado. Va aparte de [copyWith] porque poner un
-  /// campo en nulo con un parámetro opcional es indistinguible de no tocarlo.
+  /// Removes the identified donor. It goes apart from [copyWith] because
+  /// setting a field to null through an optional parameter cannot be told from
+  /// leaving it alone.
   IntakeDraft withoutDonor() => IntakeDraft(
     captureId: captureId,
     centerId: centerId,

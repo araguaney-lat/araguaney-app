@@ -26,22 +26,22 @@ final class ReportRefused<T> extends ReportOutcome<T> {
 
   final ApiFailure failure;
 
-  /// Si el rechazo es «no participas en esta campaña». Los siete informes van
-  /// por `require_campaign_access`, así que es la respuesta esperable y no un
-  /// fallo: la pantalla lo dice sin alarmar.
+  /// Whether the refusal is «you do not take part in this campaign». The seven
+  /// reports go through `require_campaign_access`, so it is the expected answer
+  /// and not a failure: the screen says so without alarm.
   bool get isForbidden => failure is ForbiddenFailure;
 }
 
-/// Los informes de una campaña.
+/// A campaign's reports.
 ///
-/// **Todos cuelgan de una campaña y ninguno se cachea.** Un informe es una
-/// pregunta sobre ahora: guardarlo para responder sin señal sería contestar con
-/// el número de ayer a quien pregunta por el de hoy.
+/// **They all hang from a campaign and none is cached.** A report is a question
+/// about now: storing it to answer without signal would be answering today's
+/// question with yesterday's number.
 ///
-/// Ninguno recibe rango de fechas desde aquí. El servidor tiene el suyo por
-/// defecto, y una pantalla de teléfono que empieza pidiendo dos fechas es una
-/// pantalla que nadie abre dos veces. La merma además no admite rango a
-/// propósito: un envío se recibe semanas después de salir.
+/// None of them takes a date range from here. The server has its own default,
+/// and a phone screen that starts by asking for two dates is a screen nobody
+/// opens twice. The shrinkage also takes no range on purpose: a shipment is
+/// received weeks after it leaves.
 class ReportsRepository {
   ReportsRepository({
     required ReportsApi reports,
@@ -90,10 +90,11 @@ class ReportsRepository {
         ),
       );
 
-  /// Cuánto pesa lo reunido, y contra qué meta.
+  /// How much what was gathered weighs, and against which goal.
   ///
-  /// Es del panel de peso y no de los informes: solo exige rol de centro, así
-  /// que lo ve quien no participa en ninguna campaña concreta.
+  /// It belongs to the weight panel and not to the reports: it only requires a
+  /// centre role, so it is seen by somebody who takes part in no particular
+  /// campaign.
   Future<ReportOutcome<WeightDashboardOut>> weight({
     String? campaignId,
     String? centerId,
@@ -104,10 +105,10 @@ class ReportsRepository {
     ),
   );
 
-  /// Pide el CSV y espera a que el servidor lo arme.
+  /// Asks for the CSV and waits for the server to assemble it.
   ///
-  /// El archivo se le entrega al visor del sistema. Dibujar una hoja de cálculo
-  /// no es trabajo de esta aplicación y no va a serlo.
+  /// The file is handed to the system's viewer. Drawing a spreadsheet is not
+  /// this application's job and is not going to be.
   Future<DocumentOutcome> exportCsv(
     String campaignId, {
     Future<void> Function(Duration) wait = Future.delayed,

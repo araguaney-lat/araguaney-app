@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'app_colors.dart';
 import 'app_typography.dart';
 
-/// Los colores que Material no sabe nombrar.
+/// The colours Material has no name for.
 ///
-/// `ColorScheme` cubre primario, superficie y error, pero no «el dorado que
-/// confirma» ni «la barra inferior». Antes eso vivía incrustado en la barra,
-/// que era el único sitio donde había tokens; una extensión los pone donde
-/// cualquier pantalla puede leerlos y cambiar de tema sin tocarlos.
+/// `ColorScheme` covers primary, surface and error, but not «the gold that
+/// confirms» or «the bottom bar». That used to live embedded in the bar, which
+/// was the only place with tokens; an extension puts them where any screen can
+/// read them and change theme without touching them.
 @immutable
 class AppPalette extends ThemeExtension<AppPalette> {
   const AppPalette({
@@ -68,14 +68,15 @@ class AppPalette extends ThemeExtension<AppPalette> {
   final Color centerInk;
   final Color danger;
 
-  /// Superficie de aviso: algo espera, nada va mal. Es el dorado suave de la
-  /// barra, con su tinta legible encima.
+  /// The notice surface: something is waiting, nothing is wrong. It is the
+  /// bar's soft gold, with readable ink over it.
   final Color noticeFill;
   final Color noticeBorder;
   final Color noticeInk;
 
-  /// Superficie de rechazo: algo se detuvo y espera una decisión. Distinta del
-  /// aviso a propósito — «pendiente» y «rechazada» no pueden compartir color.
+  /// The refusal surface: something stopped and is waiting for a decision.
+  /// Deliberately different from the notice — «pending» and «refused» cannot
+  /// share a colour.
   final Color alertFill;
   final Color alertInk;
 
@@ -134,19 +135,18 @@ class AppPalette extends ThemeExtension<AppPalette> {
   }
 }
 
-/// La forma de todo lo que se toca.
+/// The shape of everything that is touched.
 ///
-/// El diseño dibuja botones con esquinas y no con forma de pastilla: un
-/// rectángulo de esquinas suaves se alinea con los campos y las tarjetas que
-/// tiene al lado, y una pastilla no se alinea con nada. El radio es el mismo
-/// que el de los campos a propósito —un solo valor para todo lo interactivo—
-/// y las tarjetas quedan dos puntos más abiertas, que es lo que las separa
-/// visualmente de lo que se pulsa.
+/// The design draws buttons with corners rather than as pills: a rectangle with
+/// soft corners lines up with the fields and cards beside it, and a pill lines
+/// up with nothing. The radius is deliberately the same as the fields' — one
+/// value for everything interactive — and cards sit two points more open, which
+/// is what separates them visually from what is pressed.
 const _buttonShape = RoundedRectangleBorder(
   borderRadius: BorderRadius.all(Radius.circular(12)),
 );
 
-/// El tema de la aplicación, en sus dos versiones.
+/// The application's theme, in both of its versions.
 abstract final class AppTheme {
   static ThemeData get light => _build(
     brightness: Brightness.light,
@@ -231,8 +231,9 @@ abstract final class AppTheme {
         titleTextStyle: text.titleLarge,
         iconTheme: IconThemeData(color: ink),
       ),
-      // Las tarjetas no flotan: el diseño las separa con un borde fino, que en
-      // una pantalla llena de filas se lee mejor que ocho sombras compitiendo.
+      // Cards do not float: the design separates them with a thin border,
+      // which on a screen full of rows reads better than eight shadows
+      // competing.
       cardTheme: CardThemeData(
         color: scheme.surface,
         surfaceTintColor: Colors.transparent,
@@ -250,14 +251,14 @@ abstract final class AppTheme {
         subtitleTextStyle: text.bodySmall,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
-      // Azul navega.
-      // Sin `backgroundColor` ni `foregroundColor` a propósito. Este tema lo
-      // leen los dos: `FilledButton` y `FilledButton.tonal`. Fijarlos aquí
-      // ganaba sobre el valor propio de la variante tonal, así que un botón
-      // que pedía tonal se pintaba idéntico a uno primario y la jerarquía
-      // entre los dos desaparecía. Los valores de Material 3 ya salen del
-      // `ColorScheme` escrito arriba: primario toma `primary`, y tonal toma
-      // `secondaryContainer`, que es el dorado suave del diseño.
+      // Blue navigates.
+      // No `backgroundColor` and no `foregroundColor`, on purpose. Both read
+      // this theme: `FilledButton` and `FilledButton.tonal`. Pinning them here
+      // won over the tonal variant's own value, so a button that asked for
+      // tonal was painted identically to a primary one and the hierarchy
+      // between the two disappeared. Material 3's values already come from the
+      // `ColorScheme` written above: primary takes `primary`, and tonal takes
+      // `secondaryContainer`, which is the design's soft gold.
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
           textStyle: text.labelLarge,
@@ -274,9 +275,9 @@ abstract final class AppTheme {
           shape: _buttonShape,
         ),
       ),
-      // Un botón de texto no dibuja fondo, pero sí dibuja el destello al
-      // pulsarlo. Sin esto ese destello seguiría siendo una pastilla, que es
-      // la forma que acabamos de retirar de los otros dos.
+      // A text button draws no background, but it does draw the flash when it
+      // is pressed. Without this, that flash would still be a pill — the shape
+      // we just took off the other two.
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
           foregroundColor: scheme.primary,
@@ -285,8 +286,8 @@ abstract final class AppTheme {
           shape: _buttonShape,
         ),
       ),
-      // Dorado confirma. Es el color de la acción central de la barra, y por eso
-      // ningún botón de navegación debería llevarlo.
+      // Gold confirms. It is the colour of the bar's central action, which is
+      // why no navigation button should ever carry it.
       floatingActionButtonTheme: FloatingActionButtonThemeData(
         backgroundColor: palette.centerFill,
         foregroundColor: palette.centerInk,
@@ -308,13 +309,13 @@ abstract final class AppTheme {
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(color: scheme.primary, width: 1.5),
         ),
-        // Un campo con error de validación no los declaraba nadie, y eso no
-        // se veía: `InputDecorator` busca estos dos, no los encontraba, y caía
-        // al `border` de respaldo. El resultado era que «escribe tu
-        // contraseña» dejaba el recuadro idéntico al de un campo en reposo, y
-        // en las pantallas que pasaban un borde a mano además perdía las
-        // esquinas del diseño. Solo aparece cuando alguien escribe mal la
-        // contraseña, que es justo lo rutinario.
+        // Nobody declared these for a field with a validation error, and it
+        // did not show: `InputDecorator` looks for these two, did not find
+        // them, and fell back to `border`. The result was that «write your
+        // password» left the box identical to a field at rest, and on the
+        // screens that passed a border by hand it also lost the design's
+        // corners. It only appears when somebody mistypes a password, which is
+        // exactly the routine case.
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: const BorderSide(color: AppColors.danger),

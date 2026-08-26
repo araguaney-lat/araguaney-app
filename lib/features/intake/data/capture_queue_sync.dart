@@ -6,7 +6,7 @@ import '../../../core/api/generated/clients/intakes_api.dart';
 import '../../../core/api/generated/models/intake_create.dart';
 import '../../../core/db/app_database.dart';
 
-/// Cómo terminó un vaciado de la cola.
+/// How a flush of the queue ended.
 class QueueFlushReport {
   const QueueFlushReport({
     required this.sent,
@@ -15,26 +15,26 @@ class QueueFlushReport {
     this.stoppedBy,
   });
 
-  /// Capturas que el servidor aceptó y salieron de la cola.
+  /// Captures the server accepted, which left the queue.
   final int sent;
 
-  /// Capturas que quedaron aparcadas esperando una decisión de una persona.
+  /// Captures parked waiting for a person's decision.
   final int parked;
 
-  /// Las que siguen pendientes de reintento.
+  /// The ones still waiting to be retried.
   final int remaining;
 
-  /// Por qué se cortó el vaciado, cuando se cortó.
+  /// Why the flush was cut short, when it was.
   final ApiFailure? stoppedBy;
 
   bool get didAnything => sent > 0 || parked > 0;
 }
 
-/// Envía lo que la cola tiene guardado.
+/// Sends what the queue has stored.
 ///
-/// Recorre las capturas de **una** persona en el orden en que se hicieron y se
-/// detiene al primer fallo que no dependa de la captura: sin señal, seguir
-/// intentando las siguientes solo gasta batería para obtener el mismo error.
+/// It walks **one** person's captures in the order they were made and stops at
+/// the first failure that does not depend on the capture: with no signal,
+/// carrying on with the next ones only spends battery to get the same error.
 class CaptureQueueSync {
   CaptureQueueSync({
     required IntakesApi api,
@@ -58,33 +58,35 @@ class CaptureQueueSync {
       await _db.captureQueueDao.markAttempt(row.captureId, _now());
 
       try {
-        // El cuerpo se reconstruye desde el JSON guardado, no desde el
-        // formulario: reintentar tiene que enviar lo mismo que se capturó.
+        // The body is rebuilt from the stored JSON and not from the form:
+        // retrying has to send the same thing that was captured.
         await _intakes.createIntakeV1IntakesPost(
           body: IntakeCreate.fromJson(
             jsonDecode(row.payload) as Map<String, Object?>,
           ),
         );
-        // El servidor es idempotente por `capture_id`: si esta captura ya
-        // estaba registrada, devuelve la que registró en vez de duplicarla, y
-        // el resultado es el mismo que si acabara de llegar.
+        // The server is idempotent by `capture_id`: if this capture was
+        // already registered it returns the one it registered instead of
+        // duplicating it, and the result is the same as if it had just
+        // arrived.
         await _db.captureQueueDao.remove(row.captureId);
         sent++;
       } on Object catch (error) {
         final failure = ApiErrorMapper.fromAny(error);
 
         if (_belongsToTheCapture(failure)) {
-          // El servidor ya decidió sobre esta captura. Volver a mandarla daría
-          // la misma respuesta para siempre, así que deja de reintentarse y
-          // espera a que una persona la mire, con el motivo a la vista.
+          // The server has already decided about this capture. Sending it
+          // again would give the same answer forever, so it stops being
+          // retried and waits for a person to look at it, with the reason in
+          // sight.
           await _db.captureQueueDao.markRejected(
             row.captureId,
             code: failure.code,
-            // **Las palabras del servidor, no una traducción.** Lo que se
-            // guarda aquí lo lee alguien días después, quizá con la aplicación
-            // en otro idioma: dejar escrito el renderizado de hoy congelaría
-            // un idioma en la base. El código viaja al lado y la pantalla
-            // resuelve con él la copia propia cuando la conoce.
+            // **The server's words, not a translation.** What is stored here
+            // is read by somebody days later, perhaps with the application in
+            // another language: writing down today's rendering would freeze a
+            // language into the database. The code travels alongside it and
+            // the screen resolves our own copy from it when it knows it.
             message: failure.message,
             at: _now(),
           );
@@ -92,8 +94,8 @@ class CaptureQueueSync {
           continue;
         }
 
-        // Nada que ver con la captura: sin red, sesión vencida o servidor
-        // caído. Se queda pendiente y el vaciado se detiene aquí.
+        // Nothing to do with the capture: no network, an expired session or a
+        // server that is down. It stays pending and the flush stops here.
         await _db.captureQueueDao.markRetryable(
           row.captureId,
           code: failure.code,
@@ -114,12 +116,13 @@ class CaptureQueueSync {
     );
   }
 
-  /// Si el rechazo habla de **esta** captura o del camino hasta el servidor.
+  /// Whether the refusal is about **this** capture or about the road to the
+  /// server.
   ///
-  /// La distinción decide si se aparca o se reintenta, y por eso se escribe
-  /// como una pregunta y no como una lista de códigos. Un 401 no dice nada
-  /// malo de la captura: dice que la sesión venció, y aparcarla por eso
-  /// perdería inventario por un problema de credenciales.
+  /// The distinction decides whether it is parked or retried, and that is why
+  /// it is written as a question and not as a list of codes. A 401 says nothing
+  /// bad about the capture: it says the session expired, and parking it for
+  /// that would lose inventory over a credentials problem.
   static bool _belongsToTheCapture(ApiFailure failure) => switch (failure) {
     BusinessRuleFailure() => true,
     ForbiddenFailure() => true,

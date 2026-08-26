@@ -11,37 +11,38 @@ import 'auth_repository.dart';
 import 'session.dart';
 import 'token_storage.dart';
 
-/// Dueño único del estado de sesión.
+/// The single owner of the session state.
 ///
-/// Es el único sitio que escribe el almacén seguro y el único que decide si hay
-/// sesión. Cualquier otra capa lee.
+/// It is the only place that writes the secure store and the only one that
+/// decides whether there is a session. Every other layer reads.
 class SessionController extends Notifier<SessionState> {
   late final AuthRepository _repository;
   late final TokenStorage _storage;
   late final Future<void> _restoration;
 
-  /// La restauración inicial, para que quien pruebe pueda esperarla en vez de
-  /// adivinar cuántos microtasks faltan.
+  /// The initial restoration, so a test can await it instead of guessing how
+  /// many microtasks are left.
   Future<void> get restoration => _restoration;
 
   @override
   SessionState build() {
     _repository = ref.read(authRepositoryProvider);
     _storage = ref.read(tokenStorageProvider);
-    // El access token nunca se persiste, así que al arrancar no hay sesión
-    // hasta que el refresh guardado la reconstruya. Va en un microtask porque
-    // `build` no puede asignar `state` mientras se está construyendo.
+    // The access token is never persisted, so at start-up there is no session
+    // until the stored refresh rebuilds it. It goes in a microtask because
+    // `build` cannot assign `state` while it is still building.
     _restoration = Future<void>.microtask(restore);
     return const SessionRestoring();
   }
 
-  /// Token vigente para el interceptor. Nulo si no hay sesión.
+  /// The current token, for the interceptor. Null when there is no session.
   String? get accessToken => switch (state) {
     SessionActive(:final session) => session.accessToken,
     _ => null,
   };
 
-  /// Reconstruye la sesión desde el refresh guardado, al abrir la aplicación.
+  /// Rebuilds the session from the stored refresh, when the application
+  /// opens.
   Future<void> restore() async {
     final refreshToken = await _storage.readRefreshToken();
     if (refreshToken == null) {
@@ -55,15 +56,15 @@ class SessionController extends Notifier<SessionState> {
     } on Object catch (error) {
       final failure = _failureFor(error);
       if (failure.isRetryable) {
-        // No se pudo verificar la sesión, pero el servidor tampoco dijo que
-        // fuera inválida. **La credencial se conserva**: sin señal no se puede
-        // volver a iniciar sesión, así que borrarla dejaría el dispositivo
-        // inservible justo en el sótano donde más falta hace. Al volver la
-        // conexión, restaurar vuelve a intentarlo.
+        // The session could not be verified, but the server did not say it
+        // was invalid either. **The credential is kept**: without signal
+        // nobody can sign in again, so deleting it would make the device
+        // useless in the very basement where it is needed most. When the
+        // connection comes back, restoring tries again.
         state = SessionAbsent(failure: failure);
         return;
       }
-      // El servidor sí dijo que no sirve: vencido, revocado o reutilizado.
+      // The server did say it is no good: expired, revoked or reused.
       await _clear(failure: failure);
     }
   }
@@ -100,9 +101,9 @@ class SessionController extends Notifier<SessionState> {
       await _adopt(token, identifyUser: true);
     } on Object catch (error) {
       final failure = _failureFor(error);
-      // Un token parcial caduca en minutos. Si venció, se vuelve al inicio de
-      // sesión en vez de dejar a alguien tecleando códigos contra una puerta
-      // que ya se cerró.
+      // A partial token expires in minutes. If it ran out, go back to sign-in
+      // rather than leave somebody typing codes at a door that already
+      // closed.
       if (failure is UnauthorizedFailure) {
         state = SessionAbsent(failure: failure);
       } else {
@@ -114,15 +115,15 @@ class SessionController extends Notifier<SessionState> {
     }
   }
 
-  /// Cancela el segundo factor y vuelve al inicio de sesión.
+  /// Cancels the second factor and goes back to sign-in.
   void cancelTotp() => state = const SessionAbsent();
 
   Future<void> changePassword({
     required String currentPassword,
     required String newPassword,
   }) async {
-    // El backend devuelve una sesión nueva, así que el cambio de contraseña
-    // también renueva las credenciales del dispositivo.
+    // The backend answers with a new session, so changing the password also
+    // renews the device's credentials.
     final token = await _repository.changePassword(
       currentPassword: currentPassword,
       newPassword: newPassword,
@@ -130,7 +131,7 @@ class SessionController extends Notifier<SessionState> {
     await _adopt(token);
   }
 
-  /// Renueva la sesión. La usa el interceptor ante un 401.
+  /// Renews the session. The interceptor uses it on a 401.
   Future<String> renew() async {
     final refreshToken =
         switch (state) {
@@ -157,28 +158,29 @@ class SessionController extends Notifier<SessionState> {
       _ => null,
     };
 
-    // Primero la baja del destino de avisos, que necesita la sesión que se está
-    // entregando. En un teléfono de centro esto no es limpieza: sin esta
-    // llamada, la siguiente persona que entre recibiría los avisos de la
-    // anterior.
-    // Por la misma razón simétrica: no poder dar de baja el destino no puede
-    // dejar a nadie atrapado dentro de una sesión que quiere cerrar.
+    // The notice destination is unregistered first, and that needs the very
+    // session being handed back. On a centre phone this is not tidying up:
+    // without this call, the next person to sign in would get the previous
+    // one's notices.
+    // And symmetrically: failing to unregister cannot trap somebody inside a
+    // session they want to close.
     try {
       await ref.read(onSessionEndingProvider)();
     } on Object {
-      // La ventana que esto abre se cierra sola: sin sesión nadie mira avisos,
-      // y la siguiente entrada reasigna el token a quien entre.
+      // The window this opens closes by itself: with no session nobody looks
+      // at notices, and the next sign-in reassigns the token to whoever it
+      // belongs to.
     }
 
     await _repository.logout(refreshToken);
     await _clear();
   }
 
-  /// Deja el dispositivo sin sesión cuando la renovación fracasa.
+  /// Leaves the device without a session when renewal fails.
   ///
-  /// No da de baja el destino de avisos, y no puede: la llamada exige una
-  /// sesión válida y justo eso es lo que se acaba de perder. El token queda
-  /// registrado hasta que alguien entre, y entrar lo reasigna.
+  /// It does not unregister the notice destination, and it cannot: that call
+  /// needs a valid session, which is exactly what was just lost. The token
+  /// stays registered until somebody signs in, and signing in reassigns it.
 
   Future<void> expire() => _clear(
     failure: const UnauthorizedFailure(
@@ -187,14 +189,14 @@ class SessionController extends Notifier<SessionState> {
     ),
   );
 
-  /// Adopta el token como sesión activa.
+  /// Adopts the token as the active session.
   ///
-  /// [identifyUser] solo es cierto donde la persona puede haber cambiado: al
-  /// iniciar sesión y al superar el segundo factor. Restaurar y renovar parten
-  /// de un refresh guardado, y un refresh no se convierte en otra persona.
+  /// [identifyUser] is only true where the person may have changed: signing in,
+  /// and passing the second factor. Restoring and renewing start from a stored
+  /// refresh, and a refresh does not turn into somebody else.
   Future<void> _adopt(Token token, {bool identifyUser = false}) async {
-    // El backend rota el refresh en cada uso: se guarda el nuevo o el anterior
-    // queda inservible en el dispositivo.
+    // The backend rotates the refresh on every use: store the new one, or the
+    // previous one is left useless on the device.
     if (token.refreshToken case final refresh?) {
       await _storage.writeRefreshToken(refresh);
     }
@@ -203,10 +205,11 @@ class SessionController extends Notifier<SessionState> {
         ? await _adoptIdentity(token.accessToken)
         : await _storage.readUserId();
 
-    // Un token sin rol viene de renovar, y renovar no dice quién es: hay que
-    // preguntarlo. Si no se puede —sin señal, servidor caído— la sesión se abre
-    // igual y sin rol, que es la dirección segura: se ofrece de menos, nunca de
-    // más, y el servidor sigue decidiendo en cada llamada.
+    // A token with no role comes from a renewal, and a renewal does not say
+    // who anybody is: it has to be asked. If it cannot be — no signal, server
+    // down — the session opens anyway without a role, which is the safe
+    // direction: it offers less, never more, and the server still decides on
+    // every call.
     final identity = token.centerRole == null
         ? await _identity(token.accessToken)
         : null;
@@ -215,39 +218,32 @@ class SessionController extends Notifier<SessionState> {
       Session.fromToken(token, userId: userId, identity: identity),
     );
 
-    // El registro del destino de avisos va **después** de exponer la sesión:
-    // el endpoint la exige, y el cliente con sesión saca su token de este
-    // estado. Solo en las entradas de verdad —no al restaurar ni al renovar—,
-    // porque el registro ya es idempotente y quien vuelve a abrir la
-    // aplicación sigue siendo el destino que registró al entrar.
+    // Registering the notice destination goes **after** the session is
+    // exposed: the endpoint requires it, and the client with a session takes
+    // its token from this state. Only on real sign-ins — not on restore or
+    // renewal — because registering is idempotent and whoever reopens the
+    // application is still the destination they registered when they signed
+    // in.
     if (identifyUser) {
-      // Envuelto porque **nada de los avisos puede impedir entrar**. El
-      // registrador ya se traga sus propios fallos de red; esto cubre el resto
-      // —que el servicio no arranque, que no haya servicios de Google— y deja
-      // la sesión abierta igual. Sin avisos se trabaja; sin sesión no.
+      // Wrapped because **nothing about notices may stop somebody signing
+      // in**. The registrar already swallows its own network failures; this
+      // covers the rest — the service not starting, no Google services — and
+      // leaves the session open anyway. You can work without notices; you
+      // cannot work without a session.
       try {
         await ref.read(onSessionStartedProvider)();
       } on Object {
-        // Se reintenta en la sesión siguiente, y registrar es idempotente.
+        // It is retried next session, and registering is idempotent.
       }
     }
   }
 
-  /// Resuelve quién inició sesión y decide si el cache del turno anterior
-  /// sobrevive.
+  /// Who they are, without deciding anything about the cache.
   ///
-  /// Se borra salvo que la identidad coincida con la guardada. Los dos casos
-  /// que parecen excesivos son los que importan: una instalación nueva no tiene
-  /// identidad guardada y borra una base vacía, que no cuesta nada; y si el
-  /// servidor no contesta quién es, se borra igual. Fallar hacia el borrado es
-  /// la única dirección segura, porque la alternativa es enseñarle los datos de
-  /// una persona a la siguiente que agarre el teléfono del centro.
-  /// Quién es, sin decidir nada sobre el cache.
-  ///
-  /// Separado de [_adoptIdentity] a propósito: aquel resuelve identidad **y**
-  /// decide si el modelo de lectura sobrevive, porque puede haber cambiado la
-  /// persona. Aquí no puede: se viene de un refresh guardado en este mismo
-  /// dispositivo, así que preguntar solo completa lo que el token no trajo.
+  /// Deliberately separate from [_adoptIdentity]: that one resolves identity
+  /// **and** decides whether the read model survives, because the person may
+  /// have changed. Here they cannot have: this comes from a refresh stored on
+  /// this same device, so asking only fills in what the token did not carry.
   Future<UserOut?> _identity(String accessToken) async {
     try {
       return await _repository.me(accessToken);
@@ -256,6 +252,15 @@ class SessionController extends Notifier<SessionState> {
     }
   }
 
+  /// Resolves who signed in, and decides whether the previous shift's cache
+  /// survives.
+  ///
+  /// It is cleared unless the identity matches the stored one. The two cases
+  /// that look excessive are the ones that matter: a fresh install has no
+  /// stored identity and clears an empty database, which costs nothing; and if
+  /// the server does not answer who they are, it is cleared anyway. Failing
+  /// towards deletion is the only safe direction, because the alternative is
+  /// showing one person's data to the next one who picks up the centre's phone.
   Future<String?> _adoptIdentity(String accessToken) async {
     final previous = await _storage.readUserId();
 

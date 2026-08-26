@@ -4,13 +4,12 @@ import '../../../core/api/generated/models/donor_input.dart';
 import '../../../core/i18n/l10n_extension.dart';
 import '../domain/intake_draft.dart';
 
-/// El donante que se identifica en el mostrador.
+/// The donor who identifies themselves at the counter.
 ///
-/// La casilla de los Términos se muestra siempre y **no bloquea aquí**: quién
-/// tiene que aceptarlos es una regla del backend, que responde
-/// `TERMS_NOT_ACCEPTED` cuando falta. Repetir esa condición en el cliente
-/// significaría mantener dos versiones de ella, y la del servidor es la que
-/// manda.
+/// The Terms checkbox is always shown and **does not block here**: who has to
+/// accept them is a backend rule, which answers `TERMS_NOT_ACCEPTED` when they
+/// are missing. Repeating that condition in the client would mean maintaining
+/// two versions of it, and the server's is the one that counts.
 class DonorSheet extends StatefulWidget {
   const DonorSheet({super.key, this.initial, this.termsAccepted = false});
 

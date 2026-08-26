@@ -9,12 +9,12 @@ import '../../../core/ui/sheet_insets.dart';
 import '../domain/box_draft_input.dart';
 import 'product_picker_sheet.dart';
 
-/// Alta y edición de **una** caja.
+/// Adding and editing **one** box.
 ///
-/// Una caja lleva un producto, un lote y una caducidad. No es una regla que
-/// esta pantalla imponga: es la forma que tiene una caja en el contrato, y por
-/// eso aquí no hay dónde escribir un segundo producto. Quien recibe dos cosas
-/// distintas agrega dos cajas.
+/// A box carries one product, one batch and one expiry date. It is not a rule
+/// this screen imposes: it is the shape a box has in the contract, and that is
+/// why there is nowhere here to write a second product. Whoever receives two
+/// different things adds two boxes.
 class BoxDraftSheet extends StatefulWidget {
   const BoxDraftSheet({super.key, this.initial});
 
@@ -65,8 +65,9 @@ class _BoxDraftSheetState extends State<BoxDraftSheet> {
 
     setState(() {
       _product = product;
-      // La unidad por defecto del catálogo ahorra un campo en el caso normal,
-      // sin impedir corregirla cuando la caja trae otra cosa.
+      // The catalogue's default unit saves a field in the normal case,
+      // without stopping it being corrected when the box carries something
+      // else.
       if (_unit.text.isEmpty && product.defaultUnit != null) {
         _unit.text = product.defaultUnit!;
       }
@@ -96,9 +97,9 @@ class _BoxDraftSheetState extends State<BoxDraftSheet> {
         expiryDate: _expiry,
         weightKg: _emptyToNull(_weight.text),
         code: widget.initial?.code,
-        // El del catálogo, que es el del envase que se escaneó o el del
-        // producto elegido a mano. El contrato lo acepta y hasta ahora nadie
-        // lo escribía.
+        // The catalogue's, which is that of the package that was scanned or of
+        // the product chosen by hand. The contract accepts it and until now
+        // nobody was writing it.
         gtin: _product!.gtin ?? widget.initial?.gtin,
       ),
     );
@@ -115,14 +116,14 @@ class _BoxDraftSheetState extends State<BoxDraftSheet> {
               : context.l10n.boxDraftEditTitle,
         ),
       ),
-      // Guardar confirma, y confirmar es dorado. Estaba en azul arriba, que es
-      // el color de navegar: la misma hoja enseñaba lo contrario de lo que
-      // enseña la pantalla que la abre.
+      // Saving confirms, and confirming is gold. It used to be blue up top,
+      // which is the colour of navigating: the same sheet was teaching the
+      // opposite of what the screen that opens it teaches.
       //
-      // La barra inferior de un `Scaffold` no sube con el teclado ni esquiva la
-      // barra de navegación del sistema. Lo último que se escribe antes de
-      // guardar es la cantidad, así que sin esto el botón queda tapado justo
-      // cuando hace falta —y en un teléfono de tres botones, tapado siempre.
+      // A `Scaffold`'s bottom bar does not rise with the keyboard nor dodge the
+      // system navigation bar. The last thing written before saving is the
+      // quantity, so without this the button ends up covered exactly when it is
+      // needed — and on a three-button phone, covered always.
       bottomNavigationBar: Padding(
         padding: EdgeInsets.fromLTRB(16, 8, 16, sheetBottomInset(context)),
         child: SizedBox(
@@ -158,10 +159,10 @@ class _BoxDraftSheetState extends State<BoxDraftSheet> {
                 ),
               )
             else
-              // Delineado y no tonal: esto abre un buscador, no confirma
-              // nada, y desde que el tonal recuperó su color propio —el
-              // dorado suave— habría dicho «confirmar» en una pantalla donde
-              // lo que se confirma está más abajo.
+              // Outlined and not tonal: this opens a search, it confirms
+              // nothing, and ever since the tonal button got its own colour
+              // back — the soft gold — it would have said «confirmar» on a
+              // screen where what gets confirmed is further down.
               OutlinedButton.icon(
                 onPressed: _pickProduct,
                 icon: const Icon(Icons.search),

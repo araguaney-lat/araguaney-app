@@ -1,46 +1,47 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-/// Dónde se abre un enlace, que es una decisión de producto y no de estilo.
+/// Where a link opens, which is a product decision rather than a matter of
+/// style.
 enum LinkTarget {
-  /// Fuera de la aplicación, en la aplicación que el sistema elija.
+  /// Outside the application, in whatever application the system picks.
   ///
-  /// Es lo correcto cuando lo que hay al otro lado **no es una página**: un
-  /// PDF firmado se abre en el visor del sistema, que es donde se puede
-  /// guardar, imprimir o mandar por donde haga falta. Traérselo dentro sería
-  /// quitarle a la persona todo eso.
+  /// It is the right thing when what is on the other side **is not a page**: a
+  /// signed PDF opens in the system viewer, which is where it can be saved,
+  /// printed or sent wherever it needs to go. Bringing it inside would take all
+  /// of that away from the person.
   systemApp,
 
-  /// Dentro de la aplicación, en el navegador del sistema.
+  /// Inside the application, in the system browser.
   ///
-  /// Custom Tabs en Android y `SFSafariViewController` en iOS. **Sigue siendo
-  /// el navegador de verdad** —su motor, su proceso, las cookies de quien lo
-  /// usa, su gestor de contraseñas y su protección antifraude—, solo que se
-  /// dibuja dentro de esta aplicación y el botón atrás devuelve a la pantalla
-  /// de la que salió, en vez de dejar la aplicación en segundo plano.
+  /// Custom Tabs on Android and `SFSafariViewController` on iOS. **It is still
+  /// the real browser** — its engine, its process, the person's own cookies,
+  /// their password manager and their anti-fraud protection — only drawn inside
+  /// this application, with the back button returning to the screen it came
+  /// from instead of leaving the application in the background.
   ///
-  /// No confundir con un `WebView`, que es un motor que hospedamos nosotros,
-  /// con su propio bote de cookies y sin gestor de contraseñas, y en el que se
-  /// puede inyectar y leer JavaScript de la página. Eso nos convertiría en
-  /// parte de la frontera de seguridad de esa página, que es justo lo que no
-  /// queremos delante de una verificación antiabuso. **Nada que pida una
-  /// contraseña puede ir en un `WebView`.**
+  /// Not to be confused with a `WebView`, which is an engine we host ourselves,
+  /// with its own cookie jar and no password manager, and into which the page's
+  /// JavaScript can be injected and read. That would make us part of that
+  /// page's security boundary, which is exactly what we do not want in front of
+  /// an anti-abuse check. **Nothing that asks for a password may go in a
+  /// `WebView`.**
   inAppBrowser,
 }
 
-/// Abrir un enlace.
+/// Opening a link.
 ///
-/// Se expone como función para que una prueba pueda comprobar que algo se abre
-/// sin lanzar un navegador de verdad. Devuelve si se pudo.
+/// It is exposed as a function so a test can check that something opens without
+/// launching a real browser. It returns whether it could.
 ///
-/// Vive en `core` y no dentro de una feature porque ya lo usan dos —el
-/// manifiesto de un envío y el registro de un centro— y este repositorio
-/// lleva seis veces pagando la misma lección: lo que está escondido dentro de
-/// una pantalla se acaba duplicando en la siguiente.
+/// It lives in `core` rather than inside a feature because two already use it —
+/// a shipment's manifest and a centre's registration — and this repository has
+/// paid the same lesson six times: what is hidden inside one screen ends up
+/// duplicated in the next.
 ///
-/// **El destino por defecto es fuera.** Quien quiera el navegador interno
-/// tiene que pedirlo, para que traerse una página dentro sea una decisión
-/// escrita en la pantalla que la toma y no algo que se hereda sin querer.
+/// **The default target is outside.** Anybody who wants the in-app browser has
+/// to ask for it, so that bringing a page inside is a decision written on the
+/// screen that takes it rather than something inherited by accident.
 typedef OpenLink = Future<bool> Function(String url, {LinkTarget target});
 
 final openLinkProvider = Provider<OpenLink>(

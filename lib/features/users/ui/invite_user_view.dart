@@ -11,15 +11,16 @@ import '../../team/data/team_repository.dart';
 import '../data/users_providers.dart';
 import '../data/users_repository.dart';
 
-/// Dar de alta a alguien en cualquier centro.
+/// Adding somebody at any centre.
 ///
-/// El caso móvil es el de siempre: aparece una persona a ofrecerse y quien
-/// administra tiene el teléfono en la mano. La diferencia con invitar al propio
-/// centro —que ya funciona desde la fase 14— es que aquí se elige a cuál.
+/// The mobile case is the usual one: a person turns up offering to help and
+/// whoever administers has the phone in their hand. The difference from
+/// inviting to your own centre — which has worked since phase 14 — is that here
+/// you choose which.
 ///
-/// **La contraseña no se escribe ni se ve.** El servidor la genera y la manda
-/// por correo; que este cliente nunca la toque es la única forma de que no
-/// pueda filtrarla.
+/// **The password is neither typed nor seen.** The server generates it and
+/// sends it by email; this client never touching it is the only way it cannot
+/// leak it.
 class InviteUserView extends ConsumerStatefulWidget {
   const InviteUserView({super.key});
 
@@ -75,8 +76,8 @@ class _InviteUserViewState extends ConsumerState<InviteUserView> {
     switch (outcome) {
       case UsersRead(:final value):
         Navigator.of(context).pop(value);
-      // El motivo es del servidor: que el correo ya tiene cuenta, que el
-      // usuario está tomado, que el rol no existe.
+      // The reason is the server's: that the email already has an account,
+      // that the username is taken, that the role does not exist.
       case UsersRefused(:final failure):
         setState(() => _failure = failure.operatorMessage(context.l10n));
     }

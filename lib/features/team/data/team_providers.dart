@@ -11,7 +11,7 @@ final teamRepositoryProvider = Provider<TeamRepository>((ref) {
   return TeamRepository(campaigns: client.campaigns, users: client.users);
 });
 
-/// El equipo del propio centro.
+/// The own centre's team.
 ///
 /// «Own» now includes the chosen one: a national administrator belongs to no
 /// centre, and used to get a directory of nobody. With a working centre there

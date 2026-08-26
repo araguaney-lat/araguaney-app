@@ -8,12 +8,12 @@ import '../../../core/i18n/l10n_extension.dart';
 import '../data/account_providers.dart';
 import '../data/account_repository.dart';
 
-/// Activar la verificación en dos pasos.
+/// Turning two-step verification on.
 ///
-/// Tres momentos, y el orden importa: el servidor entrega un secreto, exige un
-/// código generado con él, y solo entonces lo exige al entrar. Ese paso
-/// intermedio existe para que un secreto mal copiado no deje a nadie fuera de
-/// su propia cuenta.
+/// Three moments, and the order matters: the server hands over a secret,
+/// requires a code generated with it, and only then requires it on the way in.
+/// That middle step exists so a badly copied secret does not leave anybody out
+/// of their own account.
 class TotpSetupView extends ConsumerStatefulWidget {
   const TotpSetupView({super.key});
 
@@ -82,8 +82,8 @@ class _TotpSetupViewState extends ConsumerState<TotpSetupView> {
   Widget build(BuildContext context) => Scaffold(
     appBar: AppBar(
       title: Text(context.l10n.totpChallengeTitle),
-      // Con los códigos en pantalla no hay flecha atrás: son la única copia y
-      // salir por descuido los pierde.
+      // With the codes on screen there is no back arrow: they are the only copy
+      // and leaving by accident loses them.
       automaticallyImplyLeading: _backupCodes == null,
     ),
     body: SafeArea(
@@ -116,8 +116,8 @@ class _TotpSetupViewState extends ConsumerState<TotpSetupView> {
             ),
           ),
           const SizedBox(height: 16),
-          // El secreto escrito, para quien no puede escanear porque la
-          // aplicación de códigos está en este mismo teléfono.
+          // The secret written out, for somebody who cannot scan because the
+          // code application is on this very phone.
           _CopyRow(
             label: context.l10n.totpSecretManualHint,
             value: setup.secret,
@@ -162,12 +162,12 @@ class _TotpSetupViewState extends ConsumerState<TotpSetupView> {
   }
 }
 
-/// Los códigos de respaldo, que el servidor entrega **una sola vez**.
+/// The backup codes, which the server hands over **once only**.
 ///
-/// Si se pierden y se pierde también el teléfono con la aplicación de códigos,
-/// no hay forma de entrar sin que alguien de administración reinicie la cuenta.
-/// Por eso esta pantalla no se cierra sola, no tiene flecha atrás, y pide una
-/// confirmación explícita de que se guardaron.
+/// If they are lost and the phone with the code application is lost too, there
+/// is no way in without somebody in administration resetting the account. That
+/// is why this screen does not close by itself, has no back arrow, and asks for
+/// an explicit confirmation that they were saved.
 class _BackupCodes extends StatefulWidget {
   const _BackupCodes({required this.codes});
 

@@ -1,30 +1,31 @@
 import 'package:pub_semver/pub_semver.dart';
 
-/// Resultado de comparar la versión instalada con la que el backend soporta.
+/// The result of comparing the installed version with the one the backend
+/// supports.
 enum ClientVersionStatus {
-  /// La versión instalada sirve y está al día.
+  /// The installed version works and is up to date.
   current,
 
-  /// Sirve, pero hay una más nueva publicada.
+  /// It works, but a newer one has been published.
   updateAvailable,
 
-  /// Ya no sirve: el backend dejó de soportarla y hay que actualizar.
+  /// It no longer works: the backend dropped support and it has to be updated.
   updateRequired,
 
-  /// No se pudo saber. Nunca bloquea.
+  /// It could not be known. Never blocks.
   unknown,
 }
 
-/// Decide si la aplicación instalada todavía puede hablar con el backend.
+/// Decides whether the installed application can still talk to the backend.
 ///
-/// La web se despliega junto al backend; una aplicación instalada no. Puede
-/// estar corriendo el binario de hace meses en un centro donde nadie actualiza
-/// nada, y sin esta comprobación se rompería sola contra un contrato que
-/// cambió. El backend publica los valores en `GET /v1/client/version`.
+/// The web panel ships alongside the backend; an installed application does
+/// not. It may be running a months-old binary in a centre where nobody updates
+/// anything, and without this check it would break by itself against a contract
+/// that moved. The backend publishes the values at `GET /v1/client/version`.
 ///
-/// Es una función pura sobre tres cadenas de versión a propósito: así se prueba
-/// sin red y sin canales de plataforma, y quien la usa decide de dónde saca la
-/// versión instalada.
+/// It is a pure function over three version strings on purpose: that way it is
+/// tested without network and without platform channels, and the caller decides
+/// where the installed version comes from.
 abstract final class ClientVersionGate {
   static ClientVersionStatus evaluate({
     required String currentVersion,
@@ -44,8 +45,8 @@ abstract final class ClientVersionGate {
       return ClientVersionStatus.updateAvailable;
     }
 
-    // Sin datos utilizables del servidor no se bloquea a nadie: un fallo de la
-    // comprobación no puede dejar sin trabajar a un centro. Falla abierta.
+    // With no usable data from the server nobody is blocked: a failure of the
+    // check cannot stop a centre working. It fails open.
     if (minSupported == null && latest == null) {
       return ClientVersionStatus.unknown;
     }
@@ -53,8 +54,8 @@ abstract final class ClientVersionGate {
     return ClientVersionStatus.current;
   }
 
-  /// Acepta el formato de `pubspec.yaml` (`1.2.3+4`): el `+4` es metadato de
-  /// build y no participa en la comparación de precedencia.
+  /// Accepts the `pubspec.yaml` format (`1.2.3+4`): the `+4` is build metadata
+  /// and takes no part in the precedence comparison.
   static Version? _tryParse(String? raw) {
     if (raw == null || raw.isEmpty) return null;
     try {

@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 
-/// Las dos familias del diseño.
+/// The design's two families.
 ///
-/// Serif en los títulos y grotesca en todo lo demás. No es adorno: en una
-/// pantalla llena de cifras —cajas, unidades, kilos— el contraste entre las dos
-/// es lo que separa «qué estoy mirando» de «cuánto hay».
+/// Serif for the titles and grotesque for everything else. It is not
+/// decoration: on a screen full of figures — boxes, units, kilos — the contrast
+/// between the two is what separates «qué estoy mirando» from «cuánto hay».
 abstract final class AppTypography {
   static const serif = 'SourceSerif4';
   static const sans = 'HankenGrotesk';
 
-  /// Las dos son variables: el peso se pide por eje, no cargando otro archivo.
+  /// Both are variable: weight is asked for by axis, not by loading another
+  /// file.
   static List<FontVariation> _weight(int value) => [
     FontVariation('wght', value.toDouble()),
   ];

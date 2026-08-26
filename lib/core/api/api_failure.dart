@@ -1,25 +1,24 @@
 import '../i18n/generated/app_localizations.dart';
 import 'refusal_copy.dart';
 
-/// Fallo de una llamada a la API, ya interpretado.
+/// A failed API call, already interpreted.
 ///
-/// El backend responde los errores con un sobre estable
-/// (`{"error": {"code", "message", "field", "meta"}}`). Esta capa lo traduce a
-/// tipos que el resto de la aplicación puede distinguir sin volver a mirar
-/// códigos HTTP sueltos.
+/// The backend answers errors with a stable envelope
+/// (`{"error": {"code", "message", "field", "meta"}}`). This layer turns it
+/// into types the rest of the application can tell apart without looking at
+/// loose HTTP codes again.
 ///
-/// Dos distinciones sostienen decisiones reales y por eso son parte del tipo,
-/// no del sitio donde se atrapa el error:
+/// Two distinctions carry real decisions, which is why they belong to the type
+/// rather than to wherever the error is caught:
 ///
-/// - [isRetryable] separa lo transitorio (sin red, servidor caído) de lo que
-///   va a responder igual por siempre (una regla de negocio). La cola de
-///   captura sin conexión la necesita para no reintentar para siempre algo que
-///   ya fue rechazado.
-/// - [operatorMessage] decide qué se le enseña a quien opera. El mensaje del
-///   servidor se muestra cuando describe una regla de negocio que esa persona
-///   puede entender y corregir; un fallo técnico se muestra genérico y su
-///   detalle queda para diagnóstico. Antes que ambos manda la copia propia de
-///   los rechazos que el backend nombra con un código: ver [refusalCopyFor].
+/// - [isRetryable] separates the transient (no network, server down) from what
+///   will answer the same forever (a business rule). The offline capture queue
+///   needs it so it does not retry something that was already refused.
+/// - [operatorMessage] decides what somebody operating is shown. The server's
+///   message is used when it describes a business rule that person can
+///   understand and correct; a technical failure is shown generically and its
+///   detail is left for diagnosis. Ahead of both comes our own copy for the
+///   refusals the backend names with a code: see [refusalCopyFor].
 sealed class ApiFailure implements Exception {
   const ApiFailure({
     required this.code,
@@ -28,33 +27,33 @@ sealed class ApiFailure implements Exception {
     this.meta,
   });
 
-  /// Código estable del backend (`VALIDATION_ERROR`, `CODE_ALREADY_USED`, …).
+  /// Stable backend code (`VALIDATION_ERROR`, `CODE_ALREADY_USED`, …).
   final String code;
 
-  /// Mensaje del servidor. No siempre es apto para mostrarse: ver
-  /// [operatorMessage].
+  /// The server's message. Not always fit to be shown: see [operatorMessage].
   final String message;
 
-  /// Campo del formulario al que apunta el error, cuando el backend lo indica.
+  /// The form field the error points at, when the backend says so.
   final String? field;
 
-  /// Datos adicionales del sobre de error.
+  /// Extra data from the error envelope.
   final Map<String, dynamic>? meta;
 
-  /// Si reintentar la misma petición puede dar un resultado distinto.
+  /// Whether retrying the same request could give a different answer.
   bool get isRetryable;
 
-  /// Texto que se le muestra a quien opera, en su idioma.
+  /// The text somebody operating is shown, in their language.
   ///
-  /// Recibe [AppLocalizations] en vez de leerlo de un global porque un global
-  /// tiene un idioma y esta aplicación va a tener varios.
+  /// It takes [AppLocalizations] rather than reading a global, because a global
+  /// has one language and this application has more than one.
   String operatorMessage(AppLocalizations l10n);
 
   @override
   String toString() => '$runtimeType(code: $code, message: $message)';
 }
 
-/// No se pudo hablar con el servidor: sin red, DNS, timeout o conexión cortada.
+/// The server could not be reached: no network, DNS, timeout, dropped
+/// connection.
 final class NetworkFailure extends ApiFailure {
   const NetworkFailure({super.code = 'NETWORK_ERROR', required super.message});
 
@@ -65,13 +64,13 @@ final class NetworkFailure extends ApiFailure {
   String operatorMessage(AppLocalizations l10n) => l10n.failureNetwork;
 }
 
-/// La sesión no es válida o expiró (401).
+/// The session is invalid or expired (401).
 ///
-/// El mismo estado cubre dos momentos muy distintos: una sesión que caducó, y
-/// unas credenciales que no coinciden en la pantalla donde todavía no hay
-/// sesión ninguna. Por eso consulta primero la copia por código: decirle «tu
-/// sesión expiró» a quien acaba de escribir mal su contraseña describe algo
-/// que no ocurrió.
+/// One status covers two very different moments: a session that ran out, and
+/// credentials that do not match on the screen where there is no session yet.
+/// That is why it asks the copy table first — telling somebody who just
+/// mistyped their password that «your session expired» describes something
+/// that did not happen.
 final class UnauthorizedFailure extends ApiFailure {
   const UnauthorizedFailure({
     required super.code,
@@ -88,20 +87,20 @@ final class UnauthorizedFailure extends ApiFailure {
       refusalCopyFor(l10n, code) ?? l10n.failureSessionExpired;
 }
 
-/// La sesión es válida pero no alcanza para esta operación (403).
+/// The session is valid but does not reach this operation (403).
 ///
-/// Un 403 puede ser dos cosas distintas y solo el código las separa. Con
-/// `FORBIDDEN` —el genérico del backend— significa «esto no te toca», y no hay
-/// nada que la persona pueda hacer salvo pedírselo a quien sí puede; el mensaje
-/// del servidor ahí describe la comprobación, no el remedio, y a veces está en
-/// inglés. Con un código propio —`SELF_REVIEW`, `NOT_CAMPAIGN_MEMBER`— el
-/// servidor nombró una regla concreta, y callarla convierte una explicación en
-/// un muro.
+/// A 403 can be two different things and only the code tells them apart. With
+/// `FORBIDDEN` — the backend's catch-all — it means «this is not yours to do»,
+/// and there is nothing the person can do but ask somebody who can; the
+/// server's message there describes the check rather than the remedy, and is
+/// sometimes in English. With a code of its own — `SELF_REVIEW`,
+/// `NOT_CAMPAIGN_MEMBER` — the server named a specific rule, and staying quiet
+/// about it turns an explanation into a wall.
 ///
-/// Por eso habla cuando hay copia propia para el código y calla cuando no:
-/// un código nombrado que esta versión no conozca se muestra genérico, porque
-/// el contrato es aditivo y un binario viejo no puede adivinar si lo que
-/// llegó es apto para leerse.
+/// So it speaks when there is copy for the code and stays quiet when there is
+/// not: a named code this build does not know is shown generically, because the
+/// contract is additive and an old binary cannot guess whether what arrived is
+/// fit to read.
 final class ForbiddenFailure extends ApiFailure {
   const ForbiddenFailure({
     required super.code,
@@ -118,7 +117,7 @@ final class ForbiddenFailure extends ApiFailure {
       refusalCopyFor(l10n, code) ?? l10n.failureForbidden;
 }
 
-/// El recurso no existe o no es visible para este centro (404).
+/// The resource does not exist, or is not visible to this centre (404).
 final class NotFoundFailure extends ApiFailure {
   const NotFoundFailure({
     required super.code,
@@ -134,16 +133,16 @@ final class NotFoundFailure extends ApiFailure {
   String operatorMessage(AppLocalizations l10n) => l10n.failureNotFound;
 }
 
-/// El servidor rechazó la petición por una regla de negocio o de validación.
+/// The server refused the request over a business or validation rule.
 ///
-/// El mensaje del servidor se muestra tal cual: describe algo que quien captura
-/// puede entender y corregir, como una caducidad corta o un campo que falta.
-/// Traducirlo aquí sería mantener dos versiones de la misma regla, y la del
-/// servidor es la que manda.
+/// The server's message is shown as it is: it describes something whoever is
+/// capturing can understand and correct, like a short shelf life or a missing
+/// field. Translating it here would mean keeping two versions of the same rule,
+/// and the server's is the one that decides.
 ///
-/// La única excepción son los códigos con copia propia, que el backend contesta
-/// en inglés: ahí no se traduce una regla, se escribe en el idioma en que se
-/// opera. Ver [refusalCopyFor].
+/// The only exception is the codes with copy of their own, which the backend
+/// answers in English: there we are not translating a rule, we are writing in
+/// the language somebody operates in. See [refusalCopyFor].
 final class BusinessRuleFailure extends ApiFailure {
   const BusinessRuleFailure({
     required super.code,
@@ -160,11 +159,12 @@ final class BusinessRuleFailure extends ApiFailure {
       refusalCopyFor(l10n, code) ?? message;
 }
 
-/// Se superó el límite de peticiones (429).
+/// The request limit was exceeded (429).
 ///
-/// El bloqueo de una cuenta por intentos fallidos llega con este mismo estado
-/// y un código propio, así que consulta la copia por código antes de hablar de
-/// peticiones seguidas: son dos cosas distintas y solo el código las separa.
+/// An account locked out by failed attempts arrives with this same status and a
+/// code of its own, so the copy table is asked before saying anything about
+/// requests in a row: they are two different things and only the code tells
+/// them apart.
 final class RateLimitFailure extends ApiFailure {
   const RateLimitFailure({
     required super.code,
@@ -181,7 +181,7 @@ final class RateLimitFailure extends ApiFailure {
       refusalCopyFor(l10n, code) ?? l10n.failureRateLimited;
 }
 
-/// El servidor falló (5xx).
+/// The server failed (5xx).
 final class ServerFailure extends ApiFailure {
   const ServerFailure({
     required super.code,
@@ -197,8 +197,8 @@ final class ServerFailure extends ApiFailure {
   String operatorMessage(AppLocalizations l10n) => l10n.failureServer;
 }
 
-/// Cualquier otra cosa. Existe para que el mapeo sea total y nunca lance algo
-/// que nadie haya previsto.
+/// Anything else. It exists so the mapping is total and never throws something
+/// nobody planned for.
 final class UnknownFailure extends ApiFailure {
   const UnknownFailure({
     required super.code,

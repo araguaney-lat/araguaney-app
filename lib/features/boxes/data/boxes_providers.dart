@@ -25,15 +25,15 @@ final boxProvider = StreamProvider.family<BoxWithProduct?, String>(
   (ref, id) => ref.watch(boxesRepositoryProvider).watchBox(id),
 );
 
-/// Cuándo se refrescaron las cajas por última vez. La interfaz lo convierte en
+/// When the boxes were last refreshed. The interface turns it into
 /// «datos de hace 12 minutos».
 final boxesSyncMarkerProvider = StreamProvider<SyncMarkerRow?>(
   (ref) => ref.watch(boxesRepositoryProvider).watchSyncMarker(),
 );
 
-/// El recorrido de una caja: quién la selló, cuándo entró en una tarima, cuándo
-/// salió. Responde «¿qué le pasó a esto?» sobre el objeto que alguien tiene en
-/// la mano, que es la pregunta que se hace en los malos momentos.
+/// A box's journey: who sealed it, when it went onto a pallet, when it left. It
+/// answers «¿qué le pasó a esto?» about the object somebody is holding, which
+/// is the question asked in the bad moments.
 final boxEventsProvider = FutureProvider.family<List<QrEventOut>, String>(
   (ref, boxId) => ref
       .watch(restClientProvider)
