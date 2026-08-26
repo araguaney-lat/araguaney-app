@@ -4,7 +4,7 @@ import '../../../core/api/generated/clients/intakes_api.dart';
 import '../../../core/api/generated/models/intake_out.dart';
 import '../domain/intake_draft.dart';
 
-/// Cómo terminó un envío de captura.
+/// How submitting a capture ended.
 sealed class IntakeSubmission {
   const IntakeSubmission();
 }
@@ -15,13 +15,14 @@ final class IntakeAccepted extends IntakeSubmission {
   final IntakeOut intake;
 }
 
-/// El servidor pide identificar a quien dona antes de aceptar esta captura.
+/// The server asks for the donor to be identified before accepting this
+/// capture.
 ///
-/// Es un caso propio y no un fallo cualquiera porque la interfaz responde
-/// distinto: no es un error que corregir en un campo, es una pregunta que hay
-/// que hacerle a la persona que está en el mostrador. **El cliente no sabe
-/// desde cuándo aplica**: el umbral vive en el backend y aquí solo se reacciona
-/// a su respuesta.
+/// It is a case of its own and not just any failure because the interface
+/// answers differently: it is not an error to correct in a field, it is a
+/// question to ask the person standing at the counter. **The client does not
+/// know from what point it applies**: the threshold lives in the backend and
+/// all that happens here is reacting to its answer.
 final class IntakeNeedsDonor extends IntakeSubmission {
   const IntakeNeedsDonor(this.failure);
 
@@ -37,15 +38,15 @@ final class IntakeRejected extends IntakeSubmission {
 class IntakeRepository {
   IntakeRepository(this._api);
 
-  /// El código con el que el backend pide identificar por volumen.
+  /// The code the backend uses to ask for identification by volume.
   static const donorRequiredCode = 'DONOR_REQUIRED_FOR_VOLUME';
 
   final IntakesApi _api;
 
-  /// Envía la captura.
+  /// Sends the capture.
   ///
-  /// El mismo `capture_id` puede enviarse tantas veces como haga falta: el
-  /// servidor devuelve la captura que ya registró en vez de duplicarla.
+  /// The same `capture_id` can be sent as many times as needed: the server
+  /// returns the capture it already registered instead of duplicating it.
   Future<IntakeSubmission> submit(IntakeDraft draft) async {
     try {
       final intake = await _api.createIntakeV1IntakesPost(

@@ -21,16 +21,17 @@ import 'donor_sheet.dart';
 import 'intake_queued_view.dart';
 import 'intake_submitted_view.dart';
 
-/// Captura de una donación, en una sola pantalla.
+/// Capturing a donation, on a single screen.
 ///
-/// Todo el estado vive aquí: nada se pierde al retroceder y revisar antes de
-/// enviar es mirar hacia abajo. La llave de idempotencia se generó al abrir y
-/// no cambia, así que reenviar tras un rechazo nunca duplica inventario.
+/// All the state lives here: nothing is lost by going back, and reviewing
+/// before sending means looking down the page. The idempotency key was
+/// generated when it opened and does not change, so resending after a refusal
+/// never duplicates inventory.
 class IntakeFormView extends ConsumerStatefulWidget {
   const IntakeFormView({super.key, this.donationId});
 
-  /// Donación pre-registrada de la que salió esta captura, cuando se llegó
-  /// escaneando un código `DN-`.
+  /// The pre-registered donation this capture came from, when it was reached
+  /// by scanning a `DN-` code.
   final String? donationId;
 
   static Route<void> route({String? donationId}) => MaterialPageRoute<void>(
@@ -111,9 +112,9 @@ class _IntakeFormViewState extends ConsumerState<IntakeFormView> {
     final offline =
         ref.read(connectivityControllerProvider) == ConnectivityStatus.offline;
 
-    // Sin señal no se intenta y se falla: se encola. Es la única escritura que
-    // depende solo de lo que la persona tiene enfrente, y por eso es la única
-    // que puede esperar en el dispositivo.
+    // With no signal it is not attempted and failed: it is queued. It is the
+    // only write that depends solely on what the person has in front of them,
+    // and that is why it is the only one that can wait on the device.
     if (offline && userId != null) {
       await _enqueue(userId);
       return;
@@ -121,9 +122,9 @@ class _IntakeFormViewState extends ConsumerState<IntakeFormView> {
 
     var result = await _send();
 
-    // El servidor puede pedir identificar a quien dona. No es un error de
-    // campo: es una pregunta para el mostrador, y la respuesta se reenvía con
-    // la misma llave de captura.
+    // The server may ask for the donor to be identified. It is not a field
+    // error: it is a question for the counter, and the answer is resent with
+    // the same capture key.
     if (result is IntakeNeedsDonor && mounted) {
       final resolved = await _resolveDonorRequest(result);
       result = resolved ?? result;
@@ -136,14 +137,14 @@ class _IntakeFormViewState extends ConsumerState<IntakeFormView> {
         await Navigator.of(
           context,
         ).pushReplacement(IntakeSubmittedView.route(intake));
-      // Un rechazo se muestra con el motivo del servidor. Que la pregunta por
-      // el donante llegue hasta aquí significa que quedó sin resolver, y esa
-      // también es una respuesta que quien captura tiene que leer.
+      // A refusal is shown with the server's reason. That the question about
+      // the donor reaches this far means it went unresolved, and that is also
+      // an answer whoever captures has to read.
       case IntakeNeedsDonor(:final failure):
         _showFailure(failure.operatorMessage(context.l10n));
-      // La red se cayó a mitad del envío. Perder lo capturado sería el peor
-      // resultado posible, así que la captura pasa a la cola con su misma
-      // llave: cuando salga la señal se enviará una vez, no dos.
+      // The network went down mid-submission. Losing what was captured would
+      // be the worst possible outcome, so the capture moves to the queue with
+      // its same key: when the signal returns it will be sent once, not twice.
       case IntakeRejected(:final failure)
           when failure.isRetryable && userId != null:
         await _enqueue(userId);
@@ -152,8 +153,8 @@ class _IntakeFormViewState extends ConsumerState<IntakeFormView> {
     }
   }
 
-  /// Guarda la captura para enviarla al recuperar la señal, asignándole antes
-  /// los códigos reservados que hagan falta para poder etiquetar ahora.
+  /// Stores the capture to be sent when the signal comes back, assigning it
+  /// first whatever reserved codes are needed to be able to label now.
   Future<void> _enqueue(String userId) async {
     setState(() => _submitting = true);
 
@@ -179,9 +180,9 @@ class _IntakeFormViewState extends ConsumerState<IntakeFormView> {
     );
   }
 
-  /// Envía y marca la pantalla como ocupada solo mientras la petición está en
-  /// vuelo. Esperar a que alguien conteste un diálogo no es estar enviando, y
-  /// dejar el indicador girando mientras tanto diría lo contrario.
+  /// Sends and marks the screen busy only while the request is in flight.
+  /// Waiting for somebody to answer a dialog is not sending, and leaving the
+  /// spinner turning meanwhile would say otherwise.
   Future<IntakeSubmission> _send() async {
     setState(() => _submitting = true);
     final result = await _controller.submit();
@@ -263,9 +264,10 @@ class _IntakeFormViewState extends ConsumerState<IntakeFormView> {
           ),
         ],
       ),
-      // Las dos acciones viven abajo y no se van con el desplazamiento: añadir
-      // caja es lo que más se repite, y registrar es lo que cierra. Buscarlas
-      // hacia arriba, con una caja en las manos, era el peor sitio para ambas.
+      // Both actions live at the bottom and do not go away with the scroll:
+      // adding a box is what repeats most, and registering is what closes.
+      // Hunting for them upwards, with a box in your hands, was the worst place
+      // for either.
       bottomNavigationBar: _ActionBar(
         onAdd: _submitting ? null : _addBox,
         onSubmit: draft.isSubmittable && !_submitting ? _submit : null,
@@ -273,9 +275,9 @@ class _IntakeFormViewState extends ConsumerState<IntakeFormView> {
     );
   }
 
-  /// Nombre de la campaña activa. Mientras la lista no llega no se puede
-  /// resolver un identificador a un nombre, y decir «general» sin saberlo sería
-  /// afirmar algo falso justo en la línea que da el contexto.
+  /// The active campaign's name. Until the list arrives an identifier cannot be
+  /// resolved to a name, and saying «general» without knowing would be stating
+  /// something false on the very line that gives the context.
   static String _campaignLabel(
     AppLocalizations l10n,
     List<CampaignOut>? campaigns,
@@ -290,7 +292,7 @@ class _IntakeFormViewState extends ConsumerState<IntakeFormView> {
   }
 }
 
-/// Título de la pantalla con la campaña debajo, tocable para cambiarla.
+/// The screen's title with the campaign below it, tappable to change it.
 class _CampaignHeader extends StatelessWidget {
   const _CampaignHeader({required this.label, required this.onTap});
 
@@ -320,7 +322,8 @@ class _CampaignHeader extends StatelessWidget {
   }
 }
 
-/// Barra fija con las dos acciones: azul lleva a otra pantalla, dorado cierra.
+/// A fixed bar with the two actions: blue leads to another screen, gold
+/// closes.
 class _ActionBar extends StatelessWidget {
   const _ActionBar({required this.onAdd, required this.onSubmit});
 
@@ -338,8 +341,8 @@ class _ActionBar extends StatelessWidget {
       child: SafeArea(
         top: false,
         child: Padding(
-          // Una barra inferior no sube con el teclado por sí sola, y aquí se
-          // escribe con el pulgar mientras se sostiene una caja.
+          // A bottom bar does not rise with the keyboard by itself, and here
+          // people type with a thumb while holding a box.
           padding: EdgeInsets.fromLTRB(
             16,
             12,
@@ -445,11 +448,11 @@ class _DonorSection extends StatelessWidget {
   }
 }
 
-/// Lo que lleva la entrada hasta ahora, con su recuento.
+/// What the intake carries so far, with its count.
 ///
-/// El número va en el encabezado porque es lo que se comprueba antes de
-/// registrar: quien recibió seis bultos cuenta seis líneas, y una tarjeta que
-/// solo las enumera obliga a contarlas a ojo.
+/// The number goes in the header because it is what gets checked before
+/// registering: whoever received six packages counts six lines, and a card that
+/// only lists them forces them to be counted by eye.
 class _BoxesCard extends StatelessWidget {
   const _BoxesCard({
     required this.boxes,
@@ -512,9 +515,9 @@ class _BoxRow extends StatelessWidget {
     title: Text(box.productType.displayName),
     subtitle: Text(
       [
-        // El código solo existe cuando se reservó para etiquetar sin señal. Es
-        // lo primero de la línea porque es lo que está escrito en el cartón
-        // que la persona tiene delante.
+        // The code only exists when it was reserved to label without signal.
+        // It comes first on the line because it is what is written on the
+        // cardboard the person has in front of them.
         ?box.code,
         '${box.quantity} ${box.unit}',
         if (box.batch case final batch?) context.l10n.batchOf(batch),

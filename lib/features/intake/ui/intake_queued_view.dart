@@ -4,12 +4,12 @@ import '../../../core/i18n/l10n_extension.dart';
 import '../../boxes/ui/box_label_view.dart';
 import '../domain/intake_draft.dart';
 
-/// Lo que se ve cuando una captura queda esperando señal.
+/// What is seen when a capture is left waiting for signal.
 ///
-/// Su trabajo es el mismo que el de la pantalla de captura aceptada: que las
-/// cajas se etiqueten antes de moverse. La diferencia es de dónde salen los
-/// códigos — de un bloque reservado con señal — y que aquí se dice con todas
-/// las letras que la captura todavía no llegó a ningún sitio.
+/// Its job is the same as that of the accepted-capture screen: getting the
+/// boxes labelled before they move. The difference is where the codes come from
+/// — a block reserved while there was signal — and that here it is said in so
+/// many words that the capture has not reached anywhere yet.
 class IntakeQueuedView extends StatelessWidget {
   const IntakeQueuedView({super.key, required this.draft});
 

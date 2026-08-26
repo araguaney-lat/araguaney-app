@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import '../../../core/i18n/l10n_extension.dart';
 
-/// Qué se hace cuando el servidor pide identificar a quien dona.
+/// What is done when the server asks for the donor to be identified.
 enum DonorRequestOutcome {
-  /// Se va a registrar al donante.
+  /// The donor is going to be registered.
   identify,
 
-  /// Quien dona no quiso identificarse; se registra el motivo.
+  /// The donor did not want to identify themselves; the reason is recorded.
   exception,
 }
 
-/// El servidor pidió identificar antes de aceptar esta captura.
+/// The server asked for identification before accepting this capture.
 ///
-/// No bloquea: el backend acepta la captura anónima con un motivo escrito y
-/// deja la revisión abierta para la coordinación. Detener aquí a quien captura
-/// le trasladaría el costo a la operación en plena jornada y no recuperaría
-/// nada — para cuando alguien revisara, la persona ya se fue.
+/// It does not block: the backend accepts the anonymous capture with a written
+/// reason and leaves the review open for coordination. Stopping whoever
+/// captures here would move the cost onto the operation mid-shift and recover
+/// nothing — by the time anybody reviewed it, the person would be long gone.
 class AnonymousExceptionDialog extends StatefulWidget {
   const AnonymousExceptionDialog({super.key, required this.serverMessage});
 
@@ -51,8 +51,8 @@ class _AnonymousExceptionDialogState extends State<AnonymousExceptionDialog> {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // El texto del servidor se muestra tal cual: describe una regla de
-        // negocio que quien captura puede entender y resolver.
+        // The server's text is shown as it is: it describes a business rule
+        // that whoever captures can understand and resolve.
         Text(widget.serverMessage),
         if (_writingReason) ...[
           const SizedBox(height: 16),

@@ -16,8 +16,8 @@ import 'capture_queue_repository.dart';
 import 'capture_queue_sync.dart';
 import 'intake_repository.dart';
 
-/// De dónde sale la llave de idempotencia. Es un provider para que una prueba
-/// pueda fijarla y comprobar que no cambia entre reintentos.
+/// Where the idempotency key comes from. It is a provider so a test can pin it
+/// and check that it does not change between retries.
 final captureIdGeneratorProvider = Provider<String Function()>(
   (ref) => const Uuid().v4,
 );
@@ -26,8 +26,8 @@ final intakeRepositoryProvider = Provider<IntakeRepository>(
   (ref) => IntakeRepository(ref.watch(restClientProvider).intakes),
 );
 
-/// Quién tiene la sesión abierta. La cola y los códigos reservados son suyos y
-/// de nadie más, así que todo lo que los toca pasa por aquí.
+/// Who has the session open. The queue and the reserved codes are theirs and
+/// nobody else's, so everything that touches them goes through here.
 final currentUserIdProvider = Provider<String?>(
   (ref) => ref.watch(sessionUserIdProvider),
 );
@@ -50,8 +50,9 @@ final boxCodeRepositoryProvider = Provider<BoxCodeRepository>(
   ),
 );
 
-/// Cuántas capturas de esta persona esperan señal. Cero cuando no hay sesión:
-/// sin saber de quién es la cola, no hay cola que mostrar.
+/// How many of this person's captures are waiting for signal. Zero when there
+/// is no session: without knowing whose the queue is, there is no queue to
+/// show.
 final pendingCaptureCountProvider = StreamProvider<int>((ref) {
   final userId = ref.watch(currentUserIdProvider);
   if (userId == null) return Stream.value(0);
@@ -64,7 +65,7 @@ final queuedCapturesProvider = StreamProvider<List<QueuedCaptureRow>>((ref) {
   return ref.watch(captureQueueRepositoryProvider).watchAll(userId);
 });
 
-/// Códigos de caja sin gastar que le quedan a esta persona en el dispositivo.
+/// Unspent box codes this person has left on the device.
 ///
 /// Counted for the centre being worked in: a block reserved for another one is
 /// not going to label anything here, and counting it would promise a box's
@@ -77,9 +78,9 @@ final availableBoxCodesProvider = StreamProvider<int>((ref) {
       .watchAvailable(userId, centerId: ref.watch(writeCenterIdProvider));
 });
 
-/// Campañas en las que participa quien capturó la sesión. Se consultan en
-/// línea: elegir campaña es parte del camino de escritura, que en esta fase
-/// exige señal de todos modos.
+/// The campaigns whoever holds the session takes part in. They are looked up
+/// online: choosing a campaign is part of the write path, which in this phase
+/// requires signal anyway.
 final myCampaignsProvider = FutureProvider<List<CampaignOut>>(
   (ref) => ref
       .watch(restClientProvider)
@@ -87,8 +88,8 @@ final myCampaignsProvider = FutureProvider<List<CampaignOut>>(
       .listMyCampaignsV1CampaignsMineGet(),
 );
 
-/// Las capturas registradas del centro. Se consultan en línea: la lectura sin
-/// conexión que la operación necesita es la del inventario, no la del historial.
+/// The centre's registered captures. They are looked up online: the offline
+/// read the operation needs is the inventory's, not the history's.
 ///
 /// Narrowed to the working centre when the session has one: the count of what
 /// was registered today answers «how is this centre doing», and the country's
@@ -102,12 +103,12 @@ final intakesProvider = FutureProvider<List<IntakeOut>>((ref) async {
       .toList(growable: false);
 });
 
-/// Dueño del formulario de captura.
+/// The owner of the capture form.
 ///
-/// Se descarta al cerrar la pantalla, y con él la llave de idempotencia: la
-/// captura siguiente es otra captura. Mientras la pantalla vive, esa llave no
-/// cambia por nada —ni al editar, ni al fallar, ni al reintentar—, que es la
-/// primera invariante de la cola sin conexión.
+/// It is discarded when the screen closes, and with it the idempotency key: the
+/// next capture is another capture. While the screen lives, that key changes
+/// for nothing — not on an edit, not on a failure, not on a retry — which is
+/// the offline queue's first invariant.
 class IntakeDraftController extends AutoDisposeNotifier<IntakeDraft> {
   /// The working centre is read **once, here**, with the same `read` and for
   /// the same reason as the idempotency key: both identify what this capture
@@ -142,21 +143,21 @@ class IntakeDraftController extends AutoDisposeNotifier<IntakeDraft> {
 
   void removeBox(int index) => state = state.removeBox(index);
 
-  /// Rellena desde una donación pre-registrada.
+  /// Fills in from a pre-registered donation.
   ///
-  /// Solo ata la captura a la donación. Los artículos que declaró quien donó no
-  /// se convierten en cajas automáticamente: son lo que dijo que traía, y lo
-  /// que se registra es lo que llegó. Confundir las dos cosas sería inventar
-  /// inventario.
+  /// It only ties the capture to the donation. The items the donor declared do
+  /// not turn into boxes automatically: they are what they said they were
+  /// bringing, and what gets registered is what arrived. Confusing the two
+  /// would be inventing inventory.
   void prefillFromDonation(String donationId) =>
       state = state.copyWith(donationId: donationId);
 
-  /// Asigna códigos reservados a las cajas que todavía no tienen uno.
+  /// Assigns reserved codes to the boxes that do not have one yet.
   ///
-  /// Se llama justo antes de encolar: una caja capturada sin señal necesita su
-  /// código en ese momento, porque nadie va a volver a abrir una caja cerrada
-  /// para etiquetarla después. Si el bloque no alcanza, las cajas sobrantes
-  /// quedan sin código y lo asignará el servidor cuando la captura llegue.
+  /// It is called right before queueing: a box captured without signal needs
+  /// its code at that moment, because nobody is going to reopen a sealed box to
+  /// label it later. If the block does not stretch, the remaining boxes are
+  /// left without a code and the server assigns it when the capture arrives.
   void assignCodes(List<String> codes) {
     var next = 0;
     state = state.copyWith(
@@ -173,7 +174,7 @@ class IntakeDraftController extends AutoDisposeNotifier<IntakeDraft> {
   Future<IntakeSubmission> submit() =>
       ref.read(intakeRepositoryProvider).submit(state);
 
-  /// Guarda la captura para enviarla cuando haya señal.
+  /// Stores the capture to be sent when there is signal.
   Future<void> enqueue(String userId) => ref
       .read(captureQueueRepositoryProvider)
       .enqueue(draft: state, userId: userId);

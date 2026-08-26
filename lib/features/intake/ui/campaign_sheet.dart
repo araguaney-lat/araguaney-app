@@ -6,11 +6,11 @@ import '../../../core/i18n/l10n_extension.dart';
 import '../../campaigns/data/campaigns_providers.dart';
 import '../../campaigns/ui/campaign_record_view.dart';
 
-/// Elegir a qué campaña se imputa la captura.
+/// Choosing which campaign the capture is charged to.
 ///
-/// La campaña dejó de ser un campo del formulario para pasar a la cabecera:
-/// no es un dato de la donación que se escribe cada vez, es el contexto en el
-/// que se trabaja toda la jornada. Se elige una vez y se ve siempre.
+/// The campaign stopped being a field of the form and moved to the header: it
+/// is not a piece of the donation written each time, it is the context the
+/// whole shift is worked in. It is chosen once and seen always.
 class CampaignSheet extends ConsumerWidget {
   const CampaignSheet({
     super.key,
@@ -21,9 +21,9 @@ class CampaignSheet extends ConsumerWidget {
   final List<CampaignOut> campaigns;
   final String? selected;
 
-  /// Devuelve `(id,)` con la elección, o nulo si se cerró sin elegir. El
-  /// registro envuelve el identificador porque «sin campaña» es una elección
-  /// válida y también es nula.
+  /// Returns `(id,)` with the choice, or null if it was closed without
+  /// choosing. The record wraps the identifier because «sin campaña» is a valid
+  /// choice and is also null.
   static Future<({String? id})?> show(
     BuildContext context, {
     required List<CampaignOut> campaigns,
@@ -57,8 +57,8 @@ class CampaignSheet extends ConsumerWidget {
             label: campaign.name,
             value: campaign.id,
             selected: selected,
-            // Solo para quien puede abrirla: la ficha exige coordinación, y un
-            // icono que lleva a un 403 es peor que no ofrecerlo.
+            // Only for whoever can open it: the record requires coordination,
+            // and an icon that leads to a 403 is worse than not offering it.
             onOpen: ref.watch(canBrowseCampaignsProvider)
                 ? () => Navigator.of(
                     context,
@@ -82,8 +82,8 @@ class _Option extends StatelessWidget {
   final String? value;
   final String? selected;
 
-  /// Abre la ficha de la campaña sin elegirla. Nulo cuando esta sesión no
-  /// puede leerla.
+  /// Opens the campaign's record without choosing it. Null when this session
+  /// cannot read it.
   final VoidCallback? onOpen;
 
   @override

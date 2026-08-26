@@ -7,10 +7,10 @@ import '../../../core/ui/status_labels.dart';
 import '../../boxes/ui/box_label_view.dart';
 import 'intake_list_view.dart';
 
-/// Una captura registrada, con las cajas que produjo.
+/// A registered capture, with the boxes it produced.
 ///
-/// Cada caja lleva a su etiqueta: una captura vieja cuya caja perdió el papel
-/// se vuelve a etiquetar desde aquí sin pasar por el panel.
+/// Every box leads to its label: an old capture whose box lost its paper is
+/// relabelled from here without going through the panel.
 class IntakeDetailView extends StatelessWidget {
   const IntakeDetailView({super.key, required this.intake});
 
@@ -39,10 +39,11 @@ class IntakeDetailView extends StatelessWidget {
             style: Theme.of(context).textTheme.titleMedium,
           ),
         ),
-        // Una captura recién registrada sí trae sus cajas, porque las devuelve
-        // el `POST`. Una abierta desde el historial no: el listado del servidor
-        // no las rellena, y por eso aquí se dice en vez de enseñar una sección
-        // vacía, que se leería como «esta captura no tuvo cajas».
+        // A freshly registered capture does bring its boxes, because the
+        // `POST` returns them. One opened from the history does not: the
+        // server's listing does not fill them in, and that is why it is said
+        // here rather than showing an empty section, which would read as «this
+        // capture had no boxes».
         if (intake.boxes.isEmpty)
           Padding(
             padding: EdgeInsets.fromLTRB(16, 0, 16, 16),

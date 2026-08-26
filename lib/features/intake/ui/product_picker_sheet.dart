@@ -9,15 +9,16 @@ import '../../../core/ui/sheet_insets.dart';
 import '../../catalog/data/catalog_providers.dart';
 import '../../catalog/ui/product_scan_view.dart';
 
-/// Selección de tipo de producto desde el catálogo **local**.
+/// Picking a product type from the **local** catalogue.
 ///
-/// Busca contra el cache y no contra la API: el catálogo ya está en el
-/// dispositivo con la visibilidad por campaña que sirvió el servidor, así que
-/// esto funciona igual sin señal y no gasta una petición por tecla.
+/// It searches against the cache and not against the API: the catalogue is
+/// already on the device with the per-campaign visibility the server served, so
+/// this works the same without signal and does not spend a request per
+/// keystroke.
 class ProductPickerSheet extends ConsumerStatefulWidget {
   const ProductPickerSheet({super.key});
 
-  /// Devuelve el producto elegido, o nulo si se cerró sin elegir.
+  /// Returns the chosen product, or null if it was closed without choosing.
   static Future<ProductTypeRow?> show(BuildContext context) =>
       showModalBottomSheet<ProductTypeRow>(
         context: context,
@@ -58,9 +59,9 @@ class _ProductPickerSheetState extends ConsumerState<ProductPickerSheet> {
               onChanged: (value) => setState(() => _search = value),
             ),
           ),
-          // Escanear está aquí y no en la barra inferior de la aplicación
-          // porque solo tiene sentido buscando un producto: lo que se lee es
-          // el envase que la persona tiene en la mano.
+          // Scanning is here and not on the application's bottom bar because
+          // it only makes sense while looking for a product: what gets read is
+          // the package the person is holding.
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
             child: OutlinedButton.icon(

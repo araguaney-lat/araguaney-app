@@ -9,11 +9,11 @@ import '../data/intake_providers.dart';
 import 'intake_detail_view.dart';
 import 'intake_form_view.dart';
 
-/// Las capturas registradas del centro.
+/// The centre's registered captures.
 ///
-/// Se consulta en línea. La lectura que la operación necesita sin señal es la
-/// del inventario —catálogo y cajas—, no la del historial: nadie decide qué
-/// hacer con una caja mirando la captura que la creó.
+/// It is looked up online. The read the operation needs without signal is the
+/// inventory's — catalogue and boxes — not the history's: nobody decides what
+/// to do with a box by looking at the capture that created it.
 class IntakeListView extends ConsumerWidget {
   const IntakeListView({super.key});
 
@@ -63,10 +63,11 @@ class _IntakeList extends StatelessWidget {
     itemBuilder: (context, index) {
       final intake = intakes[index];
       final boxes = intake.boxes.length;
-      // `GET /v1/intakes` no trae las cajas: el esquema las declara con lista
-      // vacía por defecto y el servidor no las rellena al listar. Contar esa
-      // lista daba «0 cajas» en todas las filas, que no es un dato que falte
-      // sino uno falso. Mientras no exista la petición 2 no se cuenta nada.
+      // `GET /v1/intakes` does not bring the boxes: the schema declares them
+      // with an empty list by default and the server does not fill them in when
+      // listing. Counting that list gave «0 cajas» on every row, which is not a
+      // missing figure but a false one. Until request 2 exists nothing is
+      // counted.
       final parts = [
         if (boxes > 0) context.l10n.boxCount(boxes),
         ?donorLabel(intake),
@@ -81,8 +82,8 @@ class _IntakeList extends StatelessWidget {
   );
 }
 
-/// Cómo se nombra a quien donó, con lo que haya: el donante registrado, el
-/// nombre suelto que se escribió, o nada.
+/// How the donor is named, with whatever there is: the registered donor, the
+/// loose name that was typed, or nothing.
 String? donorLabel(IntakeOut intake) {
   if (intake.donor case final donor?) {
     return donor.legalName ?? '${donor.firstName} ${donor.lastName}';

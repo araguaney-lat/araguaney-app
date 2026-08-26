@@ -1,16 +1,16 @@
 import 'dart:convert';
 
-/// Qué lleva dentro una captura que espera en la cola.
+/// What a capture waiting in the queue carries inside.
 ///
-/// Se lee del payload guardado y no de una columna nueva porque el payload
-/// **es** la captura: exactamente lo que se va a enviar, congelado desde antes
-/// del primer intento. Leerlo para enseñarlo no lo reescribe.
+/// It is read from the stored payload and not from a new column because the
+/// payload **is** the capture: exactly what is going to be sent, frozen since
+/// before the first attempt. Reading it to show it does not rewrite it.
 ///
-/// El contrato manda identificadores de producto, no nombres, así que el nombre
-/// se resuelve contra el catálogo local. Cuando el catálogo ya no lo tiene se
-/// dice solo lo que sí se sabe —la cantidad y su unidad—, porque inventar un
-/// nombre para rellenar el hueco es peor que dejarlo corto: quien decide si
-/// descarta esta captura necesita datos ciertos, no una línea completa.
+/// The contract sends product identifiers, not names, so the name is resolved
+/// against the local catalogue. When the catalogue no longer has it, only what
+/// is actually known is said — the quantity and its unit — because inventing a
+/// name to fill the gap is worse than falling short: whoever decides whether to
+/// discard this capture needs facts, not a complete-looking line.
 List<String> queuedCaptureLines(
   String payload,
   Map<String, String> productNames,
@@ -19,9 +19,10 @@ List<String> queuedCaptureLines(
   return [for (final box in boxes) _describe(box, productNames)];
 }
 
-/// El payload lo escribe esta aplicación, pero es dato en disco: puede venir de
-/// una versión anterior o de una fila corrupta, y una pantalla que se cae al
-/// leer la cola deja a la persona sin ver lo que no se ha enviado.
+/// This application writes the payload, but it is data on disk: it may come
+/// from an earlier version or from a corrupt row, and a screen that crashes
+/// while reading the queue leaves the person unable to see what has not been
+/// sent.
 List<Map<String, Object?>> _boxesOf(String payload) {
   try {
     final decoded = jsonDecode(payload);

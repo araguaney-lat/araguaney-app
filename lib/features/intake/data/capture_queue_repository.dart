@@ -4,17 +4,18 @@ import '../../../core/db/app_database.dart';
 import '../../../core/db/tables/queued_captures_table.dart';
 import '../domain/intake_draft.dart';
 
-/// La cola de capturas hechas sin señal.
+/// The queue of captures made without signal.
 ///
-/// Cuatro invariantes la sostienen, y todas viven en el esquema o aquí:
+/// Four invariants hold it up, and all of them live in the schema or here:
 ///
-/// 1. La llave de idempotencia se genera antes del primer intento y no cambia.
-/// 2. El catálogo local conserva la visibilidad por campaña del servidor, así
-///    que lo que se puede elegir sin señal es lo que el servidor aceptará.
-/// 3. La cola es por persona: cada fila lleva su `user_id` y ninguna consulta
-///    de esta clase se hace sin él.
-/// 4. Nada se descarta solo. Solo dos caminos borran una fila: el envío
-///    aceptado y el descarte explícito de una persona.
+/// 1. The idempotency key is generated before the first attempt and never
+///    changes.
+/// 2. The local catalogue keeps the server's per-campaign visibility, so what
+///    can be chosen without signal is what the server will accept.
+/// 3. The queue is per person: every row carries its `user_id` and no query of
+///    this class is made without one.
+/// 4. Nothing is discarded on its own. Only two paths delete a row: an accepted
+///    submission and an explicit discard by a person.
 class CaptureQueueRepository {
   CaptureQueueRepository({
     required AppDatabase database,
@@ -31,11 +32,11 @@ class CaptureQueueRepository {
   Stream<int> watchPendingCount(String userId) =>
       _db.captureQueueDao.watchPendingCount(userId);
 
-  /// Guarda la captura tal como se enviaría.
+  /// Stores the capture exactly as it would be sent.
   ///
-  /// El payload se serializa aquí y no se vuelve a construir al enviarlo: lo
-  /// que sale del sótano es exactamente lo que se capturó, aunque el catálogo
-  /// haya cambiado mientras tanto.
+  /// The payload is serialised here and not rebuilt when it is sent: what
+  /// leaves the basement is exactly what was captured, even if the catalogue
+  /// changed in the meantime.
   Future<void> enqueue({required IntakeDraft draft, required String userId}) =>
       _db.captureQueueDao.enqueue(
         QueuedCaptureRow(
@@ -50,20 +51,21 @@ class CaptureQueueRepository {
         ),
       );
 
-  /// La otra decisión que puede tomar una persona ante un rechazo: volver a
-  /// intentarlo, normalmente porque el motivo se resolvió fuera de la
-  /// aplicación. La invariante 4 pide una decisión explícita; no dice que la
-  /// única disponible tenga que ser tirar la captura.
+  /// The other decision a person can take in the face of a refusal: try again,
+  /// usually because the reason was resolved outside the application.
+  /// Invariant 4 asks for an explicit decision; it does not say the only one
+  /// available has to be throwing the capture away.
   Future<void> retry(String captureId) =>
       _db.captureQueueDao.requeue(captureId);
 
-  /// Descarte explícito. Es el único borrado que no viene de un envío
-  /// aceptado, y por eso lo pide una persona mirando el motivo del rechazo.
+  /// An explicit discard. It is the only deletion that does not come from an
+  /// accepted submission, and that is why a person asks for it while looking at
+  /// the reason for the refusal.
   Future<void> discard(String captureId) =>
       _db.captureQueueDao.remove(captureId);
 }
 
-/// Cómo se nombra una captura encolada en la pantalla de pendientes.
+/// How a queued capture is named on the pending screen.
 ///
 /// **It carries no count and no sentence.** A queued capture is read days
 /// later, possibly with the application in another language, and a rendered
