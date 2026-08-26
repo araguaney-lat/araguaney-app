@@ -3015,5 +3015,85 @@
   "reportsShrinkageOfCampaign": "Ver la merma de la campaña",
   "@reportsShrinkageOfCampaign": {
     "description": "Goes from a shipment's reception to the campaign-wide shrinkage."
+  },
+  "campaignsTitle": "Campañas",
+  "@campaignsTitle": {
+    "description": "The campaigns of the platform, as a screen title and a menu entry."
+  },
+  "campaignsEmpty": "No hay campañas registradas.",
+  "@campaignsEmpty": {
+    "description": "There is no campaign at all."
+  },
+  "campaignsForbidden": "Solo quien coordina puede ver las campañas.",
+  "@campaignsForbidden": {
+    "description": "The list and the record require a coordinator; a volunteer still picks one when capturing."
+  },
+  "campaignRecordTitle": "Campaña",
+  "@campaignRecordTitle": {
+    "description": "Title of a campaign's record."
+  },
+  "campaignNewTitle": "Nueva campaña",
+  "@campaignNewTitle": {
+    "description": "Title of the form that opens a campaign."
+  },
+  "campaignEditTitle": "Editar campaña",
+  "@campaignEditTitle": {
+    "description": "Title of the same form when correcting one."
+  },
+  "campaignCreateAction": "Crear campaña",
+  "@campaignCreateAction": {
+    "description": "Submits the new-campaign form."
+  },
+  "campaignNameLabel": "Nombre",
+  "@campaignNameLabel": {
+    "description": "A campaign's name."
+  },
+  "campaignPurposeLabel": "Para qué es",
+  "@campaignPurposeLabel": {
+    "description": "What the campaign is for."
+  },
+  "campaignStartsLabel": "Empieza",
+  "@campaignStartsLabel": {
+    "description": "When the campaign starts."
+  },
+  "campaignEndsLabel": "Termina",
+  "@campaignEndsLabel": {
+    "description": "When the campaign ends."
+  },
+  "campaignOriginLabel": "País de origen",
+  "@campaignOriginLabel": {
+    "description": "Where what is collected comes from."
+  },
+  "campaignDestinationLabel": "País de destino",
+  "@campaignDestinationLabel": {
+    "description": "Where what is collected is going."
+  },
+  "campaignGoalLabel": "Meta de peso",
+  "@campaignGoalLabel": {
+    "description": "How many kilos the campaign aims to collect."
+  },
+  "campaignGeneralTag": "General",
+  "@campaignGeneralTag": {
+    "description": "The campaign everything that belongs to no other campaign goes into."
+  },
+  "campaignGeneralExplanation": "Aquí entra todo lo que no pertenece a otra campaña, y de aquí no se saca a nadie.",
+  "@campaignGeneralExplanation": {
+    "description": "Why the general campaign behaves differently, said before somebody discovers it through a refusal."
+  },
+  "campaignClosedTag": "Cerrada",
+  "@campaignClosedTag": {
+    "description": "A campaign that is no longer active."
+  },
+  "campaignMembersTitle": "Quiénes participan",
+  "@campaignMembersTitle": {
+    "description": "Heading over the campaign's members."
+  },
+  "campaignNoMembers": "Todavía no participa nadie.",
+  "@campaignNoMembers": {
+    "description": "The campaign has no members yet."
+  },
+  "campaignMembersUnavailable": "No se pudo consultar quiénes participan.",
+  "@campaignMembersUnavailable": {
+    "description": "The member list could not be read; the rest of the record still stands."
   }
 }

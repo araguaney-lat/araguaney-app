@@ -6,6 +6,7 @@ import 'package:araguaney_app/core/center/center_providers.dart';
 import 'package:araguaney_app/core/connectivity/connectivity_controller.dart';
 import 'package:araguaney_app/core/db/app_database.dart';
 import 'package:araguaney_app/core/i18n/generated/app_localizations.dart';
+import 'package:araguaney_app/features/campaigns/data/campaigns_providers.dart';
 import 'package:araguaney_app/features/catalog/data/catalog_providers.dart';
 import 'package:araguaney_app/features/catalog/data/catalog_repository.dart';
 import 'package:araguaney_app/features/intake/data/intake_providers.dart';
@@ -52,6 +53,9 @@ void main() {
     final container = ProviderContainer(
       overrides: [
         writeCenterIdProvider.overrideWithValue(null),
+        // La hoja de campañas pregunta por el rol para ofrecer la ficha, y
+        // preguntarlo arrastra la sesión entera a esta prueba.
+        canBrowseCampaignsProvider.overrideWithValue(false),
         captureIdGeneratorProvider.overrideWithValue(() => 'capture-fixed'),
         intakeRepositoryProvider.overrideWithValue(
           IntakeRepository(IntakesApi(dio)),

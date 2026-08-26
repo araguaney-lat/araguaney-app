@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/api/generated/models/campaign_out.dart';
 import '../../../core/i18n/l10n_extension.dart';
+import '../../campaigns/data/campaigns_providers.dart';
+import '../../campaigns/ui/campaign_record_view.dart';
 
 /// Elegir a qué campaña se imputa la captura.
 ///
 /// La campaña dejó de ser un campo del formulario para pasar a la cabecera:
 /// no es un dato de la donación que se escribe cada vez, es el contexto en el
 /// que se trabaja toda la jornada. Se elige una vez y se ve siempre.
-class CampaignSheet extends StatelessWidget {
+class CampaignSheet extends ConsumerWidget {
   const CampaignSheet({
     super.key,
     required this.campaigns,
@@ -32,7 +35,7 @@ class CampaignSheet extends StatelessWidget {
   );
 
   @override
-  Widget build(BuildContext context) => SafeArea(
+  Widget build(BuildContext context, WidgetRef ref) => SafeArea(
     child: ListView(
       shrinkWrap: true,
       children: [
@@ -50,7 +53,18 @@ class CampaignSheet extends StatelessWidget {
           selected: selected,
         ),
         for (final campaign in campaigns)
-          _Option(label: campaign.name, value: campaign.id, selected: selected),
+          _Option(
+            label: campaign.name,
+            value: campaign.id,
+            selected: selected,
+            // Solo para quien puede abrirla: la ficha exige coordinación, y un
+            // icono que lleva a un 403 es peor que no ofrecerlo.
+            onOpen: ref.watch(canBrowseCampaignsProvider)
+                ? () => Navigator.of(
+                    context,
+                  ).push(CampaignRecordView.route(campaign.id))
+                : null,
+          ),
       ],
     ),
   );
@@ -61,16 +75,32 @@ class _Option extends StatelessWidget {
     required this.label,
     required this.value,
     required this.selected,
+    this.onOpen,
   });
 
   final String label;
   final String? value;
   final String? selected;
 
+  /// Abre la ficha de la campaña sin elegirla. Nulo cuando esta sesión no
+  /// puede leerla.
+  final VoidCallback? onOpen;
+
   @override
   Widget build(BuildContext context) => ListTile(
     title: Text(label),
-    trailing: value == selected ? const Icon(Icons.check) : null,
+    trailing: Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (value == selected) const Icon(Icons.check),
+        if (onOpen case final open?)
+          IconButton(
+            tooltip: context.l10n.campaignRecordTitle,
+            icon: const Icon(Icons.info_outline),
+            onPressed: open,
+          ),
+      ],
+    ),
     onTap: () => Navigator.of(context).pop((id: value)),
   );
 }

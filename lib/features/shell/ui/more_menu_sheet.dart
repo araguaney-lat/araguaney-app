@@ -6,6 +6,8 @@ import '../../../core/center/center_providers.dart';
 import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/ui/sheet_insets.dart';
 import '../../account/ui/profile_view.dart';
+import '../../campaigns/data/campaigns_providers.dart';
+import '../../campaigns/ui/campaigns_list_view.dart';
 import '../../catalog/ui/catalog_list_view.dart';
 import '../../center_applications/data/center_applications_providers.dart';
 import '../../center_applications/ui/application_queue_view.dart';
@@ -135,6 +137,12 @@ class MoreMenuSheet extends ConsumerWidget {
               title: Text(context.l10n.reportsTitle),
               onTap: () => _go(context, ReportsView.route()),
             ),
+            if (ref.watch(canBrowseCampaignsProvider))
+              ListTile(
+                leading: const Icon(Icons.campaign_outlined),
+                title: Text(context.l10n.campaignsTitle),
+                onTap: () => _go(context, CampaignsListView.route()),
+              ),
             ListTile(
               leading: const Icon(Icons.pallet),
               title: Text(context.l10n.palletsTitle),

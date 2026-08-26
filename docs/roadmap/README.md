@@ -65,10 +65,10 @@ pie title Tasks completed (239 tasks, backlog aside)
 | 17 | [The product catalogue](phase-17-product-catalogue.md) | 7 | 1 | 🟨 88% |
 | 18 | [Pre-registered donations](phase-18-preregistered-donations.md) | 6 | 2 | 🟨 75% |
 | 19 | [Reports for the centre](phase-19-center-reports.md) | 7 | 1 | 🟨 88% |
-| 20 | [Campaigns](phase-20-campaigns.md) | 0 | 5 | ⬜ 0% |
+| 20 | [Campaigns](phase-20-campaigns.md) | 4 | 1 | 🟨 80% |
 | 21 | [Centres](phase-21-centers.md) | 4 | 1 | 🟨 80% |
 | 22 | [The centre application queue](phase-22-center-applications.md) | 5 | 1 | 🟨 83% |
-| 23 | [Incidents and the audit log](phase-23-incidents-and-audit.md) | 4 | 2 | 🟨 67% |
+| 23 | [Incidents and the audit log](phase-23-incidents-and-audit.md) | 4 | 1 | 🟨 80% (1 blocked) |
 | 24 | [Users beyond one centre](phase-24-users-beyond-a-center.md) | 0 | 6 | ⬜ 0% |
 | 25 | [The studio](phase-25-the-studio.md) | 1 | 2 | 🟨 33% |
 | 26 | [The shipment, from dispatch to delivery](phase-26-shipment-to-delivery.md) | 0 | 6 | ⬜ 0% |
@@ -78,7 +78,7 @@ pie title Tasks completed (239 tasks, backlog aside)
 | 30 | [Writing as a national administrator](phase-30-writing-as-national-admin.md) | 8 | 1 | 🟨 89% |
 | 31 | [Speaking more than one language](phase-31-internationalisation.md) | 5 | 5 | 🟨 50% |
 | 32 | [The commentary in English](phase-32-comments-in-english.md) | 1 | 5 | 🟨 17% |
-| **Total** (Phase 10 aside) | | **180** | **61** | **🟢 75%** |
+| **Total** (Phase 10 aside) | | **184** | **56** | **🟢 77%** |
 
 ## What is missing, and how that is kept honest
 

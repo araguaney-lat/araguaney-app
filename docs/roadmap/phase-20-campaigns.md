@@ -54,8 +54,32 @@ than let somebody discover it by being refused.
 
 | # | Task | Description | Complexity | Status |
 |---|------|-------------|------------|--------|
-| 1 | Campaigns repository | The four unused routes behind a sealed outcome. | 🟠 Medium | ⬜ Pending |
-| 2 | The list | Reached from the menu and from the campaign sheet, so choosing one can be an informed choice. | 🟠 Medium | ⬜ Pending |
-| 3 | The record | Dates, purpose, its members, and whether it is the general one. | 🟠 Medium | ⬜ Pending |
-| 4 | Create and edit | `national_admin` only, and the button absent rather than refused for everybody else. | 🟠 Medium | ⬜ Pending |
+| 1 | Campaigns repository | The four unused routes behind a sealed outcome. | 🟠 Medium | ✅ Done |
+| 2 | The list | From the menu for coordination, and from the capture sheet as an ⓘ beside each option. | 🟠 Medium | ✅ Done |
+| 3 | The record | Dates, purpose, its members, whether it is the general one, and its reports. | 🟠 Medium | ✅ Done |
+| 4 | Create and edit | `national_admin` only, and the button absent rather than refused. | 🟠 Medium | ✅ Done |
 | 5 | Verify on a device | Against a centre that participates in more than one. | 🟢 Low | ⬜ Pending |
+
+## Three permissions, not two
+
+The phase expected two — membership for coordination, creating for national
+administration. Checking `app/routers/campaign.py` found a third: **listing and
+reading a campaign are `require_coordinator` too.**
+
+So a volunteer picks a campaign while capturing —`/campaigns/mine` needs only a
+centre role— and cannot open what they picked. The interface follows that
+exactly: the menu entry and the ⓘ in the capture sheet appear for coordination
+and above, and nobody else is shown a door that answers 403.
+
+## The goal is only editable
+
+`CampaignCreate` has no `weight_goal_kg` and `CampaignUpdate` does. The form
+offers the field only when correcting, because a field the create silently
+discards would be lying about what is being saved.
+
+## What the record borrows
+
+Its members come from the team repository, which already called that route for
+the campaign-members screen. Its reports are one tap away, now that
+[Phase 19](phase-19-center-reports.md) exists — a campaign record that could not
+answer «how is it going» would be a list of dates.
