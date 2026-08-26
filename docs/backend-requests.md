@@ -278,6 +278,36 @@ be the wrong move; asking whether it was a choice is not.
 
 ---
 
+## 11. `entity_id` on the audit log, and who may read it
+
+**What we need.** Two changes to `GET /v1/studio/audit`, and the second one is a
+decision rather than a line of code:
+
+1. An optional `entity_id` filter, so «what happened to this box» is one query
+   instead of paging through every entry of its type.
+2. A way for a coordinator to read the audit of objects **in their own centre**.
+   Today the endpoint requires `require_user_manager`: the platform or national
+   operation.
+
+**Why.** [Phase 23](roadmap/phase-23-incidents-and-audit.md) wanted to answer
+«who did this» as a line on the record of the object somebody is holding — the
+question asked at bad moments, in a warehouse, by whoever is holding the box.
+That person is a coordinator or a volunteer, and the log is closed to them.
+
+**Why the second point is a decision.** An audit log is not inventory: it names
+people and what they did, and opening it more widely is a privacy call, not a
+convenience. A narrower version would be enough for us — the actor's **name**
+on operational events for objects of one's own centre, without the rest of the
+log.
+
+**What we do meanwhile.** Nothing, and the phase says so. The box, pallet and
+shipment timelines already answer the operational half — when it was sealed,
+when it moved — from `/events`, which any centre role can read. The task is
+marked blocked rather than half-built: a screen that shows «who did this» for
+one role and an empty space for the others would be worse than not offering it.
+
+---
+
 ## Not requests
 
 Recorded here so they are not mistaken for gaps:

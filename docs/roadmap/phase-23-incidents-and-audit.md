@@ -83,6 +83,26 @@ silence.
 **Closing needs national administration; listing needs only a coordinator.** The
 button is absent rather than refused for everybody else.
 
+## «Who did this» cannot be answered, and it is not our doing
+
+The task assumed an audit entry could sit as a line on the record of the object
+somebody is holding. Two facts from `app/routers/studio.py` say otherwise:
+
+- **`GET /v1/studio/audit` is guarded by `require_user_manager`** — the
+  platform or national operation. The person holding the box is a coordinator
+  or a volunteer, and they are exactly who asks «who sealed this?». The one role
+  that can read the log is the one least likely to be standing there.
+- **There is no `entity_id` filter.** It takes `entity_type`, `user_id` and a
+  date range. So even for somebody allowed to read it, «what happened to *this*
+  box» means paging through every box entry until the identifier appears.
+
+Either one alone would make the screen dishonest; together they make it
+impossible. What the phase already ships — the timeline of a box, a pallet and a
+shipment, from `/events` — answers the operational half of the same question,
+and that is what somebody in a warehouse actually needs.
+
+Recorded as request 11 in [`docs/backend-requests.md`](../backend-requests.md).
+
 ## The timelines are at the foot of a record, and they are quiet
 
 They answer «who sealed this?» about the object somebody is holding — the
@@ -113,5 +133,5 @@ what somebody came to see is above.
 | 2 | The list | Open first and oldest at the top, quoted, with a way to the shipment it belongs to. | 🟠 Medium | ✅ Done |
 | 3 | Closing one | `national_admin` only, with the note required and what was reported quoted while it is written. | 🟠 Medium | ✅ Done |
 | 4 | The timeline of a box and a pallet | One widget for the three records, with the status vocabulary passed in — which is what turned up the raw keys and the invented fixture. Closes block 13 of Phase 10 in part. | 🟠 Medium | ✅ Done |
-| 5 | Who did this | The audit entry as a line on a record rather than a screen of its own. | 🟠 Medium | ⬜ Pending |
+| 5 | Who did this | **Blocked by the contract**, verified on 2026-08-25 — see below. | 🟠 Medium | 🚫 Blocked |
 | 6 | Verify on a device | With an incident raised from the phone and resolved from the panel. | 🟢 Low | ⬜ Pending |
