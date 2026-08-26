@@ -3301,5 +3301,21 @@
   "totpLabel": "Segundo factor",
   "@totpLabel": {
     "description": "Whether the account has a second factor."
+  },
+  "languageLabel": "Idioma",
+  "@languageLabel": {
+    "description": "The language the application is drawn in."
+  },
+  "languageFollowsPhone": "El del teléfono",
+  "@languageFollowsPhone": {
+    "description": "No language chosen by hand: the system decides, which is the default."
+  },
+  "languageNameEs": "Español",
+  "@languageNameEs": {
+    "description": "The name of a language, written in that language. It is deliberately the same in every translation: a picker exists so somebody who reads only one of them can find theirs."
+  },
+  "languageNameEn": "English",
+  "@languageNameEn": {
+    "description": "The name of a language, written in that language. It is deliberately the same in every translation: a picker exists so somebody who reads only one of them can find theirs."
   }
 }

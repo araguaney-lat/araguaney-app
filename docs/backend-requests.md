@@ -166,6 +166,25 @@ client would drop the table and go back to showing the server's words. Whether
 the backend answers in one language or negotiates it is a decision for that
 side; either way the client stops holding copy.
 
+**Update, 2026-08-25 — with two languages, half (a) is the whole request.**
+[Phase 31](roadmap/phase-31-internationalisation.md) declared English alongside
+Spanish, and that settles the fork above: **codes, not translated messages.**
+
+- A named code is translated once, in the client, into every language it has.
+  This already happens for the ten codes `refusal_copy.dart` knows.
+- A message the server writes is written in one language. Answering it in
+  Spanish is now wrong for half the audience, and negotiating a language per
+  request would mean the backend carrying a translation table for copy the
+  client already owns.
+
+So half (b) stops being a request. What is left is (a): give the actionable
+refusals codes of their own — `NOT_THREAD_PARTICIPANT` is the clearest — and
+the client will name them in whatever language the person is reading.
+
+Business-rule messages the client shows verbatim keep coming through as they
+are. Those are the server's account of a specific rule, not interface copy, and
+quoting them is still better than paraphrasing.
+
 ---
 
 ## 7. Identity fields on `POST /v1/auth/refresh`

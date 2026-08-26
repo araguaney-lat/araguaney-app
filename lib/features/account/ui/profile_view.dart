@@ -7,6 +7,7 @@ import '../../../core/api/generated/models/user_out.dart';
 import '../../../core/api/generated/models/user_profile_out.dart';
 import '../../../core/i18n/generated/app_localizations.dart';
 import '../../../core/i18n/l10n_extension.dart';
+import '../../../core/i18n/language_preference.dart';
 import '../../../core/ui/record_field.dart';
 import '../../session/ui/change_password_view.dart';
 import '../data/account_providers.dart';
@@ -90,6 +91,8 @@ class _Loaded extends ConsumerWidget {
       ),
       _TotpTile(enabled: account.totpEnabled),
       if (account.mustAcceptTerms) const _TermsTile(),
+      const Divider(height: 32),
+      const _LanguageTile(),
     ],
   );
 
@@ -139,6 +142,75 @@ class _Loaded extends ConsumerWidget {
       return;
     }
     ref.invalidate(myAccountProvider);
+  }
+}
+
+/// En qué idioma se ve la aplicación.
+///
+/// **Seguir al teléfono es el caso por defecto y aparece primero.** Nadie
+/// eligió este idioma dentro de la aplicación: lo eligió al configurar su
+/// teléfono, y volver a preguntarlo sería tratarlo como una decisión que no
+/// tomó.
+///
+/// Elegirlo a mano existe para el caso que sí ocurre: un dispositivo de centro
+/// que configuró una persona y usa otra.
+class _LanguageTile extends ConsumerWidget {
+  const _LanguageTile();
+
+  /// Cómo se llama cada idioma, **en ese idioma**.
+  ///
+  /// Sale del ARB y no de una constante aquí porque un nombre de idioma no se
+  /// traduce: «Español» es «Español» en la lista inglesa, y esa es justo la
+  /// gracia de un selector — que quien solo lee uno encuentre el suyo. Cada
+  /// archivo de idioma repite los nombres tal cual, a propósito.
+  static String _name(AppLocalizations l10n, String code) => switch (code) {
+    'es' => l10n.languageNameEs,
+    'en' => l10n.languageNameEn,
+    _ => code,
+  };
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final chosen = ref.watch(languageProvider).valueOrNull?.languageCode;
+
+    return ListTile(
+      leading: const Icon(Icons.translate),
+      title: Text(context.l10n.languageLabel),
+      subtitle: Text(
+        chosen == null
+            ? context.l10n.languageFollowsPhone
+            : _name(context.l10n, chosen),
+      ),
+      trailing: const Icon(Icons.chevron_right),
+      onTap: () => showModalBottomSheet<void>(
+        context: context,
+        useSafeArea: true,
+        showDragHandle: true,
+        builder: (sheetContext) => SafeArea(
+          child: RadioGroup<String?>(
+            groupValue: chosen,
+            onChanged: (value) {
+              ref.read(languageProvider.notifier).choose(value);
+              Navigator.of(sheetContext).pop();
+            },
+            child: ListView(
+              shrinkWrap: true,
+              children: [
+                RadioListTile<String?>(
+                  value: null,
+                  title: Text(context.l10n.languageFollowsPhone),
+                ),
+                for (final locale in AppLocalizations.supportedLocales)
+                  RadioListTile<String?>(
+                    value: locale.languageCode,
+                    title: Text(_name(context.l10n, locale.languageCode)),
+                  ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
 

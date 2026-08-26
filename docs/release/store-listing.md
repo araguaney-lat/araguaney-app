@@ -5,8 +5,13 @@ pull request, and so the next person changing it can see why each line says what
 it says. The console is where it gets pasted; this file is where it is decided.
 
 Written in Spanish first, because everybody who installs this operates in
-Spanish. There is no English listing until there is a second language of
-operation — the same rule the interface follows.
+Spanish. **The English listing exists as of 2026-08-25**, when the interface got
+a second language: the rule was «no listing until there is a language of
+operation», and now there is one.
+
+The Spanish listing stays the default. Play shows the English one only to a
+store set to English, which is the same criterion the application itself uses —
+the phone decides, unless somebody says otherwise.
 
 ## What this listing is for, and what it must not do
 
@@ -88,6 +93,67 @@ compilarla desde su repositorio sin pedirnos permiso ni claves.
 
 Around 1,600 characters, well inside the limit. Long enough to answer «is this
 the right app and what will it do», short enough that somebody reads it.
+
+## The English listing
+
+Same three fields, same claims, same restraint. It is a translation of the
+decisions above and not a second piece of copy: if one changes, both change.
+
+### App name (30 characters)
+
+```
+Araguaney
+```
+
+### Short description (80 characters)
+
+```
+Capture donations, scan boxes and follow your centre's shipments.
+```
+
+Sixty-four characters. The same three things, in the same order.
+
+### Full description
+
+```
+Araguaney is the mobile application of the humanitarian logistics platform of
+the same name. It is built for the people working at a collection centre:
+registering what arrives, sealing it into boxes, building pallets and
+dispatching shipments.
+
+WHAT IT IS FOR
+
+· Registering a donation at the counter, with or without a connection.
+· Scanning the QR code of a box, a pallet or an announced donation.
+· Finding a product by the barcode on its package.
+· Following a shipment from the moment it is opened until what arrived is
+  registered.
+· Reading how the campaign is going: stock by category, shrinkage, weight.
+
+WITHOUT A CONNECTION
+
+Capturing a donation works in a basement. What is captured waits on the phone
+and is sent on its own when there is signal again, once — never twice, however
+many times it is retried.
+
+Reading works too: the catalogue and the centre's boxes are downloaded so they
+can be consulted without signal.
+
+Everything else needs a connection, and the application says so rather than
+failing: sealing a box, closing a pallet or dispatching a shipment are decisions
+that two people can be making at the same time from two phones.
+
+WHO IT IS FOR
+
+You need an account at a collection centre that already uses Araguaney. This
+application does not create accounts and is not open to the public; if your
+centre is not registered yet, the application shows you where to apply.
+
+MADE FOR REAL CONDITIONS
+
+Old phones, bad signal, hands full. Large text, few taps, and nothing that
+cannot be undone without asking first.
+```
 
 ## Graphics
 

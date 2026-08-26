@@ -116,23 +116,60 @@ log is work that helps nobody and hides the string you are searching for.
 | 3 | Failures and refusals | `operatorMessage` as a method, and the layers with no context carrying facts instead of sentences. | 🔴 High | ✅ Done |
 | 4 | The screen strings | 457 keys, including the ones that interpolate and the counts, which are ICU plurals. | 🔴 High | ✅ Done |
 | 5 | Keys and descriptions in English | Named for what the string does rather than derived from the sentence, which stops describing its value the moment the sentence is edited. | 🟠 Medium | ✅ Done |
-| 6 | `app_en.arb` | The 457 strings in English, complete before the locale is declared. Whoever writes them is not the person who wrote the Spanish, so the descriptions are the only context they get. | 🔴 High | ⬜ Pending |
-| 7 | `app_pt.arb` | The same in Portuguese. **Needs a reader who speaks it** — see the note below. | 🔴 High | ⬜ Pending |
-| 8 | Choosing a language | A setting in the profile, defaulting to the phone. Worth nothing until there is a second language, so it waits for one. | 🟠 Medium | ⬜ Pending |
-| 9 | The server's half | Business-rule messages are written by the backend and shown verbatim by design. With more than one language that becomes a negotiation — request 6 stops being optional. | 🟠 Medium | ⬜ Pending |
-| 10 | The store listing | Spanish-only by a written decision that this phase invalidates. | 🟢 Low | ⬜ Pending |
+| 6 | `app_en.arb` | The 717 strings in English, complete before the locale was declared. | 🔴 High | ✅ Done |
+| 7 | `app_pt.arb` | **Not written.** It needs a reader who speaks it — see below. | 🔴 High | ⬜ Pending |
+| 8 | Choosing a language | A setting in the profile, defaulting to the phone. | 🟠 Medium | ✅ Done |
+| 9 | The server's half | Answered by two languages existing: codes, not translated messages. | 🟠 Medium | ✅ Done |
+| 10 | The store listing | The English listing, beside the Spanish one it translates. | 🟢 Low | ✅ Done |
 
-## A warning about tasks 6 and 7
+## Two languages, and the second one arrived whole
 
-The Spanish in this application is written with care. «No es tu contraseña» is a
-decision, not filler; so is quoting the server's words rather than paraphrasing
-them, and so is refusing to name a threshold.
+717 strings. `supportedLocales` is `[en, es]` now, so a phone in English gets an
+English application and a phone in anything else gets Spanish — **entire**,
+either way. Nothing is half-translated because nothing partial was declared.
 
-Whoever writes the English and the Portuguese will be translating that, and a
-translation that keeps the meaning while losing the judgement is worse than
-none: it reads like a product that does not know why it says what it says.
-**Have somebody who speaks Portuguese read it before it ships** — it is the
-language furthest from whoever is likely to write it here.
+## Following the phone is the default, not an option
+
+The setting in the profile offers «el del teléfono» first and it is what a fresh
+install does. Nobody chose this language inside the application; they chose it
+when they set up their phone, and asking again would treat it as a decision they
+did not make.
+
+Choosing by hand exists for the case that does happen: a shared centre device,
+set up by one person and used by another.
+
+## What the second language cost, and where
+
+**Two hundred tests broke at once.** They assert Spanish copy, and with English
+declared the simulated phone resolved to English. The fix is one file —
+`test/flutter_test_config.dart` pins the test locale — and the reason it belongs
+there rather than in each test is that **the language is not what any of them
+checks**: they check behaviour, and the text is how they look at it. The one
+place where language *is* the subject is `test/core/i18n/language_test.dart`.
+
+**A language name is not translated.** «Español» is «Español» in the English
+list, because a picker exists so somebody who reads only one language can find
+theirs. The literal check caught it in the code and it went into the ARB
+instead — with the same value in both files, on purpose. That is the first
+exception to «every string is translated», and it is a real one rather than a
+convenience.
+
+## Portuguese is still not written, and that is the decision
+
+The Spanish in this application is written with care: «No es tu contraseña» is a
+decision, and so is refusing to name a threshold. A translation that keeps the
+meaning and loses the judgement reads like a product that does not know why it
+says what it says.
+
+Writing 717 Portuguese strings is easy. Knowing whether they sound like a person
+is not, and it cannot be checked from here. So the file does not exist yet:
+**declaring a language nobody has read would break the rule this phase is built
+on** — that nothing is offered half-done — in a way that is invisible from
+inside, which is the worst kind.
+
+The English is in the same position in one respect and not in another: it can be
+verified against the Spanish by anybody in this repository, and the audience for
+it —donors, partner organisations— is one somebody here can read for.
 
 ## What the sweep missed, and what now catches it
 
@@ -163,8 +200,12 @@ Two things came out of the same pass:
 
 ## Recorded for the other repository
 
-`docs/backend-requests.md` request 6 asked for named codes and Spanish messages.
-With three languages it becomes: the server needs to answer in the language the
-client asks for, or answer with codes the client can translate. The second is
-cheaper and is already half done — every named code this application knows is
-already translated here.
+`docs/backend-requests.md` request 6 asked for named codes **and** Spanish
+messages. A second language settles it: **codes, not messages.** A named code is
+translated once here into every language the application has; a message the
+server writes exists in one language, and answering in Spanish is now wrong for
+half the audience.
+
+So half of that request was withdrawn on 2026-08-25 and the other half stands:
+give the actionable refusals codes of their own, starting with
+`NOT_THREAD_PARTICIPANT`.
