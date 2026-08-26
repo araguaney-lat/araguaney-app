@@ -2863,5 +2863,157 @@
   "transferManifestAction": "Manifiesto",
   "@transferManifestAction": {
     "description": "Asks the server for the transfer's manifest."
+  },
+  "reportsTitle": "Informes",
+  "@reportsTitle": {
+    "description": "The campaign reports, as a screen title and a menu entry."
+  },
+  "reportsNoCampaigns": "No participas en ninguna campaña, así que no hay nada que informar.",
+  "@reportsNoCampaigns": {
+    "description": "Every report hangs off a campaign, and this session belongs to none."
+  },
+  "reportsForbidden": "Solo quien participa en esta campaña puede ver sus informes.",
+  "@reportsForbidden": {
+    "description": "The server refused with require_campaign_access. It is an expected answer, not a failure."
+  },
+  "reportsWeightCollected": "{kg} kg reunidos",
+  "@reportsWeightCollected": {
+    "description": "How much the campaign has collected so far.",
+    "placeholders": {
+      "kg": {
+        "type": "String"
+      }
+    }
+  },
+  "reportsWeightGoal": "Meta {kg} kg · {pct}%",
+  "@reportsWeightGoal": {
+    "description": "The campaign's goal and how far along it is.",
+    "placeholders": {
+      "kg": {
+        "type": "String"
+      },
+      "pct": {
+        "type": "int"
+      }
+    }
+  },
+  "reportsBoxes": "Cajas",
+  "@reportsBoxes": {
+    "description": "Total boxes in the campaign."
+  },
+  "reportsSealed": "Selladas",
+  "@reportsSealed": {
+    "description": "Boxes that are sealed."
+  },
+  "reportsShipped": "Enviadas",
+  "@reportsShipped": {
+    "description": "Boxes that left in a shipment."
+  },
+  "reportsDraft": "Sin sellar",
+  "@reportsDraft": {
+    "description": "Boxes captured and not sealed yet."
+  },
+  "reportsRejected": "Rechazadas",
+  "@reportsRejected": {
+    "description": "Boxes the platform rejected."
+  },
+  "reportsIntakes": "Capturas",
+  "@reportsIntakes": {
+    "description": "How many captures were registered."
+  },
+  "reportsShrinkageTitle": "Merma",
+  "@reportsShrinkageTitle": {
+    "description": "Heading over the difference between what was sent and what arrived."
+  },
+  "reportsShrinkagePct": "{pct}% de merma",
+  "@reportsShrinkagePct": {
+    "description": "The shrinkage percentage.",
+    "placeholders": {
+      "pct": {
+        "type": "String"
+      }
+    }
+  },
+  "reportsShrinkageOf": "Sobre {count} cajas ya cuadradas.",
+  "@reportsShrinkageOf": {
+    "description": "How many boxes the percentage is calculated on.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reportsNothingReconciled": "Todavía no se cuadró ninguna recepción, así que no hay merma que medir.",
+  "@reportsNothingReconciled": {
+    "description": "No reception has been reconciled, so the percentage would be meaningless."
+  },
+  "reportsReceived": "Recibidas",
+  "@reportsReceived": {
+    "description": "Boxes that arrived."
+  },
+  "reportsMissing": "Faltantes",
+  "@reportsMissing": {
+    "description": "Boxes that did not arrive."
+  },
+  "reportsDamaged": "Dañadas",
+  "@reportsDamaged": {
+    "description": "Boxes that arrived damaged."
+  },
+  "reportsRetained": "Retenidas",
+  "@reportsRetained": {
+    "description": "Boxes held, usually at customs."
+  },
+  "reportsByCategoryTitle": "Por categoría",
+  "@reportsByCategoryTitle": {
+    "description": "Heading over the breakdown that answers «are we short of anything»."
+  },
+  "reportsNothingYet": "Todavía no hay nada registrado en esta campaña.",
+  "@reportsNothingYet": {
+    "description": "The campaign has no movement yet."
+  },
+  "reportsCountriesTitle": "Por país",
+  "@reportsCountriesTitle": {
+    "description": "Heading over the country breakdown."
+  },
+  "reportsCountryLine": "{boxes} cajas · {centers} centros",
+  "@reportsCountryLine": {
+    "description": "Boxes and centres behind one country.",
+    "placeholders": {
+      "boxes": {
+        "type": "int"
+      },
+      "centers": {
+        "type": "int"
+      }
+    }
+  },
+  "reportsActivityTitle": "Últimos días",
+  "@reportsActivityTitle": {
+    "description": "Heading over the most recent days with movement."
+  },
+  "reportsActivityTruncated": "Se muestran los 7 días más recientes de {count}.",
+  "@reportsActivityTruncated": {
+    "description": "Says out loud that the list is cut, so nobody reads it as «that is all there was».",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reportsExportAction": "Exportar a hoja de cálculo",
+  "@reportsExportAction": {
+    "description": "Asks the server for the campaign CSV."
+  },
+  "exportPreparing": "Preparando el archivo…",
+  "@exportPreparing": {
+    "description": "Shown while the server builds the export."
+  },
+  "loadingShort": "Consultando…",
+  "@loadingShort": {
+    "description": "Placeholder while a section of a record is still being read."
+  },
+  "reportsShrinkageOfCampaign": "Ver la merma de la campaña",
+  "@reportsShrinkageOfCampaign": {
+    "description": "Goes from a shipment's reception to the campaign-wide shrinkage."
   }
 }

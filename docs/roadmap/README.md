@@ -64,7 +64,7 @@ pie title Tasks completed (239 tasks, backlog aside)
 | 16 | [The screens phase 11 never reached](phase-16-session-screens.md) | 11 | 1 | 🟨 92% |
 | 17 | [The product catalogue](phase-17-product-catalogue.md) | 7 | 1 | 🟨 88% |
 | 18 | [Pre-registered donations](phase-18-preregistered-donations.md) | 6 | 2 | 🟨 75% |
-| 19 | [Reports for the centre](phase-19-center-reports.md) | 0 | 8 | ⬜ 0% |
+| 19 | [Reports for the centre](phase-19-center-reports.md) | 7 | 1 | 🟨 88% |
 | 20 | [Campaigns](phase-20-campaigns.md) | 0 | 5 | ⬜ 0% |
 | 21 | [Centres](phase-21-centers.md) | 4 | 1 | 🟨 80% |
 | 22 | [The centre application queue](phase-22-center-applications.md) | 5 | 1 | 🟨 83% |
@@ -78,7 +78,7 @@ pie title Tasks completed (239 tasks, backlog aside)
 | 30 | [Writing as a national administrator](phase-30-writing-as-national-admin.md) | 8 | 1 | 🟨 89% |
 | 31 | [Speaking more than one language](phase-31-internationalisation.md) | 5 | 5 | 🟨 50% |
 | 32 | [The commentary in English](phase-32-comments-in-english.md) | 1 | 5 | 🟨 17% |
-| **Total** (Phase 10 aside) | | **173** | **68** | **🟢 72%** |
+| **Total** (Phase 10 aside) | | **180** | **61** | **🟢 75%** |
 
 ## What is missing, and how that is kept honest
 

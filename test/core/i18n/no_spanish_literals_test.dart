@@ -33,8 +33,21 @@ void main() {
       value.contains('_') ||
       RegExp(r'^[A-Z_]+$').hasMatch(value);
 
+  /// Un literal dentro de `Text(...)`, sin sus interpolaciones.
+  ///
+  /// Es la otra mitad de la comprobación, y no busca español: busca **prosa**.
+  /// «Recorrido» y «Consultando…» no llevan acento ni ninguna palabra que no
+  /// pueda ser otra cosa, así que la búsqueda de arriba no las veía; lo que sí
+  /// se puede afirmar es que una frase escrita dentro de un `Text` no pasó por
+  /// una clave, en el idioma que sea.
+  final textLiteral = RegExp(r"""Text\(\s*'((?:[^'\\\n]|\\.)*)'""");
+  final interpolation = RegExp(r'\$\{[^}]*\}|\$\w+');
+  final prose = RegExp(r'[A-Za-zÁÉÍÓÚáéíóúñÑ]{3,}');
+
   test('no screen carries Spanish of its own', () {
-    final offenders = <String>[];
+    // Un `Set`: las dos mitades de la comprobación pueden ver la misma línea,
+    // y decirlo dos veces no la hace más cierta.
+    final offenders = <String>{};
 
     for (final entity in Directory('lib').listSync(recursive: true)) {
       if (entity is! File || !entity.path.endsWith('.dart')) continue;
@@ -72,6 +85,15 @@ void main() {
         if (accents.hasMatch(code)) {
           offenders.add('${entity.path}:$lineNumber → ${code.trim()}');
           continue;
+        }
+
+        // Lo que va dentro de un `Text` y no es un dato interpolado es una
+        // frase, y una frase escrita aquí no pasó por ninguna clave.
+        for (final match in textLiteral.allMatches(code)) {
+          final written = (match.group(1) ?? '').replaceAll(interpolation, '');
+          if (prose.hasMatch(written)) {
+            offenders.add('${entity.path}:$lineNumber → ${match.group(1)}');
+          }
         }
 
         for (final pattern in [singleQuoted, doubleQuoted]) {
