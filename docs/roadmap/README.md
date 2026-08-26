@@ -73,12 +73,12 @@ pie title Tasks completed (239 tasks, backlog aside)
 | 25 | [The studio](phase-25-the-studio.md) | 1 | 2 | 🟨 33% |
 | 26 | [The shipment, from dispatch to delivery](phase-26-shipment-to-delivery.md) | 5 | 1 | 🟨 83% |
 | 27 | [Creating a transfer](phase-27-create-a-transfer.md) | 4 | 1 | 🟨 80% |
-| 28 | [The requests board](phase-28-the-requests-board.md) | 1 | 3 | 🟨 25% |
+| 28 | [The requests board](phase-28-the-requests-board.md) | 4 | 1 | 🟨 80% |
 | 29 | [The minimum version gate](phase-29-the-version-gate.md) | 7 | 2 | 🟨 78% |
 | 30 | [Writing as a national administrator](phase-30-writing-as-national-admin.md) | 8 | 1 | 🟨 89% |
 | 31 | [Speaking more than one language](phase-31-internationalisation.md) | 9 | 1 | 🟨 90% |
 | 32 | [The commentary in English](phase-32-comments-in-english.md) | 6 | 0 | ✅ 100% |
-| **Total** (Phase 10 aside) | | **202** | **38** | **🟢 84%** |
+| **Total** (Phase 10 aside) | | **205** | **36** | **🟢 85%** |
 
 ## What is missing, and how that is kept honest
 

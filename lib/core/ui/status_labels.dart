@@ -109,3 +109,12 @@ String incidentStatusLabel(AppLocalizations l10n, String status) =>
       'RESOLVED' => l10n.incidentStatusResolved,
       _ => status,
     };
+
+String requestStatusLabel(AppLocalizations l10n, String status) =>
+    switch (status) {
+      'OPEN' => l10n.requestStatusOpen,
+      'IN_PROGRESS' => l10n.requestStatusInProgress,
+      'RESOLVED' => l10n.requestStatusResolved,
+      'CLOSED' => l10n.requestStatusClosed,
+      _ => status,
+    };

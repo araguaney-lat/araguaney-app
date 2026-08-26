@@ -37,13 +37,31 @@ panel decides the board is live.
 
 ---
 
+## The answer, and what it leaves open
+
+Asked and answered on 2026-08-25: **build it**. The endpoints are live, the
+panel's page exists, and the argument for the phone — the input is a sentence —
+does not get better by waiting.
+
+What the answer does not settle is the panel's navigation entry, which is still
+commented out in `nav-config.ts` and belongs to the other repository. Until it
+is uncommented, a request opened from a phone is answered from a phone: the
+board works end to end here, and the panel's copy of it stays unreachable. That
+is a one-line change over there and a decision for whoever owns it, not a gap in
+this application.
+
 ## Objectives
 
-1. Nothing yet. This phase waits on a decision in the other repository.
+1. Read the board and write on it from a phone.
+2. Treat an empty matching as the normal answer it is.
+3. Offer moving a request's state only to whoever the backend lets.
 
 ## Non-objectives
 
-- Building it before the panel offers it.
+- Inventing a state machine. The four states are the server's and it decides
+  which move it accepts; this offers the four and lets it refuse.
+- Caching. A request is a conversation, and an old copy of a conversation
+  invites replying to something already answered.
 
 ---
 
@@ -52,9 +70,10 @@ panel decides the board is live.
 | # | Task | Description | Complexity | Status |
 |---|------|-------------|------------|--------|
 | 1 | Name the state | Record that the board exists in the backend, has a page in the panel, and is not linked there. This file. | 🟢 Low | ✅ Done |
-| 2 | Ask the other repository | Whether the board is unfinished, paused or abandoned. Until that is answered, nothing here is worth building. | 🟢 Low | ⬜ Pending |
-| 3 | The list and the record | Only if the answer is «live». | 🟠 Medium | ⬜ Pending |
-| 4 | Creating one | A sentence, and the matches the server returns for it — with the empty list treated as normal and not as a failure. | 🟠 Medium | ⬜ Pending |
+| 2 | Ask the other repository | Whether the board is unfinished, paused or abandoned. Until that is answered, nothing here is worth building. | 🟢 Low | ✅ Done — answered on 2026-08-25: build it. See below. |
+| 3 | The list and the record | Only if the answer is «live». | 🟠 Medium | ✅ Done |
+| 4 | Creating one | A sentence, and the matches the server returns for it — with the empty list treated as normal and not as a failure. | 🟠 Medium | ✅ Done |
+| 5 | Verify on a device | Against a real request, a real reply, and the matching both on and off. | 🟢 Low | ⬜ Pending |
 
 ## Recorded for the other repository
 

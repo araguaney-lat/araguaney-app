@@ -22,6 +22,7 @@ import '../../intake/ui/intake_list_view.dart';
 import '../../intake/ui/pending_captures_view.dart';
 import '../../pallets/ui/pallets_list_view.dart';
 import '../../reports/ui/reports_view.dart';
+import '../../requests/ui/requests_list_view.dart';
 import '../../risk_reviews/ui/risk_reviews_view.dart';
 import '../../shipments/ui/shipments_list_view.dart';
 import '../../team/ui/team_directory_view.dart';
@@ -133,6 +134,15 @@ class MoreMenuSheet extends ConsumerWidget {
               leading: const Icon(Icons.donut_small_outlined),
               title: Text(context.l10n.stockByCategoryTitle),
               onTap: () => _go(context, StockByCategoryView.route()),
+            ),
+            // Right after the stock, and for everybody: the stock says what
+            // there is, and this is where somebody says what is missing. The
+            // backend asks for a session and nothing else — only moving a
+            // request's state is gated, and that lives inside the record.
+            ListTile(
+              leading: const Icon(Icons.help_outline),
+              title: Text(context.l10n.requestsTitle),
+              onTap: () => _go(context, RequestsListView.route()),
             ),
             // Next to the stock because it is the following question: the
             // stock says what there is, the report says how it is going.
