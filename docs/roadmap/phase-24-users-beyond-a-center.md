@@ -57,9 +57,44 @@ a phone between two pallets is not obviously better than doing it from a desk.
 
 | # | Task | Description | Complexity | Status |
 |---|------|-------------|------------|--------|
-| 1 | Users repository | `GET /v1/studio/users`, `POST`, `PATCH` and the reinvite behind a sealed outcome. | 🟠 Medium | ⬜ Pending |
-| 2 | Search across centres | For a session that can, with the centre named on every row. | 🟠 Medium | ⬜ Pending |
-| 3 | The person's record | Centre, role, whether they ever signed in, whether their invitation is pending. | 🟠 Medium | ⬜ Pending |
-| 4 | Resend an access | The operation that has a real case away from a desk. | 🟢 Low | ⬜ Pending |
-| 5 | Invite beyond one centre | `POST /v1/studio/users`, for whoever manages users rather than a centre. | 🟠 Medium | ⬜ Pending |
+| 1 | Users repository | `GET /v1/studio/users`, `POST` and the reinvite behind a sealed outcome. `PATCH` deliberately not wired — see below. | 🟠 Medium | ✅ Done |
+| 2 | Search across centres | **The endpoint does not search.** Filters by centre, role and state, plus a text box that narrows what was loaded and says so. | 🟠 Medium | 🟨 Partial |
+| 3 | The person's record | Centre, role, whether the second factor is on, whether the terms are still pending. | 🟠 Medium | ✅ Done |
+| 4 | Resend an access | The operation that has a real case away from a desk. | 🟢 Low | ✅ Done |
+| 5 | Invite beyond one centre | `POST /v1/studio/users`, with the centre chosen rather than assumed. | 🟠 Medium | ✅ Done |
 | 6 | Verify on a device | With a real invitation that arrives. | 🟢 Low | ⬜ Pending |
+
+## «Search» was the wrong word, and the screen says the right one
+
+`GET /v1/studio/users` takes `center_id`, `center_role`, `is_active`, `limit`
+and `offset`. **There is no `q`.** So the phase's task 2 could not be built as
+written, and the honest version is two different things on one screen:
+
+- the filters the server understands, which narrow what is asked for;
+- a text box that narrows **what already arrived**, labelled «Filtrar lo
+  cargado» and with a line underneath saying exactly that.
+
+Calling it «buscar» would make a name that does not appear look like a person
+who does not exist, when they may be on the next page. When the text matches
+nothing, the screen says how many rows it looked at.
+
+Recorded as request 12: a `q` over name, username and email would make this a
+search and let the label be honest in one word.
+
+## What was left out, and why it is not dead code
+
+`PATCH /v1/studio/users/{id}` can change somebody's role, centre and whether
+their account is active. It is not in the repository at all.
+
+The phase's own non-objective says role changes should not become a routine
+mobile operation, and the reason holds: a decision whose consequences outlive
+the moment is not better made between two pallets. Writing the method «because
+it exists» would have left an untested call nobody uses, which is the shape
+dead code takes when it is added early.
+
+## The password never exists here
+
+`StudioUserCreate` has a `password` field and this application never fills it.
+The server generates one and emails it; a client that never touches it cannot
+leak it. The record says so out loud, on the screen where somebody might go
+looking for one.
