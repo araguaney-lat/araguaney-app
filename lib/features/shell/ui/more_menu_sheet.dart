@@ -26,6 +26,8 @@ import '../../risk_reviews/ui/risk_reviews_view.dart';
 import '../../shipments/ui/shipments_list_view.dart';
 import '../../team/ui/team_directory_view.dart';
 import '../../transfers/ui/transfers_list_view.dart';
+import '../../users/data/users_providers.dart';
+import '../../users/ui/users_list_view.dart';
 
 /// Todo lo que no cabe en la barra.
 ///
@@ -194,6 +196,12 @@ class MoreMenuSheet extends ConsumerWidget {
                 leading: const Icon(Icons.apartment_outlined),
                 title: Text(context.l10n.centersTitle),
                 onTap: () => _go(context, CentersListView.route()),
+              ),
+            if (ref.watch(canManageUsersProvider))
+              ListTile(
+                leading: const Icon(Icons.manage_accounts_outlined),
+                title: Text(context.l10n.usersTitle),
+                onTap: () => _go(context, UsersListView.route()),
               ),
           ],
         ),

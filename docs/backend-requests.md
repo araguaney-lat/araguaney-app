@@ -308,6 +308,26 @@ one role and an empty space for the others would be worse than not offering it.
 
 ---
 
+## 12. A `q` on `GET /v1/studio/users`
+
+**What we need.** An optional `q` that matches full name, username and email,
+the way `/v1/product-types/search` already does for the catalogue.
+
+**Why.** The endpoint filters by centre, role and state, and pages. Finding «Ana»
+therefore means either knowing her centre or paging until she appears. On a
+phone, that is the difference between a screen somebody uses and one they open
+once.
+
+**What we do meanwhile.** The list filters what has already been loaded and
+**says that is what it does** — the field is labelled «Filtrar lo cargado» and
+the empty state reports how many rows it looked at. It is honest and it is not
+a search.
+
+**Not urgent.** It is a convenience, not a correctness problem; nothing is
+hidden and nothing is claimed that is not true.
+
+---
+
 ## Not requests
 
 Recorded here so they are not mistaken for gaps:

@@ -3199,5 +3199,107 @@
   "receptionRaiseIncident": "Reportar una incidencia",
   "@receptionRaiseIncident": {
     "description": "Opens the incident sheet from what the reception found."
+  },
+  "usersTitle": "Personas",
+  "@usersTitle": {
+    "description": "Everybody on the platform, beyond one centre. A menu entry and a screen title."
+  },
+  "usersFilterLabel": "Filtrar lo cargado",
+  "@usersFilterLabel": {
+    "description": "Narrows the page already fetched. Deliberately not «search»."
+  },
+  "usersFilterHelper": "El servidor filtra por centro, rol y estado; el texto recorta lo que ya se trajo.",
+  "@usersFilterHelper": {
+    "description": "Says plainly what the text box does and does not do, so «not here» is not read as «does not exist»."
+  },
+  "usersOnlyInactive": "Desactivadas",
+  "@usersOnlyInactive": {
+    "description": "Filter for accounts that are no longer active."
+  },
+  "usersAnyCenter": "Cualquier centro",
+  "@usersAnyCenter": {
+    "description": "No centre filter applied."
+  },
+  "usersEmpty": "No hay personas que coincidan con estos filtros.",
+  "@usersEmpty": {
+    "description": "The server returned nothing for the filters in use."
+  },
+  "usersNoneMatchLoaded": "Ninguna de las {count} cargadas coincide con ese texto. Puede estar en otra página.",
+  "@usersNoneMatchLoaded": {
+    "description": "The local filter matched nothing, and says how many rows it looked at.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "usersNarrowedFromLoaded": "Recortado sobre {count} cargadas.",
+  "@usersNarrowedFromLoaded": {
+    "description": "Foot of a narrowed list, so the count on screen is not read as the total.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "usersForbidden": "Solo quien administra personas puede ver esta lista.",
+  "@usersForbidden": {
+    "description": "The server refused with require_user_manager."
+  },
+  "usersCenterUnnamed": "Un centro que esta sesión no puede nombrar",
+  "@usersCenterUnnamed": {
+    "description": "The person belongs to a centre whose name this session cannot resolve."
+  },
+  "userRecordTitle": "Persona",
+  "@userRecordTitle": {
+    "description": "Title of somebody's record."
+  },
+  "userActive": "Activa",
+  "@userActive": {
+    "description": "An account that can sign in."
+  },
+  "userTotpOn": "Activado",
+  "@userTotpOn": {
+    "description": "The second factor is on."
+  },
+  "userPendingTermsLabel": "Términos",
+  "@userPendingTermsLabel": {
+    "description": "Whether the person still has to accept the terms."
+  },
+  "userPendingTerms": "Pendientes de aceptar",
+  "@userPendingTerms": {
+    "description": "They have not accepted the terms yet."
+  },
+  "userResendAccess": "Reenviar el acceso",
+  "@userResendAccess": {
+    "description": "Sends the invitation email again."
+  },
+  "userAccessResent": "Se reenvió el acceso.",
+  "@userAccessResent": {
+    "description": "The invitation went out again."
+  },
+  "userResendExplanation": "La contraseña la genera el servidor y se envía por correo. No se ve desde aquí.",
+  "@userResendExplanation": {
+    "description": "Why nobody is shown a password, on the screen where somebody might look for one."
+  },
+  "userInviteTitle": "Invitar a alguien",
+  "@userInviteTitle": {
+    "description": "Title of the form that creates an account in any centre."
+  },
+  "userInviteAction": "Enviar la invitación",
+  "@userInviteAction": {
+    "description": "Submits the invitation."
+  },
+  "userInviteExplanation": "Recibirá un correo con su acceso. Puedes darla de alta en cualquier centro.",
+  "@userInviteExplanation": {
+    "description": "What inviting does, and how it differs from inviting into one's own centre."
+  },
+  "userInviteCenterHelper": "Sin centro queda sin asignar, y se le asigna después.",
+  "@userInviteCenterHelper": {
+    "description": "A centre is optional at invitation time."
+  },
+  "totpLabel": "Segundo factor",
+  "@totpLabel": {
+    "description": "Whether the account has a second factor."
   }
 }

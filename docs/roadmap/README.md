@@ -69,7 +69,7 @@ pie title Tasks completed (239 tasks, backlog aside)
 | 21 | [Centres](phase-21-centers.md) | 4 | 1 | 🟨 80% |
 | 22 | [The centre application queue](phase-22-center-applications.md) | 5 | 1 | 🟨 83% |
 | 23 | [Incidents and the audit log](phase-23-incidents-and-audit.md) | 4 | 1 | 🟨 80% (1 blocked) |
-| 24 | [Users beyond one centre](phase-24-users-beyond-a-center.md) | 0 | 6 | ⬜ 0% |
+| 24 | [Users beyond one centre](phase-24-users-beyond-a-center.md) | 4 | 2 | 🟨 67% (1 partial) |
 | 25 | [The studio](phase-25-the-studio.md) | 1 | 2 | 🟨 33% |
 | 26 | [The shipment, from dispatch to delivery](phase-26-shipment-to-delivery.md) | 5 | 1 | 🟨 83% |
 | 27 | [Creating a transfer](phase-27-create-a-transfer.md) | 4 | 1 | 🟨 80% |
@@ -78,7 +78,7 @@ pie title Tasks completed (239 tasks, backlog aside)
 | 30 | [Writing as a national administrator](phase-30-writing-as-national-admin.md) | 8 | 1 | 🟨 89% |
 | 31 | [Speaking more than one language](phase-31-internationalisation.md) | 5 | 5 | 🟨 50% |
 | 32 | [The commentary in English](phase-32-comments-in-english.md) | 1 | 5 | 🟨 17% |
-| **Total** (Phase 10 aside) | | **189** | **51** | **🟢 79%** |
+| **Total** (Phase 10 aside) | | **193** | **47** | **🟢 80%** |
 
 ## What is missing, and how that is kept honest
 
