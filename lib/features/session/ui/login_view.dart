@@ -195,8 +195,8 @@ class _RegisterCenterLink extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // The phone's language, not the application's: `MaterialApp` pins
-    // `Locale('es')`, so asking `Localizations` would always answer the same.
+    // The phone's language, not the application's: `MaterialApp` pins the
+    // Spanish locale, so asking `Localizations` would always answer the same.
     final phone = View.of(context).platformDispatcher.locale;
     final url = _formUrl(phone.languageCode);
 

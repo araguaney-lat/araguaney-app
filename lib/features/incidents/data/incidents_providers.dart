@@ -16,27 +16,27 @@ final shipmentIncidentsProvider =
           ref.watch(incidentsRepositoryProvider).forShipment(shipmentId),
     );
 
-/// La recepción de un envío. Nulo mientras no se haya reconciliado.
+/// A shipment's reception. Null while it has not been reconciled.
 final shipmentReceptionProvider = FutureProvider.family<ReceptionOut?, String>(
   (ref, shipmentId) =>
       ref.watch(incidentsRepositoryProvider).reception(shipmentId),
 );
 
-/// Las incidencias del centro, sin envío de por medio.
+/// The centre's incidents, with no shipment in between.
 final centerIncidentsRepositoryProvider = Provider<CenterIncidentsRepository>(
   (ref) => CenterIncidentsRepository(ref.watch(restClientProvider).incidents),
 );
 
-/// Todo lo que hay, abierto y cerrado. El servidor acepta filtrar por estado,
-/// pero pedir las dos cosas de una permite mostrar el conteo de lo abierto sin
-/// una segunda petición.
+/// Everything there is, open and closed. The server accepts filtering by state,
+/// but asking for both at once allows showing the count of what is open without
+/// a second request.
 final centerIncidentsProvider =
     FutureProvider<IncidentsOutcome<List<IncidentOut>>>(
       (ref) => ref.watch(centerIncidentsRepositoryProvider).list(),
     );
 
-/// Si esta sesión puede cerrar una. El backend exige administración nacional
-/// en el cierre, aunque listar solo pida coordinación.
+/// Whether this session can close one. The backend requires national
+/// administration to close, even though listing only asks for coordination.
 final canResolveIncidentsProvider = Provider<bool>(
   (ref) => ref.watch(isNationalAdminProvider),
 );

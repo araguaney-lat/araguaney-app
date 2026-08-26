@@ -1,16 +1,17 @@
 import '../../../core/api/generated/clients/dashboard_api.dart';
 import '../../../core/api/generated/models/national_dashboard_out.dart';
 
-/// Los agregados del centro de quien mira.
+/// The aggregates of the centre of whoever is looking.
 ///
-/// El nombre del endpoint dice «national» y engaña: el servidor lo acota con
-/// `tenant_scope`, así que coordinación y voluntariado reciben **su** centro y
-/// solo la administración nacional recibe todos. El cliente no envía centro y
-/// no puede pedir el de otro.
+/// The endpoint's name says «national» and misleads: the server narrows it with
+/// `tenant_scope`, so coordination and volunteers receive **their** centre and
+/// only national administration receives them all. The client sends no centre
+/// and cannot ask for somebody else's.
 ///
-/// Esto sí es stock: cuenta cajas en estado `SEALED`. Es la diferencia con el
-/// informe por campaña, que cuenta lo capturado en una ventana sin mirar el
-/// estado — y por eso esa lectura se retiró en favor de esta.
+/// This one really is stock: it counts boxes in the `SEALED` state. That is the
+/// difference from the per-campaign report, which counts what was captured in a
+/// window without looking at the state — and that is why that reading was
+/// withdrawn in favour of this one.
 class CenterDashboardRepository {
   CenterDashboardRepository(this._dashboardApi);
 

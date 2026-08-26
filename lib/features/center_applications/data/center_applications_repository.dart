@@ -4,7 +4,7 @@ import '../../../core/api/generated/clients/center_applications_api.dart';
 import '../../../core/api/generated/models/center_application_out.dart';
 import '../../../core/api/generated/models/center_application_reject.dart';
 
-/// Cómo terminó una lectura o una decisión sobre postulaciones.
+/// How a read or a decision about applications ended.
 sealed class ApplicationsOutcome<T> {
   const ApplicationsOutcome();
 }
@@ -20,19 +20,19 @@ final class ApplicationsRefused<T> extends ApplicationsOutcome<T> {
 
   final ApiFailure failure;
 
-  /// Si el rechazo es «no te toca» y no un fallo.
+  /// Whether the refusal is «not your place» and not a failure.
   bool get isForbidden => failure is ForbiddenFailure;
 }
 
-/// La cola de postulaciones de centro, y las dos decisiones.
+/// The queue of centre applications, and the two decisions.
 ///
-/// **La cola solo trae lo que espera revisión.** El backend filtra por
-/// `PENDING_REVIEW`, de la más vieja a la más nueva, y una administración
-/// nacional la ve acotada a su país mientras que una superadministración las ve
-/// todas. Así que esto es una cola y no un historial: decidir una la saca.
+/// **The queue only brings what is waiting for review.** The backend filters by
+/// `PENDING_REVIEW`, oldest to newest, and a national administration sees it
+/// narrowed to its country while a superadministration sees them all. So this
+/// is a queue and not a history: deciding one takes it out.
 ///
-/// Las dos decisiones exigen conexión, y no por comodidad: aprobar crea cosas
-/// en el servidor y rechazar manda un correo.
+/// Both decisions require a connection, and not for convenience: approving
+/// creates things on the server and rejecting sends an email.
 class CenterApplicationsRepository {
   CenterApplicationsRepository(this._applications);
 
@@ -48,11 +48,12 @@ class CenterApplicationsRepository {
     }
   }
 
-  /// Aprobar, que hace **tres cosas** en el servidor: crea el centro, da de
-  /// alta a quien postuló como su coordinación, y le manda por correo una
-  /// contraseña temporal.
+  /// Approving, which does **three things** on the server: it creates the
+  /// centre, adds whoever applied as its coordination, and emails them a
+  /// temporary password.
   ///
-  /// Nada de eso se deshace desde aquí, y por eso la pantalla lo dice antes.
+  /// None of that is undone from here, and that is why the screen says so
+  /// beforehand.
   Future<ApplicationsOutcome<CenterApplicationOut>> approve(String id) async {
     try {
       return ApplicationsRead(
@@ -64,8 +65,8 @@ class CenterApplicationsRepository {
     }
   }
 
-  /// Rechazar. El motivo **viaja por correo a quien postuló**, así que lo que
-  /// se escriba aquí lo va a leer alguien de fuera de la plataforma.
+  /// Rejecting. The reason **travels by email to whoever applied**, so what is
+  /// written here is going to be read by somebody outside the platform.
   Future<ApplicationsOutcome<CenterApplicationOut>> reject(
     String id,
     String reason,

@@ -22,31 +22,32 @@ final class UsersRefused<T> extends UsersOutcome<T> {
   bool get isForbidden => failure is ForbiddenFailure;
 }
 
-/// Las personas de la plataforma, más allá de un centro.
+/// The platform's people, beyond one centre.
 ///
-/// El directorio de equipo cubre un centro y lo llama por su ruta propia; esto
-/// es la otra mitad, la que cruza centros. Las dos existen porque el servidor
-/// las separa: `/v1/centers/{id}/users` la mira una coordinación, y
-/// `/v1/studio/users` exige `require_user_manager`.
+/// The team directory covers one centre and calls it by its own route; this is
+/// the other half, the one that crosses centres. Both exist because the server
+/// separates them: `/v1/centers/{id}/users` is looked at by a coordination, and
+/// `/v1/studio/users` requires `require_user_manager`.
 ///
-/// **`require_user_manager` no es `superadmin`.** Es una puerta más ancha —la
-/// plataforma o la operación nacional— y por eso esto es administración y no
-/// consola, aunque las rutas compartan el prefijo `studio`.
+/// **`require_user_manager` is not `superadmin`.** It is a wider door — the
+/// platform or the national operation — and that is why this is administration
+/// and not the console, even though the routes share the `studio` prefix.
 ///
-/// `PATCH /v1/studio/users/{id}` existe y **aquí no está**: cambiar el rol o el
-/// centro de alguien tiene consecuencias que duran más que el momento, y
-/// hacerlo desde un teléfono entre dos tarimas no es mejor que hacerlo desde un
-/// escritorio. Se añadirá el día que haya un caso, no antes.
+/// `PATCH /v1/studio/users/{id}` exists and **is not here**: changing somebody's
+/// role or centre has consequences that outlast the moment, and doing it from a
+/// phone between two pallets is no better than doing it from a desk. It will be
+/// added the day there is a case, not before.
 class UsersRepository {
   UsersRepository(this._studio);
 
   final StudioApi _studio;
 
-  /// Una página de personas, con los filtros que el servidor entiende.
+  /// One page of people, with the filters the server understands.
   ///
-  /// **No hay búsqueda por texto**: el endpoint filtra por centro, rol y
-  /// actividad, y pagina. Buscar «Ana» es cosa de la pantalla sobre lo que ya
-  /// trajo, y por eso la pantalla dice que eso es lo que hace.
+  /// **There is no text search**: the endpoint filters by centre, role and
+  /// activity, and paginates. Looking for «Ana» is the screen's business over
+  /// what it already brought, and that is why the screen says that is what it
+  /// does.
   Future<UsersOutcome<List<UserOut>>> list({
     String? centerId,
     String? centerRole,
@@ -63,17 +64,17 @@ class UsersRepository {
     ),
   );
 
-  /// Da de alta a alguien en cualquier centro.
+  /// Adds somebody at any centre.
   ///
-  /// La contraseña no viaja: el servidor la genera y la manda por correo. Este
-  /// cliente nunca la ve, que es la única forma de que no pueda filtrarla.
+  /// The password does not travel: the server generates it and sends it by
+  /// email. This client never sees it, which is the only way it cannot leak it.
   Future<UsersOutcome<UserOut>> invite(StudioUserCreate data) =>
       _guard(() => _studio.createUserV1StudioUsersPost(body: data));
 
-  /// Reenvía el acceso a quien nunca lo recibió.
+  /// Resends the access to somebody who never received it.
   ///
-  /// Es la operación de esta fase con un caso real lejos de un escritorio:
-  /// alguien dice «no me llegó» delante de ti.
+  /// It is this phase's operation with a real case far from a desk: somebody
+  /// says «it did not arrive» right in front of you.
   Future<UsersOutcome<void>> resendAccess(String userId) => _guard(
     () => _studio.reinviteUserV1StudioUsersUserIdReinvitePost(userId: userId),
   );

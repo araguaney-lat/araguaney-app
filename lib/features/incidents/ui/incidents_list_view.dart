@@ -10,16 +10,16 @@ import '../data/incidents_providers.dart';
 import '../data/incidents_repository.dart';
 import 'resolve_incident_sheet.dart';
 
-/// Las incidencias del centro.
+/// The centre's incidents.
 ///
-/// **Cierra media función que llevaba meses publicada.** La aplicación sabía
-/// levantar una incidencia desde un envío y no sabía enseñarla, que es la peor
-/// mitad para que falte: alguien reporta que falta una caja y no tiene forma de
-/// saber si alguien la miró.
+/// **It closes half a feature that had been shipped for months.** The
+/// application knew how to raise an incident from a shipment and did not know
+/// how to show it, which is the worse half to be missing: somebody reports that
+/// a box is missing and has no way of knowing whether anybody looked.
 ///
-/// Abiertas primero y por edad, porque una incidencia vieja y abierta es
-/// exactamente la que se está olvidando. Cerrarla exige administración
-/// nacional; listarlas, solo coordinación.
+/// Open ones first and by age, because an old open incident is exactly the one
+/// being forgotten. Closing one requires national administration; listing them,
+/// only coordination.
 class IncidentsListView extends ConsumerStatefulWidget {
   const IncidentsListView({super.key});
 
@@ -107,8 +107,8 @@ class _List extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Abiertas primero, y dentro de cada grupo la más vieja arriba: una
-    // incidencia vieja y abierta es la que se está olvidando.
+    // Open ones first, and within each group the oldest at the top: an old open
+    // incident is the one being forgotten.
     final open = incidents.where((i) => i.status == 'OPEN').toList()
       ..sort((a, b) => a.createdAt.compareTo(b.createdAt));
     final closed = incidents.where((i) => i.status != 'OPEN').toList()
@@ -202,7 +202,7 @@ class _IncidentCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 8),
-            // Citada: son las palabras de quien la reportó.
+            // Quoted: they are the words of whoever reported it.
             Text(
               context.l10n.quoted(incident.description),
               style: text.bodyMedium,
@@ -224,7 +224,8 @@ class _IncidentCard extends StatelessWidget {
                   ),
                 ),
                 const Spacer(),
-                // El envío al que pertenece: es donde se puede mirar qué pasó.
+                // The shipment it belongs to: it is where what happened can be
+                // looked at.
                 TextButton(
                   onPressed: () => Navigator.of(
                     context,

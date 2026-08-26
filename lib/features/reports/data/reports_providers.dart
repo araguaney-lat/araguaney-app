@@ -19,10 +19,11 @@ final reportsRepositoryProvider = Provider<ReportsRepository>((ref) {
   );
 });
 
-/// La campaña que se está mirando.
+/// The campaign being looked at.
 ///
-/// Vive fuera de la pantalla porque los siete informes cuelgan de ella: sin una
-/// elegida no hay nada que pedir, y con otra elegida cambia todo a la vez.
+/// It lives outside the screen because the seven reports hang from it: with
+/// none chosen there is nothing to ask for, and with another chosen everything
+/// changes at once.
 final selectedCampaignProvider = StateProvider<String?>((ref) => null);
 
 final reportSummaryProvider =
@@ -55,11 +56,12 @@ final reportActivityProvider =
           ref.watch(reportsRepositoryProvider).activity(campaignId),
     );
 
-/// El peso reunido, y la meta si la campaña tiene una.
+/// The weight gathered, and the goal if the campaign has one.
 ///
-/// Se pide con el centro en el que se está trabajando: para una sesión con
-/// centro propio da igual —el servidor ya lo acota— y para una administración
-/// nacional es la diferencia entre el peso de un centro y el del país.
+/// It is asked for with the centre being worked in: for a session with a centre
+/// of its own it makes no difference — the server already narrows it — and for
+/// a national administration it is the difference between one centre's weight
+/// and the country's.
 final reportWeightProvider =
     FutureProvider.family<ReportOutcome<WeightDashboardOut>, String?>(
       (ref, campaignId) => ref

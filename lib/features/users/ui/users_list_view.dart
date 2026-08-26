@@ -12,12 +12,13 @@ import '../data/users_repository.dart';
 import 'invite_user_view.dart';
 import 'user_record_view.dart';
 
-/// Las personas de la plataforma, más allá de un centro.
+/// The platform's people, beyond one centre.
 ///
-/// **El servidor filtra por centro, rol y actividad; no busca por texto.** Así
-/// que el campo de arriba no es una búsqueda: recorta lo que ya se trajo, y lo
-/// dice. Llamarlo «buscar» haría creer que un nombre que no aparece no existe,
-/// cuando puede estar en la página siguiente.
+/// **The server filters by centre, role and activity; it does not search by
+/// text.** So the field at the top is not a search: it trims what has already
+/// been brought, and it says so. Calling it «search» would make people believe
+/// a name that does not show up does not exist, when it may be on the next
+/// page.
 class UsersListView extends ConsumerStatefulWidget {
   const UsersListView({super.key});
 
@@ -180,8 +181,8 @@ class _List extends StatelessWidget {
   final Map<String, String> centers;
   final bool narrowed;
 
-  /// Cuántas trajo la página, antes de recortar. Se dice porque «no aparece»
-  /// y «no existe» son cosas distintas.
+  /// How many the page brought, before trimming. It is said because «does not
+  /// show up» and «does not exist» are different things.
   final int loaded;
 
   @override

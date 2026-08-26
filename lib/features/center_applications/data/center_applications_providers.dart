@@ -12,18 +12,18 @@ final centerApplicationsRepositoryProvider =
       ),
     );
 
-/// Lo que espera una decisión.
+/// What is waiting for a decision.
 final applicationQueueProvider =
     FutureProvider<ApplicationsOutcome<List<CenterApplicationOut>>>(
       (ref) => ref.watch(centerApplicationsRepositoryProvider).queue(),
     );
 
-/// Si esta sesión puede revisar postulaciones.
+/// Whether this session can review applications.
 ///
-/// El backend acepta a una administración nacional —acotada a su país— o a una
-/// superadministración, que las ve todas. Desde el cliente las dos se ven igual
-/// a través de `center_role`, así que esto solo evita ofrecer una pantalla que
-/// va a responder 403; quién ve qué lo sigue decidiendo el servidor.
+/// The backend accepts a national administration — narrowed to its country — or
+/// a superadministration, which sees them all. From the client both look alike
+/// through `center_role`, so this only avoids offering a screen that is going
+/// to answer 403; who sees what is still the server's decision.
 final canReviewApplicationsProvider = Provider<bool>(
   (ref) => ref.watch(isNationalAdminProvider),
 );

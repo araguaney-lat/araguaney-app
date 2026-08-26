@@ -8,11 +8,11 @@ import '../data/centers_repository.dart';
 import 'center_form_view.dart';
 import 'center_record_view.dart';
 
-/// Los centros de la plataforma.
+/// The platform's centres.
 ///
-/// Solo la ve quien puede listarlos, y por eso la entrada del menú tampoco
-/// aparece para los demás: ofrecer una pantalla que va a responder 403 es peor
-/// que no ofrecerla.
+/// Only whoever can list them sees it, and that is why the menu entry does not
+/// appear for the rest either: offering a screen that will answer 403 is worse
+/// than not offering it.
 class CentersListView extends ConsumerWidget {
   const CentersListView({super.key});
 
@@ -57,8 +57,8 @@ class _List extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Los desactivados van al final: siguen existiendo y casi nunca son lo que
-    // alguien viene a buscar.
+    // The deactivated ones go last: they still exist and are almost never what
+    // somebody comes looking for.
     final sorted = [...centers]
       ..sort((a, b) {
         if (a.isActive != b.isActive) return a.isActive ? -1 : 1;

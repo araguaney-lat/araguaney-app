@@ -8,11 +8,11 @@ import '../../../core/ui/record_field.dart';
 import '../data/messaging_providers.dart';
 import '../data/messaging_repository.dart';
 
-/// Un hilo y sus respuestas.
+/// A thread and its replies.
 ///
-/// Abrirlo lo marca como leído. Es lo que quien lo abre espera, y lo que hace
-/// que el contador de la pantalla principal signifique algo: si siguiera
-/// contando lo ya leído, la gente aprendería a ignorarlo.
+/// Opening it marks it read. It is what whoever opens it expects, and what
+/// makes the counter on the main screen mean something: if it went on counting
+/// what has been read, people would learn to ignore it.
 class ThreadView extends ConsumerStatefulWidget {
   const ThreadView({super.key, required this.threadId});
 
@@ -64,8 +64,8 @@ class _ThreadViewState extends ConsumerState<ThreadView> {
         _reply.clear();
         ref.invalidate(threadProvider(widget.threadId));
       case MessagingRefused(:final failure):
-        // El texto se queda en el campo: perder lo escrito por un fallo de red
-        // sería la peor forma de contestar a alguien que ya escribió.
+        // The text stays in the field: losing what was written to a network
+        // failure would be the worst way to answer somebody who already wrote.
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(failure.operatorMessage(context.l10n))),
         );

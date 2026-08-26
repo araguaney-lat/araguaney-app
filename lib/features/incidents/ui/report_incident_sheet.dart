@@ -4,10 +4,11 @@ import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/ui/sheet_insets.dart';
 import '../data/incidents_repository.dart';
 
-/// Levantar una incidencia sobre un envío.
+/// Raising an incident about a shipment.
 ///
-/// Quien envió es quien nota lo que falta, y por eso esto vive en el móvil: se
-/// escribe en el andén, con el bulto delante, no al volver a un escritorio.
+/// Whoever sent it is who notices what is missing, and that is why this lives
+/// on mobile: it is written on the loading bay, with the load in front of you,
+/// not on getting back to a desk.
 class ReportIncidentSheet extends StatefulWidget {
   const ReportIncidentSheet({super.key});
 

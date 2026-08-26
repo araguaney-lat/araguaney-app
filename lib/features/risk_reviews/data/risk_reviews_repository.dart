@@ -4,10 +4,10 @@ import '../../../core/api/generated/clients/risk_reviews_api.dart';
 import '../../../core/api/generated/models/risk_review_out.dart';
 import '../../../core/api/generated/models/risk_review_resolve_in.dart';
 
-/// Las dos formas de cerrar una revisión.
+/// The two ways of closing a review.
 ///
-/// Aprobar deja pasar la captura; rechazar la detiene. El servidor no acepta
-/// nada más, y qué significa cada una para el inventario lo decide él.
+/// Approving lets the capture through; rejecting stops it. The server accepts
+/// nothing else, and what each one means for the inventory is its decision.
 abstract final class RiskResolution {
   static const approve = 'APPROVED';
   static const reject = 'REJECTED';
@@ -29,22 +29,23 @@ final class ResolveRefused extends ResolveOutcome {
   final ApiFailure failure;
 }
 
-/// Revisiones de riesgo del centro.
+/// The centre's risk reviews.
 class RiskReviewsRepository {
   RiskReviewsRepository(this._reviews);
 
   final RiskReviewsApi _reviews;
 
-  /// Las que siguen pendientes. El servidor no devuelve las resueltas, así que
-  /// una revisión que se cierra desaparece de la lista sin que nadie la filtre.
+  /// The ones still pending. The server does not return the resolved ones, so a
+  /// review that is closed disappears from the list without anybody filtering
+  /// it.
   Future<List<RiskReviewOut>> pending() =>
       _reviews.listRiskReviewsV1RiskReviewsGet();
 
-  /// Cierra una revisión.
+  /// Closes a review.
   ///
-  /// La nota es opcional en el contrato y también aquí. Exigirla sería una
-  /// regla del cliente, y quien resuelve suele tener a alguien esperando
-  /// enfrente; el servidor decide qué hace falta.
+  /// The note is optional in the contract and optional here too. Requiring it
+  /// would be a client rule, and whoever resolves usually has somebody waiting
+  /// in front of them; the server decides what is needed.
   Future<ResolveOutcome> resolve({
     required String reviewId,
     required String resolution,
@@ -58,9 +59,9 @@ class RiskReviewsRepository {
           );
       return ReviewResolved(review);
     } on Object catch (error) {
-      // Que otra persona la haya resuelto desde el panel mientras esta pantalla
-      // estaba abierta es el caso normal, no una rareza: el servidor responde
-      // que ya está resuelta y ese texto es el que se muestra.
+      // Somebody else having resolved it from the panel while this screen was
+      // open is the normal case, not an oddity: the server answers that it is
+      // already resolved and that text is what gets shown.
       return ResolveRefused(ApiErrorMapper.fromAny(error));
     }
   }

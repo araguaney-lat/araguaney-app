@@ -3,12 +3,12 @@ import '../../../core/i18n/l10n_extension.dart';
 
 import '../../../core/ui/sheet_insets.dart';
 
-/// Rechazar una postulación, con su motivo.
+/// Rejecting an application, with its reason.
 ///
-/// **Lo que se escriba aquí lo va a leer quien postuló**, en un correo, fuera
-/// de la plataforma y probablemente sin más contexto que esa frase. Por eso el
-/// campo es obligatorio —el servidor también lo exige— y por eso la pantalla
-/// dice a dónde va antes de que alguien empiece a escribir.
+/// **What is written here is going to be read by whoever applied**, in an
+/// email, outside the platform and probably with no more context than that
+/// sentence. That is why the field is required — the server requires it too —
+/// and why the screen says where it goes before anybody starts writing.
 class RejectApplicationSheet extends StatefulWidget {
   const RejectApplicationSheet({super.key, required this.centerName});
 

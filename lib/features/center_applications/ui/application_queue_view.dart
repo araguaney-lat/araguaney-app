@@ -11,16 +11,16 @@ import '../data/center_applications_providers.dart';
 import '../data/center_applications_repository.dart';
 import 'reject_application_sheet.dart';
 
-/// La cola de postulaciones de centro.
+/// The queue of centre applications.
 ///
-/// **Es el otro extremo del enlace del acceso.** La aplicación manda a quien no
-/// tiene centro a postular en la web; esto es donde alguien contesta. Una cola
-/// cuyo propósito entero es no atascarse es exactamente lo que vale la pena
-/// tener en un teléfono: lo que cuesta que se quede parada es un centro que no
-/// puede empezar a operar.
+/// **It is the other end of the sign-in screen's link.** The application sends
+/// whoever has no centre off to apply on the web; this is where somebody
+/// answers. A queue whose entire purpose is not to jam is exactly what is worth
+/// having on a phone: what it costs for it to sit still is a centre that cannot
+/// start operating.
 ///
-/// Solo trae lo que espera revisión, de lo más viejo a lo más nuevo. Decidir
-/// una la saca de aquí, así que esto es una cola y no un historial.
+/// It only brings what is waiting for review, oldest to newest. Deciding one
+/// takes it out of here, so this is a queue and not a history.
 class ApplicationQueueView extends ConsumerStatefulWidget {
   const ApplicationQueueView({super.key});
 
@@ -36,12 +36,12 @@ class _ApplicationQueueViewState extends ConsumerState<ApplicationQueueView> {
   String? _deciding;
 
   Future<void> _approve(CenterApplicationOut application) async {
-    // Se toma antes de abrir el diálogo: después de esperarlo, este contexto
-    // puede haber dejado de estar montado.
+    // Taken before opening the dialog: after waiting for it, this context may
+    // have stopped being mounted.
     final l10n = context.l10n;
-    // Aprobar hace tres cosas irreversibles desde aquí, así que se nombran las
-    // tres antes de hacerlas. Una confirmación que solo dice «¿seguro?» no
-    // informa de nada.
+    // Approving does three irreversible things from here, so all three are
+    // named before doing them. A confirmation that only says «are you sure?»
+    // informs nobody of anything.
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
@@ -74,10 +74,10 @@ class _ApplicationQueueViewState extends ConsumerState<ApplicationQueueView> {
           .read(centerApplicationsRepositoryProvider)
           .approve(application.id),
       done: l10n.applicationApproved(application.centerName),
-      // Aprobar crea un centro, y `created_center_id` viene en la respuesta.
-      // Ofrecerlo cierra el paso siguiente real: quien acaba de aprobar suele
-      // querer mirar —o corregir— lo que se acaba de crear, con la postulación
-      // todavía en la cabeza.
+      // Approving creates a centre, and `created_center_id` comes in the
+      // answer. Offering it closes the real next step: whoever has just
+      // approved usually wants to look at — or correct — what was just
+      // created, with the application still in their head.
       onCreated: (resolved) {
         final id = resolved.createdCenterId;
         if (id == null) return null;
@@ -123,7 +123,7 @@ class _ApplicationQueueViewState extends ConsumerState<ApplicationQueueView> {
     switch (outcome) {
       case ApplicationsRead(:final value):
         ref.invalidate(applicationQueueProvider);
-        // El centro nuevo también: la lista de centros tiene que tenerlo.
+        // The new centre too: the list of centres has to have it.
         ref.invalidate(centersProvider);
         final next = onCreated?.call(value);
         messenger.showSnackBar(
@@ -248,9 +248,9 @@ class _ApplicationCard extends StatelessWidget {
                 child: Text(place, style: text.bodyMedium),
               ),
             const SizedBox(height: 12),
-            // Todo lo que la decisión necesita, en la tarjeta. Obligar a abrir
-            // una ficha para saber quién respalda un centro convierte una cola
-            // de tres en tres navegaciones.
+            // Everything the decision needs, on the card. Forcing a record to
+            // be opened to know who backs a centre turns a queue of three into
+            // three navigations.
             RecordField(
               label: context.l10n.contactLabel,
               value: '${application.contactName} · ${application.contactEmail}',
@@ -267,7 +267,7 @@ class _ApplicationCard extends StatelessWidget {
             if (application.message case final message?
                 when message.isNotEmpty) ...[
               const SizedBox(height: 8),
-              // Entre comillas y sin editar: son las palabras de quien postuló.
+              // In quotes and unedited: they are the words of whoever applied.
               Text(context.l10n.quoted(message), style: text.bodyMedium),
             ],
             const SizedBox(height: 16),

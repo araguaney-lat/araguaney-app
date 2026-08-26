@@ -8,12 +8,12 @@ import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/ui/category_label.dart';
 import '../data/center_dashboard_providers.dart';
 
-/// Lo que el centro tiene sellado, por categoría.
+/// What the centre has sealed, by category.
 ///
-/// Sustituye a la pantalla anterior, que contaba lo capturado en una ventana de
-/// treinta días sin mirar el estado de la caja. Esta cuenta cajas **selladas**,
-/// que es lo que de verdad se puede enviar, y por eso puede llamarse stock sin
-/// mentir.
+/// It replaces the previous screen, which counted what was captured in a
+/// thirty-day window without looking at the box's state. This one counts
+/// **sealed** boxes, which is what can really be shipped, and that is why it
+/// can be called stock without lying.
 class StockByCategoryView extends ConsumerWidget {
   const StockByCategoryView({super.key});
 
@@ -23,8 +23,9 @@ class StockByCategoryView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final aggregates = ref.watch(centerAggregatesProvider);
-    // El mismo endpoint responde el centro propio o todos según el rol, así que
-    // la pantalla tiene que decir de qué está hablando.
+    // The same endpoint answers with the own centre or with all of them
+    // depending on the role, so the screen has to say which it is talking
+    // about.
     final national = ref.watch(isNationalAdminProvider);
 
     return Scaffold(

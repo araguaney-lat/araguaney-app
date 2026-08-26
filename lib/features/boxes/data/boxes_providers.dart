@@ -25,8 +25,8 @@ final boxProvider = StreamProvider.family<BoxWithProduct?, String>(
   (ref, id) => ref.watch(boxesRepositoryProvider).watchBox(id),
 );
 
-/// When the boxes were last refreshed. The interface turns it into «datos de
-/// hace 12 minutos».
+/// When the boxes were last refreshed. The interface turns it into
+/// «datos de hace 12 minutos».
 final boxesSyncMarkerProvider = StreamProvider<SyncMarkerRow?>(
   (ref) => ref.watch(boxesRepositoryProvider).watchSyncMarker(),
 );

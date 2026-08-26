@@ -5,16 +5,16 @@ import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/ui/sheet_insets.dart';
 import '../../intake/data/intake_providers.dart';
 
-/// Abrir un hilo de campaña.
+/// Opening a campaign thread.
 ///
-/// Solo hilos de campaña, que los lee cualquiera que participe en ella. Un hilo
-/// privado exige elegir destinatarios de entre quienes participan, y esa
-/// selección es trabajo de escritorio; desde un teléfono lo que se hace es
-/// avisar de algo a quien esté en la campaña.
+/// Campaign threads only, which are read by anybody taking part in it. A
+/// private thread requires choosing recipients from among those taking part,
+/// and that selection is desk work; from a phone what gets done is telling
+/// whoever is in the campaign about something.
 class NewThreadSheet extends ConsumerStatefulWidget {
   const NewThreadSheet({super.key, this.initialTitle, this.initialBody});
 
-  /// Con qué llega escrito el hilo.
+  /// What the thread arrives already written with.
   ///
   /// It exists for one caller: somebody holding a package the catalogue does
   /// not have. Making them type the barcode they just scanned would be asking

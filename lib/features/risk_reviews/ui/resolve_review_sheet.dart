@@ -4,15 +4,15 @@ import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/ui/sheet_insets.dart';
 import '../data/risk_reviews_repository.dart';
 
-/// Cerrar una revisión: qué se decide y por qué.
+/// Closing a review: what is decided and why.
 ///
-/// Las dos salidas se ofrecen a la vez y con el mismo peso visual. Esconder
-/// «rechazar» detrás de un paso más haría de la decisión difícil la incómoda, y
-/// quien coordina necesita poder tomarla igual de rápido que la fácil.
+/// Both ways out are offered at once and with the same visual weight. Hiding
+/// «reject» behind one more step would make the hard decision the awkward one,
+/// and whoever coordinates needs to be able to take it as fast as the easy one.
 class ResolveReviewSheet extends StatefulWidget {
   const ResolveReviewSheet({super.key, required this.reason});
 
-  /// El motivo por el que se levantó, a la vista mientras se decide.
+  /// The reason it was raised, in sight while it is being decided.
   final String reason;
 
   static Future<({String resolution, String? note})?> show(

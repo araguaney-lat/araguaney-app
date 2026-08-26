@@ -6,9 +6,9 @@ import '../data/donations_providers.dart';
 
 /// Which catalogue product resembles what the donor wrote by hand.
 ///
-/// It exists so the same list is not typed twice: whoever receives sees «10
-/// cajas de paracetamol» written by somebody else and needs to know which one
-/// it is in the catalogue. The suggestions are computed by the server.
+/// It exists so the same list is not typed twice: whoever receives reads
+/// «10 cajas de paracetamol» written by somebody else and needs to know which
+/// one it is in the catalogue. The suggestions are computed by the server.
 ///
 /// **Complete silence when there is nothing.** The server returns an empty list
 /// if the capability is off, out of budget, or the provider does not answer,

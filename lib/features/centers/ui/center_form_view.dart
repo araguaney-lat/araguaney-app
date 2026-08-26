@@ -9,21 +9,21 @@ import '../../../core/i18n/l10n_extension.dart';
 import '../data/centers_providers.dart';
 import '../data/centers_repository.dart';
 
-/// Dar de alta un centro, o corregir uno.
+/// Adding a centre, or correcting one.
 ///
-/// **El alta existe porque aprobar una postulación crea un centro.** Antes de
-/// la fase 22 este formulario no tenía ningún caso que empezara lejos de un
-/// escritorio; ahora sí: quien acaba de aprobar puede necesitar arreglar un
-/// dato que llegó mal en la postulación, en el momento en que lo ve.
+/// **Adding exists because approving an application creates a centre.** Before
+/// phase 22 this form had no case that started far from a desk; now it does:
+/// whoever has just approved may need to fix a detail that arrived wrong in the
+/// application, at the moment they see it.
 ///
-/// **Solo el nombre es obligatorio**, porque es lo único que el contrato exige.
-/// Añadir obligatorios propios sería una regla de negocio de este cliente, que
-/// es justo lo que no lleva: si un centro necesita más para operar, eso lo
-/// decide y lo dice el servidor.
+/// **Only the name is required**, because it is all the contract requires.
+/// Adding required fields of our own would be a business rule of this client,
+/// which is exactly what it does not carry: if a centre needs more in order to
+/// operate, the server decides and says so.
 class CenterFormView extends ConsumerStatefulWidget {
   const CenterFormView({super.key, this.existing});
 
-  /// Nulo para un alta; el centro a corregir en otro caso.
+  /// Null when adding; the centre to correct otherwise.
   final CenterOut? existing;
 
   static Route<CenterOut> route({CenterOut? existing}) =>
@@ -119,14 +119,14 @@ class _CenterFormViewState extends ConsumerState<CenterFormView> {
 
     switch (outcome) {
       case CentersRead(:final value):
-        // La lista y la ficha se rehacen: un centro recién creado tiene que
-        // estar donde se le va a buscar.
+        // The list and the record are rebuilt: a freshly created centre has to
+        // be where somebody is going to look for it.
         ref.invalidate(centersProvider);
         ref.invalidate(centerRecordProvider(value.id));
         Navigator.of(context).pop(value);
       case CentersRefused(:final failure):
-        // El mensaje del servidor entero: describe algo que quien lo escribe
-        // puede corregir, como un correo mal formado.
+        // The server's whole message: it describes something whoever wrote it
+        // can correct, like a malformed email address.
         setState(() => _failure = failure.operatorMessage(context.l10n));
     }
   }
@@ -192,10 +192,10 @@ class _CenterFormViewState extends ConsumerState<CenterFormView> {
   }
 }
 
-/// Los campos, en el mismo orden que el panel los pide.
+/// The fields, in the same order the panel asks for them.
 ///
-/// Que coincidan importa poco por sí solo; lo que importa es que quien haya
-/// dado de alta un centro en la web reconozca el formulario sin releerlo.
+/// That they match matters little in itself; what matters is that whoever has
+/// added a centre on the web recognises the form without rereading it.
 enum _CenterField {
   name('name', required: true),
   legalName('legal_name'),
@@ -219,8 +219,8 @@ enum _CenterField {
   final TextInputType keyboard;
   final TextCapitalization capitalization;
 
-  /// La etiqueta se resuelve al dibujar y no en la constante: una constante no
-  /// puede ser una llamada, y el idioma solo se sabe cuando hay un contexto.
+  /// The label is resolved when drawing and not in the constant: a constant
+  /// cannot be a call, and the language is only known once there is a context.
   String label(AppLocalizations l10n) => switch (this) {
     _CenterField.name => l10n.nameLabel,
     _CenterField.legalName => l10n.centerLegalNameLabel,

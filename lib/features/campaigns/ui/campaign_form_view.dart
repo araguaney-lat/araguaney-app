@@ -9,14 +9,15 @@ import '../../../core/ui/record_field.dart';
 import '../data/campaigns_providers.dart';
 import '../data/campaigns_repository.dart';
 
-/// Abrir una campaña, o corregirla.
+/// Opening a campaign, or correcting it.
 ///
-/// **Solo administración nacional.** Crear y editar exigen ese rol, así que el
-/// botón no existe para los demás en vez de existir y responder 403.
+/// **National administration only.** Creating and editing require that role, so
+/// the button does not exist for the rest instead of existing and answering
+/// 403.
 ///
-/// Obligatorio va lo único que el contrato exige, el nombre. Los centros que
-/// participan (`center_ids`) no se eligen desde aquí: es una lista larga y una
-/// decisión de escritorio, y el servidor acepta crearla sin ellos.
+/// Required is the only thing the contract requires, the name. The centres that
+/// take part (`center_ids`) are not chosen from here: it is a long list and a
+/// desk decision, and the server accepts creating it without them.
 class CampaignFormView extends ConsumerStatefulWidget {
   const CampaignFormView({super.key, this.existing});
 
@@ -197,9 +198,9 @@ class _CampaignFormViewState extends ConsumerState<CampaignFormView> {
               ),
             ),
           ),
-          // La meta solo se puede corregir: `CampaignCreate` no la lleva, y
-          // ofrecer un campo que el alta descarta sería mentir sobre lo que se
-          // está guardando.
+          // The goal can only be corrected: `CampaignCreate` does not carry it,
+          // and offering a field the creation discards would be lying about
+          // what is being saved.
           if (_isEdit) ...[
             const SizedBox(height: 12),
             TextFormField(

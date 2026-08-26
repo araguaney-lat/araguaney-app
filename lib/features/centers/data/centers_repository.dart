@@ -5,13 +5,13 @@ import '../../../core/api/generated/models/center_create.dart';
 import '../../../core/api/generated/models/center_out.dart';
 import '../../../core/api/generated/models/center_update.dart';
 
-/// Cómo terminó una lectura de centros.
+/// How a read of centres ended.
 ///
-/// Se devuelve como valor y no como excepción por la razón de siempre, y por
-/// una propia de aquí: **el rechazo esperable es un 403**. Listar centros exige
-/// administración nacional, así que una sesión de coordinación va a recibir uno
-/// cada vez, y eso no es un error que reportar sino una respuesta que la
-/// pantalla tiene que saber leer sin ruido.
+/// It is returned as a value and not as an exception for the usual reason, and
+/// for one of its own: **the expected refusal is a 403**. Listing centres
+/// requires national administration, so a coordination session is going to get
+/// one every time, and that is not an error to report but an answer the screen
+/// has to know how to read without noise.
 sealed class CentersOutcome<T> {
   const CentersOutcome();
 }
@@ -27,19 +27,20 @@ final class CentersRefused<T> extends CentersOutcome<T> {
 
   final ApiFailure failure;
 
-  /// Si el rechazo es «no te toca» y no un fallo.
+  /// Whether the refusal is «not your place» and not a failure.
   ///
-  /// Distinguirlo importa: ante un 403 la interfaz calla —el centro no se
-  /// nombra y ya—, mientras que ante un fallo de red tiene algo que decir.
+  /// Telling them apart matters: faced with a 403 the interface stays quiet —
+  /// the centre is simply not named — while faced with a network failure it has
+  /// something to say.
   bool get isForbidden => failure is ForbiddenFailure;
 }
 
-/// Lectura de centros.
+/// Reading centres.
 ///
-/// **Nada de esto es para administrar un centro desde el teléfono.** Los casos
-/// que lo justifican son estrechos y reales: confirmar a qué centro va una
-/// transferencia, encontrar un contacto cuando un envío se perdió, y ver que un
-/// centro recién aprobado existe. Configurar uno es del panel.
+/// **None of this is for administering a centre from the phone.** The cases
+/// that justify it are narrow and real: confirming which centre a transfer is
+/// going to, finding a contact when a shipment goes missing, and seeing that a
+/// freshly approved centre exists. Configuring one belongs to the panel.
 class CentersRepository {
   CentersRepository(this._centers);
 
@@ -65,11 +66,11 @@ class CentersRepository {
     }
   }
 
-  /// Dar de alta un centro.
+  /// Adding a centre.
   ///
-  /// El contrato solo exige el nombre, y aquí no se pide más: inventar
-  /// obligatorios que el servidor no tiene sería una regla de negocio propia,
-  /// que es justo lo que este cliente no lleva.
+  /// The contract only requires the name, and nothing more is asked here:
+  /// inventing required fields the server does not have would be a business
+  /// rule of our own, which is exactly what this client does not carry.
   Future<CentersOutcome<CenterOut>> create(CenterCreate body) async {
     try {
       return CentersRead(await _centers.createCenterV1CentersPost(body: body));
@@ -78,7 +79,8 @@ class CentersRepository {
     }
   }
 
-  /// Corregir un centro. Todo el cuerpo es opcional: se manda lo que cambió.
+  /// Correcting a centre. The whole body is optional: what changed is what gets
+  /// sent.
   Future<CentersOutcome<CenterOut>> update(String id, CenterUpdate body) async {
     try {
       return CentersRead(

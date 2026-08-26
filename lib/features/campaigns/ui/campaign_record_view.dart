@@ -11,10 +11,10 @@ import '../data/campaigns_providers.dart';
 import '../data/campaigns_repository.dart';
 import 'campaign_form_view.dart';
 
-/// La ficha de una campaña.
+/// A campaign's record.
 ///
-/// Responde lo que la hoja de elección no podía: qué es, cuándo corre, quién
-/// está dentro y si es la general.
+/// It answers what the picker sheet could not: what it is, when it runs, who is
+/// inside and whether it is the general one.
 class CampaignRecordView extends ConsumerWidget {
   const CampaignRecordView({super.key, required this.campaignId});
 
@@ -103,9 +103,9 @@ class _Fields extends ConsumerWidget {
           label: context.l10n.statusLabel,
           value: context.l10n.campaignClosedTag,
         ),
-      // La general no se explica sola: `PROTECTED_CAMPAIGN` existe porque nadie
-      // se puede sacar de ella, y descubrirlo por un rechazo es peor que
-      // leerlo aquí.
+      // The general one does not explain itself: `PROTECTED_CAMPAIGN` exists
+      // because nobody can be taken out of it, and finding that out through a
+      // refusal is worse than reading it here.
       if (campaign.isGeneral)
         ListTile(
           leading: const Icon(Icons.all_inclusive),

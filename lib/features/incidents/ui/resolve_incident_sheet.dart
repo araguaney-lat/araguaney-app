@@ -3,16 +3,16 @@ import '../../../core/i18n/l10n_extension.dart';
 
 import '../../../core/ui/sheet_insets.dart';
 
-/// Cerrar una incidencia, con su nota.
+/// Closing an incident, with its note.
 ///
-/// **La nota es lo único que le queda a quien la reportó.** El contrato la
-/// exige y la razón es esa: alguien vio que faltaba una caja, lo dijo, y lo que
-/// va a leer después es esta frase. Cerrar sin explicar convierte un reporte en
-/// un silencio.
+/// **The note is all that is left to whoever reported it.** The contract
+/// requires it and that is the reason: somebody saw a box was missing, said so,
+/// and what they are going to read afterwards is this sentence. Closing without
+/// explaining turns a report into a silence.
 class ResolveIncidentSheet extends StatefulWidget {
   const ResolveIncidentSheet({super.key, required this.description});
 
-  /// Lo que se reportó, a la vista mientras se cierra.
+  /// What was reported, in sight while it is being closed.
   final String description;
 
   static Future<String?> show(
@@ -64,8 +64,8 @@ class _ResolveIncidentSheetState extends State<ResolveIncidentSheet> {
         children: [
           Text(context.l10n.incidentCloseTitle, style: text.titleMedium),
           const SizedBox(height: 8),
-          // Las palabras de quien la reportó, citadas: cerrar sin releerlas es
-          // como se cierra la equivocada.
+          // The words of whoever reported it, quoted: closing without rereading
+          // them is how the wrong one gets closed.
           Text(context.l10n.quoted(widget.description), style: text.bodyMedium),
           const SizedBox(height: 16),
           TextField(

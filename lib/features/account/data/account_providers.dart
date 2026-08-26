@@ -7,9 +7,9 @@ final accountRepositoryProvider = Provider<AccountRepository>(
   (ref) => AccountRepository(ref.watch(restClientProvider).auth),
 );
 
-/// El perfil de quien tiene la sesión. Se consulta en línea y no se cachea:
-/// enseñar un rol o un centro que dejaron de ser ciertos es peor que decir que
-/// no se pudo consultar.
+/// The profile of whoever holds the session. It is looked up online and not
+/// cached: showing a role or a centre that stopped being true is worse than
+/// saying it could not be looked up.
 final myAccountProvider = FutureProvider((ref) async {
   final outcome = await ref.watch(accountRepositoryProvider).overview();
   return switch (outcome) {
