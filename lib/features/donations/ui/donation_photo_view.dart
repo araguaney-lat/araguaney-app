@@ -5,11 +5,11 @@ import '../../../core/i18n/l10n_extension.dart';
 import '../data/donations_providers.dart';
 import '../data/donations_repository.dart';
 
-/// Lo que el donante fotografió.
+/// What the donor photographed.
 ///
-/// Sirve para el doble check antes de tocar las cajas: una etiqueta que se ve
-/// en la foto es una pregunta menos en la puerta. El enlace lo firma el
-/// servidor y caduca, así que se pide al abrir y no se guarda.
+/// It serves for the double check before touching the boxes: a label visible in
+/// the photo is one question fewer at the door. The link is signed by the
+/// server and expires, so it is asked for on opening and not stored.
 class DonationPhotoView extends ConsumerStatefulWidget {
   const DonationPhotoView({
     super.key,
@@ -33,11 +33,12 @@ class _DonationPhotoViewState extends ConsumerState<DonationPhotoView> {
   Map<String, String>? _read;
   bool _reading = false;
 
-  /// Le pide al servidor que lea la etiqueta.
+  /// Asks the server to read the label.
   ///
-  /// Lo que vuelve son **sugerencias**, y así se enseñan: quien tiene el envase
-  /// delante las confirma o las corrige. Un diccionario vacío es la respuesta
-  /// normal cuando la capacidad está apagada, y se dice sin dramatizar.
+  /// What comes back are **suggestions**, and that is how they are shown:
+  /// whoever has the package in front of them confirms or corrects them. An
+  /// empty dictionary is the normal answer when the capability is off, and it
+  /// is said without drama.
   Future<void> _readLabel() async {
     setState(() => _reading = true);
     final outcome = await ref

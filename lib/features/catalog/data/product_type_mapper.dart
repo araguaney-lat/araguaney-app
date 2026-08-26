@@ -1,10 +1,10 @@
 import '../../../core/api/generated/models/product_type_out.dart';
 import '../../../core/db/app_database.dart';
 
-/// Traduce el tipo de producto del contrato a la fila local.
+/// Translates the contract's product type into the local row.
 ///
-/// Es una copia campo a campo a propósito: no se calcula nada, no se descarta
-/// nada y no se decide nada. Lo que el servidor sirvió es lo que se guarda.
+/// It is a field-by-field copy on purpose: nothing is computed, nothing is
+/// dropped and nothing is decided. What the server served is what gets stored.
 ProductTypeRow toProductTypeRow(ProductTypeOut out) => ProductTypeRow(
   id: out.id,
   displayName: out.displayName,

@@ -1,15 +1,15 @@
-/// Cómo se convierte lo que devuelve el lector en el número que se consulta.
+/// How what the reader returns becomes the number that is looked up.
 ///
-/// Solo hay dos transformaciones, y ninguna decide nada del dominio: quitar lo
-/// que no es un dígito, y expandir un UPC-E. Qué producto es ese número lo
-/// contesta el catálogo.
+/// There are only two transformations, and neither decides anything about the
+/// domain: dropping whatever is not a digit, and expanding a UPC-E. Which
+/// product that number is, the catalogue answers.
 library;
 
-/// El GTIN de una lectura, o nulo si no llevaba dígitos.
+/// A read's GTIN, or null if it carried no digits.
 ///
-/// [compressed] indica que el lector reconoció el símbolo como **UPC-E**, que
-/// es la única forma de saberlo: un UPC-E y un EAN-8 tienen los mismos ocho
-/// dígitos y solo el formato del símbolo los distingue.
+/// [compressed] says the reader recognised the symbol as a **UPC-E**, which is
+/// the only way to know: a UPC-E and an EAN-8 have the same eight digits and
+/// only the symbol's format tells them apart.
 String? gtinFromScan(String raw, {required bool compressed}) {
   final digits = raw.replaceAll(RegExp(r'\D'), '');
   if (digits.isEmpty) return null;
@@ -17,25 +17,25 @@ String? gtinFromScan(String raw, {required bool compressed}) {
   return digits;
 }
 
-/// Expande un UPC-E de ocho dígitos al UPC-A de doce que representa.
+/// Expands an eight-digit UPC-E into the twelve-digit UPC-A it stands for.
 ///
-/// Un UPC-E es un UPC-A al que se le han suprimido carreras de ceros para caber
-/// en un envase pequeño —un tubo, una monodosis—, y el sexto dígito de datos
-/// dice cuál de las cuatro supresiones se aplicó. La expansión es la definición
-/// del símbolo, no una interpretación: existe una sola respuesta.
+/// A UPC-E is a UPC-A with runs of zeros suppressed so it fits on a small
+/// package — a tube, a single dose — and the sixth data digit says which of the
+/// four suppressions was applied. The expansion is the symbol's definition, not
+/// an interpretation: there is exactly one answer.
 ///
-/// Hace falta porque el dígito de control de un UPC-E **no cuadra sobre sus
-/// ocho dígitos**: se calculó sobre el UPC-A expandido. Mandarlo sin expandir
-/// produce un escaneo que parece haber ido bien y que el servidor rechaza
-/// después.
+/// It is needed because a UPC-E's check digit **does not add up over its eight
+/// digits**: it was computed over the expanded UPC-A. Sending it unexpanded
+/// produces a scan that looks as though it went fine and that the server
+/// refuses later.
 ///
-/// Devuelve el original si no tiene la forma de un UPC-E; no hay nada que
-/// inventar cuando el dato no es el que se esperaba.
+/// It returns the original if it does not have the shape of a UPC-E; there is
+/// nothing to invent when the data is not what was expected.
 String expandUpcE(String upcE) {
   if (upcE.length != 8) return upcE;
 
   final system = upcE[0];
-  // El sistema numérico de un UPC-E solo puede ser 0 o 1.
+  // A UPC-E's number system can only be 0 or 1.
   if (system != '0' && system != '1') return upcE;
 
   final d = upcE.substring(1, 7);

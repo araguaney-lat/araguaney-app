@@ -9,11 +9,12 @@ final donationsRepositoryProvider = Provider<DonationsRepository>(
   (ref) => DonationsRepository(ref.watch(restClientProvider).donations),
 );
 
-/// Las que vienen en camino a este centro, y las que ya se recibieron.
+/// The ones on their way to this centre, and the ones already received.
 ///
-/// Son dos preguntas distintas y el servidor las separa con un parámetro, así
-/// que aquí son dos providers y no una lista filtrada: pedir las recibidas para
-/// tirar la mitad sería traer meses de historial por una pestaña.
+/// They are two different questions and the server separates them with a
+/// parameter, so here they are two providers and not one filtered list: asking
+/// for the received ones to throw half away would bring months of history for
+/// the sake of a tab.
 final incomingDonationsProvider =
     FutureProvider<DonationsOutcome<List<DonationOut>>>(
       (ref) => ref.watch(donationsRepositoryProvider).list(incoming: true),
@@ -24,13 +25,13 @@ final receivedDonationsProvider =
       (ref) => ref.watch(donationsRepositoryProvider).list(incoming: false),
     );
 
-/// La ficha de una donación por su código.
+/// A donation's record by its code.
 final donationRecordProvider =
     FutureProvider.family<DonationsOutcome<DonationOut>, String>(
       (ref, code) => ref.watch(donationsRepositoryProvider).byCode(code),
     );
 
-/// Qué producto del catálogo se parece a lo que el donante escribió.
+/// Which catalogue product resembles what the donor wrote.
 typedef SuggestionQuery = ({String code, String text});
 
 final catalogSuggestionsProvider =
@@ -41,16 +42,16 @@ final catalogSuggestionsProvider =
       final outcome = await ref
           .watch(donationsRepositoryProvider)
           .suggestions(code: query.code, text: query.text);
-      // Un fallo se trata como «no hay sugerencias»: esto ayuda a no teclear,
-      // y una fila roja porque el proveedor no respondió sería ruido sobre una
-      // pantalla donde hay gente esperando con cajas.
+      // A failure is treated as «no suggestions»: this is here to save typing,
+      // and a red row because the provider did not answer would be noise on a
+      // screen where people are waiting with boxes.
       return switch (outcome) {
         DonationsRead(:final value) => value,
         DonationsRefused() => const [],
       };
     });
 
-/// El enlace firmado de una foto, pedido al mirarla porque caduca.
+/// A photo's signed link, asked for when it is looked at because it expires.
 typedef PhotoQuery = ({String code, String photoId});
 
 final donationPhotoUrlProvider =

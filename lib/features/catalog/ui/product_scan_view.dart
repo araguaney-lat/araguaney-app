@@ -15,14 +15,14 @@ import '../data/catalog_providers.dart';
 import '../domain/gtin.dart';
 import 'missing_product_sheet.dart';
 
-/// Encontrar un producto apuntando al código de barras de su envase.
+/// Finding a product by pointing at its package's barcode.
 ///
-/// Es una pantalla aparte del escáner de cajas, no una versión suya con más
-/// formatos: el escáner de cajas lee solo QR a propósito, porque un cartón
-/// también lleva el código del fabricante y aceptarlo haría que apuntar a
-/// nuestra etiqueta pudiera devolver la del laboratorio.
+/// It is a separate screen from the box scanner, not a version of it with more
+/// formats: the box scanner reads QR only on purpose, because a cardboard box
+/// also carries the manufacturer's code, and accepting it would mean pointing
+/// at our own label could return the laboratory's.
 ///
-/// Devuelve el producto elegido, o nulo si se salió sin encontrarlo.
+/// It returns the chosen product, or null if it was left without finding it.
 class ProductScanView extends ConsumerStatefulWidget {
   const ProductScanView({super.key});
 
@@ -60,9 +60,9 @@ class _ProductScanViewState extends ConsumerState<ProductScanView> {
     _resolving = true;
     await HapticFeedback.mediumImpact();
 
-    // Un QR no se consulta nunca: en un envase suele ser del laboratorio y no
-    // identifica el producto, y puede ser además una etiqueta nuestra. Se lee
-    // para poder decir qué es, que es mejor que no responder nada.
+    // A QR is never looked up: on a package it is usually the laboratory's and
+    // does not identify the product, and it may also be a label of ours. It is
+    // read so we can say what it is, which is better than answering nothing.
     if (barcode.format == BarcodeFormat.qrCode) {
       _explainQr(barcode.rawValue!);
       return;
@@ -79,8 +79,9 @@ class _ProductScanViewState extends ConsumerState<ProductScanView> {
     switch (outcome) {
       case BarcodeProductFound(:final product):
         Navigator.of(context).pop(product);
-      // No está y alguien lo tiene en la mano: es el único momento en que se
-      // sabe qué falta. Antes esto era un aviso y el camino terminaba aquí.
+      // It is not there and somebody is holding it: it is the only moment when
+      // what is missing is known. This used to be a notice and the road ended
+      // here.
       case BarcodeOnlyDescribed(:final prefill):
         await _offerToAdd(prefill.gtin, prefill: prefill);
       case BarcodeUnresolved(:final failure)
@@ -100,8 +101,8 @@ class _ProductScanViewState extends ConsumerState<ProductScanView> {
   Future<void> _offerToAdd(String gtin, {BarcodePrefill? prefill}) async {
     await MissingProductSheet.show(context, gtin: gtin, prefill: prefill);
     if (!mounted) return;
-    // La cámara sigue viva detrás de la hoja: al cerrarla se vuelve a apuntar,
-    // y el mismo código tiene que poder leerse otra vez.
+    // The camera stays alive behind the sheet: when it closes people point
+    // again, and the same code has to be readable once more.
     _throttle.reset();
     _resolving = false;
   }
@@ -116,8 +117,8 @@ class _ProductScanViewState extends ConsumerState<ProductScanView> {
   void _say(String message) {
     final messenger = ScaffoldMessenger.of(context)..hideCurrentSnackBar();
     messenger.showSnackBar(SnackBar(content: Text(message)));
-    // Volver a apuntar al mismo código tiene que funcionar: quien acaba de
-    // leer un aviso suele querer justamente reintentar.
+    // Pointing at the same code again has to work: whoever has just read a
+    // notice usually wants exactly to try again.
     _throttle.reset();
     _resolving = false;
   }

@@ -11,28 +11,29 @@ import '../../messaging/ui/thread_view.dart';
 import '../data/catalog_providers.dart';
 import 'product_form_view.dart';
 
-/// Qué se hace cuando el catálogo no tiene lo que alguien está sosteniendo.
+/// What is done when the catalogue does not have what somebody is holding.
 ///
-/// Hasta ahora, nada: el escáner decía «no está» y ahí terminaba el camino, en
-/// el sitio exacto donde la persona sí sabe qué producto es. Las dos salidas
-/// dependen del rol, porque el servidor las reparte así:
+/// Until now, nothing: the scanner said «no está» and the road ended there, at
+/// the exact spot where the person does know which product it is. The two ways
+/// out depend on the role, because that is how the server splits them:
 ///
-/// - **Administración nacional** lo crea, que es lo único que
-///   `require_national_admin` permite.
-/// - **Quien captura lo pide.** No se le ofrece un formulario que iba a
-///   responder 403; se le ofrece decir qué tiene delante, y el hilo de campaña
-///   lo lleva a quien puede darlo de alta.
+/// - **National administration** creates it, which is all
+///   `require_national_admin` allows.
+/// - **Whoever captures asks for it.** They are not offered a form that was
+///   going to answer 403; they are offered to say what they have in front of
+///   them, and the campaign thread takes it to whoever can add it.
 ///
-/// El vehículo es un hilo de campaña porque ya existe y llega a quien
-/// corresponde. No hace falta nada del backend para esto: si algún día hay una
-/// bandeja de propuestas de catálogo, esta hoja es lo único que cambia.
+/// The vehicle is a campaign thread because it already exists and reaches the
+/// right people. Nothing is needed from the backend for this: if one day there
+/// is a tray of catalogue proposals, this sheet is the only thing that changes.
 class MissingProductSheet extends ConsumerWidget {
   const MissingProductSheet({super.key, required this.gtin, this.prefill});
 
-  /// El código leído. Es el dato que nadie va a teclear bien de memoria.
+  /// The code that was read. It is the figure nobody is going to type correctly
+  /// from memory.
   final String gtin;
 
-  /// Lo que Open Food Facts supo del envase, cuando supo algo.
+  /// What Open Food Facts knew about the package, when it knew anything.
   final BarcodePrefill? prefill;
 
   static Future<void> show(

@@ -9,7 +9,7 @@ import '../../../core/db/db_providers.dart';
 import 'barcode_lookup.dart';
 import 'catalog_repository.dart';
 
-/// Buscar un producto por el código de barras de su envase.
+/// Looking a product up by its package's barcode.
 final barcodeLookupProvider = Provider<BarcodeLookup>(
   (ref) => BarcodeLookup(
     api: ref.watch(restClientProvider).catalog,
@@ -31,11 +31,11 @@ final productTypesProvider =
           .watchProductTypes(category: category),
     );
 
-/// Filtro del catálogo local: categoría, texto, o ambos.
+/// A filter over the local catalogue: category, text, or both.
 typedef CatalogQuery = ({String? category, String? search});
 
-/// Búsqueda en el catálogo cacheado. Es local, así que responde igual sin
-/// señal y sin gastar una petición por tecla.
+/// A search in the cached catalogue. It is local, so it answers the same
+/// without signal and without spending a request per keystroke.
 final catalogSearchProvider =
     StreamProvider.family<List<ProductTypeRow>, CatalogQuery>(
       (ref, query) => ref
@@ -43,37 +43,39 @@ final catalogSearchProvider =
           .watchProductTypes(category: query.category, search: query.search),
     );
 
-/// Categorías presentes en el catálogo local, para navegarlo sin teclear.
+/// The categories present in the local catalogue, to browse it without typing.
 final catalogCategoriesProvider = FutureProvider<List<String>>(
   (ref) => ref.watch(catalogRepositoryProvider).categories(),
 );
 
-/// Si esta sesión puede dar de alta y corregir productos.
+/// Whether this session can add and correct products.
 ///
-/// `product_type.py` exige `require_national_admin` en crear, editar y
-/// promover. Ofrecerle el formulario a quien va a recibir un 403 es peor que
-/// no ofrecerlo: quien captura tiene otro camino, que es pedirlo.
+/// `product_type.py` requires `require_national_admin` to create, to edit and
+/// to promote. Offering the form to somebody who is going to get a 403 is worse
+/// than not offering it: whoever captures has another road, which is asking for
+/// it.
 final canEditCatalogProvider = Provider<bool>(
   (ref) => ref.watch(isNationalAdminProvider),
 );
 
-/// La ficha del servidor de un producto.
+/// A product's record from the server.
 final productRecordProvider =
     FutureProvider.family<CatalogOutcome<ProductTypeOut>, String>(
       (ref, id) => ref.watch(catalogRepositoryProvider).byId(id),
     );
 
-/// Los códigos de barras que apuntan a un producto.
+/// The barcodes that point at a product.
 final productGtinsProvider =
     FutureProvider.family<CatalogOutcome<List<ProductGtinOut>>, String>(
       (ref, id) => ref.watch(catalogRepositoryProvider).gtins(id),
     );
 
-/// Búsqueda en el catálogo del servidor.
+/// A search in the server's catalogue.
 ///
-/// Se pide a mano y no por tecla: es una petición por búsqueda, y el cache ya
-/// respondió mientras se escribía. Nulo mientras nadie la pidió, que es lo que
-/// distingue «no busqué» de «busqué y no hay».
+/// It is asked for by hand and not per keystroke: it is one request per search,
+/// and the cache already answered while it was being typed. Null while nobody
+/// has asked, which is what tells «I did not search» from «I searched and there
+/// is nothing».
 final serverCatalogSearchProvider =
     FutureProvider.family<CatalogOutcome<List<ProductTypeRow>>, CatalogQuery>(
       (ref, query) => ref

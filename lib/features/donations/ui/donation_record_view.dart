@@ -16,16 +16,15 @@ import '../data/donations_repository.dart';
 import 'catalog_suggestions.dart';
 import 'donation_photo_view.dart';
 
-/// La ficha de una donación anunciada, y el sitio donde se recibe.
+/// An announced donation's record, and the place where it is received.
 ///
-/// Recibir es la operación de un centro y ocurre en una puerta, con un vehículo
-/// esperando: es exactamente lo que nadie quiere hacer caminando hasta un
-/// ordenador. Por eso está aquí y no solo en el panel.
+/// Receiving is a centre's operation and it happens at a door, with a vehicle
+/// waiting: it is exactly what nobody wants to do by walking to a computer.
+/// That is why it is here and not only in the panel.
 ///
-/// **Exige señal.** Es una escritura sobre estado compartido, igual que sellar
-/// una caja: dos personas recibiendo la misma donación desde dos teléfonos
-/// dejarían dos verdades sobre las mismas cajas. La pantalla lo dice antes de
-/// que alguien lo intente.
+/// **It requires signal.** It is a write over shared state, like sealing a box:
+/// two people receiving the same donation from two phones would leave two
+/// truths about the same boxes. The screen says so before anybody tries.
 class DonationRecordView extends ConsumerStatefulWidget {
   const DonationRecordView({super.key, required this.code});
 
@@ -39,7 +38,7 @@ class DonationRecordView extends ConsumerStatefulWidget {
 }
 
 class _DonationRecordViewState extends ConsumerState<DonationRecordView> {
-  /// Solo las excepciones: lo que no está aquí el servidor lo da por recibido.
+  /// Only the exceptions: what is not here, the server takes as received.
   final _exceptions = <String, String>{};
   bool _receiving = false;
 
@@ -70,10 +69,10 @@ class _DonationRecordViewState extends ConsumerState<DonationRecordView> {
           ..invalidate(donationRecordProvider(donation.code))
           ..invalidate(incomingDonationsProvider)
           ..invalidate(receivedDonationsProvider);
-        // El doble check termina donde empieza el trabajo de siempre: la
-        // captura, ya atada a esta donación.
-        // `donation_id` es la llave primaria y no el código impreso: el
-        // servidor la busca con `db.get(Donation, ...)`.
+        // The double check ends where the usual work begins: the capture,
+        // already tied to this donation.
+        // `donation_id` is the primary key and not the printed code: the
+        // server looks it up with `db.get(Donation, ...)`.
         await Navigator.of(
           context,
         ).push(IntakeFormView.route(donationId: donation.id));
@@ -133,9 +132,9 @@ class _Record extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final received = donation.status == DonationStatus.received;
-    // Recibir tiene sentido sobre lo que ya existe de verdad. El servidor
-    // rechaza las demás y decir por qué antes es mejor que enseñar un botón
-    // que responde un error.
+    // Receiving makes sense over what really exists already. The server
+    // refuses the rest, and saying why beforehand is better than showing a
+    // button that answers with an error.
     final receivable = donation.status == DonationStatus.registered;
 
     return ListView(
@@ -205,8 +204,9 @@ class _Record extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 12),
-          // Recibida no es capturada: lo que llegó todavía tiene que entrar al
-          // inventario, y quien escanea el código suele venir justo a eso.
+          // Received is not captured: what arrived still has to enter the
+          // inventory, and whoever scans the code usually comes for exactly
+          // that.
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: OutlinedButton(
@@ -235,11 +235,12 @@ class _Record extends StatelessWidget {
   }
 }
 
-/// Lo que el donante anunció, línea por línea.
+/// What the donor announced, line by line.
 ///
-/// Marcar es la excepción y no la norma: se toca lo que **no** llegó. Así
-/// recibir una donación completa —el caso normal— es un solo botón, y lo que
-/// viaja al servidor es exactamente lo que alguien miró y decidió.
+/// Marking is the exception and not the norm: what is touched is what did
+/// **not** arrive. That way receiving a complete donation — the normal case —
+/// is a single button, and what travels to the server is exactly what somebody
+/// looked at and decided.
 class _Item extends StatelessWidget {
   const _Item({
     required this.donationCode,
@@ -292,8 +293,8 @@ class _Item extends StatelessWidget {
                   ),
             ],
           ),
-          // Solo para lo que el donante escribió a mano: si la línea ya trae un
-          // producto del catálogo no hay nada que sugerir.
+          // Only for what the donor wrote by hand: if the line already carries
+          // a catalogue product there is nothing to suggest.
           if (editable && item.productTypeId == null)
             if (item.freeText case final text? when text.isNotEmpty)
               CatalogSuggestions(code: donationCode, text: text),
@@ -322,10 +323,10 @@ class _Item extends StatelessWidget {
   }
 }
 
-/// El servidor marcó esta donación como un volumen atípico.
+/// The server marked this donation as an atypical volume.
 ///
-/// No se dice cuánto ni desde cuándo: el umbral es suyo y publicarlo aquí sería
-/// contar cuándo salta un control.
+/// It does not say how much or from what point: the threshold is its own, and
+/// publishing it here would be telling when a control fires.
 class _AtypicalVolume extends StatelessWidget {
   const _AtypicalVolume();
 

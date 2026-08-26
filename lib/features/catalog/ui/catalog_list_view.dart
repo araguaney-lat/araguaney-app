@@ -9,13 +9,13 @@ import '../data/catalog_repository.dart';
 import 'product_form_view.dart';
 import 'product_record_view.dart';
 
-/// El catálogo, buscado desde el teléfono.
+/// The catalogue, searched from the phone.
 ///
-/// **Lo descargado responde primero y siempre.** Es lo único que funciona en un
-/// sótano, y responde mientras se teclea sin gastar una petición por letra. El
-/// servidor se consulta a mano y solo cuando lo local no alcanzó, que es la
-/// única pregunta que el cache no puede contestar: si lo que falta no existe o
-/// simplemente no está aquí.
+/// **What was downloaded answers first and always.** It is the only thing that
+/// works in a basement, and it answers while somebody types without spending a
+/// request per letter. The server is consulted by hand and only when the local
+/// one did not suffice, which is the one question the cache cannot answer:
+/// whether what is missing does not exist or is simply not here.
 class CatalogListView extends ConsumerStatefulWidget {
   const CatalogListView({super.key});
 
@@ -30,8 +30,9 @@ class _CatalogListViewState extends ConsumerState<CatalogListView> {
   final _search = TextEditingController();
   String _query = '';
 
-  /// Lo que respondió el servidor a la última búsqueda pedida. Nulo mientras
-  /// nadie la pidió, que no es lo mismo que haberla pedido y no encontrar nada.
+  /// What the server answered to the last search that was asked for. Null while
+  /// nobody has asked, which is not the same as having asked and found
+  /// nothing.
   CatalogQuery? _asked;
 
   @override
@@ -70,8 +71,9 @@ class _CatalogListViewState extends ConsumerState<CatalogListView> {
               ),
               onChanged: (value) => setState(() {
                 _query = value.trim();
-                // Una búsqueda vieja no se queda debajo de una consulta nueva:
-                // se pidió por otro texto y ya no responde a lo que se ve.
+                // An old search does not stay below a new query: it was asked
+                // for with different text and no longer answers what is on
+                // screen.
                 _asked = null;
               }),
               onSubmitted: (_) => _ask(),
@@ -103,11 +105,11 @@ class _CatalogListViewState extends ConsumerState<CatalogListView> {
   }
 }
 
-/// Lo que el dispositivo no tiene.
+/// What the device does not have.
 ///
-/// Se pide con un botón, no al teclear: cada búsqueda es una petición, y en la
-/// conexión de un centro de acopio una por letra es la diferencia entre buscar
-/// y esperar.
+/// It is asked for with a button, not while typing: every search is a request,
+/// and on a collection centre's connection one per letter is the difference
+/// between searching and waiting.
 class _ServerSearch extends ConsumerWidget {
   const _ServerSearch({required this.query, required this.onAsk});
 

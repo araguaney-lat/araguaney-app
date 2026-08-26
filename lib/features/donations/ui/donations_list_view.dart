@@ -9,11 +9,11 @@ import '../data/donations_providers.dart';
 import '../data/donations_repository.dart';
 import 'donation_record_view.dart';
 
-/// Lo que viene en camino al centro, y lo que ya llegó.
+/// What is on its way to the centre, and what has already arrived.
 ///
-/// Son las dos preguntas que se hacen en un centro y en ese orden: primero qué
-/// falta por llegar —porque decide si alguien espera en la puerta— y después
-/// qué se recibió, que es historia.
+/// They are the two questions asked in a centre and in that order: first what
+/// is still to arrive — because it decides whether somebody waits at the door —
+/// and then what was received, which is history.
 class DonationsListView extends ConsumerStatefulWidget {
   const DonationsListView({super.key});
 

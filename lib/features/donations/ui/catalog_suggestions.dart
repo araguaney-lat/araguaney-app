@@ -4,16 +4,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/i18n/l10n_extension.dart';
 import '../data/donations_providers.dart';
 
-/// A qué producto del catálogo se parece lo que el donante escribió a mano.
+/// Which catalogue product resembles what the donor wrote by hand.
 ///
-/// Existe para no teclear dos veces la misma lista: quien recibe ve «10 cajas
-/// de paracetamol» escrito por otra persona y necesita saber cuál es en el
-/// catálogo. Las sugerencias las calcula el servidor.
+/// It exists so the same list is not typed twice: whoever receives sees «10
+/// cajas de paracetamol» written by somebody else and needs to know which one
+/// it is in the catalogue. The suggestions are computed by the server.
 ///
-/// **Silencio absoluto cuando no hay nada.** El servidor devuelve lista vacía
-/// si la capacidad está apagada, sin presupuesto o el proveedor no contesta, y
-/// ninguno de esos casos es un error de esta pantalla: recibir a mano nunca
-/// dependió de que esto respondiera.
+/// **Complete silence when there is nothing.** The server returns an empty list
+/// if the capability is off, out of budget, or the provider does not answer,
+/// and none of those is an error of this screen: receiving by hand never
+/// depended on this answering.
 class CatalogSuggestions extends ConsumerWidget {
   const CatalogSuggestions({super.key, required this.code, required this.text});
 
