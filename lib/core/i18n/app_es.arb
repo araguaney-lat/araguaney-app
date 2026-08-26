@@ -3095,5 +3095,109 @@
   "campaignMembersUnavailable": "No se pudo consultar quiénes participan.",
   "@campaignMembersUnavailable": {
     "description": "The member list could not be read; the rest of the record still stands."
+  },
+  "milestoneAddTitle": "Anotar un hito",
+  "@milestoneAddTitle": {
+    "description": "Title of the sheet that records a logistics milestone."
+  },
+  "milestoneLabel": "Qué pasó",
+  "@milestoneLabel": {
+    "description": "Which of the seven milestones is being recorded."
+  },
+  "milestoneWhenLabel": "Cuándo",
+  "@milestoneWhenLabel": {
+    "description": "When the milestone happened."
+  },
+  "milestoneWhenDefault": "Ahora",
+  "@milestoneWhenDefault": {
+    "description": "No date chosen, so the server stamps the moment it arrives."
+  },
+  "milestoneAddAction": "Anotar",
+  "@milestoneAddAction": {
+    "description": "Records the milestone."
+  },
+  "shipmentDeliveredAction": "Marcar como entregado",
+  "@shipmentDeliveredAction": {
+    "description": "Moves a dispatched shipment to delivered."
+  },
+  "shipmentDeliveredTitle": "Marcar como entregado",
+  "@shipmentDeliveredTitle": {
+    "description": "Title of the confirmation before doing it."
+  },
+  "shipmentDeliveredExplanation": "Dice que el envío llegó. Qué llegó se registra después, en la recepción.",
+  "@shipmentDeliveredExplanation": {
+    "description": "What marking delivered does and what it does not."
+  },
+  "receptionRegisterTitle": "Registrar la recepción",
+  "@receptionRegisterTitle": {
+    "description": "Title of the screen that records what arrived."
+  },
+  "receptionRegisterAction": "Registrar la recepción",
+  "@receptionRegisterAction": {
+    "description": "Submits the reception."
+  },
+  "receptionExplanation": "Marca solo las cajas que no llegaron bien. El resto se da por recibido.",
+  "@receptionExplanation": {
+    "description": "How the reception works: exceptions are marked, everything else counts as received."
+  },
+  "receptionConfirmTitle": "Registrar y cerrar",
+  "@receptionConfirmTitle": {
+    "description": "Title of the confirmation before the reception is written."
+  },
+  "receptionConfirmExplanation": "Se registra una sola vez. Después, lo que haga falta corregir se hace con una incidencia.",
+  "@receptionConfirmExplanation": {
+    "description": "Says the reception cannot be rewritten, before it is written rather than after."
+  },
+  "consigneeNameLabel": "Quién recibió",
+  "@consigneeNameLabel": {
+    "description": "The person or organisation that took delivery."
+  },
+  "receptionArrivedWeightLabel": "Peso al llegar",
+  "@receptionArrivedWeightLabel": {
+    "description": "What the pallet weighed on arrival."
+  },
+  "receptionWeightHelper": "Se compara con lo que pesaba al cerrarse.",
+  "@receptionWeightHelper": {
+    "description": "What the weight is for. It deliberately does not name the tolerance."
+  },
+  "receptionOutcomeMissing": "Falta",
+  "@receptionOutcomeMissing": {
+    "description": "A box that did not arrive."
+  },
+  "receptionOutcomeDamaged": "Dañada",
+  "@receptionOutcomeDamaged": {
+    "description": "A box that arrived damaged."
+  },
+  "receptionOutcomeRetained": "Retenida",
+  "@receptionOutcomeRetained": {
+    "description": "A box held at customs."
+  },
+  "receptionOutcomeReceived": "Recibida",
+  "@receptionOutcomeReceived": {
+    "description": "A box that arrived as sent."
+  },
+  "shipmentDocuments": "Documentos",
+  "@shipmentDocuments": {
+    "description": "Menu of the documents the server produces for a shipment."
+  },
+  "documentManifestPdf": "Manifiesto (PDF)",
+  "@documentManifestPdf": {
+    "description": "The shipment manifest as a PDF."
+  },
+  "documentManifestXlsx": "Manifiesto (hoja de cálculo)",
+  "@documentManifestXlsx": {
+    "description": "The shipment manifest as a spreadsheet."
+  },
+  "documentDeclarationJson": "Declaración (JSON)",
+  "@documentDeclarationJson": {
+    "description": "The customs declaration as JSON."
+  },
+  "documentDeclarationXlsx": "Declaración (hoja de cálculo)",
+  "@documentDeclarationXlsx": {
+    "description": "The customs declaration as a spreadsheet."
+  },
+  "receptionRaiseIncident": "Reportar una incidencia",
+  "@receptionRaiseIncident": {
+    "description": "Opens the incident sheet from what the reception found."
   }
 }

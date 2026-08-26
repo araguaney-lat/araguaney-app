@@ -18,6 +18,7 @@ void main() {
   Future<void> pumpRecord(
     WidgetTester tester, {
     required bool coordinator,
+    bool national = false,
     Map<String, Object?>? reception,
     List<Map<String, Object?>>? incidents,
     List<Map<String, Object?>>? events,
@@ -71,6 +72,9 @@ void main() {
       overrides: [
         restClientProvider.overrideWithValue(RestClient(fakeDio(adapter))),
         isCenterCoordinatorProvider.overrideWithValue(coordinator),
+        // La ficha pregunta también por administración nacional: entregar y
+        // registrar la recepción son suyas.
+        isNationalAdminProvider.overrideWithValue(national),
         openLinkProvider.overrideWithValue((
           url, {
           target = LinkTarget.systemApp,
@@ -199,7 +203,10 @@ void main() {
       opened: opened,
       targets: targets,
     );
-    await tester.tap(find.byTooltip('Manifiesto'));
+    // Ahora son cuatro documentos detrás del mismo icono, así que se elige.
+    await tester.tap(find.byTooltip('Documentos'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Manifiesto (PDF)'));
     await tester.pumpAndSettle();
 
     expect(opened, ['https://files.test/manifiesto.pdf']);
@@ -216,7 +223,9 @@ void main() {
       ),
       opened: <String>[],
     );
-    await tester.tap(find.byTooltip('Manifiesto'));
+    await tester.tap(find.byTooltip('Documentos'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Manifiesto (PDF)'));
     await tester.pumpAndSettle();
 
     expect(find.text('El envío no tiene tarimas'), findsOneWidget);

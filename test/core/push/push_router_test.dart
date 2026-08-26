@@ -28,6 +28,7 @@ void main() {
         // La ficha de envío pregunta el rol para decidir si ofrece levantar
         // una incidencia; sin sesión, preguntarlo levanta el árbol entero.
         isCenterCoordinatorProvider.overrideWithValue(false),
+        isNationalAdminProvider.overrideWithValue(false),
       ],
     );
     addTearDown(container.dispose);

@@ -78,11 +78,52 @@ application does not render a spreadsheet and will not start.
 
 | # | Task | Description | Complexity | Status |
 |---|------|-------------|------------|--------|
-| 1 | Milestones | `POST /v1/shipments/{id}/milestones` and the timeline that already reads them, written from beside the truck. | 🟠 Medium | ⬜ Pending |
-| 2 | Registering a reception | `POST /v1/shipments/{id}/reception`, online only, with what was expected shown beside what arrived. | 🔴 High | ⬜ Pending |
-| 3 | The discrepancy | What the reception produced, and a way to raise an incident from it — the two already exist separately. | 🟠 Medium | ⬜ Pending |
-| 4 | Delivered | `POST /v1/shipments/{id}/delivered`, offered only to the role that has it. | 🟢 Low | ⬜ Pending |
-| 5 | Declaration and spreadsheet | Three more documents through the path the PDF manifest already uses. | 🟢 Low | ⬜ Pending |
+| 1 | Milestones | `POST /v1/shipments/{id}/milestones`, chosen from the seven the server knows, with an optional date. | 🟠 Medium | ✅ Done |
+| 2 | Registering a reception | `POST /v1/shipments/{id}/reception`, box by box, with the pallet weights. | 🔴 High | ✅ Done |
+| 3 | The discrepancy | What the reception produced, with an incident raised from the place it is discovered. | 🟠 Medium | ✅ Done |
+| 4 | Delivered | `POST /v1/shipments/{id}/delivered`, offered only to the role that has it. | 🟢 Low | ✅ Done |
+| 5 | Declaration and spreadsheet | Four documents behind one gesture, through the path the PDF manifest already used. | 🟢 Low | ✅ Done |
 | 6 | Verify on a device | A shipment followed from dispatch to delivery. | 🟠 Medium | ⬜ Pending |
+
+## The four steps, and who each belongs to
+
+The action at the foot of the record now carries the whole journey, and it
+changes hands halfway:
+
+| Status | Step | Role |
+|---|---|---|
+| `OPEN` | Cerrar el envío | coordinator |
+| `CLOSED` | Despachar | coordinator |
+| `SHIPPED` | Marcar como entregado | **national admin** |
+| `DELIVERED` | Registrar la recepción | **national admin** |
+
+A step the session's role cannot take is not drawn. And a shipment that already
+has a reception stops offering one, because the server registers it once and a
+second attempt is a 409 — the button disappears rather than failing.
+
+## Marking is the exception, again
+
+`ReceiveIn` for a donation and `ReceptionCreate` for a shipment share the rule:
+only what went wrong travels, and the server counts the rest as received. So a
+shipment that arrived whole is one button, and what is written is what somebody
+looked at.
+
+The four outcomes are the server's — received, missing, damaged, retained at
+customs — and three of them open an incident on its side. That is where the
+decision lives, and nothing here repeats it.
+
+## Delivered is not received
+
+Two steps and not one. `delivered` says it arrived; the reception says **what**
+arrived. Collapsing them into a single button would declare received what
+nobody has counted yet, which is exactly the number the shrinkage report is
+built on.
+
+## The weights say nothing about the threshold
+
+Each pallet's arrival weight is optional, and the server compares it with what
+the pallet weighed when it was closed. If they differ by more than it allows, it
+opens an incident. **How much is «more» never reaches this screen** — the helper
+text says what the number is for and stops there.
 
 This graduates blocks 2 and 4 of [Phase 10](phase-10-operational-parity.md).

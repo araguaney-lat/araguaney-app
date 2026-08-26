@@ -3,11 +3,57 @@ import '../../../core/api/api_failure.dart';
 import '../../../core/api/export_job.dart';
 import '../../../core/api/generated/clients/exports_api.dart';
 import '../../../core/api/generated/clients/shipments_api.dart';
+import '../../../core/api/generated/models/delivered_in.dart';
+import '../../../core/api/generated/models/milestone_in.dart';
 import '../../../core/api/generated/models/qr_event_out.dart';
+import '../../../core/api/generated/models/reception_create.dart';
+import '../../../core/api/generated/models/reception_exception_in.dart';
+import '../../../core/api/generated/models/reception_out.dart';
+import '../../../core/api/generated/models/reception_pallet_weight_in.dart';
 import '../../../core/api/generated/models/shipment_create.dart';
 import '../../../core/api/generated/models/shipment_detail_out.dart';
 import '../../../core/api/generated/models/shipment_out.dart';
 import '../../../core/i18n/generated/app_localizations.dart';
+
+/// Los documentos que el servidor produce para un envío.
+///
+/// Se nombran aquí y no en la pantalla porque son cuatro rutas distintas para
+/// lo que desde arriba es un solo gesto: pedir un papel.
+enum ShipmentDocument {
+  manifestPdf,
+  manifestXlsx,
+  declarationJson,
+  declarationXlsx,
+}
+
+/// Los siete hitos de `SHIPMENT_MILESTONES`, en el orden del viaje.
+///
+/// La lista vive aquí porque es vocabulario del servidor: escribir uno que no
+/// esté produce `INVALID_MILESTONE`, así que se eligen y no se teclean.
+const shipmentMilestones = [
+  'DEPARTED_WAREHOUSE',
+  'ARRIVED_AIRPORT',
+  'LOADED_AIRCRAFT',
+  'DEPARTED_FLIGHT',
+  'ARRIVED_DESTINATION',
+  'CUSTOMS_CLEARED',
+  'DELIVERED_CONSIGNEE',
+];
+
+/// Cómo puede terminar una caja al recibirse.
+///
+/// Cuatro estados de `RECEPTION_OUTCOMES`, y **solo tres viajan**: lo que no
+/// se marca el servidor lo da por recibido. Tres de los cuatro abren una
+/// incidencia del lado del servidor, que es donde esa decisión vive.
+abstract final class ReceptionOutcome {
+  static const received = 'RECEIVED';
+  static const missing = 'MISSING';
+  static const damaged = 'DAMAGED';
+  static const retainedCustoms = 'RETAINED_CUSTOMS';
+
+  /// Lo que se puede marcar: recibido es la ausencia de marca.
+  static const exceptions = [missing, damaged, retainedCustoms];
+}
 
 /// Hitos logísticos que reconoce el backend.
 ///
@@ -126,6 +172,100 @@ class ShipmentsRepository {
     () => _shipmentsApi.shipShipmentV1ShipmentsShipmentIdShipPost(
       shipmentId: shipmentId,
     ),
+  );
+
+  /// Anota un hito logístico sin mover el estado.
+  ///
+  /// Es el que más sentido tiene en un teléfono y no está cerca: alguien está
+  /// junto a un camión, en un puesto de control, sin escritorio. [occurredAt]
+  /// es opcional porque el reporte del consignatario suele llegar tarde y
+  /// describir algo de ayer.
+  Future<ShipmentOutcome<ShipmentOut>> addMilestone({
+    required String shipmentId,
+    required String milestone,
+    String? note,
+    DateTime? occurredAt,
+  }) => _guard(
+    () => _shipmentsApi.addMilestoneV1ShipmentsShipmentIdMilestonesPost(
+      shipmentId: shipmentId,
+      body: MilestoneIn(
+        milestone: milestone,
+        note: note,
+        occurredAt: occurredAt,
+      ),
+    ),
+  );
+
+  /// `SHIPPED` → `DELIVERED`. Llegó; **qué** llegó lo dice la recepción.
+  Future<ShipmentOutcome<ShipmentOut>> markDelivered({
+    required String shipmentId,
+    String? note,
+    DateTime? deliveredAt,
+  }) => _guard(
+    () => _shipmentsApi.markDeliveredV1ShipmentsShipmentIdDeliveredPost(
+      shipmentId: shipmentId,
+      body: DeliveredIn(note: note, deliveredAt: deliveredAt),
+    ),
+  );
+
+  /// Registra qué llegó, caja por caja, y deja el envío en `RECONCILED`.
+  ///
+  /// [exceptions] lleva **solo** lo que no llegó bien: el servidor da por
+  /// recibido todo lo que no viene marcado. [palletWeights] es lo que pesó cada
+  /// tarima al llegar; el servidor lo compara con lo que pesaba al cerrarse y
+  /// abre una incidencia si difieren de más — cuánto es «de más» es criterio
+  /// suyo y no viaja hasta aquí.
+  ///
+  /// Se hace una sola vez: corregir una recepción es una incidencia con su
+  /// nota, no reescribir lo que ya viajó a un informe.
+  Future<ShipmentOutcome<ReceptionOut>> registerReception({
+    required String shipmentId,
+    List<ReceptionExceptionIn> exceptions = const [],
+    List<ReceptionPalletWeightIn> palletWeights = const [],
+    String? consigneeName,
+    String? notes,
+  }) => _guard(
+    () => _shipmentsApi.reconcileReceptionV1ShipmentsShipmentIdReceptionPost(
+      shipmentId: shipmentId,
+      body: ReceptionCreate(
+        exceptions: exceptions,
+        palletWeights: palletWeights,
+        consigneeName: consigneeName,
+        notes: notes,
+      ),
+    ),
+  );
+
+  /// Los tres documentos que el servidor arma, además del manifiesto en PDF.
+  ///
+  /// Ninguno se dibuja aquí: el archivo se le entrega al visor del sistema.
+  Future<DocumentOutcome> document(
+    String shipmentId,
+    ShipmentDocument document, {
+    Future<void> Function(Duration) wait = Future.delayed,
+  }) => awaitDocument(
+    start: () => switch (document) {
+      ShipmentDocument.manifestPdf =>
+        _shipmentsApi.downloadManifestV1ShipmentsShipmentIdManifestPdfPost(
+          shipmentId: shipmentId,
+        ),
+      ShipmentDocument.manifestXlsx =>
+        _shipmentsApi.downloadManifestXlsxV1ShipmentsShipmentIdManifestXlsxPost(
+          shipmentId: shipmentId,
+        ),
+      ShipmentDocument.declarationJson =>
+        _shipmentsApi
+            .downloadDeclarationJsonV1ShipmentsShipmentIdDeclaracionJsonPost(
+              shipmentId: shipmentId,
+            ),
+      ShipmentDocument.declarationXlsx =>
+        _shipmentsApi
+            .downloadDeclarationXlsxV1ShipmentsShipmentIdDeclaracionXlsxPost(
+              shipmentId: shipmentId,
+            ),
+    },
+    exports: _exportsApi,
+    wait: wait,
   );
 
   Future<ShipmentOutcome<T>> _guard<T>(Future<T> Function() attempt) async {
