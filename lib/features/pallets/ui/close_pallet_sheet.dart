@@ -4,13 +4,13 @@ import 'package:flutter/services.dart';
 import '../../../core/i18n/l10n_extension.dart';
 import '../../../core/ui/sheet_insets.dart';
 
-/// Peso bruto y altura con los que se cierra una tarima.
+/// The gross weight and height a pallet is closed with.
 ///
-/// Los dos son opcionales en el contrato y aquí también: una báscula rota no
-/// puede impedir cerrar una tarima que ya está armada. Lo que el servidor haga
-/// con la diferencia entre este peso y la suma de las cajas es asunto suyo;
-/// aquí no se calcula ni se avisa de nada, porque el criterio de cuándo esa
-/// diferencia importa vive allá.
+/// Both are optional in the contract and optional here too: a broken scale
+/// cannot stop a pallet that is already built from being closed. What the
+/// server does with the difference between this weight and the sum of the boxes
+/// is its own business; nothing is computed or warned about here, because the
+/// judgement of when that difference matters lives over there.
 class ClosePalletSheet extends StatefulWidget {
   const ClosePalletSheet({super.key});
 

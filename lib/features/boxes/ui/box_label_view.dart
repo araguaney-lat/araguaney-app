@@ -4,16 +4,16 @@ import 'package:qr_flutter/qr_flutter.dart';
 import '../../../core/config/app_config.dart';
 import '../../../core/i18n/l10n_extension.dart';
 
-/// La etiqueta de una caja, dibujada en el dispositivo.
+/// A box's label, drawn on the device.
 ///
-/// El QR se genera aquí y no se pide al servidor por una razón operativa: una
-/// caja se etiqueta en el momento en que se sella, y ese momento puede ocurrir
-/// sin señal. El PDF por lotes sigue siendo del servidor, que es donde tiene
-/// sentido.
+/// The QR is generated here and not asked of the server for an operational
+/// reason: a box is labelled at the moment it is sealed, and that moment can
+/// happen without signal. The batch PDF is still the server's, which is where
+/// it makes sense.
 ///
-/// El contenido replica exactamente el que genera el backend: si las dos
-/// etiquetas de la misma caja llevaran a sitios distintos, quien la recibe
-/// vería una ficha y quien la despachó otra.
+/// The content replicates exactly what the backend generates: if the two labels
+/// of the same box led to different places, whoever receives it would see one
+/// record and whoever dispatched it another.
 class BoxLabelView extends StatelessWidget {
   const BoxLabelView({super.key, required this.code});
 
@@ -22,8 +22,8 @@ class BoxLabelView extends StatelessWidget {
   static Route<void> route(String code) =>
       MaterialPageRoute<void>(builder: (_) => BoxLabelView(code: code));
 
-  /// Lo que se codifica en el QR. Público expuesto para que una prueba pueda
-  /// comprobarlo sin renderizar.
+  /// What is encoded in the QR. Exposed publicly so a test can check it without
+  /// rendering.
   static String payloadFor(String code) =>
       '${AppConfig.webBaseUrl.replaceAll(RegExp(r'/+$'), '')}/b/$code';
 
@@ -36,8 +36,8 @@ class BoxLabelView extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Fondo blanco explícito: en tema oscuro un QR sin fondo se vuelve
-            // ilegible para la cámara que lo lea.
+            // An explicit white background: on a dark theme a QR with no
+            // background becomes unreadable for the camera that reads it.
             Container(
               color: Colors.white,
               padding: const EdgeInsets.all(16),

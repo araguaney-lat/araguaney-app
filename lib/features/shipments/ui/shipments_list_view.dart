@@ -13,11 +13,11 @@ import '../data/shipments_repository.dart';
 import 'create_shipment_sheet.dart';
 import 'shipment_record_view.dart';
 
-/// Los envíos del centro.
+/// The centre's shipments.
 ///
-/// Se consulta en línea siempre. Coordinar un envío exige señal de todos modos,
-/// y un listado cacheado enseñaría como abierto uno que otra persona del centro
-/// ya cerró desde el panel.
+/// It is always looked up online. Coordinating a shipment requires signal
+/// anyway, and a cached listing would show as open one that somebody else in
+/// the centre has already closed from the panel.
 class ShipmentsListView extends ConsumerStatefulWidget {
   const ShipmentsListView({super.key});
 
@@ -29,8 +29,8 @@ class ShipmentsListView extends ConsumerStatefulWidget {
 }
 
 class _ShipmentsListViewState extends ConsumerState<ShipmentsListView> {
-  /// El camino que recorre un envío, que es el orden en que se piensa: se abre,
-  /// se cierra, sale, llega y se cuadra.
+  /// The road a shipment travels, which is the order it is thought about in: it
+  /// opens, it closes, it leaves, it arrives and it is reconciled.
   static const _order = [
     'OPEN',
     'CLOSED',
@@ -131,8 +131,8 @@ class _Loaded extends StatelessWidget {
             style: Theme.of(context).textTheme.bodySmall,
           ),
         ),
-        // Cada filtro lleva su conteo: ofrecer uno que vacía la pantalla sin
-        // avisar es peor que no ofrecerlo.
+        // Every filter carries its count: offering one that empties the screen
+        // without warning is worse than not offering it.
         SizedBox(
           height: 56,
           child: ListView(

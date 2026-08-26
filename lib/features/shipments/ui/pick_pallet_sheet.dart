@@ -8,16 +8,16 @@ import '../../../core/ui/sheet_insets.dart';
 import '../../../core/ui/status_labels.dart';
 import '../../pallets/data/pallets_providers.dart';
 
-/// Qué tarima se mete en el envío.
+/// Which pallet goes into the shipment.
 ///
-/// Solo se ofrecen las **cerradas**: una tarima abierta todavía admite cajas, y
-/// meterla en un envío la congelaría a espaldas de quien la está armando. El
-/// servidor lo rechazaría igualmente; filtrarlo aquí evita ofrecer algo que
-/// solo puede terminar en un error.
+/// Only the **closed** ones are offered: an open pallet still takes boxes, and
+/// putting it into a shipment would freeze it behind the back of whoever is
+/// building it. The server would refuse it anyway; filtering here avoids
+/// offering something that can only end in an error.
 class PickPalletSheet extends ConsumerWidget {
   const PickPalletSheet({super.key, required this.alreadyIn});
 
-  /// Las que ya están en este envío, para no ofrecerlas dos veces.
+  /// The ones already in this shipment, so they are not offered twice.
   final Set<String> alreadyIn;
 
   static Future<PalletOut?> show(

@@ -14,11 +14,11 @@ import '../data/pallets_repository.dart';
 import 'close_pallet_sheet.dart';
 import 'pallet_detail_view.dart';
 
-/// Tarimas del centro.
+/// The centre's pallets.
 ///
-/// Se consultan en línea y no se cachean, a diferencia de las cajas: una tarima
-/// es estado compartido que otro dispositivo puede estar armando ahora mismo, y
-/// una copia vieja invita a agregar una caja a algo que ya se cerró.
+/// They are looked up online and not cached, unlike the boxes: a pallet is
+/// shared state that another device may be building right now, and an old copy
+/// invites adding a box to something that has already been closed.
 class PalletsListView extends ConsumerStatefulWidget {
   const PalletsListView({super.key});
 
@@ -30,7 +30,7 @@ class PalletsListView extends ConsumerStatefulWidget {
 }
 
 class _PalletsListViewState extends ConsumerState<PalletsListView> {
-  /// El camino que recorre una tarima, que es el orden en que se piensa.
+  /// The road a pallet travels, which is the order it is thought about in.
   static const order = ['OPEN', 'CLOSED', 'SHIPPED'];
 
   String? _status;
@@ -51,9 +51,10 @@ class _PalletsListViewState extends ConsumerState<PalletsListView> {
     }
   }
 
-  /// Cerrar una tarima pide su peso, que es el dato que el envío necesita y que
-  /// solo se puede tomar con la tarima delante. Por eso se cierra desde aquí y
-  /// no hay que entrar a la ficha para hacerlo.
+  /// Closing a pallet asks for its weight, which is the figure the shipment
+  /// needs and the one that can only be taken with the pallet in front of you.
+  /// That is why it is closed from here and there is no need to open the record
+  /// to do it.
   Future<void> _close(PalletOut pallet) async {
     final weights = await ClosePalletSheet.show(context);
     if (weights == null || !mounted) return;
@@ -106,8 +107,8 @@ class _PalletsListViewState extends ConsumerState<PalletsListView> {
                   pallets: value,
                   status: _status,
                   onStatus: (status) => setState(() => _status = status),
-                  // Cerrar decide sobre estado compartido: exige conexión, igual que
-                  // sellar una caja.
+                  // Closing decides about shared state: it requires a
+                  // connection, like sealing a box.
                   onClose: canOperate && !offline ? _close : null,
                 ),
                 AsyncError(:final error) => _Message(
@@ -137,8 +138,8 @@ class _Header extends ConsumerWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(context.l10n.palletsTitle),
-        // Abiertas y cerradas son las dos cifras que deciden qué hacer ahora:
-        // una abierta admite cajas, una cerrada espera un envío.
+        // Open and closed are the two figures that decide what to do now: an
+        // open one takes boxes, a closed one waits for a shipment.
         Text(
           context.l10n.palletOpenClosedCounts(open, closed),
           style: Theme.of(context).textTheme.bodySmall,
@@ -220,10 +221,11 @@ class _PalletRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // El número de cajas no viaja en el listado; solo está en la ficha. Se dice
-    // lo que sí se sabe en vez de contar algo que nadie mandó — y una tarima
-    // recién abierta no sabe nada todavía, así que no lleva segunda línea: un
-    // subtítulo vacío deja un hueco que se lee como algo roto.
+    // The number of boxes does not travel in the listing; it is only in the
+    // record. What is actually known is said instead of counting something
+    // nobody sent — and a freshly opened pallet knows nothing yet, so it
+    // carries no second line: an empty subtitle leaves a gap that reads as
+    // something broken.
     final details = [
       if (pallet.grossWeightKg case final weight?) '$weight kg',
       if (pallet.heightCm case final height?) '$height cm',

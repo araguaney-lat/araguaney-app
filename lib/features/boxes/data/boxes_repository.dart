@@ -6,7 +6,7 @@ import '../../../core/db/daos/sync_markers_dao.dart';
 import '../../../core/sync/sync_outcome.dart';
 import 'box_mapper.dart';
 
-/// Cajas del centro, primero desde el cache.
+/// The centre's boxes, from the cache first.
 class BoxesRepository {
   BoxesRepository({
     required BoxesApi api,
@@ -16,20 +16,20 @@ class BoxesRepository {
        _db = database,
        _now = now ?? DateTime.now;
 
-  /// Cuántas cajas pide cada petición.
+  /// How many boxes each request asks for.
   static const pageSize = 200;
 
-  /// Tope de la ventana cacheada.
+  /// The ceiling of the cached window.
   ///
-  /// La alternativa —espejar el centro entero— convierte la primera
-  /// sincronización de un centro con años de historia en una espera de duración
-  /// desconocida, justo cuando alguien acaba de instalar la aplicación. Una
-  /// caja fuera de la ventana se abre bajo demanda con señal.
+  /// The alternative — mirroring the whole centre — turns the first sync of a
+  /// centre with years of history into a wait of unknown length, exactly when
+  /// somebody has just installed the application. A box outside the window is
+  /// opened on demand, with signal.
   ///
-  /// La ventana **no filtra por estado**: cuáles importan es una decisión del
-  /// backend, y escribir aquí una lista de estados sería duplicarla. Son las
-  /// primeras [windowLimit] filas que el servidor devuelve para esta sesión, en
-  /// su orden.
+  /// The window **does not filter by state**: which ones matter is a backend
+  /// decision, and writing a list of states here would duplicate it. It is the
+  /// first [windowLimit] rows the server returns for this session, in its
+  /// order.
   static const windowLimit = 500;
 
   final BoxesApi _boxesApi;
@@ -47,7 +47,7 @@ class BoxesRepository {
   Stream<SyncMarkerRow?> watchSyncMarker() =>
       _db.syncMarkersDao.watch(SyncResource.boxes);
 
-  /// Refresca la ventana cacheada de cajas.
+  /// Refreshes the cached window of boxes.
   Future<SyncOutcome> refresh() async {
     try {
       final rows = await _fetchWindow();
@@ -61,7 +61,7 @@ class BoxesRepository {
     }
   }
 
-  /// Trae una caja suelta, la que se abrió fuera de la ventana.
+  /// Fetches a single box, the one opened outside the window.
   Future<SyncOutcome> refreshBox(String id) async {
     try {
       final box = await _boxesApi.getBoxV1BoxesBoxIdGet(boxId: id);
@@ -72,12 +72,12 @@ class BoxesRepository {
     }
   }
 
-  /// Sella una caja.
+  /// Seals a box.
   ///
-  /// Exige conexión y no se encola: sellar decide sobre estado compartido que
-  /// puede estar cambiando en otro dispositivo, y resolverlo a ciegas
-  /// produciría dos verdades sobre la misma caja. El estado que devuelve el
-  /// servidor entra al cache, para que la lista lo refleje de inmediato.
+  /// It requires a connection and is not queued: sealing decides about shared
+  /// state that may be changing on another device, and resolving it blind would
+  /// produce two truths about the same box. The state the server returns goes
+  /// into the cache, so the list reflects it straight away.
   Future<SyncOutcome> seal(String boxId) async {
     try {
       final box = await _boxesApi.sealBoxV1BoxesBoxIdSealPost(boxId: boxId);
@@ -99,8 +99,8 @@ class BoxesRepository {
       );
       collected.addAll(page.map(toBoxRow));
 
-      // Una página corta significa que no queda nada detrás: pedir la
-      // siguiente sería una petición garantizadamente vacía.
+      // A short page means there is nothing left behind it: asking for the
+      // next one would be a guaranteed empty request.
       if (page.length < pageSize) break;
       offset += pageSize;
     }

@@ -15,10 +15,10 @@ import '../../../core/api/generated/models/shipment_detail_out.dart';
 import '../../../core/api/generated/models/shipment_out.dart';
 import '../../../core/i18n/generated/app_localizations.dart';
 
-/// Los documentos que el servidor produce para un envío.
+/// The documents the server produces for a shipment.
 ///
-/// Se nombran aquí y no en la pantalla porque son cuatro rutas distintas para
-/// lo que desde arriba es un solo gesto: pedir un papel.
+/// They are named here and not in the screen because they are four different
+/// routes for what from above is a single gesture: asking for a piece of paper.
 enum ShipmentDocument {
   manifestPdf,
   manifestXlsx,
@@ -26,10 +26,10 @@ enum ShipmentDocument {
   declarationXlsx,
 }
 
-/// Los siete hitos de `SHIPMENT_MILESTONES`, en el orden del viaje.
+/// The seven milestones of `SHIPMENT_MILESTONES`, in the order of the journey.
 ///
-/// La lista vive aquí porque es vocabulario del servidor: escribir uno que no
-/// esté produce `INVALID_MILESTONE`, así que se eligen y no se teclean.
+/// The list lives here because it is the server's vocabulary: writing one that
+/// is not on it produces `INVALID_MILESTONE`, so they are chosen and not typed.
 const shipmentMilestones = [
   'DEPARTED_WAREHOUSE',
   'ARRIVED_AIRPORT',
@@ -40,27 +40,27 @@ const shipmentMilestones = [
   'DELIVERED_CONSIGNEE',
 ];
 
-/// Cómo puede terminar una caja al recibirse.
+/// How a box can end up when it is received.
 ///
-/// Cuatro estados de `RECEPTION_OUTCOMES`, y **solo tres viajan**: lo que no
-/// se marca el servidor lo da por recibido. Tres de los cuatro abren una
-/// incidencia del lado del servidor, que es donde esa decisión vive.
+/// Four states from `RECEPTION_OUTCOMES`, and **only three travel**: what is
+/// not marked, the server takes as received. Three of the four open an incident
+/// on the server's side, which is where that decision lives.
 abstract final class ReceptionOutcome {
   static const received = 'RECEIVED';
   static const missing = 'MISSING';
   static const damaged = 'DAMAGED';
   static const retainedCustoms = 'RETAINED_CUSTOMS';
 
-  /// Lo que se puede marcar: recibido es la ausencia de marca.
+  /// What can be marked: received is the absence of a mark.
   static const exceptions = [missing, damaged, retainedCustoms];
 }
 
-/// Hitos logísticos que reconoce el backend.
+/// Logistical milestones the backend recognises.
 ///
-/// Un hito es un evento con el mismo estado a ambos lados: registra que algo
-/// pasó sin inventar estados intermedios, para que la máquina no crezca con
-/// cada aeropuerto. **Anotarlos exige administración nacional**, así que desde
-/// aquí solo se leen.
+/// A milestone is an event with the same state on both sides: it records that
+/// something happened without inventing intermediate states, so the machine
+/// does not grow with every airport. **Recording them requires national
+/// administration**, so from here they are only read.
 String milestoneLabel(AppLocalizations l10n, String milestone) =>
     switch (milestone) {
       'DEPARTED_WAREHOUSE' => l10n.milestoneLeftWarehouse,
@@ -73,7 +73,7 @@ String milestoneLabel(AppLocalizations l10n, String milestone) =>
       _ => milestone,
     };
 
-/// Cómo terminó una operación sobre un envío.
+/// How an operation on a shipment ended.
 sealed class ShipmentOutcome<T> {
   const ShipmentOutcome();
 }
@@ -97,16 +97,16 @@ class ShipmentsRepository {
   }) : _shipmentsApi = shipments,
        _exportsApi = exports;
 
-  /// Cuántas veces se pregunta por el trabajo antes de rendirse.
+  /// How many times the job is asked about before giving up.
   ///
-  /// Sondear tiene que terminar: dejar a alguien mirando una rueda para siempre
-  /// es peor que decirle que vuelva a intentarlo. Si se acaba el margen, el
-  /// trabajo sigue vivo en el servidor y pedirlo otra vez lo recoge.
+  /// Polling has to end: leaving somebody watching a spinner forever is worse
+  /// than telling them to try again. If the allowance runs out, the job is
+  /// still alive on the server and asking for it again picks it up.
 
   final ShipmentsApi _shipmentsApi;
   final ExportsApi _exportsApi;
 
-  /// Los envíos del centro. El servidor los acota al de quien pregunta.
+  /// The centre's shipments. The server narrows them to the asker's own.
   Future<List<ShipmentOut>> list({String? status}) =>
       _shipmentsApi.listShipmentsV1ShipmentsGet(status: status);
 
@@ -136,8 +136,8 @@ class ShipmentsRepository {
         reference: data.reference,
       );
 
-  /// El contrato declara este cuerpo sin tipo, así que el mapa se escribe aquí
-  /// y en un solo sitio. Es la petición 4 de `backend-requests.md`.
+  /// The contract declares this body untyped, so the map is written here and in
+  /// one place only. It is request 4 of `backend-requests.md`.
   Future<ShipmentOutcome<ShipmentDetailOut>> addPallet({
     required String shipmentId,
     required String palletId,
@@ -159,9 +159,8 @@ class ShipmentsRepository {
         ),
   );
 
-  /// Cerrar deja de admitir tarimas; despachar dice que salió. Las dos son de
-  /// una sola dirección y el servidor no las deshace, así que la interfaz
-  /// pregunta antes.
+  /// Closing stops accepting pallets; dispatching says it left. Both go one
+  /// way only and the server does not undo them, so the interface asks first.
   Future<ShipmentOutcome<ShipmentOut>> close(String shipmentId) => _guard(
     () => _shipmentsApi.closeShipmentV1ShipmentsShipmentIdClosePost(
       shipmentId: shipmentId,
@@ -174,12 +173,12 @@ class ShipmentsRepository {
     ),
   );
 
-  /// Anota un hito logístico sin mover el estado.
+  /// Records a logistical milestone without moving the state.
   ///
-  /// Es el que más sentido tiene en un teléfono y no está cerca: alguien está
-  /// junto a un camión, en un puesto de control, sin escritorio. [occurredAt]
-  /// es opcional porque el reporte del consignatario suele llegar tarde y
-  /// describir algo de ayer.
+  /// It is the one that makes most sense on a phone and it is not close:
+  /// somebody is next to a lorry, at a checkpoint, with no desk. [occurredAt]
+  /// is optional because the consignee's report usually arrives late and
+  /// describes something from yesterday.
   Future<ShipmentOutcome<ShipmentOut>> addMilestone({
     required String shipmentId,
     required String milestone,
@@ -196,7 +195,8 @@ class ShipmentsRepository {
     ),
   );
 
-  /// `SHIPPED` → `DELIVERED`. Llegó; **qué** llegó lo dice la recepción.
+  /// `SHIPPED` → `DELIVERED`. It arrived; **what** arrived is what the
+  /// reception says.
   Future<ShipmentOutcome<ShipmentOut>> markDelivered({
     required String shipmentId,
     String? note,
@@ -208,16 +208,16 @@ class ShipmentsRepository {
     ),
   );
 
-  /// Registra qué llegó, caja por caja, y deja el envío en `RECONCILED`.
+  /// Records what arrived, box by box, and leaves the shipment `RECONCILED`.
   ///
-  /// [exceptions] lleva **solo** lo que no llegó bien: el servidor da por
-  /// recibido todo lo que no viene marcado. [palletWeights] es lo que pesó cada
-  /// tarima al llegar; el servidor lo compara con lo que pesaba al cerrarse y
-  /// abre una incidencia si difieren de más — cuánto es «de más» es criterio
-  /// suyo y no viaja hasta aquí.
+  /// [exceptions] carries **only** what did not arrive well: the server takes
+  /// everything that is not marked as received. [palletWeights] is what each
+  /// pallet weighed on arrival; the server compares it with what it weighed
+  /// when it was closed and opens an incident if they differ by too much — how
+  /// much «de más» is, is its own criterion and does not travel this far.
   ///
-  /// Se hace una sola vez: corregir una recepción es una incidencia con su
-  /// nota, no reescribir lo que ya viajó a un informe.
+  /// It is done once: correcting a reception is an incident with its note, not
+  /// rewriting what has already travelled into a report.
   Future<ShipmentOutcome<ReceptionOut>> registerReception({
     required String shipmentId,
     List<ReceptionExceptionIn> exceptions = const [],
@@ -236,9 +236,9 @@ class ShipmentsRepository {
     ),
   );
 
-  /// Los tres documentos que el servidor arma, además del manifiesto en PDF.
+  /// The three documents the server assembles, besides the manifest in PDF.
   ///
-  /// Ninguno se dibuja aquí: el archivo se le entrega al visor del sistema.
+  /// None of them is drawn here: the file is handed to the system's viewer.
   Future<DocumentOutcome> document(
     String shipmentId,
     ShipmentDocument document, {
@@ -279,7 +279,7 @@ class ShipmentsRepository {
   Future<List<QrEventOut>> events(String shipmentId) => _shipmentsApi
       .listShipmentEventsV1ShipmentsShipmentIdEventsGet(shipmentId: shipmentId);
 
-  /// Pide el manifiesto y espera a que el servidor lo genere.
+  /// Asks for the manifest and waits for the server to generate it.
   Future<DocumentOutcome> manifest(
     String shipmentId, {
     Future<void> Function(Duration) wait = Future.delayed,
@@ -293,17 +293,19 @@ class ShipmentsRepository {
   );
 }
 
-/// Un evento del envío, ya interpretado para leerse.
+/// An event of the shipment, already read for display.
 ///
-/// Un hito y un cambio de estado llegan por el mismo sitio y se distinguen en
-/// que el hito no mueve el estado. Mostrarlos igual haría ilegible la línea de
-/// tiempo justo donde más se consulta: cuando algo se retrasó.
+/// A milestone and a state change arrive through the same place and are told
+/// apart in that the milestone does not move the state. Showing them alike
+/// would make the timeline unreadable exactly where it is consulted most: when
+/// something was delayed.
 ///
-/// **El estado se traduce con la tabla que corresponda al objeto.** Un mismo
-/// `QrEventOut` describe el recorrido de un envío, de una caja o de una tarima,
-/// y las tres tienen vocabularios distintos. Antes de pedirla como parámetro
-/// esta función pintaba la clave cruda —«OPEN → CLOSED»— en la única pantalla
-/// que la usaba, que es la octava vez que este repositorio paga lo mismo.
+/// **The state is translated with whichever table belongs to the object.** One
+/// same `QrEventOut` describes the journey of a shipment, of a box or of a
+/// pallet, and the three have different vocabularies. Before it was asked for
+/// as a parameter this function painted the raw key — «OPEN → CLOSED» — on the
+/// only screen that used it, which is the eighth time this repository has paid
+/// for the same thing.
 ({String title, String? note, DateTime at}) describeEvent(
   AppLocalizations l10n,
   QrEventOut event, {

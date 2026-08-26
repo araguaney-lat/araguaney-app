@@ -14,11 +14,11 @@ import '../data/pallets_providers.dart';
 import '../data/pallets_repository.dart';
 import 'close_pallet_sheet.dart';
 
-/// Una tarima y las cajas que lleva.
+/// A pallet and the boxes it carries.
 ///
-/// Armarla es una operación en línea de principio a fin: otra persona puede
-/// estar poniendo cajas en esta misma tarima desde otro teléfono, y decidirlo
-/// sin señal dejaría dos versiones del mismo bulto.
+/// Building it is an online operation from beginning to end: another person may
+/// be putting boxes on this very pallet from another phone, and deciding it
+/// without signal would leave two versions of the same load.
 class PalletDetailView extends ConsumerWidget {
   const PalletDetailView({super.key, required this.palletId});
 
@@ -28,15 +28,16 @@ class PalletDetailView extends ConsumerWidget {
     builder: (_) => PalletDetailView(palletId: palletId),
   );
 
-  /// Agrega cajas escaneándolas una detrás de otra.
+  /// Adds boxes by scanning them one after another.
   ///
-  /// La cámara no se cierra entre caja y caja: quien arma una tarima tiene las
-  /// manos ocupadas y la pila enfrente. Cada lectura deja en el registro lo que
-  /// dijo el servidor, que es quien decide si una caja puede entrar.
+  /// The camera does not close between one box and the next: whoever builds a
+  /// pallet has their hands full and the stack in front of them. Each read
+  /// leaves in the log what the server said, which is what decides whether a
+  /// box can go in.
   Future<void> _scanBoxes(BuildContext context, WidgetRef ref) async {
     final repository = ref.read(palletsRepositoryProvider);
-    // Se toma antes de navegar: dentro del callback ya no hay garantía de que
-    // este contexto siga montado.
+    // Taken before navigating: inside the callback there is no guarantee this
+    // context is still mounted.
     final l10n = context.l10n;
 
     await Navigator.of(context).push(
@@ -58,9 +59,10 @@ class PalletDetailView extends ConsumerWidget {
             PalletChanged(:final value) => ScanFeedback.accepted(
               l10n.palletBoxAdded(scanned.code, value.boxes.length),
             ),
-            // El motivo es del servidor: que la caja no está sellada, que ya
-            // está en otra tarima, que es de otro centro. Traducirlo aquí sería
-            // mantener dos versiones de la misma regla.
+            // The reason is the server's: that the box is not sealed, that it
+            // is already on another pallet, that it belongs to another centre.
+            // Translating it here would mean keeping two versions of the same
+            // rule.
             PalletRejected(:final failure) => ScanFeedback.rejected(
               '${scanned.code} · ${failure.operatorMessage(l10n)}',
             ),
@@ -184,8 +186,8 @@ class _Fields extends StatelessWidget {
         RecordField(label: context.l10n.boxesWeightLabel, value: '$boxes kg'),
       if (pallet.grossWeightKg case final gross?)
         RecordField(label: context.l10n.grossWeightLabel, value: '$gross kg'),
-      // La diferencia la calcula el servidor. Aquí solo se enseña, y sin
-      // adjetivos: qué tanto importa lo decide quien coordina.
+      // The difference is computed by the server. Here it is only shown, and
+      // without adjectives: how much it matters is for whoever coordinates.
       if (pallet.weightDiscrepancyKg case final discrepancy?)
         RecordField(
           label: context.l10n.differenceLabel,
@@ -213,7 +215,8 @@ class _Fields extends StatelessWidget {
                   onPressed: () => onRemoveBox!(box.code),
                 ),
         ),
-      // El recorrido, al final: se consulta cuando algo no cuadra.
+      // The journey, at the end: it is consulted when something does not add
+      // up.
       _Timeline(id: pallet.id),
     ],
   );
@@ -286,8 +289,9 @@ class _Actions extends StatelessWidget {
   }
 }
 
-/// El recorrido de la tarima, por lo mismo que el de una caja: responde qué le
-/// pasó a lo que alguien tiene delante. Un fallo aquí no rompe la ficha.
+/// The pallet's journey, for the same reason as a box's: it answers what
+/// happened to what somebody has in front of them. A failure here does not
+/// break the record.
 class _Timeline extends ConsumerWidget {
   const _Timeline({required this.id});
 

@@ -11,9 +11,9 @@ import '../../../core/ui/status_labels.dart';
 import '../data/boxes_providers.dart';
 import 'box_detail_view.dart';
 
-/// Cajas del centro. Se lee del cache, así que la pantalla se pinta igual con
-/// señal y sin ella; el refresco ocurre detrás y el aviso de arriba dice de
-/// cuándo son los datos.
+/// The centre's boxes. It reads from the cache, so the screen paints the same
+/// with signal and without it; the refresh happens behind, and the notice at
+/// the top says how old the data is.
 class BoxesListView extends ConsumerStatefulWidget {
   const BoxesListView({super.key});
 
@@ -25,16 +25,16 @@ class BoxesListView extends ConsumerStatefulWidget {
 }
 
 class _BoxesListViewState extends ConsumerState<BoxesListView> {
-  /// `null` es «todas». Se guarda el estado del backend y no una etiqueta: lo
-  /// que se muestra se traduce al dibujar.
+  /// `null` is «todas». The backend's state is stored and not a label: what is
+  /// shown is translated when it is drawn.
   String? _status;
 
   @override
   void initState() {
     super.initState();
-    // Abrir la pantalla es la señal más clara de que alguien quiere datos
-    // frescos. Va después del primer cuadro para no pedir red mientras se
-    // construye el árbol.
+    // Opening the screen is the clearest sign that somebody wants fresh data.
+    // It goes after the first frame so as not to ask for the network while the
+    // tree is being built.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) ref.read(syncCoordinatorProvider).refreshAll();
     });
@@ -42,8 +42,8 @@ class _BoxesListViewState extends ConsumerState<BoxesListView> {
 
   Future<void> _refresh() => ref.read(syncCoordinatorProvider).refreshAll();
 
-  /// Cuántas hay de cada estado, para no ofrecer un filtro que deja la pantalla
-  /// vacía sin avisar.
+  /// How many there are of each state, so as not to offer a filter that empties
+  /// the screen without warning.
   Map<String, int> _countByStatus(List<BoxWithProduct> boxes) {
     final counts = <String, int>{};
     for (final item in boxes) {
@@ -64,8 +64,8 @@ class _BoxesListViewState extends ConsumerState<BoxesListView> {
     return Scaffold(
       appBar: AppBar(
         title: Text(context.l10n.boxesTitle),
-        // El recuento va en el subtítulo y no en un chip: es contexto de la
-        // pantalla, no un dato que se toque.
+        // The count goes in the subtitle and not in a chip: it is context for
+        // the screen, not a figure to be tapped.
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(72),
           child: Column(
@@ -114,11 +114,12 @@ class _BoxesListViewState extends ConsumerState<BoxesListView> {
   }
 }
 
-/// Los estados, en una fila que se desliza.
+/// The states, in a row that scrolls.
 ///
-/// Son seis y no caben en el ancho de un teléfono. Se ordenan por el camino que
-/// recorre una caja —abierta, sellada, en tarima, enviada— y no alfabéticamente,
-/// porque quien busca «lo que falta por sellar» piensa en ese orden.
+/// There are six and they do not fit across a phone. They are ordered by the
+/// road a box travels — open, sealed, on a pallet, shipped — and not
+/// alphabetically, because whoever is looking for «lo que falta por sellar»
+/// thinks in that order.
 class _StatusFilter extends StatelessWidget {
   const _StatusFilter({
     required this.selected,
@@ -130,14 +131,14 @@ class _StatusFilter extends StatelessWidget {
   final Map<String, int> counts;
   final ValueChanged<String?> onSelected;
 
-  /// El camino que recorre una caja, que es el orden en que se piensa: lo que
-  /// falta por sellar, lo sellado, lo que ya salió, y aparte lo rechazado.
+  /// The road a box travels, which is the order it is thought about in: what is
+  /// left to seal, what is sealed, what has left, and refused ones apart.
   static const _order = ['DRAFT', 'SEALED', 'SHIPPED', 'REJECTED'];
 
   @override
   Widget build(BuildContext context) {
-    // Un estado que el backend agregue después aparece igual: se añade al final
-    // en vez de desaparecer de la pantalla.
+    // A state the backend adds later still appears: it is added at the end
+    // instead of disappearing from the screen.
     final known = _order.where(counts.containsKey);
     final extra = counts.keys.where((s) => !_order.contains(s));
 
@@ -187,8 +188,8 @@ class _Chip extends StatelessWidget {
   );
 }
 
-/// El filtro dejó la lista vacía. Se dice cuál, porque desde fuera parece que
-/// el centro no tiene cajas.
+/// The filter left the list empty. Which one is said, because from outside it
+/// looks as though the centre has no boxes.
 class _NoneInFilter extends StatelessWidget {
   const _NoneInFilter({required this.status});
 
@@ -229,13 +230,12 @@ class _BoxRow extends ConsumerWidget {
 
   final BoxWithProduct item;
 
-  /// Sellar desde la lista, con lo que hay dentro delante.
+  /// Sealing from the list, with what is inside in front of you.
   ///
-  /// El diseño pone la acción aquí porque sellar es lo que más se repite en una
-  /// jornada. Pero desde la lista no se ve el contenido, y sellar es la
-  /// frontera entre «esto todavía se corrige» y «esto ya viaja»: la
-  /// confirmación enseña producto y cantidad para que la decisión no sea a
-  /// ciegas.
+  /// The design puts the action here because sealing is what repeats most in a
+  /// shift. But the contents are not visible from the list, and sealing is the
+  /// boundary between «esto todavía se corrige» and «esto ya viaja»: the
+  /// confirmation shows product and quantity so the decision is not made blind.
   Future<void> _seal(BuildContext context, WidgetRef ref) async {
     final confirmed = await showDialog<bool>(
       context: context,
@@ -277,10 +277,10 @@ class _BoxRow extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final offline =
         ref.watch(connectivityControllerProvider) == ConnectivityStatus.offline;
-    // Por `sealedAt` y no por el texto del estado: es el dato que el backend
-    // llena al sellar, y no depende de cómo se llame el estado esta semana. La
-    // ficha de caja ya decidía así, y por eso fue la única pantalla a la que no
-    // le afectó que la tabla de estados estuviera equivocada.
+    // By `sealedAt` and not by the state's text: it is the field the backend
+    // fills in when sealing, and it does not depend on what the state is called
+    // this week. The box record already decided this way, and that is why it
+    // was the only screen unaffected by the state table being wrong.
     final open = item.box.sealedAt == null && item.box.status == 'DRAFT';
 
     return ListTile(
@@ -289,8 +289,9 @@ class _BoxRow extends ConsumerWidget {
         '${item.productName ?? 'Producto no descargado'} · '
         '${item.box.quantity} ${item.box.unit}',
       ),
-      // Sellar exige conexión: decide sobre estado compartido que puede estar
-      // cambiando en otro dispositivo. Sin señal se muestra el estado y ya.
+      // Sealing requires a connection: it decides about shared state that may
+      // be changing on another device. With no signal the state is shown and
+      // that is all.
       trailing: open && !offline
           ? TextButton(
               onPressed: () => _seal(context, ref),
@@ -304,8 +305,9 @@ class _BoxRow extends ConsumerWidget {
   }
 }
 
-/// Sin cajas la explicación cambia con la conexión: no es lo mismo un centro
-/// que todavía no registró nada que un dispositivo que nunca pudo descargar.
+/// With no boxes the explanation changes with the connection: a centre that has
+/// not registered anything yet is not the same as a device that was never able
+/// to download.
 class _EmptyView extends ConsumerWidget {
   const _EmptyView();
 
