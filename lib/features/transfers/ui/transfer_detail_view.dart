@@ -15,7 +15,7 @@ import '../data/transfers_providers.dart';
 import '../data/transfers_repository.dart';
 import '../domain/transfer_actions.dart';
 
-/// Una transferencia y lo que se puede hacer con ella ahora.
+/// A transfer and what can be done with it now.
 class TransferDetailView extends ConsumerWidget {
   const TransferDetailView({super.key, required this.transferId});
 
@@ -52,8 +52,8 @@ class TransferDetailView extends ConsumerWidget {
     }
   }
 
-  /// Rechazar pide un motivo. Es lo único que el otro centro va a leer para
-  /// entender por qué sus cajas no salieron.
+  /// Rejecting asks for a reason. It is the only thing the other centre is
+  /// going to read to understand why their boxes did not leave.
   Future<String?> _askReason(BuildContext context) {
     final controller = TextEditingController();
 
@@ -84,8 +84,8 @@ class TransferDetailView extends ConsumerWidget {
     );
   }
 
-  /// Pide el manifiesto y lo abre. Mismo camino que el del envío: el servidor
-  /// arma el documento y el visor del sistema lo enseña.
+  /// Asks for the manifest and opens it. Same road as the shipment's: the
+  /// server assembles the document and the system's viewer shows it.
   Future<void> _manifest(BuildContext context, WidgetRef ref) async {
     final l10n = context.l10n;
     final messenger = ScaffoldMessenger.of(context)

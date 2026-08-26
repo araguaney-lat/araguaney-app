@@ -1,13 +1,13 @@
-/// Decide si una lectura de la cámara merece atención.
+/// Decides whether a read from the camera deserves attention.
 ///
-/// En modo continuo la cámara lee la misma etiqueta muchas veces por segundo
-/// mientras el teléfono está encima. Sin esto, sostener el aparato sobre una
-/// caja dispararía una ráfaga de peticiones por un solo código; el servidor
-/// limita la frecuencia de las fichas públicas y esa ráfaga la gastaría en
-/// leer cuarenta veces lo mismo.
+/// In continuous mode the camera reads the same label many times a second while
+/// the phone is held over it. Without this, holding the device over a box would
+/// fire a burst of requests for a single code; the server rate-limits the
+/// public records and that burst would spend the allowance reading the same
+/// thing forty times.
 ///
-/// Un código distinto pasa de inmediato: quien escanea una fila de cajas no
-/// tiene por qué esperar entre una y la siguiente.
+/// A different code goes through immediately: whoever scans a row of boxes has
+/// no reason to wait between one and the next.
 class ScanThrottle {
   ScanThrottle({Duration? window, DateTime Function()? now})
     : _window = window ?? const Duration(seconds: 3),
@@ -19,7 +19,8 @@ class ScanThrottle {
   String? _lastCode;
   DateTime? _lastAt;
 
-  /// Si [code] debe procesarse. Registra la lectura cuando la acepta.
+  /// Whether [code] should be processed. It records the read when it accepts
+  /// it.
   bool accepts(String code) {
     final at = _now();
     final repeated =
@@ -34,8 +35,8 @@ class ScanThrottle {
     return true;
   }
 
-  /// Olvida la última lectura. Se llama al volver de una ficha, para que
-  /// reapuntar a la misma etiqueta vuelva a abrirla.
+  /// Forgets the last read. It is called on coming back from a record, so that
+  /// pointing at the same label again opens it once more.
   void reset() {
     _lastCode = null;
     _lastAt = null;

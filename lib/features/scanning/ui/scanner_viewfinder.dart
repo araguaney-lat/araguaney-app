@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
-/// El recuadro donde hay que poner la etiqueta.
+/// The frame the label has to be placed in.
 ///
-/// No recorta nada: `mobile_scanner` lee el cuadro entero y un código fuera del
-/// recuadro también se detecta. Es una instrucción, no una restricción — sirve
-/// para que alguien sepa a qué distancia ponerse y dónde mirar, que es lo que
-/// falta cuando la pantalla es una imagen de cámara sin nada encima.
+/// It crops nothing: `mobile_scanner` reads the whole frame and a code outside
+/// the box is detected too. It is an instruction, not a restriction — it is
+/// there so somebody knows how far away to stand and where to look, which is
+/// what is missing when the screen is a camera image with nothing on it.
 ///
-/// Oscurecer alrededor tiene el mismo propósito y un efecto extra: con la
-/// pantalla a pantalla completa, el texto blanco de arriba y de abajo se lee
-/// sobre cualquier cosa que esté enfocando la cámara.
+/// Darkening around it serves the same purpose and has an extra effect: with
+/// the screen full of camera, the white text at the top and the bottom reads
+/// over whatever the camera happens to be focused on.
 class ScannerViewfinder extends StatelessWidget {
   const ScannerViewfinder({super.key, required this.hint});
 
@@ -57,9 +57,9 @@ class _ViewfinderPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final hole = RRect.fromRectAndRadius(square, _radius);
 
-    // El velo se pinta entero y se recorta el hueco: `difference` deja el
-    // interior del recuadro sin oscurecer sin necesidad de componer cuatro
-    // rectángulos alrededor, que es donde aparecen las costuras de un píxel.
+    // The veil is painted whole and the gap is cut out: `difference` leaves the
+    // inside of the frame undarkened without composing four rectangles around
+    // it, which is where one-pixel seams show up.
     canvas.save();
     canvas.clipPath(
       Path.combine(
@@ -77,8 +77,8 @@ class _ViewfinderPainter extends CustomPainter {
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke;
 
-    // Solo las esquinas: un marco cerrado se lee como un borde de la imagen y
-    // deja de señalar el centro.
+    // The corners only: a closed frame reads as a border of the image and stops
+    // pointing at the centre.
     for (final (corner, dx, dy) in [
       (square.topLeft, 1.0, 1.0),
       (square.topRight, -1.0, 1.0),

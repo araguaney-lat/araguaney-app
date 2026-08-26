@@ -6,11 +6,11 @@ import '../../../core/db/app_database.dart';
 import '../domain/scanned_code.dart';
 import 'scan_resolution.dart';
 
-/// Traduce un código escaneado en la ficha que le corresponde.
+/// Translates a scanned code into the record it belongs to.
 ///
-/// El contrato manda dónde se pregunta, y no en todos los casos hay ruta
-/// autenticada: ni cajas ni tarimas tienen un endpoint que traduzca código a
-/// identificador. Las fichas públicas cubren ese hueco.
+/// The contract decides where the question is asked, and not in every case is
+/// there an authenticated route: neither boxes nor pallets have an endpoint
+/// that turns a code into an identifier. The public records fill that gap.
 class ScanResolver {
   ScanResolver({
     required BoxesApi boxes,
@@ -44,9 +44,9 @@ class ScanResolver {
     };
   }
 
-  /// El cache primero: una caja de este centro se resuelve sin red y con el
-  /// detalle completo. La ficha pública es el respaldo para una etiqueta que
-  /// quedó fuera de la ventana sincronizada.
+  /// The cache first: a box from this centre resolves with no network and with
+  /// the full detail. The public record is the fallback for a label that fell
+  /// outside the synced window.
   Future<ScanResolution> _resolveBox(String code) async {
     final cached = await _db.boxesDao.findByCode(code);
     if (cached != null) return CachedBoxFound(cached);
@@ -57,8 +57,8 @@ class ScanResolver {
     );
   }
 
-  /// Ningún fallo escapa de aquí como excepción: la cámara sigue abierta y lo
-  /// que corresponde es enseñar el motivo, no tumbar la pantalla.
+  /// No failure escapes from here as an exception: the camera is still open and
+  /// what belongs is showing the reason, not taking the screen down.
   Future<ScanResolution> _guard(
     Future<ScanResolution> Function() attempt,
   ) async {

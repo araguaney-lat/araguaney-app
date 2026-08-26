@@ -29,29 +29,29 @@ import '../../transfers/ui/transfers_list_view.dart';
 import '../../users/data/users_providers.dart';
 import '../../users/ui/users_list_view.dart';
 
-/// Todo lo que no cabe en la barra.
+/// Everything that does not fit on the bar.
 ///
-/// Se abre desde el cuarto destino. Lo que entra aquí es lo que se consulta
-/// cada varios días —tarimas, transferencias, el equipo— frente a lo que se
-/// toca cada pocos minutos, que es lo que gana un sitio en la barra.
+/// It opens from the fourth destination. What goes in here is what is consulted
+/// every few days — pallets, transfers, the team — as against what is touched
+/// every few minutes, which is what earns a place on the bar.
 ///
-/// **Va en grupos porque dejó de caber.** Con dieciséis entradas seguidas hasta
-/// una prueba tuvo que empezar a desplazarse para encontrar una, y una lista
-/// larga sin agrupar se lee peor que la misma lista repartida: «Perfil» y
-/// «Cerrar sesión» son la cuenta y estaban en extremos opuestos.
+/// **It comes in groups because it stopped fitting.** With sixteen entries in a
+/// row even a test had to start scrolling to find one, and a long ungrouped
+/// list reads worse than the same list split up: «Perfil» and «Cerrar sesión»
+/// are the account and sat at opposite ends.
 ///
-/// Los grupos son por **quién hace ese trabajo y dónde**: la jornada de quien
-/// captura, lo que se coordina en el centro, y lo que se administra —que casi
-/// siempre se hace desde un escritorio y va al final por eso—. Un grupo sin
-/// entradas no se dibuja, así que quien es voluntariado ve dos.
+/// The groups are by **who does that work and where**: the shift of whoever
+/// captures, what is coordinated in the centre, and what is administered —
+/// which is almost always done from a desk and goes last for that reason. A
+/// group with no entries is not drawn, so whoever volunteers sees two.
 class MoreMenuSheet extends ConsumerWidget {
   const MoreMenuSheet({super.key});
 
-  /// `isScrollControlled` porque el menú creció: sin él la hoja se topa en
-  /// poco más de la mitad de la pantalla y las últimas entradas quedan bajo el
-  /// pliegue, que en un menú es lo mismo que no existir. Con él se ajusta a su
-  /// contenido, y el `ConstrainedBox` evita que llegue a tapar la pantalla
-  /// entera cuando la lista siga creciendo.
+  /// `isScrollControlled` because the menu grew: without it the sheet stops at
+  /// a little over half the screen and the last entries end up below the fold,
+  /// which in a menu is the same as not existing. With it the sheet fits its
+  /// content, and the `ConstrainedBox` keeps it from covering the whole screen
+  /// as the list goes on growing.
   static Future<void> show(BuildContext context) => showModalBottomSheet<void>(
     context: context,
     useSafeArea: true,
@@ -79,8 +79,9 @@ class MoreMenuSheet extends ConsumerWidget {
       padding: EdgeInsets.only(bottom: sheetBottomInset(context, base: 8)),
       shrinkWrap: true,
       children: [
-        // El centro de trabajo va antes que cualquier grupo y sin encabezado:
-        // no es un destino, es en dónde está escribiendo quien mira el menú.
+        // The working centre goes before any group and with no header: it is
+        // not a destination, it is where whoever is looking at the menu is
+        // writing.
         if (ref.watch(workingCenterProvider).valueOrNull case final center?)
           if (ref.watch(writeCenterIdProvider) != null)
             ListTile(
@@ -93,8 +94,9 @@ class MoreMenuSheet extends ConsumerWidget {
         _Section(
           title: context.l10n.menuSectionDay,
           children: [
-            // Siempre, no solo con la cola llena: aquí se reponen los códigos
-            // de caja, y hacerlo hace falta **antes** de quedarse sin señal.
+            // Always, and not only with a full queue: this is where box codes
+            // are topped up, and that has to be done **before** running out of
+            // signal.
             ListTile(
               leading: pending > 0
                   ? Badge(
@@ -115,8 +117,8 @@ class MoreMenuSheet extends ConsumerWidget {
               title: Text(context.l10n.donationsTitle),
               onTap: () => _go(context, DonationsListView.route()),
             ),
-            // Para todo el mundo: buscar un producto es de quien captura, y
-            // dar de alta uno es lo único que la pantalla reserva por rol.
+            // For everybody: looking a product up belongs to whoever captures,
+            // and adding one is the only thing the screen reserves by role.
             ListTile(
               leading: const Icon(Icons.inventory_outlined),
               title: Text(context.l10n.catalogTitle),
@@ -132,8 +134,8 @@ class MoreMenuSheet extends ConsumerWidget {
               title: Text(context.l10n.stockByCategoryTitle),
               onTap: () => _go(context, StockByCategoryView.route()),
             ),
-            // Va junto al stock porque es la pregunta siguiente: el stock dice
-            // qué hay, el informe dice cómo va.
+            // Next to the stock because it is the following question: the
+            // stock says what there is, the report says how it is going.
             ListTile(
               leading: const Icon(Icons.insights_outlined),
               title: Text(context.l10n.reportsTitle),
@@ -180,8 +182,8 @@ class MoreMenuSheet extends ConsumerWidget {
             ),
           ],
         ),
-        // Trabajo de escritorio, y por eso va al final: se puede hacer desde
-        // aquí, pero casi nadie lo hace con el teléfono en la mano.
+        // Desk work, and that is why it goes last: it can be done from here,
+        // but almost nobody does it with the phone in their hand.
         _Section(
           title: context.l10n.menuSectionAdmin,
           children: [
@@ -228,11 +230,12 @@ class MoreMenuSheet extends ConsumerWidget {
   }
 }
 
-/// Un grupo del menú, que desaparece entero cuando el rol lo deja vacío.
+/// A group of the menu, which disappears entirely when the role leaves it
+/// empty.
 ///
-/// Es lo que hace que agrupar no le cueste nada a quien es voluntariado: sin
-/// esto, «Administración» sería un encabezado con nada debajo, que es peor que
-/// no agrupar.
+/// It is what makes grouping cost whoever volunteers nothing: without it,
+/// «Administración» would be a header with nothing under it, which is worse
+/// than not grouping.
 class _Section extends StatelessWidget {
   const _Section({required this.title, required this.children});
 

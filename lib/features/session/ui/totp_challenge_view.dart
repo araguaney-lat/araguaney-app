@@ -8,8 +8,8 @@ import '../../../core/i18n/l10n_extension.dart';
 import '../domain/login_failure_message.dart';
 import 'login_view.dart';
 
-/// Segundo factor. Se llega aquí solo cuando el servidor lo pide, con un token
-/// parcial que caduca en minutos y que nunca se guarda en el dispositivo.
+/// The second factor. It is only reached when the server asks for it, with a
+/// partial token that expires in minutes and is never stored on the device.
 class TotpChallengeView extends ConsumerStatefulWidget {
   const TotpChallengeView({super.key});
 

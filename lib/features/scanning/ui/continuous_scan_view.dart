@@ -6,7 +6,7 @@ import '../../../core/i18n/l10n_extension.dart';
 import '../domain/scan_throttle.dart';
 import 'scanner_camera.dart';
 
-/// Qué pasó con una lectura.
+/// What happened to a read.
 class ScanFeedback {
   const ScanFeedback.accepted(this.message) : accepted = true;
   const ScanFeedback.rejected(this.message) : accepted = false;
@@ -15,13 +15,12 @@ class ScanFeedback {
   final String message;
 }
 
-/// Escanear una etiqueta detrás de otra sin salir de la cámara.
+/// Scanning one label after another without leaving the camera.
 ///
-/// Es la forma de trabajar de quien arma una tarima: las cajas están apiladas,
-/// las manos ocupadas, y volver a una lista entre caja y caja convierte dos
-/// minutos en diez. Cada lectura deja una línea en el registro con lo que dijo
-/// el servidor, aceptada o rechazada, para que nadie tenga que recordar por
-/// dónde iba.
+/// It is how whoever builds a pallet works: the boxes are stacked, their hands
+/// are full, and going back to a list between one box and the next turns two
+/// minutes into ten. Each read leaves a line in the log with what the server
+/// said, accepted or refused, so nobody has to remember where they were.
 class ContinuousScanView extends StatefulWidget {
   const ContinuousScanView({
     super.key,
@@ -33,8 +32,8 @@ class ContinuousScanView extends StatefulWidget {
   final String title;
   final String hint;
 
-  /// Qué hacer con cada lectura. Se llama de una en una: mientras una está en
-  /// curso, las siguientes se ignoran.
+  /// What to do with each read. It is called one at a time: while one is in
+  /// progress, the following ones are ignored.
   final Future<ScanFeedback> Function(String payload) onScanned;
 
   static Route<void> route({
@@ -73,8 +72,9 @@ class _ContinuousScanViewState extends State<ContinuousScanView> {
     if (payload == null || !_throttle.accepts(payload)) return;
 
     _busy = true;
-    // La vibración va antes de saber el resultado: confirma que la lectura
-    // ocurrió, que es lo que quien apunta necesita saber en ese instante.
+    // The vibration comes before the result is known: it confirms the read
+    // happened, which is what whoever is pointing needs to know at that
+    // instant.
     await HapticFeedback.selectionClick();
 
     final feedback = await widget.onScanned(payload);

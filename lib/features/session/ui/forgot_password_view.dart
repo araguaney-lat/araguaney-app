@@ -6,12 +6,12 @@ import '../../account/data/account_providers.dart';
 import '../../account/data/account_repository.dart';
 import 'login_view.dart';
 
-/// Pedir el correo de recuperación.
+/// Asking for the recovery email.
 ///
-/// Lo que llega al buzón es **un enlace a la web**, no un código para escribir
-/// aquí. Por eso esta pantalla termina en una instrucción y no en otro campo:
-/// prometer que se puede terminar dentro de la aplicación sería mentir, y quien
-/// se quedó fuera de su cuenta es la peor persona a quien mentirle.
+/// What arrives in the inbox is **a link to the web**, not a code to type here.
+/// That is why this screen ends in an instruction and not in another field:
+/// promising it can be finished inside the application would be a lie, and
+/// somebody locked out of their account is the worst person to lie to.
 class ForgotPasswordView extends ConsumerStatefulWidget {
   const ForgotPasswordView({super.key});
 
@@ -126,8 +126,9 @@ class _Sent extends StatelessWidget {
       const Icon(Icons.mark_email_read_outlined, size: 48),
       const SizedBox(height: 16),
       Text(
-        // El servidor contesta lo mismo exista o no la cuenta, para que esta
-        // pantalla no sirva para averiguar quién tiene una. Se repite tal cual.
+        // The server answers the same whether or not the account exists, so
+        // this screen cannot be used to find out who has one. It is repeated as
+        // it is.
         context.l10n.forgotPasswordSent,
         textAlign: TextAlign.center,
         style: Theme.of(context).textTheme.titleMedium,

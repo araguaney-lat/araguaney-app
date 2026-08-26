@@ -1,21 +1,21 @@
 import '../../../core/i18n/generated/app_localizations.dart';
 
-/// Hacia dónde va una transferencia respecto del centro de quien mira.
+/// Which way a transfer goes with respect to the centre of whoever is looking.
 enum TransferDirection {
-  /// Sale de este centro.
+  /// It leaves this centre.
   outgoing,
 
   /// Viene hacia este centro.
   incoming,
 
-  /// Ni sale ni llega aquí. Lo ve una administración nacional.
+  /// It neither leaves nor arrives here. A national administration sees it.
   other,
 }
 
-/// Lo que se puede hacer con una transferencia.
+/// What can be done with a transfer.
 enum TransferAction { approve, reject, dispatch, receive }
 
-/// Estados que publica el backend.
+/// The states the backend publishes.
 abstract final class TransferStatus {
   static const requested = 'REQUESTED';
   static const approved = 'APPROVED';
@@ -35,20 +35,20 @@ TransferDirection transferDirection({
   return TransferDirection.other;
 }
 
-/// Qué acciones tienen sentido ahora mismo.
+/// Which actions make sense right now.
 ///
-/// **Esto es un espejo de la máquina de estados del servidor**, y el servidor
-/// sigue siendo quien decide: si rechaza igual, su motivo se muestra. Existe
-/// para no ofrecer tres botones de los cuales dos van a fallar seguro.
+/// **This is a mirror of the server's state machine**, and the server is still
+/// the one that decides: if it refuses anyway, its reason is shown. It exists
+/// so as not to offer three buttons of which two are certain to fail.
 ///
-/// La regla que copia, verificada en `transfer_service.py`:
+/// The rule it copies, checked in `transfer_service.py`:
 ///
-/// - aprobar y rechazar: solo el centro de origen, y solo si está solicitada;
-/// - despachar: solo el origen, y solo si está aprobada;
-/// - recibir: solo el centro de destino, y solo si está en tránsito.
+/// - approve and reject: the origin centre only, and only if it is requested;
+/// - dispatch: the origin only, and only if it is approved;
+/// - receive: the destination centre only, and only if it is in transit.
 ///
-/// Una administración nacional puede hacer las de origen desde cualquier lado;
-/// recibir sigue siendo del destino.
+/// A national administration can do the origin's from anywhere; receiving still
+/// belongs to the destination.
 Set<TransferAction> availableTransferActions({
   required String status,
   required TransferDirection direction,

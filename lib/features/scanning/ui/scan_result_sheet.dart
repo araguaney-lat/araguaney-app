@@ -12,15 +12,15 @@ import '../../../core/ui/sheet_insets.dart';
 import '../../../core/ui/status_labels.dart';
 import '../data/scan_resolution.dart';
 
-/// Lo que se leyó, sobre la cámara.
+/// What was read, over the camera.
 ///
-/// Era una pantalla aparte y ahora es una hoja: quien comprueba una tarima
-/// escanea una caja tras otra, y cada respuesta costaba entrar y salir de una
-/// pantalla. Cerrando la hoja se vuelve a estar apuntando.
+/// It used to be a separate screen and is now a sheet: whoever checks a pallet
+/// scans one box after another, and every answer cost entering and leaving a
+/// screen. Closing the sheet leaves you pointing again.
 ///
-/// La hoja identifica; no sustituye a la ficha. Cuando hay una ficha con
-/// acciones detrás —la de operador de una caja cacheada, la captura de una
-/// donación— la hoja lleva a ella con un botón.
+/// The sheet identifies; it does not replace the record. When there is a record
+/// with actions behind it — a cached box's operator record, an announced
+/// donation's capture — the sheet leads to it with a button.
 class ScanResultSheet extends StatelessWidget {
   const ScanResultSheet({
     super.key,
@@ -31,14 +31,15 @@ class ScanResultSheet extends StatelessWidget {
 
   final ScanResolution resolution;
 
-  /// El nombre del producto de una caja cacheada. La fila de la caja solo
-  /// guarda el identificador del tipo, así que lo resuelve quien abre la hoja
-  /// contra el catálogo local; es nulo cuando el catálogo ya no lo tiene, y
-  /// entonces no se enseña nada en vez de un identificador.
+  /// The product name of a cached box. The box's row only stores the type's
+  /// identifier, so it is resolved by whoever opens the sheet against the local
+  /// catalogue; it is null when the catalogue no longer has it, and then
+  /// nothing is shown instead of an identifier.
   final String? productName;
 
-  /// Qué hacer con la acción principal, cuando la hay. La decide quien abre la
-  /// hoja porque es navegación, y la hoja no sabe de dónde se la llamó.
+  /// What to do with the main action, when there is one. Whoever opens the
+  /// sheet decides it because it is navigation, and the sheet does not know
+  /// where it was called from.
   final VoidCallback? onOpen;
 
   static Future<void> show(
@@ -86,7 +87,7 @@ class ScanResultSheet extends StatelessWidget {
   );
 }
 
-/// Encabezado común: el código como está impreso en la etiqueta, y su estado.
+/// The common header: the code as it is printed on the label, and its state.
 class _Headline extends StatelessWidget {
   const _Headline({required this.code, this.status});
 
@@ -159,9 +160,9 @@ class _CachedBox extends StatelessWidget {
   }
 }
 
-/// La ficha pública trae menos que el registro del operador, y quien la lee
-/// tiene que saberlo: la diferencia entre «esto es todo lo que hay» y «esto es
-/// lo que se pudo consultar» cambia lo que alguien decide con ella delante.
+/// The public record brings less than the operator's, and whoever reads it has
+/// to know: the difference between «this is all there is» and «this is what
+/// could be looked up» changes what somebody decides with it in front of them.
 class _PublicBox extends StatelessWidget {
   const _PublicBox({required this.box});
 

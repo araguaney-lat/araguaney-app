@@ -6,17 +6,18 @@ import '../../../core/api/client_version_providers.dart';
 import '../../../core/auth/auth_providers.dart';
 import '../../../core/i18n/l10n_extension.dart';
 
-/// La versión instalada, al pie.
+/// The installed version, at the foot.
 ///
-/// **Existe para que preguntar «¿qué versión tienes?» deje de costar una
-/// conversación.** Quien opera no sabe —ni tiene por qué— qué compilación le
-/// entregó la tienda, y sin este dato diagnosticar cualquier cosa empieza por
-/// averiguarlo. Va en el acceso porque es la pantalla que todo el mundo ve
-/// antes de poder hacer nada, incluida la persona que todavía no puede entrar.
+/// **It exists so that asking «which version do you have?» stops costing a
+/// conversation.** Whoever operates does not know — and has no reason to know —
+/// which build the store gave them, and without this figure diagnosing anything
+/// starts by finding out. It goes on the sign-in screen because that is the one
+/// everybody sees before being able to do anything, including the person who
+/// cannot get in yet.
 ///
-/// Lleva el número de compilación además del nombre: `1.0.0 (3)`. El nombre se
-/// repite entre versiones publicadas y el que identifica un binario es el
-/// segundo, que es justo el que hace falta para saber qué se está mirando.
+/// It carries the build number as well as the name: `1.0.0 (3)`. The name
+/// repeats between published versions and the one that identifies a binary is
+/// the second, which is exactly the one needed to know what is being looked at.
 class AppVersionFooter extends ConsumerWidget {
   const AppVersionFooter({super.key});
 
@@ -25,12 +26,13 @@ class AppVersionFooter extends ConsumerWidget {
     final theme = Theme.of(context);
     final version = ref.watch(appVersionProvider);
     final build = ref.watch(appBuildNumberProvider);
-    // El aviso de actualización disponible vive aquí y no en una tarjeta ni en
-    // un diálogo: hay una nueva, no pasa nada por seguir, y una interrupción
-    // sería desproporcionada. El muro es otra cosa y tiene su propia pantalla.
-    // `valueOrNull`, por lo mismo que en `SessionGate`: `value` relanza sobre
-    // un `AsyncError` y tumbaría el acceso entero por no poder consultar una
-    // versión.
+    // The update-available notice lives here and not in a card or a dialog:
+    // there is a new one, nothing happens by carrying on, and an interruption
+    // would be out of proportion. The wall is another thing and has its own
+    // screen.
+    // `valueOrNull`, for the same reason as in `SessionGate`: `value` rethrows
+    // on an `AsyncError` and would take the whole sign-in down for failing to
+    // look up a version.
     final outdated =
         ref.watch(clientVersionStatusProvider).valueOrNull?.status ==
         ClientVersionStatus.updateAvailable;

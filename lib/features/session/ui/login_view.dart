@@ -10,8 +10,8 @@ import '../domain/login_failure_message.dart';
 import 'app_version_footer.dart';
 import 'forgot_password_view.dart';
 
-/// Inicio de sesión. Las credenciales las valida el servidor: aquí solo se
-/// comprueba que los campos no vengan vacíos, para no gastar una petición.
+/// Signing in. The credentials are validated by the server: all that is checked
+/// here is that the fields do not arrive empty, so as not to spend a request.
 class LoginView extends ConsumerStatefulWidget {
   const LoginView({super.key});
 
@@ -154,36 +154,38 @@ class _LoginViewState extends ConsumerState<LoginView> {
   }
 }
 
-/// La salida para quien todavía no tiene centro.
+/// The way out for somebody who does not have a centre yet.
 ///
-/// La aplicación abre en un acceso y no ofrece registro, a propósito: a un
-/// centro se entra por invitación. Pero quien oyó hablar de Araguaney, instaló
-/// esto y todavía no tiene centro se topaba con un formulario que no explicaba
-/// nada. Esto no lo resuelve dentro de la aplicación —lo lleva a donde sí se
-/// resuelve.
+/// The application opens on a sign-in screen and offers no registration, on
+/// purpose: a centre is entered by invitation. But somebody who heard about
+/// Araguaney, installed this and has no centre yet ran into a form that
+/// explained nothing. This does not solve it inside the application — it takes
+/// them where it is solved.
 ///
-/// **El formulario no se trae aquí, y no es por pereza.** Está detrás de una
-/// verificación antiabuso del navegador, y rehacerlo nativo significaría meter
-/// esa verificación en una vista incrustada, donde vale menos, con su
-/// configuración dentro del binario. Además el trámite termina en un correo
-/// con un enlace a la web, igual que la recuperación de contraseña: cerrarlo
-/// aquí exigiría App Links y un `assetlinks.json` servido desde el dominio,
-/// que es un cambio del otro repositorio.
+/// **The form is not brought here, and it is not laziness.** It sits behind the
+/// browser's anti-abuse check, and rebuilding it natively would mean putting
+/// that check into an embedded view, where it is worth less, with its
+/// configuration inside the binary. Besides, the procedure ends in an email
+/// with a link to the web, like the password recovery: closing it here would
+/// require App Links and an `assetlinks.json` served from the domain, which is
+/// a change in the other repository.
 ///
-/// **El destino sí sigue al teléfono, aunque la interfaz no.** Los textos de
-/// esta aplicación van en español porque es el idioma en que se opera un
-/// centro; quien toca este enlace todavía no opera ninguno, y la página
-/// pública existe de verdad en los dos idiomas. Mandarlo al formulario en
-/// español teniendo el teléfono en inglés sería perder algo a cambio de nada.
+/// **The destination does follow the phone, even though the interface does
+/// not.** This application's texts are in Spanish because that is the language
+/// a centre is operated in; whoever taps this link does not operate one yet,
+/// and the public page really does exist in both languages. Sending them to the
+/// Spanish form with the phone in English would lose something in exchange for
+/// nothing.
 class _RegisterCenterLink extends ConsumerWidget {
   const _RegisterCenterLink();
 
-  /// El español es el idioma por defecto de la web y va sin prefijo; el inglés
-  /// lleva prefijo **y otro slug**, no una traducción del mismo.
+  /// Spanish is the web's default language and goes with no prefix; English
+  /// carries a prefix **and another slug**, not a translation of the same one.
   ///
-  /// La base sale de `AppConfig`, no escrita aquí: es la misma que dibuja el
-  /// QR de una caja, y una compilación apuntando a otro sitio —un fork, o el
-  /// entorno de desarrollo— tiene que mandar a su propia web y no a esta.
+  /// The base comes from `AppConfig` and is not written here: it is the same
+  /// one that draws a box's QR, and a build pointing somewhere else — a fork,
+  /// or the development environment — has to send people to its own web and not
+  /// to this one.
   static String _formUrl(String languageCode) {
     final base = AppConfig.webBaseUrl.replaceAll(RegExp(r'/+$'), '');
     return languageCode == 'en'
@@ -193,18 +195,17 @@ class _RegisterCenterLink extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // El idioma del teléfono, no el de la aplicación: `MaterialApp` fija
-    // `Locale('es')`, así que preguntarle a `Localizations` respondería
-    // siempre lo mismo.
+    // The phone's language, not the application's: `MaterialApp` pins
+    // `Locale('es')`, so asking `Localizations` would always answer the same.
     final phone = View.of(context).platformDispatcher.locale;
     final url = _formUrl(phone.languageCode);
 
     return TextButton(
       onPressed: () async {
-        // El único enlace de la aplicación que se abre dentro. Es una
-        // página pública, no pide contraseña, y quien la toca sigue en el
-        // acceso: el botón atrás lo devuelve aquí en vez de dejar la
-        // aplicación en segundo plano.
+        // The only link in the application that opens inside. It is a public
+        // page, it asks for no password, and whoever taps it stays on the
+        // sign-in screen: the back button brings them here instead of leaving
+        // the application in the background.
         final opened = await ref.read(openLinkProvider)(
           url,
           target: LinkTarget.inAppBrowser,
@@ -220,28 +221,28 @@ class _RegisterCenterLink extends ConsumerWidget {
   }
 }
 
-/// El árbol, entrando.
+/// The tree, arriving.
 ///
-/// **La animación existe por una costura, no por adorno.** El splash del
-/// sistema dibuja este mismo árbol mientras arranca el proceso, y el primer
-/// fotograma de Flutter lo sustituye por un formulario. Sin nada en medio, el
-/// corte se ve. Una aparición corta convierte dos pantallas en una llegada.
+/// **The animation exists because of a seam, not as decoration.** The system
+/// splash draws this same tree while the process starts, and Flutter's first
+/// frame replaces it with a form. With nothing in between, the cut shows. A
+/// short entrance turns two screens into one arrival.
 ///
-/// Tres cosas que no puede costar:
+/// Three things it must not cost:
 ///
-/// - **No retrasa el formulario.** Quien llega aquí se quedó sin sesión, y a
-///   veces a mitad de un turno. Esto envuelve lo que se dibuja: los campos
-///   responden desde el primer fotograma y nada espera a que el tween termine.
-/// - **No se repite.** Un logotipo en movimiento en la pantalla donde se
-///   escribe una contraseña es algo de lo que apartar la vista.
-/// - **Obedece la configuración del sistema.** Con las animaciones desactivadas
-///   se dibuja el estado final y ya. La sensibilidad al movimiento no es una
-///   preferencia que una marca pueda pisar.
+/// - **It does not delay the form.** Whoever arrives here lost their session,
+///   sometimes mid-shift. This wraps what is drawn: the fields respond from the
+///   first frame and nothing waits for the tween to finish.
+/// - **It does not repeat.** A moving logo on the screen where a password is
+///   typed is something to look away from.
+/// - **It obeys the system's settings.** With animations turned off the final
+///   state is drawn and that is that. Motion sensitivity is not a preference a
+///   brand gets to override.
 class _ArrivingMark extends StatefulWidget {
   const _ArrivingMark();
 
-  /// Ochenta puntos: `ic_mark_lg.png` mide 320 × 288, así que hasta una
-  /// pantalla de 3,5× lo dibuja sin estirarlo.
+  /// Eighty points: `ic_mark_lg.png` measures 320 × 288, so even a 3.5× screen
+  /// draws it without stretching.
   static const double _height = 80;
 
   @override
@@ -260,8 +261,8 @@ class _ArrivingMarkState extends State<_ArrivingMark>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // Se arranca aquí y no en `initState` porque la decisión depende del
-    // `MediaQuery`, que allí todavía no existe.
+    // Started here and not in `initState` because the decision depends on the
+    // `MediaQuery`, which does not exist there yet.
     if (_started) return;
     _started = true;
     if (MediaQuery.disableAnimationsOf(context)) {
@@ -286,8 +287,8 @@ class _ArrivingMarkState extends State<_ArrivingMark>
     return FadeTransition(
       opacity: entrance,
       child: SlideTransition(
-        // Sube un octavo de su alto: lo justo para que se lea como que llega,
-        // no como que se desliza desde fuera de la pantalla.
+        // It rises an eighth of its height: just enough to read as arriving,
+        // not as sliding in from off screen.
         position: Tween<Offset>(
           begin: const Offset(0, 0.12),
           end: Offset.zero,
@@ -295,8 +296,8 @@ class _ArrivingMarkState extends State<_ArrivingMark>
         child: Image.asset(
           'assets/icon/ic_mark_lg.png',
           height: _ArrivingMark._height,
-          // El alto manda, igual que en la cabecera del inicio: el árbol es
-          // más ancho que alto.
+          // Height decides, as in the home header: the tree is wider than it is
+          // tall.
           fit: BoxFit.fitHeight,
           filterQuality: FilterQuality.medium,
           semanticLabel: context.l10n.appTitle,
@@ -306,8 +307,8 @@ class _ArrivingMarkState extends State<_ArrivingMark>
   }
 }
 
-/// Aviso de error de sesión. Vive aquí porque las tres pantallas de esta
-/// feature lo comparten y no lo necesita nadie más todavía.
+/// A session error notice. It lives here because the three screens of this
+/// feature share it and nobody else needs it yet.
 class _FailureBanner extends StatelessWidget {
   const _FailureBanner({required this.message});
 
@@ -338,7 +339,7 @@ class _FailureBanner extends StatelessWidget {
   }
 }
 
-/// Reutilizable por las otras pantallas de sesión.
+/// Reusable by the other session screens.
 class SessionFailureBanner extends StatelessWidget {
   const SessionFailureBanner({required this.message, super.key});
 

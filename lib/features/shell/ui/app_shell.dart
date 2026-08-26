@@ -13,18 +13,18 @@ import '../../messaging/ui/threads_list_view.dart';
 import '../../scanning/ui/scanner_view.dart';
 import 'more_menu_sheet.dart';
 
-/// Los cuatro destinos permanentes.
+/// The four permanent destinations.
 ///
-/// «Menú» es un destino y no un botón suelto porque el resto de la aplicación
-/// vive detrás de él: si no se marca como seleccionado, quien abre transferencias
-/// desde ahí se queda sin saber en qué parte de la aplicación está.
+/// «Menú» is a destination and not a loose button because the rest of the
+/// application lives behind it: if it is not marked as selected, whoever opens
+/// transfers from there is left not knowing where in the application they are.
 enum ShellTab { home, boxes, messages, menu }
 
-/// La acción central de la barra.
+/// The bar's central action.
 ///
-/// La decide el rol y no la pantalla: quien coordina llega a verificar lo que
-/// otra persona capturó, y quien es voluntariado llega a capturar. Es el mismo
-/// criterio que el backend aplica a los permisos, traído al pulgar.
+/// The role decides it, not the screen: whoever coordinates comes to verify
+/// what somebody else captured, and whoever volunteers comes to capture. It is
+/// the same criterion the backend applies to permissions, brought to the thumb.
 ({IconData icon, String label}) centerActionFor(
   AppLocalizations l10n, {
   required bool coordinates,
@@ -42,19 +42,19 @@ class AppShell extends ConsumerStatefulWidget {
 class _AppShellState extends ConsumerState<AppShell> {
   ShellTab _tab = ShellTab.home;
 
-  /// Las pestañas se construyen la primera vez que se visitan y se conservan
-  /// después.
+  /// The tabs are built the first time they are visited and kept afterwards.
   ///
-  /// Un `IndexedStack` con todo dentro parece cómodo hasta que se mira la red:
-  /// construye las cuatro al arrancar, y cada una pide lo suyo. Quien abre la
-  /// aplicación para capturar acabaría descargando cajas y mensajes que no
-  /// pidió, en la conexión de un centro de acopio, antes de poder tocar nada.
+  /// An `IndexedStack` with everything inside looks convenient until you look
+  /// at the network: it builds all four at launch, and each one asks for its
+  /// own. Whoever opens the application to capture would end up downloading
+  /// boxes and messages they did not ask for, on a collection centre's
+  /// connection, before being able to touch anything.
   final _visited = <ShellTab>{ShellTab.home};
 
   Future<void> _openMenu() async {
-    // El menú no reemplaza la pantalla: se abre encima y devuelve a donde
-    // estaba. Marcarlo seleccionado mientras está abierto es lo que hace que se
-    // lea como «estoy en el menú» y no como que la pantalla de atrás cambió.
+    // The menu does not replace the screen: it opens on top and returns to
+    // where you were. Marking it selected while it is open is what makes it
+    // read as «I am in the menu» and not as though the screen behind changed.
     setState(() => _tab = ShellTab.menu);
     await MoreMenuSheet.show(context);
     if (mounted) setState(() => _tab = ShellTab.home);

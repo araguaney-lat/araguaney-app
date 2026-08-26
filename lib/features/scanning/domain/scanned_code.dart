@@ -1,7 +1,7 @@
-/// Lo que un QR de la plataforma resultó ser.
+/// What a platform QR turned out to be.
 ///
-/// El escaneo no decide nada del dominio: solo clasifica un texto para saber a
-/// quién preguntarle. Qué significa cada código lo contesta el servidor.
+/// The scan decides nothing about the domain: it only classifies a text so we
+/// know who to ask. What each code means is answered by the server.
 sealed class ScannedCode {
   const ScannedCode();
 }
@@ -24,37 +24,37 @@ final class DonationCode extends ScannedCode {
   final String code;
 }
 
-/// Un texto que no es un código de la plataforma. Se conserva crudo para
-/// poder mostrárselo a quien escaneó: «esto no es nuestro» es una respuesta
-/// mucho más útil que un error genérico.
+/// A text that is not a platform code. It is kept raw so it can be shown to
+/// whoever scanned it: «this is not ours» is a far more useful answer than a
+/// generic error.
 final class UnrecognizedCode extends ScannedCode {
   const UnrecognizedCode(this.raw);
 
   final String raw;
 }
 
-/// Prefijos con los que el backend acuña cada código.
+/// The prefixes the backend mints each code with.
 abstract final class CodePrefix {
   static const box = 'BX-';
   static const pallet = 'TM-';
   static const donation = 'DN-';
 }
 
-/// Primer segmento de la ruta en la URL que codifica el QR.
+/// The first path segment in the URL the QR encodes.
 const _pathKinds = {'b': _Kind.box, 'p': _Kind.pallet, 'd': _Kind.donation};
 
 enum _Kind { box, pallet, donation }
 
-/// Interpreta lo que leyó la cámara.
+/// Interprets what the camera read.
 ///
-/// Acepta las dos formas que puede traer una etiqueta. El QR que genera el
-/// backend codifica una URL a la ficha pública (`{base}/b/{code}`), pero un
-/// código tecleado o impreso suelto tiene que funcionar igual.
+/// It accepts both shapes a label can carry. The QR the backend generates
+/// encodes a URL to the public record (`{base}/b/{code}`), but a code typed or
+/// printed on its own has to work the same.
 ///
-/// El tipo lo decide el prefijo del código. Si el prefijo no se reconoce pero
-/// la ruta de la URL ya dijo de qué se trata, manda la ruta: así una etiqueta
-/// impresa antes de un cambio de formato sigue llevando a su ficha en vez de
-/// morir en un error.
+/// The type is decided by the code's prefix. If the prefix is not recognised
+/// but the URL's path already said what it is about, the path wins: that way a
+/// label printed before a format change still leads to its record instead of
+/// dying in an error.
 ScannedCode parseScannedCode(String raw) {
   final payload = raw.trim();
   if (payload.isEmpty) return UnrecognizedCode(raw);
@@ -88,8 +88,8 @@ _Kind? _kindFromPrefix(String code) {
   final segments = uri.pathSegments.where((s) => s.isNotEmpty).toList();
   if (segments.length < 2) return null;
 
-  // La ficha va siempre en los dos últimos segmentos, para que un despliegue
-  // bajo un prefijo de ruta no rompa la lectura.
+  // The record is always in the last two segments, so a deployment under a
+  // path prefix does not break the reading.
   final kind = _pathKinds[segments[segments.length - 2].toLowerCase()];
   if (kind == null) return null;
 
