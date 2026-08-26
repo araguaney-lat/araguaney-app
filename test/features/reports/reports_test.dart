@@ -179,8 +179,8 @@ void main() {
     }
 
     Future<void> scrollTo(WidgetTester tester, Finder finder) async {
-      // La pantalla es una sola columna larga: lo que no se ha desplazado
-      // todavía ni siquiera está construido.
+      // The screen is a single long column: what has not been scrolled to is
+      // not even built yet.
       await tester.dragUntilVisible(
         finder,
         find.byType(ListView),

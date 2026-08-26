@@ -16,8 +16,8 @@ void main() {
     test(
       'a shipment not reconciled yet answers with nothing, not an error',
       () async {
-        // Un 404 aquí es la respuesta a «¿ya llegó?», y la respuesta es que
-        // todavía no. Mostrarlo como fallo sería mentir sobre lo que pasó.
+        // A 404 here is the answer to «has it arrived yet?», and the answer is
+        // not yet. Showing it as a failure would be lying about what happened.
         final adapter = FakeHttpAdapter(
           (_) => FakeResponse(404, {
             'error': {'code': 'NOT_FOUND', 'message': 'no existe'},
@@ -40,7 +40,8 @@ void main() {
     });
 
     test('a real failure still surfaces', () async {
-      // Sin señal no se puede decir «todavía no llegó»: no se sabe.
+      // With no signal it cannot be said that it has not arrived yet: it is not
+      // known.
       expect(
         () => repositoryOn(OfflineHttpAdapter()).reception('shipment-1'),
         throwsA(anything),
@@ -90,8 +91,8 @@ void main() {
     for (final type in IncidentType.all) {
       expect(incidentTypeLabel(l10n, type), isNot(type));
     }
-    // Y un tipo que esta versión no conoce se muestra tal cual en vez de
-    // desaparecer de la pantalla.
+    // And a type this version does not know is shown as it is instead of
+    // disappearing from the screen.
     expect(incidentTypeLabel(l10n, 'SOMETHING_NEW'), 'SOMETHING_NEW');
   });
 }

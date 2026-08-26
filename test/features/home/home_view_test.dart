@@ -119,7 +119,7 @@ void main() {
       );
 
       expect(find.text('1 revisión espera tu decisión'), findsOneWidget);
-      // El aviso no dice por qué se levantó: eso se lee dentro.
+      // The notice does not say why it was raised: that is read inside.
       expect(find.textContaining('Volumen inusual'), findsNothing);
     });
 
@@ -159,8 +159,9 @@ void main() {
 
   testWidgets('the home title carries the tree, since it is the only screen '
       'whose title is the name', (tester) async {
-    // En las demás el título dice qué se está haciendo —«Cajas», «Registrar
-    // entrada»— y anteponerle la marca la volvería decoración repetida.
+    // On the others the title says what is being done — «Cajas», «Registrar
+    // entrada» — and putting the brand in front would turn it into repeated
+    // decoration.
     await pumpHome(tester, coordinator: false);
 
     final mark = tester.widget<Image>(
@@ -171,7 +172,8 @@ void main() {
 
   group('working without signal', () {
     testWidgets('no reserved codes is said before it hurts', (tester) async {
-      // Descubrir que no se puede sellar en el sótano es el peor momento.
+      // Finding out in the basement that nothing can be sealed is the worst
+      // moment.
       await pumpHome(tester, coordinator: false);
 
       expect(
@@ -183,9 +185,10 @@ void main() {
     testWidgets('the warning leads to where codes are reserved', (
       tester,
     ) async {
-      // Reservar solo vivía dentro de pendientes, y esa pantalla solo se
-      // ofrecía con la cola llena: la única puerta se abría cuando ya era
-      // tarde. Decir «no vas a poder sellar» sin dar el camino es un reproche.
+      // Reserving lived only inside the pending screen, and that screen was
+      // only offered with a full queue: the one door opened when it was already
+      // too late. Saying «you will not be able to seal» without giving the road
+      // is a reproach.
       await pumpHome(tester, coordinator: false);
 
       await tester.tap(find.textContaining('Sin códigos de caja reservados'));
@@ -207,8 +210,8 @@ void main() {
 
   group('the weight says what it counts', () {
     testWidgets('sealed, not captured', (tester) async {
-      // Quien prepare un envío con este número tiene que saber que lo capturado
-      // sin sellar no pesa aquí.
+      // Whoever prepares a shipment with this number has to know that what was
+      // captured without being sealed does not weigh here.
       await pumpHome(tester, coordinator: true);
 
       expect(find.textContaining('kg sellados'), findsOneWidget);

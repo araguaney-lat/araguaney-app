@@ -40,8 +40,8 @@ void main() {
   });
 
   test('a code is never handed out twice', () async {
-    // Dos cajas con la misma etiqueta son dos bultos que el manifiesto declara
-    // como uno.
+    // Two boxes with the same label are two loads the manifest declares as
+    // one.
     await db.boxCodesDao.store(
       ['BX-A', 'BX-B', 'BX-C'],
       userId: 'user-1',
@@ -59,8 +59,8 @@ void main() {
   });
 
   test('running out returns fewer codes rather than failing', () async {
-    // Quedarse sin códigos no puede impedir capturar: perder la captura sería
-    // mucho peor que quedarse sin etiqueta.
+    // Running out of codes cannot stop the capture: losing it would be far
+    // worse than being left without a label.
     await db.boxCodesDao.store(['BX-A'], userId: 'user-1', at: testNow);
 
     final taken = await repositoryOn(

@@ -66,8 +66,8 @@ void main() {
     });
 
     test('with no date the server stamps it', () async {
-      // El reporte del consignatario llega tarde y describe algo de ayer;
-      // «ahora» es solo el caso por defecto.
+      // The consignee's report arrives late and describes something from
+      // yesterday; «now» is only the default case.
       final adapter = FakeHttpAdapter((_) => FakeResponse(200, shipmentJson()));
 
       await repositoryFor(
@@ -113,7 +113,8 @@ void main() {
         consigneeName: 'Cruz Roja',
       );
 
-      // Se compara lo que de verdad viaja, con los anidados ya serializados.
+      // What really travels is compared, with the nested objects already
+      // serialised.
       final body =
           jsonDecode(jsonEncode(adapter.requests.single.data))
               as Map<String, Object?>;
@@ -222,7 +223,7 @@ void main() {
     testWidgets('coordination is not offered to mark it delivered', (
       tester,
     ) async {
-      // `require_national_admin`: la barra no ofrece lo que responde 403.
+      // `require_national_admin`: the bar does not offer what answers 403.
       await pumpRecord(tester, status: 'SHIPPED', national: false);
 
       expect(find.text('Marcar como entregado'), findsNothing);
@@ -239,8 +240,8 @@ void main() {
     testWidgets('one already reconciled does not offer it twice', (
       tester,
     ) async {
-      // Se registra una sola vez, así que el paso desaparece en vez de fallar
-      // con un 409.
+      // It is recorded once only, so the step disappears instead of failing
+      // with a 409.
       await pumpRecord(
         tester,
         status: 'RECONCILED',

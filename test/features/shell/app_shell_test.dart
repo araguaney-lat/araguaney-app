@@ -69,7 +69,7 @@ void main() {
   testWidgets('coordination gets scanning as the central action', (
     tester,
   ) async {
-    // Quien coordina llega a verificar lo que capturó otra persona.
+    // Whoever coordinates comes to verify what somebody else captured.
     await pumpShell(tester, coordinator: true);
 
     expect(find.byTooltip('Escanear'), findsOneWidget);
@@ -85,9 +85,9 @@ void main() {
     expect(find.byTooltip('Escanear'), findsNothing);
   });
 
-  /// Se mira el destino de la barra y no el texto de la pantalla: el inicio
-  /// tiene sus propios números —«Capturas hoy», que bien puede ser cero— y una
-  /// búsqueda por texto suelto confunde el contador con ellos.
+  /// The bar's destination is what gets looked at and not the screen's text:
+  /// home has numbers of its own — «Capturas hoy», which may well be zero — and
+  /// a loose text search confuses the counter with them.
   int badgeOf(WidgetTester tester, String label) => tester
       .widget<AppBottomBar>(find.byType(AppBottomBar))
       .items
@@ -114,8 +114,8 @@ void main() {
   testWidgets('the menu opens without leaving the screen behind', (
     tester,
   ) async {
-    // El menú es una hoja: al cerrarla se vuelve a donde se estaba, no a otra
-    // pestaña.
+    // The menu is a sheet: closing it returns to where you were, not to another
+    // tab.
     await pumpShell(tester, coordinator: false);
 
     await tester.tap(find.text('Menú'));
@@ -138,8 +138,8 @@ void main() {
     await tester.tap(find.text('Menú'));
     await tester.pumpAndSettle();
 
-    // El menú ya no cabe entero: hay que desplazarlo. Es la señal de que
-    // necesita agruparse, anotada en la fase 11.
+    // The menu no longer fits whole: it has to be scrolled. It is the sign that
+    // it needs grouping, noted in phase 11.
     await tester.dragUntilVisible(
       find.text('Revisiones de riesgo'),
       find.byType(ListView).last,
@@ -192,11 +192,11 @@ void main() {
       await tester.tap(find.text('Menú'));
       await tester.pumpAndSettle();
 
-      // Hasta el fondo: la cuenta es el último grupo.
+      // All the way down: the account is the last group.
       await tester.drag(find.byType(ListView).last, const Offset(0, -1200));
       await tester.pumpAndSettle();
-      // Los dos bajo el mismo encabezado, y no en extremos opuestos de la
-      // lista, que es donde estaban.
+      // Both under the same header, and not at opposite ends of the list, which
+      // is where they were.
       expect(find.text('Perfil y seguridad'), findsOneWidget);
       expect(find.text('Cerrar sesión'), findsOneWidget);
     });

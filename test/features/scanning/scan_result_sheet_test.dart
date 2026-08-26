@@ -11,8 +11,8 @@ import 'package:flutter_test/flutter_test.dart';
 import '../../support/fixtures.dart';
 
 void main() {
-  /// La hoja se pinta dentro de un `Scaffold` porque en la aplicación vive
-  /// sobre la cámara, no en una pantalla propia.
+  /// The sheet is painted inside a `Scaffold` because in the application it
+  /// lives over the camera, not on a screen of its own.
   Future<void> pumpResult(
     WidgetTester tester,
     ScanResolution resolution, {
@@ -79,8 +79,8 @@ void main() {
   testWidgets('a product the catalog lost shows nothing in its place', (
     tester,
   ) async {
-    // La fila de la caja guarda el identificador del tipo, no su nombre.
-    // Enseñar el identificador sería peor que no enseñar nada.
+    // The box's row stores the type's identifier, not its name. Showing the
+    // identifier would be worse than showing nothing.
     await pumpResult(tester, CachedBoxFound(boxRow()));
 
     expect(find.text('CJ-0001'), findsOneWidget);
@@ -119,9 +119,10 @@ void main() {
 
     expect(find.text('DN-0001'), findsOneWidget);
     expect(find.textContaining('3 caja'), findsOneWidget);
-    // Antes llevaba directo a capturar, que se salta registrar que llegó.
+    // It used to lead straight to capturing, which skips recording that it
+    // arrived.
     expect(find.text('Abrir la donación'), findsOneWidget);
-    // Lo declarado por quien donó no se convierte en cajas solo.
+    // What the donor declared does not turn into boxes by itself.
     expect(
       find.textContaining('no se convierten en cajas solos'),
       findsOneWidget,

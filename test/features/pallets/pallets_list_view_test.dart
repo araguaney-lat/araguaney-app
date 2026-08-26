@@ -78,8 +78,8 @@ void main() {
   testWidgets('the header splits open from closed, which decide what to do', (
     tester,
   ) async {
-    // Una abierta admite cajas; una cerrada espera un envío. Son dos trabajos
-    // distintos y por eso van separados en vez de sumados.
+    // An open one takes boxes; a closed one waits for a shipment. They are two
+    // different jobs and that is why they are shown apart instead of added up.
     await pumpList(
       tester,
       pallets: [
@@ -103,8 +103,8 @@ void main() {
 
     expect(find.text('Abierta · 1'), findsOneWidget);
     expect(find.text('Cerrada · 1'), findsOneWidget);
-    // Un estado sin tarimas no se ofrece: un filtro que vacía la pantalla sin
-    // avisar es peor que no tenerlo.
+    // A state with no pallets is not offered: a filter that empties the screen
+    // without warning is worse than not having it.
     expect(find.textContaining('Enviada'), findsNothing);
   });
 
@@ -118,14 +118,14 @@ void main() {
     );
 
     expect(find.widgetWithText(TextButton, 'Cerrar'), findsOneWidget);
-    // La cerrada enseña su estado en español, no la clave del servidor.
+    // The closed one shows its state in Spanish, not the server's key.
     expect(find.text('Cerrada'), findsWidgets);
     expect(find.text('CLOSED'), findsNothing);
   });
 
   testWidgets('offline it is not offered at all', (tester) async {
-    // Cerrar decide sobre estado compartido que otro dispositivo puede estar
-    // cambiando, igual que sellar una caja.
+    // Closing decides about shared state another device may be changing, just
+    // like sealing a box.
     await pumpList(
       tester,
       pallets: [palletJson(id: 'p-1', code: 'TM-0001')],
@@ -151,8 +151,8 @@ void main() {
   testWidgets('a pallet with nothing to say yet has no second line', (
     tester,
   ) async {
-    // Recién abierta no tiene peso, ni altura, ni fecha de cierre. Un
-    // subtítulo vacío deja un hueco que se lee como algo roto.
+    // A freshly opened one has no weight, no height and no closing date. An
+    // empty subtitle leaves a gap that reads as something broken.
     await pumpList(
       tester,
       pallets: [palletJson(id: 'p-1', code: 'TM-0001')],

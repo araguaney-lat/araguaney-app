@@ -72,8 +72,8 @@ void main() {
   }
 
   testWidgets('what was reported can finally be seen', (tester) async {
-    // La aplicación sabía levantar una incidencia y no sabía enseñarla, que es
-    // la peor mitad para que falte.
+    // The application knew how to raise an incident and did not know how to
+    // show it, which is the worse half to be missing.
     await pumpList(tester, incidents: [incidentJson()]);
 
     expect(find.text('Caja faltante'), findsOneWidget);
@@ -82,7 +82,7 @@ void main() {
   });
 
   testWidgets('open ones come first, oldest at the top', (tester) async {
-    // Una incidencia vieja y abierta es exactamente la que se está olvidando.
+    // An old open incident is exactly the one being forgotten.
     await pumpList(
       tester,
       incidents: [
@@ -117,7 +117,7 @@ void main() {
   });
 
   testWidgets('a closed one shows how it ended', (tester) async {
-    // Es lo unico que le queda a quien la reporto.
+    // It is all that is left to whoever reported it.
     await pumpList(
       tester,
       incidents: [
@@ -129,15 +129,15 @@ void main() {
   });
 
   testWidgets('without the role there is no way to close one', (tester) async {
-    // Cerrar exige administración nacional; listar, solo coordinación.
+    // Closing requires national administration; listing, only coordination.
     await pumpList(tester, incidents: [incidentJson()], canResolve: false);
 
     expect(find.text('Caja faltante'), findsOneWidget);
     expect(find.widgetWithText(FilledButton, 'Cerrar'), findsNothing);
   });
 
-  /// Con la hoja abierta hay dos «Cerrar»: el de la tarjeta, debajo, y el de
-  /// la hoja. En pantalla solo se ve uno; aquí hay que decir cuál.
+  /// With the sheet open there are two «Cerrar»: the card's, underneath, and
+  /// the sheet's. Only one is visible on screen; here it has to be said which.
   Finder sheetButton(String label) => find.descendant(
     of: find.byType(BottomSheet),
     matching: find.widgetWithText(FilledButton, label),
@@ -172,7 +172,7 @@ void main() {
   testWidgets('the sheet shows what was reported while closing it', (
     tester,
   ) async {
-    // Cerrar sin releerlo es como se cierra la equivocada.
+    // Closing without rereading it is how the wrong one gets closed.
     await pumpList(tester, incidents: [incidentJson()]);
 
     await tester.tap(find.widgetWithText(FilledButton, 'Cerrar'));

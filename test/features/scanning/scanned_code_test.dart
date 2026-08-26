@@ -23,7 +23,7 @@ void main() {
     });
 
     test('a deployment under a path prefix still resolves', () {
-      // La ficha va en los dos últimos segmentos, no en los dos primeros.
+      // The record is in the last two segments, not in the first two.
       final result = parseScannedCode('https://araguaney.test/app/b/BX-AB12CD');
 
       expect((result as BoxCode).code, 'BX-AB12CD');
@@ -53,16 +53,16 @@ void main() {
     });
 
     test('the code is kept exactly as read', () {
-      // El servidor es quien decide si existe: normalizarlo aquí sería
-      // inventar una regla que el backend no pidió.
+      // The server is the one that decides whether it exists: normalising it
+      // here would be inventing a rule the backend did not ask for.
       expect((parseScannedCode('bx-ab12cd') as BoxCode).code, 'bx-ab12cd');
     });
   });
 
   group('when the two signals disagree', () {
     test('an unknown prefix falls back to what the path said', () {
-      // Una etiqueta impresa antes de un cambio de formato sigue llevando a
-      // su ficha en vez de morir en un error.
+      // A label printed before a format change still leads to its record
+      // instead of dying in an error.
       final result = parseScannedCode('https://araguaney.test/b/BOX-LEGACY1');
 
       expect((result as BoxCode).code, 'BOX-LEGACY1');

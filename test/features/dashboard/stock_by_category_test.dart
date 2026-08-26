@@ -37,9 +37,9 @@ void main() {
 
   group('asking the server', () {
     test('nothing about the center travels in the request', () async {
-      // El endpoint se llama «national» y no lo es: el servidor lo acota con
-      // `tenant_scope`. Si el cliente mandara un centro, existiría la pregunta
-      // de qué pasa cuando manda otro.
+      // The endpoint is called «national» and is not: the server narrows it
+      // with `tenant_scope`. If the client sent a centre, there would be the
+      // question of what happens when it sends another.
       final adapter = FakeHttpAdapter(
         (_) => FakeResponse(200, aggregatesJson()),
       );
@@ -101,8 +101,8 @@ void main() {
     });
 
     testWidgets('the screen says a box counts from sealing', (tester) async {
-      // La pantalla anterior contaba lo capturado y por eso no podía llamarse
-      // stock. Esta puede, y dice desde cuándo cuenta una caja.
+      // The previous screen counted what was captured and that is why it could
+      // not be called stock. This one can, and it says from when a box counts.
       await pumpView(tester);
 
       expect(
@@ -114,8 +114,9 @@ void main() {
     testWidgets('national administration is told the numbers are everyones', (
       tester,
     ) async {
-      // El mismo endpoint responde una cosa u otra según el rol; callarlo haría
-      // que alguien leyera el país como si fuera su centro.
+      // The same endpoint answers one thing or the other depending on the role;
+      // staying quiet about it would let somebody read the country as though it
+      // were their centre.
       await pumpView(tester, national: true);
 
       expect(

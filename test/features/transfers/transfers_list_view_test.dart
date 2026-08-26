@@ -45,8 +45,8 @@ void main() {
   testWidgets('the header counts what waits for this centre to decide', (
     tester,
   ) async {
-    // Solicitadas en las que somos el origen: es exactamente cuando el
-    // servidor deja aprobar o rechazar.
+    // Requested ones where we are the origin: it is exactly when the server
+    // allows approving or rejecting.
     await pumpList(
       tester,
       transfers: [
@@ -79,8 +79,8 @@ void main() {
   testWidgets('the filter is direction, because that is the first question', (
     tester,
   ) async {
-    // «Viene hacia mí» y «sale de aquí» son dos trabajos distintos; el estado
-    // solo importa después de saber cuál de los dos es.
+    // «Coming to me» and «leaving here» are two different jobs; the state only
+    // matters once you know which of the two it is.
     await pumpList(
       tester,
       transfers: [
@@ -116,8 +116,8 @@ void main() {
   testWidgets('the other centre is not named, because it cannot be known', (
     tester,
   ) async {
-    // El contrato manda identificadores y los endpoints de centros exigen
-    // administración nacional. Enseñar un identificador sería peor que nada.
+    // The contract sends identifiers and the centre endpoints require national
+    // administration. Showing an identifier would be worse than nothing.
     await pumpList(
       tester,
       transfers: [
@@ -131,8 +131,8 @@ void main() {
   testWidgets('somebody with no centre is not told about «this centre»', (
     tester,
   ) async {
-    // Una administracion nacional no pertenece a ninguno. Hablarle de «este
-    // centro» describe algo que no existe.
+    // A national administration belongs to none. Talking to them about «this
+    // centre» describes something that does not exist.
     await pumpList(tester, transfers: const [], myCenterId: null);
 
     expect(find.text('No hay transferencias registradas.'), findsOneWidget);

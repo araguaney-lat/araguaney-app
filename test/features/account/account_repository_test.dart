@@ -16,9 +16,9 @@ void main() async {
   test(
     'asking for a reset says the same thing whether the account exists',
     () async {
-      // El servidor contesta neutro a propósito: distinguir convertiría esta
-      // pantalla en una forma de averiguar quién tiene cuenta. El repositorio no
-      // interpreta esa respuesta, solo la deja pasar.
+      // The server answers neutrally on purpose: telling them apart would turn
+      // this screen into a way of finding out who has an account. The
+      // repository does not interpret that answer, it only lets it through.
       final adapter = FakeHttpAdapter(
         (_) => FakeResponse(200, {
           'message': 'If that email is registered, a reset link is on its way.',
@@ -36,9 +36,9 @@ void main() async {
   );
 
   test('setting up the second factor does not enable it', () async {
-    // El servidor entrega un secreto y espera la prueba de que se copió bien.
-    // Sin ese paso, un secreto mal escaneado dejaría a alguien fuera de su
-    // propia cuenta.
+    // The server hands over a secret and waits for proof that it was copied
+    // correctly. Without that step, a badly scanned secret would leave somebody
+    // out of their own account.
     final adapter = FakeHttpAdapter(
       (_) => FakeResponse(200, {
         'secret': 'ABCDEFGH',
@@ -91,8 +91,8 @@ void main() async {
   });
 
   test('disabling the second factor also demands a code', () async {
-    // Es lo que impide que quien encuentre un teléfono desbloqueado quite la
-    // segunda barrera antes de llevarse la cuenta.
+    // It is what stops whoever finds an unlocked phone removing the second
+    // barrier before walking away with the account.
     final adapter = FakeHttpAdapter(
       (_) => FakeResponse(200, {'message': 'ok'}),
     );
@@ -104,8 +104,8 @@ void main() async {
   });
 
   test('the overview asks for both views of the same user', () async {
-    // `/me/profile` trae el nombre del centro; `/me` es el único que dice si
-    // el segundo factor está activo.
+    // `/me/profile` brings the centre's name; `/me` is the only one that says
+    // whether the second factor is on.
     final adapter = FakeHttpAdapter(
       (options) => FakeResponse(
         200,

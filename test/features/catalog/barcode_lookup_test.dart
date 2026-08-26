@@ -17,8 +17,8 @@ void main() {
   BarcodeLookup lookupOn(FakeHttpAdapter adapter) =>
       BarcodeLookup(api: CatalogApi(fakeDio(adapter)), database: db);
 
-  /// Un adaptador que responde 404 a todo. Lo que se comprueba con él no es la
-  /// respuesta sino que su lista de peticiones quede vacía.
+  /// An adapter that answers 404 to everything. What is checked with it is not
+  /// the answer but that its list of requests stays empty.
   FakeHttpAdapter unusedServer() => FakeHttpAdapter(
     (_) => FakeResponse(404, {
       'error': {'code': 'BARCODE_NOT_FOUND', 'message': 'no'},
@@ -26,7 +26,7 @@ void main() {
   );
 
   test('a downloaded product resolves with no request at all', () async {
-    // Es el caso que importa: capturar ocurre donde no hay señal.
+    // It is the case that matters: capturing happens where there is no signal.
     await db.catalogDao.replaceAll([
       productTypeRow(id: 'pt-1', gtin: '7501358142600'),
     ]);
@@ -42,8 +42,8 @@ void main() {
   });
 
   test('a UPC-E is expanded before it is asked about', () async {
-    // El servidor rechazaría los ocho dígitos comprimidos: su dígito de
-    // control se calculó sobre el UPC-A de doce.
+    // The server would refuse the eight compressed digits: their check digit
+    // was computed over the twelve-digit UPC-A.
     final adapter = FakeHttpAdapter(
       (_) => FakeResponse(200, {
         'source': 'local',
@@ -57,8 +57,8 @@ void main() {
   });
 
   test('a product the platform knows but the device does not is usable', () {
-    // El catálogo del dispositivo puede estar viejo o tener otra visibilidad
-    // de campaña. El servidor responde por él.
+    // The device's catalogue may be old or have another campaign's visibility.
+    // The server answers for it.
     final adapter = FakeHttpAdapter(
       (_) => FakeResponse(200, {
         'source': 'local',
@@ -77,8 +77,8 @@ void main() {
   });
 
   test('what only Open Food Facts knows is described, never selected', () {
-    // Dar de alta un tipo de producto es del servidor. Un cliente que lo
-    // invente mete inventario bajo un nombre que la plataforma no aceptó.
+    // Adding a product type is the server's business. A client that invents one
+    // puts inventory under a name the platform did not accept.
     final adapter = FakeHttpAdapter(
       (_) => FakeResponse(200, {
         'source': 'open_food_facts',

@@ -66,8 +66,9 @@ void main() {
     });
 
     test('each box carries one product, one batch and one expiry', () {
-      // El invariante no lo impone esta clase: es la forma de `BoxDraft` en el
-      // contrato, y por eso no hay dónde escribir un segundo producto.
+      // The invariant is not imposed by this class: it is the shape of
+      // `BoxDraft` in the contract, and that is why there is nowhere to write a
+      // second product.
       final expiry = DateTime.utc(2027, 1, 31);
       final request = draft
           .addBox(boxInput(batch: 'L-42', expiryDate: expiry))

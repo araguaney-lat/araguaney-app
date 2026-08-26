@@ -140,8 +140,8 @@ void main() {
     });
 
     testWidgets('a rejected box offers no seal action either', (tester) async {
-      // No lleva `sealed_at`, como cualquier caja que no llegó a sellarse. Que
-      // esté sin sellar no la vuelve sellable: fue rechazada.
+      // It carries no `sealed_at`, like any box that never got sealed. Being
+      // unsealed does not make it sealable: it was refused.
       await db.boxesDao.replaceAll([boxRow(status: 'REJECTED')]);
 
       await pumpDetail(

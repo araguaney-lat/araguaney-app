@@ -32,8 +32,8 @@ void main() {
     });
 
     test('a new thread is opened as a campaign one', () async {
-      // Un hilo privado exige elegir destinatarios, que es trabajo de
-      // escritorio; desde el teléfono se avisa a la campaña.
+      // A private thread requires choosing recipients, which is desk work; from
+      // the phone the campaign gets told.
       final adapter = FakeHttpAdapter((_) => FakeResponse(201, threadJson()));
 
       await repositoryOn(adapter).openCampaignThread(
@@ -62,10 +62,10 @@ void main() {
         adapter,
       ).openCampaignThread(campaignId: 'campaign-9', title: 'x', body: 'y');
 
-      // El traductor de errores muestra el texto del servidor solo en las
-      // reglas de negocio; un 403 se cuenta genérico por diseño desde la fase
-      // 02. Aquí eso cuesta algo concreto: «no eres miembro de esta campaña»
-      // le diría a la persona qué pedir, y «no tienes permiso» no.
+      // The error translator shows the server's text only for business rules; a
+      // 403 is told generically by design since phase 02. Here that costs
+      // something concrete: «you are not a member of this campaign» would tell
+      // the person what to ask for, and «you do not have permission» does not.
       expect(
         (outcome as MessagingRefused).failure.operatorMessage(await spanish()),
         'No tienes permiso para hacer esta operación.',
@@ -73,7 +73,7 @@ void main() {
     });
 
     test('marking read never throws', () async {
-      // Abrir un hilo tiene que funcionar aunque el acuse falle.
+      // Opening a thread has to work even if the acknowledgement fails.
       await expectLater(
         repositoryOn(OfflineHttpAdapter()).markRead('thread-1'),
         completes,
@@ -141,8 +141,8 @@ void main() {
     });
 
     testWidgets('opening it marks it read', (tester) async {
-      // Si el contador siguiera contando lo ya leído, la gente aprendería a
-      // ignorarlo.
+      // If the counter went on counting what has been read, people would learn
+      // to ignore it.
       final adapter = await pumpThread(tester);
 
       expect(
@@ -162,8 +162,8 @@ void main() {
     });
 
     testWidgets('a rejected reply keeps what was written', (tester) async {
-      // Perder lo escrito por un fallo sería la peor forma de contestar a
-      // alguien que ya escribió.
+      // Losing what was written to a failure would be the worst way to answer
+      // somebody who already wrote.
       await pumpThread(tester, replyFails: true);
 
       await tester.enterText(find.byType(TextField), 'Voy para allá');

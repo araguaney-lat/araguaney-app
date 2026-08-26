@@ -21,9 +21,12 @@ import 'package:flutter_test/flutter_test.dart';
 ///
 /// Quotations do not count. The phase says they stay — they are what somebody
 /// said, not prose about it — so anything between guillemets is dropped before
-/// looking.
+/// looking. Code in backticks is dropped for the same reason: an identifier or
+/// a literal cited in a comment is evidence about the code, and the one place
+/// it matters is the check next door, which quotes the very string that got
+/// past it — `${item.freeText ?? 'Artículo'}`.
 void main() {
-  final quoted = RegExp('«[^»]*»|“[^”]*”');
+  final quoted = RegExp('«[^»]*»|“[^”]*”|`[^`]*`');
   // «no» and «solo» are left out on purpose: they are ordinary English words —
   // «no longer», «solo» — and with them in, the check accuses itself. What is
   // left is accents and words that cannot be anything else.

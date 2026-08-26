@@ -23,8 +23,8 @@ void main() {
   });
 
   test('a different label passes immediately', () {
-    // Quien escanea una fila de cajas no debería esperar entre una y la
-    // siguiente.
+    // Whoever scans a row of boxes should not have to wait between one and the
+    // next.
     final throttle = buildThrottle();
     throttle.accepts('BX-0001');
 
@@ -48,7 +48,7 @@ void main() {
     expect(throttle.accepts('BX-0001'), isFalse);
 
     now = now.add(const Duration(seconds: 2));
-    // Cuatro segundos desde la lectura aceptada, no desde la rechazada.
+    // Four seconds from the accepted read, not from the rejected one.
     expect(throttle.accepts('BX-0001'), isTrue);
   });
 

@@ -10,8 +10,8 @@ import '../../support/fake_http_adapter.dart';
 import '../../support/fixtures.dart';
 import '../../support/test_database.dart';
 
-/// Una página de [count] cajas con códigos distintos, para que la clave
-/// primaria no colisione entre páginas.
+/// A page of [count] boxes with different codes, so the primary key does not
+/// collide between pages.
 List<Map<String, Object?>> boxPage(int count, {int from = 0}) => [
   for (var i = from; i < from + count; i++)
     boxJson(id: 'box-$i', code: 'CJ-$i'),
@@ -49,8 +49,8 @@ void main() {
 
     await repositoryOn(adapter).refresh();
 
-    // 200 + 200 + 200 = 600 traídas, 500 guardadas: la ventana no crece con lo
-    // que la última página traiga de más.
+    // 200 + 200 + 200 = 600 fetched, 500 stored: the window does not grow with
+    // whatever extra the last page brings.
     expect(adapter.requests, hasLength(3));
     expect(await db.boxesDao.count(), BoxesRepository.windowLimit);
   });

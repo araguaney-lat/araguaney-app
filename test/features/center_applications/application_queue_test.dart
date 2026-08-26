@@ -77,8 +77,8 @@ void main() {
   testWidgets('everything the decision rests on is on the card', (
     tester,
   ) async {
-    // Obligar a abrir una ficha para saber quién respalda un centro convierte
-    // una cola de tres en tres navegaciones.
+    // Forcing a record to be opened to know who backs a centre turns a queue of
+    // three into three navigations.
     await pumpQueue(tester, queue: [applicationJson()]);
 
     expect(find.text('Fundación Manos del Táchira'), findsOneWidget);
@@ -103,8 +103,8 @@ void main() {
   testWidgets('approving names its three consequences before doing them', (
     tester,
   ) async {
-    // Una confirmación que solo dice «¿seguro?» no informa de nada, y esto crea
-    // un centro, da de alta a una persona y le manda una contraseña.
+    // A confirmation that only says «are you sure?» informs nobody of anything,
+    // and this creates a centre, adds a person and sends them a password.
     await pumpQueue(tester, queue: [applicationJson()]);
 
     await tester.tap(find.text('Aprobar'));
@@ -112,8 +112,8 @@ void main() {
 
     expect(find.textContaining('Se crea el centro'), findsOneWidget);
     expect(find.textContaining('coordinación'), findsOneWidget);
-    // Dos veces: en la tarjeta y en la confirmación. Lo que importa es que el
-    // diálogo diga a qué correo va a llegar la contraseña.
+    // Twice: on the card and in the confirmation. What matters is that the
+    // dialog says which address the password is going to arrive at.
     expect(
       find.descendant(
         of: find.byType(AlertDialog),
@@ -136,7 +136,8 @@ void main() {
   });
 
   testWidgets('rejecting says where the reason is going', (tester) async {
-    // Lo que se escriba lo lee quien postuló, en un correo, sin más contexto.
+    // What is written is read by whoever applied, in an email, with no further
+    // context.
     await pumpQueue(tester, queue: [applicationJson()]);
 
     await tester.tap(find.text('Rechazar'));
@@ -146,8 +147,8 @@ void main() {
   });
 
   testWidgets('a rejection without a reason does not leave', (tester) async {
-    // El servidor también lo exige, pero llegar hasta él para que lo diga
-    // gastaría una petición y una espera.
+    // The server requires it too, but going all the way there for it to say so
+    // would spend a request and a wait.
     await pumpQueue(tester, queue: [applicationJson()]);
 
     await tester.tap(find.text('Rechazar'));
@@ -190,8 +191,8 @@ void main() {
   });
 
   testWidgets('a refusal is read as an answer, not an error', (tester) async {
-    // Revisar postulaciones tiene su propio rol; a quien no lo tenga hay que
-    // decirle quién puede, no enseñarle un fallo.
+    // Reviewing applications has a role of its own; whoever lacks it should be
+    // told who can, not shown a failure.
     await pumpQueue(
       tester,
       queueResponse: FakeResponse(403, {
@@ -208,7 +209,8 @@ void main() {
   testWidgets('a centre with nothing optional shows no empty labels', (
     tester,
   ) async {
-    // El modelo generado trae estos campos anulables: se omite lo que no venga.
+    // The generated model brings these fields nullable: what does not arrive is
+    // omitted.
     await pumpQueue(
       tester,
       queue: [applicationJson(backingOrg: null, message: null, state: null)],

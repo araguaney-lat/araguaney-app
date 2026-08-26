@@ -56,8 +56,8 @@ void main() {
     });
 
     test('enqueueing the same capture twice does not duplicate it', () async {
-      // Lo impide la clave primaria, no una comprobación que alguien pueda
-      // olvidar: dos toques del botón de enviar son una sola captura.
+      // The primary key stops it, not a check somebody can forget: two taps of
+      // the send button are a single capture.
       await queue.enqueue(draft: draftWith(quantity: 10), userId: 'user-1');
       await queue.enqueue(draft: draftWith(quantity: 99), userId: 'user-1');
 
@@ -132,8 +132,9 @@ void main() {
     test(
       'a change of shift does not wipe what the previous one captured',
       () async {
-        // `clearReadModel` corre al iniciar sesión otra persona. Que no toque la
-        // cola es la funcionalidad: lo capturado en un sótano sigue pendiente.
+        // `clearReadModel` runs when another person signs in. That it does not
+        // touch the queue is the feature: what was captured in a basement stays
+        // pending.
         await queue.enqueue(draft: draftWith(), userId: 'user-1');
         await db.boxCodesDao.store(
           ['BX-RESERVED'],
@@ -147,7 +148,7 @@ void main() {
 
         expect(await queue.watchAll('user-1').first, hasLength(1));
         expect(await db.boxCodesDao.available('user-1'), 1);
-        // Y sí borra lo que sí es cache.
+        // And it does delete what really is cache.
         expect(await db.catalogDao.all(), isEmpty);
       },
     );
@@ -169,14 +170,15 @@ void main() {
           ),
         ).flush('user-1');
 
-        // Aparcar es dejar de reintentar solo. Cuando el motivo se resuelve
-        // fuera, la salida correcta es volver a la cola y no tirar inventario.
+        // Parking means it stops retrying by itself. When the reason is
+        // resolved outside, the right way out is going back to the queue and
+        // not throwing inventory away.
         await queue.retry('capture-1');
 
         final row = await db.captureQueueDao.findById('capture-1');
         expect(row?.status, QueuedCaptureStatus.pending);
         expect(row?.lastFailureMessage, isNull);
-        // Los intentos ocurrieron: reintentar no los borra.
+        // The attempts happened: retrying does not erase them.
         expect(row?.attempts, 1);
       },
     );
@@ -227,9 +229,10 @@ void main() {
     );
 
     test('a capture refused by campaign says how to unblock it', () async {
-      // El servidor nombra esa regla (`NOT_CAMPAIGN_MEMBER`), y quien capturó
-      // puede resolverla pidiendo que la sumen. Un «no tienes permiso» genérico
-      // dejaría la captura parada sin decir qué hacer con ella.
+      // The server names that rule (`NOT_CAMPAIGN_MEMBER`), and whoever
+      // captured can resolve it by asking to be added. A generic «you do not
+      // have permission» would leave the capture stuck without saying what to
+      // do with it.
       await queue.enqueue(draft: draftWith(), userId: 'user-1');
       final adapter = FakeHttpAdapter(
         (_) => FakeResponse(403, {
@@ -244,10 +247,10 @@ void main() {
 
       expect(report.parked, 1);
       final row = await db.captureQueueDao.findById('capture-1');
-      // **Se guarda el código y las palabras del servidor, no la copia
-      // propia.** Lo guardado lo lee alguien días después, quizá con la
-      // aplicación en otro idioma; escribir aquí el renderizado de hoy
-      // congelaría un idioma en la base. La pantalla resuelve con el código.
+      // **The code and the server's words are stored, not our own copy.** What
+      // is stored is read by somebody days later, perhaps with the application
+      // in another language; writing today's rendering here would freeze a
+      // language into the database. The screen resolves it from the code.
       expect(row?.lastFailureCode, 'NOT_CAMPAIGN_MEMBER');
       expect(row?.lastFailureMessage, 'User is not assigned to this campaign');
       expect(
@@ -268,14 +271,14 @@ void main() {
       await sync.flush('user-1');
       await sync.flush('user-1');
 
-      // Reintentar algo ya rechazado da la misma respuesta para siempre.
+      // Retrying something already refused gives the same answer forever.
       expect(adapter.requests, hasLength(1));
     });
 
     test('a spent code parks the capture instead of closing it', () async {
-      // La idempotencia por `capture_id` se comprueba antes que los códigos,
-      // así que este error significa que la captura NO quedó registrada y su
-      // etiqueta está pegada en otra caja. Cerrarla sola perdería inventario.
+      // Idempotency by `capture_id` is checked before the codes, so this error
+      // means the capture was NOT registered and its label is stuck on another
+      // box. Closing it by itself would lose inventory.
       await queue.enqueue(draft: draftWith(), userId: 'user-1');
       final adapter = FakeHttpAdapter(
         (_) => FakeResponse(409, {
@@ -332,7 +335,8 @@ void main() {
 
       final report = await syncOn(adapter).flush('user-1');
 
-      // Una sola petición: sin red, intentar la segunda daría el mismo error.
+      // A single request: with no network, trying the second would give the
+      // same error.
       expect(adapter.requests, hasLength(1));
       expect(report.sent, 0);
       expect(report.remaining, 2);
@@ -340,7 +344,7 @@ void main() {
     });
 
     test('an expired session does not park anything', () async {
-      // Un 401 no dice nada malo de la captura: dice que la sesión venció.
+      // A 401 says nothing bad about the capture: it says the session expired.
       await queue.enqueue(draft: draftWith(), userId: 'user-1');
       final adapter = FakeHttpAdapter(
         (_) => FakeResponse(401, {

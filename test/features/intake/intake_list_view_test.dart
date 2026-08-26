@@ -24,8 +24,8 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  /// `GET /v1/intakes` declara `boxes` con lista vacía por defecto y el
-  /// servidor no la rellena al listar, así que esto es lo que llega de verdad.
+  /// `GET /v1/intakes` declares `boxes` with an empty list by default and the
+  /// server does not fill it in when listing, so this is what really arrives.
   IntakeOut listed() => IntakeOut.fromJson(intakeJson(boxes: []));
 
   testWidgets('the listing does not invent a box count it was not sent', (
