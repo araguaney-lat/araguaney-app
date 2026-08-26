@@ -77,8 +77,8 @@ pie title Tasks completed (239 tasks, backlog aside)
 | 29 | [The minimum version gate](phase-29-the-version-gate.md) | 7 | 2 | 🟨 78% |
 | 30 | [Writing as a national administrator](phase-30-writing-as-national-admin.md) | 8 | 1 | 🟨 89% |
 | 31 | [Speaking more than one language](phase-31-internationalisation.md) | 9 | 1 | 🟨 90% |
-| 32 | [The commentary in English](phase-32-comments-in-english.md) | 1 | 5 | 🟨 17% |
-| **Total** (Phase 10 aside) | | **197** | **43** | **🟢 82%** |
+| 32 | [The commentary in English](phase-32-comments-in-english.md) | 4 | 2 | 🟨 67% |
+| **Total** (Phase 10 aside) | | **200** | **40** | **🟢 83%** |
 
 ## What is missing, and how that is kept honest
 
