@@ -5,11 +5,11 @@ import '../tables/queued_captures_table.dart';
 
 part 'capture_queue_dao.g.dart';
 
-/// Acceso a la cola de capturas.
+/// Access to the capture queue.
 ///
-/// **Toda consulta lleva `userId`.** No es una precaución de más: en un
-/// dispositivo de centro que se comparte entre turnos, una consulta sin filtrar
-/// enviaría las capturas de otra persona con la sesión de quien está delante.
+/// **Every query carries `userId`.** It is not extra caution: on a centre
+/// device shared between shifts, an unfiltered query would send somebody else's
+/// captures under the session of whoever is standing there.
 @DriftAccessor(tables: [QueuedCaptures])
 class CaptureQueueDao extends DatabaseAccessor<AppDatabase>
     with _$CaptureQueueDaoMixin {
@@ -21,7 +21,7 @@ class CaptureQueueDao extends DatabaseAccessor<AppDatabase>
             ..orderBy([(t) => OrderingTerm(expression: t.createdAt)]))
           .watch();
 
-  /// Cuántas capturas de esta persona siguen esperando señal.
+  /// How many of this person's captures are still waiting for signal.
   Stream<int> watchPendingCount(String userId) {
     final total = queuedCaptures.captureId.count();
     final query = selectOnly(queuedCaptures)
@@ -34,7 +34,7 @@ class CaptureQueueDao extends DatabaseAccessor<AppDatabase>
     return query.watchSingle().map((row) => row.read(total) ?? 0);
   }
 
-  /// Las que toca intentar, en el orden en que se capturaron.
+  /// The ones to try, in the order they were captured.
   Future<List<QueuedCaptureRow>> pending(String userId) =>
       (select(queuedCaptures)
             ..where(
@@ -49,14 +49,14 @@ class CaptureQueueDao extends DatabaseAccessor<AppDatabase>
     queuedCaptures,
   )..where((t) => t.captureId.equals(captureId))).getSingleOrNull();
 
-  /// Encola. Si esa llave ya estaba, no se duplica: la clave primaria lo
-  /// impide y esta escritura no la pisa.
+  /// Queues one. If that key was already there it is not duplicated: the
+  /// primary key prevents it and this write does not overwrite it.
   Future<void> enqueue(QueuedCaptureRow row) =>
       into(queuedCaptures).insert(row, mode: InsertMode.insertOrIgnore);
 
-  /// Cuenta un intento. El incremento lo hace SQLite sobre el valor de la fila
-  /// y no un número leído antes: dos vaciados solapados no pueden perder la
-  /// cuenta del otro.
+  /// Counts an attempt. SQLite does the increment against the row's own value
+  /// rather than a number read beforehand: two overlapping flushes cannot lose
+  /// each other's count.
   Future<void> markAttempt(String captureId, DateTime at) => customUpdate(
     'UPDATE queued_captures SET attempts = attempts + 1, '
     'last_attempt_at = ? WHERE capture_id = ?',
@@ -64,7 +64,7 @@ class CaptureQueueDao extends DatabaseAccessor<AppDatabase>
     updates: {queuedCaptures},
   );
 
-  /// Aparca una captura rechazada con el motivo del servidor a la vista.
+  /// Parks a refused capture with the server's reason in plain sight.
   Future<void> markRejected(
     String captureId, {
     required String code,
@@ -80,7 +80,7 @@ class CaptureQueueDao extends DatabaseAccessor<AppDatabase>
         ),
       );
 
-  /// Registra por qué falló un intento que sí se va a repetir.
+  /// Records why an attempt failed when it will be repeated anyway.
   Future<void> markRetryable(
     String captureId, {
     required String code,
@@ -95,17 +95,18 @@ class CaptureQueueDao extends DatabaseAccessor<AppDatabase>
         ),
       );
 
-  /// Devuelve a la cola una captura aparcada.
+  /// Puts a parked capture back in the queue.
   ///
-  /// Aparcar es dejar de reintentar **solo**, no cerrar el caso: el rechazo
-  /// suele describir algo que alguien puede resolver fuera —una aprobación que
-  /// falta, un producto que se dio de alta—, y entonces reintentar es la
-  /// respuesta correcta. Hasta ahora la única salida ofrecida era descartar, y
-  /// tirar inventario para resolver un trámite es la peor de las dos.
+  /// Parking means it stops retrying **by itself**, not that the case is
+  /// closed: a refusal usually describes something somebody can resolve
+  /// elsewhere — a missing approval, a product that has since been created —
+  /// and then retrying is the right answer. The only way out offered before was
+  /// discarding, and throwing away inventory to settle paperwork is the worse
+  /// of the two.
   ///
-  /// El motivo anterior se borra porque ya no describe el estado de la fila;
-  /// [attempts] no se toca, porque los intentos ocurrieron. Y la llave de
-  /// idempotencia sigue siendo la misma, así que reintentar no puede duplicar.
+  /// The previous reason is cleared because it no longer describes the row;
+  /// [attempts] is left alone, because those attempts happened. And the
+  /// idempotency key is still the same, so retrying cannot duplicate.
   Future<void> requeue(String captureId) =>
       (update(
         queuedCaptures,
@@ -117,8 +118,8 @@ class CaptureQueueDao extends DatabaseAccessor<AppDatabase>
         ),
       );
 
-  /// Saca una captura de la cola. La llaman dos sitios: el envío exitoso y el
-  /// descarte explícito de una persona. Nada más borra de aquí.
+  /// Takes a capture out of the queue. Two places call it: a successful send,
+  /// and a person discarding it on purpose. Nothing else deletes from here.
   Future<void> remove(String captureId) => (delete(
     queuedCaptures,
   )..where((t) => t.captureId.equals(captureId))).go();
