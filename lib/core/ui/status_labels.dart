@@ -74,6 +74,20 @@ String donationStatusLabel(AppLocalizations l10n, String status) =>
       _ => status,
     };
 
+/// Cómo llegó una caja de un envío.
+///
+/// Cuatro estados de `RECEPTION_OUTCOMES`. Tabla propia y no compartida con la
+/// de las donaciones aunque tres palabras coincidan: son objetos distintos, y
+/// «retenida en aduana» solo existe aquí.
+String receptionOutcomeLabel(AppLocalizations l10n, String outcome) =>
+    switch (outcome) {
+      'RECEIVED' => l10n.receptionOutcomeReceived,
+      'MISSING' => l10n.receptionOutcomeMissing,
+      'DAMAGED' => l10n.receptionOutcomeDamaged,
+      'RETAINED_CUSTOMS' => l10n.receptionOutcomeRetained,
+      _ => outcome,
+    };
+
 /// Cómo terminó una línea de una donación al recibirla.
 ///
 /// Tres estados del backend, y solo dos se mandan: lo que no viaja marcado el

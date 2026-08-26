@@ -22,7 +22,9 @@ import '../../pallets/data/pallets_providers.dart';
 import '../../reports/ui/reports_view.dart';
 import '../data/shipments_providers.dart';
 import '../data/shipments_repository.dart';
+import 'add_milestone_sheet.dart';
 import 'pick_pallet_sheet.dart';
+import 'register_reception_view.dart';
 
 /// Ficha de un envío, de solo lectura, con lo que llegó y lo que no.
 ///
@@ -46,35 +48,16 @@ class ShipmentRecordView extends ConsumerWidget {
     builder: (_) => ShipmentRecordView(shipmentId: shipmentId),
   );
 
-  Future<void> _report(BuildContext context, WidgetRef ref) async {
-    final incident = await ReportIncidentSheet.show(context);
-    if (incident == null || !context.mounted) return;
-
-    final outcome = await ref
-        .read(incidentsRepositoryProvider)
-        .create(
-          shipmentId: shipmentId,
-          type: incident.type,
-          description: incident.description,
-        );
-    if (!context.mounted) return;
-
-    switch (outcome) {
-      case IncidentCreated():
-        ref.invalidate(shipmentIncidentsProvider(shipmentId));
-      case IncidentRejected(:final failure):
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(failure.operatorMessage(context.l10n))),
-        );
-    }
-  }
-
   /// Pide el manifiesto y lo abre.
   ///
   /// El servidor no devuelve el PDF: devuelve un trabajo, y el documento llega
   /// cuando termina de armarse. Si tarda más de lo que este sondeo espera, se
   /// dice — el trabajo sigue vivo allá y volver a pedirlo lo recoge.
-  Future<void> _manifest(BuildContext context, WidgetRef ref) async {
+  Future<void> _document(
+    BuildContext context,
+    WidgetRef ref,
+    ShipmentDocument document,
+  ) async {
     // Se toma antes de esperar: después de un await este contexto puede
     // haber dejado de estar montado.
     final l10n = context.l10n;
@@ -83,7 +66,7 @@ class ShipmentRecordView extends ConsumerWidget {
 
     final outcome = await ref
         .read(shipmentsRepositoryProvider)
-        .manifest(shipmentId);
+        .document(shipmentId, document);
     if (!context.mounted) return;
 
     // El aviso de espera se retira antes de decir cómo terminó: si no, la
@@ -117,6 +100,31 @@ class ShipmentRecordView extends ConsumerWidget {
     }
   }
 
+  /// Anota un hito y lo deja en el recorrido, que ya sabía leerlos.
+  Future<void> _milestone(BuildContext context, WidgetRef ref) async {
+    final chosen = await AddMilestoneSheet.show(context);
+    if (chosen == null || !context.mounted) return;
+
+    final outcome = await ref
+        .read(shipmentsRepositoryProvider)
+        .addMilestone(
+          shipmentId: shipmentId,
+          milestone: chosen.milestone,
+          note: chosen.note,
+          occurredAt: chosen.occurredAt,
+        );
+    if (!context.mounted) return;
+
+    switch (outcome) {
+      case ShipmentDone():
+        ref
+          ..invalidate(shipmentProvider(shipmentId))
+          ..invalidate(shipmentEventsProvider(shipmentId));
+      case ShipmentRefused(:final failure):
+        _say(context, failure.operatorMessage(context.l10n));
+    }
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final shipment = ref.watch(shipmentProvider(shipmentId));
@@ -128,16 +136,44 @@ class ShipmentRecordView extends ConsumerWidget {
           shipment.valueOrNull?.reference ?? context.l10n.shipmentRecordTitle,
         ),
         actions: [
-          IconButton(
-            tooltip: context.l10n.manifestLabel,
+          // Anotar un hito exige administración nacional, igual que entregar y
+          // que la recepción. Se ofrece siempre que el rol lo permita: el
+          // servidor acepta un hito en cualquier estado, y poner aquí una
+          // condición propia sería inventar una regla suya.
+          if (ref.watch(isNationalAdminProvider))
+            IconButton(
+              tooltip: context.l10n.milestoneAddTitle,
+              icon: const Icon(Icons.add_location_alt_outlined),
+              onPressed: () => _milestone(context, ref),
+            ),
+          PopupMenuButton<ShipmentDocument>(
+            tooltip: context.l10n.shipmentDocuments,
             icon: const Icon(Icons.description_outlined),
-            onPressed: () => _manifest(context, ref),
+            onSelected: (document) => _document(context, ref, document),
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                value: ShipmentDocument.manifestPdf,
+                child: Text(context.l10n.documentManifestPdf),
+              ),
+              PopupMenuItem(
+                value: ShipmentDocument.manifestXlsx,
+                child: Text(context.l10n.documentManifestXlsx),
+              ),
+              PopupMenuItem(
+                value: ShipmentDocument.declarationJson,
+                child: Text(context.l10n.documentDeclarationJson),
+              ),
+              PopupMenuItem(
+                value: ShipmentDocument.declarationXlsx,
+                child: Text(context.l10n.documentDeclarationXlsx),
+              ),
+            ],
           ),
         ],
       ),
       floatingActionButton: canReport
           ? FloatingActionButton.extended(
-              onPressed: () => _report(context, ref),
+              onPressed: () => reportShipmentIncident(context, ref, shipmentId),
               icon: const Icon(Icons.report_outlined),
               label: Text(context.l10n.incidentLabel),
             )
@@ -376,9 +412,22 @@ class _AdvanceState extends ConsumerState<_Advance> {
 
   @override
   Widget build(BuildContext context) {
+    // Cerrar y despachar son del centro que envía; entregar y registrar la
+    // recepción exigen administración nacional. El servidor reparte así los
+    // cuatro pasos y la barra no ofrece lo que va a responder 403.
+    final national = ref.watch(isNationalAdminProvider);
+    final reception = ref
+        .watch(shipmentReceptionProvider(widget.shipment.id))
+        .valueOrNull;
+
     final label = switch (widget.shipment.status) {
       'OPEN' => context.l10n.shipmentCloseAction,
       'CLOSED' => context.l10n.shipmentDispatchAction,
+      'SHIPPED' when national => context.l10n.shipmentDeliveredAction,
+      // La recepción se registra una sola vez: con una ya escrita el paso
+      // desaparece en vez de fallar con un 409.
+      'DELIVERED' when national && reception == null =>
+        context.l10n.receptionRegisterAction,
       _ => null,
     };
     if (label == null) return const SizedBox.shrink();
@@ -399,6 +448,27 @@ class _AdvanceState extends ConsumerState<_Advance> {
 
   Future<void> _advance(String label) async {
     final shipment = widget.shipment;
+
+    // Registrar la recepción no es un paso de un botón: es una pantalla, caja
+    // por caja.
+    if (shipment.status == 'DELIVERED') {
+      final registered = await Navigator.of(
+        context,
+      ).push(RegisterReceptionView.route(shipment));
+      if (!mounted || !(registered ?? false)) return;
+      ref
+        ..invalidate(shipmentProvider(shipment.id))
+        ..invalidate(shipmentReceptionProvider(shipment.id))
+        ..invalidate(shipmentIncidentsProvider(shipment.id))
+        ..invalidate(shipmentEventsProvider(shipment.id));
+      return;
+    }
+
+    if (shipment.status == 'SHIPPED') {
+      await _markDelivered(shipment);
+      return;
+    }
+
     final closing = shipment.status == 'OPEN';
     final pallets = shipment.pallets.length;
 
@@ -456,6 +526,79 @@ class _AdvanceState extends ConsumerState<_Advance> {
       ..invalidate(shipmentsProvider)
       ..invalidate(shipmentEventsProvider(shipment.id));
   }
+
+  /// `SHIPPED` → `DELIVERED`.
+  ///
+  /// Dice que llegó y nada más: **qué** llegó lo registra la recepción, que es
+  /// el paso siguiente. Decir las dos cosas con un botón sería declarar
+  /// recibido lo que nadie ha contado todavía.
+  Future<void> _markDelivered(ShipmentDetailOut shipment) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(context.l10n.shipmentDeliveredTitle),
+        content: Text(context.l10n.shipmentDeliveredExplanation),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(context.l10n.notYetValue),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(context.l10n.shipmentDeliveredAction),
+          ),
+        ],
+      ),
+    );
+    if (!(confirmed ?? false) || !mounted) return;
+
+    setState(() => _busy = true);
+    final outcome = await ref
+        .read(shipmentsRepositoryProvider)
+        .markDelivered(shipmentId: shipment.id);
+    if (!mounted) return;
+    setState(() => _busy = false);
+
+    if (outcome case ShipmentRefused(:final failure)) {
+      _say(context, failure.operatorMessage(context.l10n));
+      return;
+    }
+    ref
+      ..invalidate(shipmentProvider(shipment.id))
+      ..invalidate(shipmentsProvider)
+      ..invalidate(shipmentEventsProvider(shipment.id));
+  }
+}
+
+/// Levantar una incidencia sobre este envío.
+///
+/// La llaman dos sitios: el botón flotante, y lo que la recepción encontró —
+/// que es donde alguien acaba de ver que las cajas no cuadran.
+Future<void> reportShipmentIncident(
+  BuildContext context,
+  WidgetRef ref,
+  String shipmentId,
+) async {
+  final incident = await ReportIncidentSheet.show(context);
+  if (incident == null || !context.mounted) return;
+
+  final outcome = await ref
+      .read(incidentsRepositoryProvider)
+      .create(
+        shipmentId: shipmentId,
+        type: incident.type,
+        description: incident.description,
+      );
+  if (!context.mounted) return;
+
+  switch (outcome) {
+    case IncidentCreated():
+      ref.invalidate(shipmentIncidentsProvider(shipmentId));
+    case IncidentRejected(:final failure):
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(failure.operatorMessage(context.l10n))),
+      );
+  }
 }
 
 void _say(BuildContext context, String message) => ScaffoldMessenger.of(context)
@@ -497,6 +640,20 @@ class _Reception extends StatelessWidget {
               '${shrinkage.shrinkagePct}% · '
               '${context.l10n.boxCount(shrinkage.notReceived)}',
         ),
+        // Lo que la recepción encontró se responde con una incidencia, y se
+        // levanta desde aquí y no desde el botón de abajo: el sitio donde
+        // alguien lo descubre es este.
+        if (shrinkage.notReceived > 0)
+          Consumer(
+            builder: (context, ref, _) => ListTile(
+              dense: true,
+              leading: const Icon(Icons.report_outlined),
+              title: Text(context.l10n.receptionRaiseIncident),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () =>
+                  reportShipmentIncident(context, ref, reception.shipmentId),
+            ),
+          ),
         // La merma de la campaña se mira desde aquí, que es donde alguien
         // acaba de descubrir que algo no cuadra.
         if (campaignId case final campaign?)
