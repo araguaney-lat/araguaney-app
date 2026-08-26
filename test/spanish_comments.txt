@@ -19,8 +19,6 @@ lib/core/api/update_prompt_memory.dart
 lib/core/auth/auth_interceptor.dart
 lib/core/auth/auth_providers.dart
 lib/core/auth/auth_repository.dart
-lib/core/auth/session.dart
-lib/core/auth/session_controller.dart
 lib/core/auth/token_storage.dart
 lib/core/config/app_config.dart
 lib/core/connectivity/connectivity_controller.dart
