@@ -347,6 +347,28 @@ hidden and nothing is claimed that is not true.
 
 ---
 
+## 13. A response schema for `GET /v1/requests/{id}/matches`
+
+**Blocks:** nothing. Same family as request 4, on the way out instead of in.
+
+The route is declared `response_model=list[dict]`, so the generated client
+returns `dynamic`. The shape the service actually produces is three fields per
+row — `category`, `total_units`, `box_count` — which this repository learned by
+reading `needs_matching.py` rather than the contract.
+
+**What the application does today:** reads those three by hand in
+`RequestMatch.tryFrom`, in one place, and **drops a row that does not carry all
+three** rather than filling the gap with zeros. «No stock» and «the server did
+not say» are different answers, and only one of them is worth putting in front
+of somebody. A test pins the mapping so a drift shows up red instead of as a
+wrong number on a board.
+
+**Shape that would work:** any declared schema with the three fields. The
+generated client would carry them, and the hand-written reader and its test
+could go.
+
+---
+
 ## Not requests
 
 Recorded here so they are not mistaken for gaps:
