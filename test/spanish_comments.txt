@@ -16,11 +16,6 @@ lib/core/api/dio_client.dart
 lib/core/api/export_job.dart
 lib/core/api/refusal_copy.dart
 lib/core/api/update_prompt_memory.dart
-lib/core/auth/auth_interceptor.dart
-lib/core/auth/auth_providers.dart
-lib/core/auth/auth_repository.dart
-lib/core/auth/token_storage.dart
-lib/core/config/app_config.dart
 lib/core/connectivity/connectivity_controller.dart
 lib/core/connectivity/connectivity_probe.dart
 lib/core/db/app_database.dart
@@ -35,7 +30,6 @@ lib/core/db/tables/product_types_table.dart
 lib/core/db/tables/sync_markers_table.dart
 lib/core/i18n/l10n_extension.dart
 lib/core/i18n/language_preference.dart
-lib/core/platform/open_link.dart
 lib/core/push/device_registrar.dart
 lib/core/push/fcm_push_service.dart
 lib/core/push/push_destination.dart
@@ -44,7 +38,6 @@ lib/core/push/push_providers.dart
 lib/core/push/push_service.dart
 lib/core/push/push_session_binder.dart
 lib/core/routing/push_router.dart
-lib/core/routing/session_gate.dart
 lib/core/sync/sync_coordinator.dart
 lib/core/sync/sync_outcome.dart
 lib/core/ui/app_bottom_bar.dart
@@ -56,9 +49,7 @@ lib/core/ui/record_field.dart
 lib/core/ui/relative_time.dart
 lib/core/ui/sheet_insets.dart
 lib/core/ui/stale_data_banner.dart
-lib/core/ui/status_labels.dart
 lib/core/ui/theme/app_colors.dart
-lib/core/ui/theme/app_theme.dart
 lib/core/ui/theme/app_typography.dart
 lib/features/account/data/account_providers.dart
 lib/features/account/data/account_repository.dart

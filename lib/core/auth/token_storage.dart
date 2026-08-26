@@ -1,45 +1,48 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-/// Guarda el refresh token entre ejecuciones de la aplicación.
+/// Keeps the refresh token between runs of the application.
 ///
-/// **Solo el refresh se persiste.** El access token vive en memoria y muere con
-/// el proceso: dura poco, se puede volver a pedir con el refresh y escribirlo en
-/// disco solo agrandaría la superficie de un dispositivo compartido o perdido.
-/// También guarda **qué persona** abrió esa sesión. El token no lo dice —lleva
-/// centro y rol, no identidad—, y sin ese dato un dispositivo compartido no
-/// puede saber si quien acaba de entrar es la misma persona del turno anterior
-/// o alguien que no debería ver su cache.
+/// **Only the refresh is persisted.** The access token lives in memory and dies
+/// with the process: it is short-lived, it can be asked for again with the
+/// refresh, and writing it to disk would only widen the surface of a shared or
+/// lost device.
+///
+/// It also stores **which person** opened that session. The token does not say
+/// — it carries centre and role, not identity — and without that a shared
+/// device cannot tell whether whoever just signed in is the same person as the
+/// previous shift or somebody who should not see their cache.
 abstract interface class TokenStorage {
   Future<String?> readRefreshToken();
   Future<void> writeRefreshToken(String token);
 
   Future<String?> readUserId();
 
-  /// Guarda la identidad. Un [userId] nulo la borra: es lo que corresponde
-  /// cuando no se pudo confirmar quién es.
+  /// Stores the identity. A null [userId] deletes it, which is the right thing
+  /// when who they are could not be confirmed.
   Future<void> writeUserId(String? userId);
 
   Future<void> clear();
 }
 
-/// Implementación sobre el almacén seguro del sistema: Keychain en iOS y
-/// EncryptedSharedPreferences (respaldado por el Keystore) en Android.
+/// The implementation over the system's secure store: Keychain on iOS, and
+/// EncryptedSharedPreferences (backed by the Keystore) on Android.
 class SecureTokenStorage implements TokenStorage {
   SecureTokenStorage({FlutterSecureStorage? storage})
     : _storage =
           storage ??
           const FlutterSecureStorage(
-            // En Android 11 del paquete el cifrado con Keystore (AES/GCM) ya es
-            // el comportamiento por defecto, y `resetOnError` deja el almacén
-            // limpio si una credencial resulta indescifrable: mejor pedir
-            // sesión otra vez que arrancar contra un error irrecuperable.
+            // In the package's Android 11, Keystore encryption (AES/GCM) is
+            // already the default, and `resetOnError` leaves the store clean if
+            // a credential turns out to be undecipherable: better to ask for a
+            // session again than to start up against an unrecoverable error.
             aOptions: AndroidOptions(),
             iOptions: IOSOptions(
-              // El dispositivo se comparte en un centro y la aplicación
-              // sincroniza al abrirse, no en segundo plano: no hace falta leer
-              // con el teléfono bloqueado. `first_unlock` sin `this_device_only`
-              // permitiría restaurar la credencial en otro equipo desde un
-              // respaldo, y una sesión no debería viajar así.
+              // The device is shared at a centre and the application syncs
+              // when it opens rather than in the background: there is no need
+              // to read while the phone is locked. `first_unlock` without
+              // `this_device_only` would allow the credential to be restored
+              // onto another device from a backup, and a session should not
+              // travel like that.
               accessibility: KeychainAccessibility.first_unlock_this_device,
             ),
           );

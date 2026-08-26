@@ -1,21 +1,21 @@
 import 'package:dio/dio.dart';
 
-/// Pone el access token en cada petición y renueva la sesión cuando el servidor
-/// contesta 401.
+/// Puts the access token on every request and renews the session when the
+/// server answers 401.
 ///
-/// Tres detalles que parecen de implementación y no lo son:
+/// Three details that look like implementation and are not:
 ///
-/// - **Una sola renovación a la vez.** Al abrir una pantalla salen varias
-///   peticiones juntas; si el token venció, todas reciben 401 casi al mismo
-///   tiempo. Sin esta cautela cada una pediría su propia renovación, y como el
-///   backend **rota** el refresh en cada uso, la segunda llegaría con un token
-///   ya revocado: el servidor lo leería como reutilización, revocaría la
-///   familia y expulsaría a quien estaba trabajando. Todas esperan la misma
-///   renovación.
-/// - **Un solo reintento.** Si tras renovar vuelve un 401, el problema no es el
-///   token y reintentar sería un bucle.
-/// - **Los endpoints de sesión no se renuevan.** Un 401 de `login` o de
-///   `refresh` es la respuesta, no un token vencido.
+/// - **One renewal at a time.** Opening a screen fires several requests at
+///   once; if the token expired, they all get a 401 at nearly the same moment.
+///   Without this care each one would ask for its own renewal, and since the
+///   backend **rotates** the refresh on every use, the second would arrive with
+///   an already-revoked token: the server would read that as reuse, revoke the
+///   family and throw out whoever was working. They all wait on the same
+///   renewal.
+/// - **One retry.** If a 401 comes back after renewing, the token is not the
+///   problem and retrying would be a loop.
+/// - **The session endpoints are not renewed.** A 401 from `login` or
+///   `refresh` is the answer, not an expired token.
 class AuthInterceptor extends Interceptor {
   AuthInterceptor({
     required this.readAccessToken,
@@ -24,19 +24,21 @@ class AuthInterceptor extends Interceptor {
     required this.retryClient,
   });
 
-  /// Token vigente, o nulo si no hay sesión.
+  /// The current token, or null when there is no session.
   final String? Function() readAccessToken;
 
-  /// Renueva y devuelve el nuevo access token. Lanza si no se puede renovar.
+  /// Renews and returns the new access token. Throws if it cannot renew.
   final Future<String> Function() refreshSession;
 
-  /// Se llama cuando la renovación falla y la sesión local deja de servir.
+  /// Called when the renewal fails and the local session stops being any
+  /// use.
   final Future<void> Function() onSessionExpired;
 
-  /// Cliente sin interceptor de sesión, para reenviar la petición original.
+  /// A client without the session interceptor, for resending the original
+  /// request.
   final Dio retryClient;
 
-  /// Marca en la petición para no reintentarla dos veces.
+  /// A mark on the request so it is not retried twice.
   static const _retriedFlag = 'auth_retried';
 
   static const _pathsWithoutSession = {
@@ -101,8 +103,9 @@ class AuthInterceptor extends Interceptor {
     try {
       return await refreshSession();
     } finally {
-      // Se libera pase lo que pase: si se dejara puesto, un fallo transitorio
-      // dejaría a la aplicación esperando para siempre una renovación muerta.
+      // Released whatever happens: leaving it in place would have the
+      // application waiting forever on a dead renewal after one transient
+      // failure.
       _inFlightRefresh = null;
     }
   }
