@@ -5,14 +5,14 @@ import 'package:araguaney_app/core/auth/auth_repository.dart';
 import 'package:araguaney_app/core/auth/token_storage.dart';
 import 'package:dio/dio.dart';
 
-/// Borrado del modelo de lectura que solo cuenta cuántas veces lo llamaron.
+/// A read-model wipe that only counts how many times it was called.
 class FakeReadModelReset {
   int count = 0;
 
   Future<void> call() async => count++;
 }
 
-/// Almacén en memoria que registra lo que se le pidió.
+/// In-memory storage that records what was asked of it.
 class FakeTokenStorage implements TokenStorage {
   FakeTokenStorage({this.stored, this.storedUserId});
 
@@ -44,10 +44,10 @@ class FakeTokenStorage implements TokenStorage {
   }
 }
 
-/// Repositorio falso.
+/// A fake repository.
 ///
-/// Extiende al real en lugar de imitar una interfaz para que la firma no pueda
-/// divergir en silencio: si el repositorio cambia, esto deja de compilar.
+/// It extends the real one instead of imitating an interface so the signature
+/// cannot diverge in silence: if the repository changes, this stops compiling.
 class FakeAuthRepository extends AuthRepository {
   FakeAuthRepository({
     this.loginResult,
@@ -67,12 +67,12 @@ class FakeAuthRepository extends AuthRepository {
   ApiFailure? totpError;
   Token? changePasswordToken;
 
-  /// Quién contesta `GET /v1/auth/me`. Nulo con [meError] puesto simula que no
-  /// se pudo confirmar la identidad.
+  /// Who answers `GET /v1/auth/me`. Null with [meError] set simulates an
+  /// identity that could not be confirmed.
   String meUserId = 'user-1';
 
-  /// El rol que contesta `GET /v1/auth/me`. Es el que la aplicación usa cuando
-  /// el token no lo trae, que es lo que pasa al renovar.
+  /// The role that answers `GET /v1/auth/me`. It is the one the application
+  /// uses when the token does not carry it, which is what happens on renewal.
   String meCenterRole = 'volunteer';
   ApiFailure? meError;
   int meCount = 0;

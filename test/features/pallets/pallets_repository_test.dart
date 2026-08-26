@@ -13,8 +13,8 @@ void main() {
       PalletsRepository(PalletsApi(fakeDio(adapter)));
 
   test('adding a box sends the code under the key the backend reads', () async {
-    // El contrato declara ese cuerpo sin tipar, así que la llave se escribió a
-    // mano y esta prueba es lo que impide que se desincronice en silencio.
+    // The contract declares that body untyped, so the key was written by hand
+    // and this test is what stops it drifting out of sync in silence.
     final adapter = FakeHttpAdapter(
       (_) => FakeResponse(200, palletDetailJson()),
     );
@@ -30,7 +30,8 @@ void main() {
   });
 
   test('a box the server will not take keeps its reason', () async {
-    // Que la caja no esté sellada o ya esté en otra tarima es una regla suya.
+    // That the box is not sealed or is already on another pallet is a rule of
+    // its own.
     final adapter = FakeHttpAdapter(
       (_) => FakeResponse(409, {
         'error': {
@@ -65,7 +66,8 @@ void main() {
   });
 
   test('closing without weighing is allowed', () async {
-    // Una báscula rota no puede impedir cerrar una tarima ya armada.
+    // A broken scale cannot stop a pallet that is already built from being
+    // closed.
     final adapter = FakeHttpAdapter((_) => FakeResponse(200, palletJson()));
 
     final outcome = await repositoryOn(adapter).close(palletId: 'pallet-1');

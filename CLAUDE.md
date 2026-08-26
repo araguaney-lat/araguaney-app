@@ -110,7 +110,16 @@ al bloque, porque la etiqueta física ya puede estar pegada.
 
 - **Identificadores en inglés** (funciones, variables, clases, archivos, rutas).
   **Prosa de producto en español** (textos de interfaz, mensajes de error al operador).
-  **Prosa para contribuidores en inglés** (commits, PR, README/CONTRIBUTING/SECURITY).
+  **Prosa para contribuidores en inglés** (commits, PR, README/CONTRIBUTING/SECURITY
+  y **los comentarios del código**, incluidos los de los tests).
+- **Los comentarios van en inglés.** Se leen mientras se edita el código que
+  describen, así que pertenecen a la prosa para contribuidores y no a la de
+  producto: quien lee un comentario está leyendo el código de al lado, en inglés.
+  Que la regla no los nombrara es lo que dejó 2.697 líneas en español hasta la
+  fase 32. Lo que sí se conserva tal cual son las **citas** —lo que responde el
+  servidor, lo que diría alguien en un mostrador— y el código citado entre
+  comillas invertidas: son evidencia, no prosa. `test/core/i18n/comments_in_english_test.dart`
+  falla si vuelve a aparecer un comentario en español.
 - **Toda la documentación del repositorio va en inglés**, incluido todo `docs/`.
   Esta regla difiere a propósito del repositorio del backend (donde el roadmap y el
   razonamiento de dominio quedaron en español): aquí la audiencia primaria de `docs/`

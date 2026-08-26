@@ -3,14 +3,14 @@ import 'package:araguaney_app/core/db/app_database.dart';
 import 'package:dio/dio.dart';
 import 'package:drift/native.dart';
 
-/// Base real en memoria.
+/// A real in-memory database.
 ///
-/// Lo que toca Drift se prueba contra SQLite de verdad y no contra un doble:
-/// la mitad de los errores de esta capa viven en las transacciones y en las
-/// restricciones de la tabla, y un doble las obedece por definición.
+/// What touches Drift is tested against real SQLite and not against a double:
+/// half the errors of this layer live in the transactions and in the table's
+/// constraints, and a double obeys them by definition.
 AppDatabase openTestDatabase() => AppDatabase(NativeDatabase.memory());
 
-/// Cliente de cajas que ningún doble llega a usar. Existe porque los
-/// repositorios reales lo exigen en su constructor y los dobles heredan de
-/// ellos.
+/// A boxes client no double ever gets to use. It exists because the real
+/// repositories require it in their constructor and the doubles inherit from
+/// them.
 BoxesApi unusedBoxesApi() => BoxesApi(Dio());

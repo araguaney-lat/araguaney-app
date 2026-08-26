@@ -2,16 +2,16 @@ import 'package:dio/dio.dart';
 
 import 'fake_http_adapter.dart';
 
-/// `Dio` sin interceptores contra un adaptador falso.
+/// A `Dio` with no interceptors against a fake adapter.
 ///
-/// Los repositorios se prueban contra el cliente generado de verdad, no contra
-/// un doble suyo: así la serialización del contrato entra en la prueba, que es
-/// justo donde un cambio del backend rompería en producción.
+/// The repositories are tested against the real generated client, not against a
+/// double of it: that way the contract's serialisation is part of the test,
+/// which is exactly where a backend change would break in production.
 Dio fakeDio(FakeHttpAdapter adapter) =>
     Dio(BaseOptions(baseUrl: 'https://test.invalid'))
       ..httpClientAdapter = adapter;
 
-/// Adaptador que simula un sótano sin señal.
+/// An adapter that simulates a basement with no signal.
 class OfflineHttpAdapter extends FakeHttpAdapter {
   OfflineHttpAdapter()
     : super(

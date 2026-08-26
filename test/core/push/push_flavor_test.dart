@@ -14,10 +14,10 @@ void main() {
     if (AppConfig.pushEnabled) {
       expect(service, isNot(isA<NoopPushService>()));
     } else {
-      // Compilado con `APP_FLAVOR=foss`. Esta rama sí lleva Firebase dentro, y
-      // por eso lo que se comprueba aquí es que no se usa. Que tampoco esté
-      // presente solo lo puede demostrar la rama `foss`, que quita la
-      // dependencia — ver `docs/release/foss.md`.
+      // Built with `APP_FLAVOR=foss`. This branch does carry Firebase inside,
+      // and that is why what is checked here is that it is not used. That it is
+      // not even present can only be proved by the `foss` branch, which drops
+      // the dependency — see `docs/release/foss.md`.
       expect(service, isA<NoopPushService>());
     }
   });

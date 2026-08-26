@@ -31,8 +31,8 @@ void main() {
     probe = FakeConnectivityProbe();
     queue = FakeCaptureQueue(db);
     codes = FakeBoxCodes(database: db);
-    // El catálogo sí es real: elegir producto sin señal es justo lo que la
-    // fase 03 dejó funcionando.
+    // The catalogue is real: choosing a product without signal is exactly what
+    // phase 03 left working.
     await db.catalogDao.replaceAll([productTypeRow()]);
   });
 
@@ -140,7 +140,8 @@ void main() {
   });
 
   testWidgets('running out of codes does not stop the capture', (tester) async {
-    // Perder lo capturado sería mucho peor que quedarse sin etiqueta.
+    // Losing what was captured would be far worse than being left without a
+    // label.
     await pumpForm(
       tester,
       FakeHttpAdapter((_) => FakeResponse(201, intakeJson())),
@@ -170,8 +171,8 @@ void main() {
   testWidgets('with signal nothing is queued: the capture travels now', (
     tester,
   ) async {
-    // Paridad con la fase 05: la cola cambia *cuándo* se envía una captura,
-    // nunca *qué* contiene ni cómo se comporta la aplicación con señal.
+    // Parity with phase 05: the queue changes *when* a capture is sent, never
+    // *what* it contains nor how the application behaves with signal.
     final adapter = FakeHttpAdapter((_) => FakeResponse(201, intakeJson()));
     await pumpForm(tester, adapter, offline: false);
     await addBox(tester);
@@ -186,7 +187,8 @@ void main() {
   testWidgets('a business rejection with signal is not queued either', (
     tester,
   ) async {
-    // Encolar algo que el servidor ya rechazó sería reintentarlo para siempre.
+    // Queueing something the server has already refused would be retrying it
+    // forever.
     final adapter = FakeHttpAdapter(
       (_) => FakeResponse(422, {
         'error': {'code': 'RULE', 'message': 'La campaña no acepta esto'},

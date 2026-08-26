@@ -33,20 +33,20 @@ void main() {
       value.contains('_') ||
       RegExp(r'^[A-Z_]+$').hasMatch(value);
 
-  /// Un literal dentro de `Text(...)`, sin sus interpolaciones.
+  /// A literal inside `Text(...)`, without its interpolations.
   ///
-  /// Es la otra mitad de la comprobación, y no busca español: busca **prosa**.
-  /// «Recorrido» y «Consultando…» no llevan acento ni ninguna palabra que no
-  /// pueda ser otra cosa, así que la búsqueda de arriba no las veía; lo que sí
-  /// se puede afirmar es que una frase escrita dentro de un `Text` no pasó por
-  /// una clave, en el idioma que sea.
+  /// It is the other half of the check, and it does not look for Spanish: it
+  /// looks for **prose**. «Recorrido» and «Consultando…» carry no accent and no
+  /// word that could not be something else, so the search above did not see
+  /// them; what can be asserted is that a sentence written inside a `Text` did
+  /// not go through a key, whatever the language.
   final textLiteral = RegExp(r"""Text\(\s*'((?:[^'\\\n]|\\.)*)'""");
   final interpolation = RegExp(r'\$\{[^}]*\}|\$\w+');
   final prose = RegExp(r'[A-Za-zÁÉÍÓÚáéíóúñÑ]{3,}');
 
   test('no screen carries Spanish of its own', () {
-    // Un `Set`: las dos mitades de la comprobación pueden ver la misma línea,
-    // y decirlo dos veces no la hace más cierta.
+    // A `Set`: the two halves of the check can see the same line, and saying it
+    // twice does not make it any truer.
     final offenders = <String>{};
 
     for (final entity in Directory('lib').listSync(recursive: true)) {
@@ -87,8 +87,8 @@ void main() {
           continue;
         }
 
-        // Lo que va dentro de un `Text` y no es un dato interpolado es una
-        // frase, y una frase escrita aquí no pasó por ninguna clave.
+        // What goes inside a `Text` and is not interpolated data is a sentence,
+        // and a sentence written here did not go through any key.
         for (final match in textLiteral.allMatches(code)) {
           final written = (match.group(1) ?? '').replaceAll(interpolation, '');
           if (prose.hasMatch(written)) {

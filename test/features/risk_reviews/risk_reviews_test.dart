@@ -51,8 +51,8 @@ void main() {
     });
 
     test('one already resolved elsewhere says exactly that', () async {
-      // Que alguien la haya cerrado desde el panel mientras esta pantalla
-      // estaba abierta es el caso normal, no una rareza.
+      // Somebody having closed it from the panel while this screen was open is
+      // the normal case, not an oddity.
       final adapter = FakeHttpAdapter(
         (_) => FakeResponse(409, {
           'error': {
@@ -125,7 +125,7 @@ void main() {
       await tester.tap(find.text('Aprobar o rechazar'));
       await tester.pumpAndSettle();
 
-      // El motivo sigue delante mientras se decide.
+      // The reason stays in front while it is being decided.
       expect(
         find.textContaining('Volumen inusual para una donación anónima'),
         findsWidgets,
@@ -146,8 +146,8 @@ void main() {
     testWidgets('rejecting is offered with the same weight as approving', (
       tester,
     ) async {
-      // Esconderla detrás de un paso más haría de la decisión difícil la
-      // incómoda.
+      // Hiding it behind one more step would make the hard decision the
+      // awkward one.
       await pumpReviews(tester, canResolve: true);
 
       await tester.tap(find.text('Aprobar o rechazar'));
@@ -172,9 +172,9 @@ void main() {
     testWidgets('resolved ones drop below, under their own heading', (
       tester,
     ) async {
-      // Siguen consultables —saber que algo se aprobó, y con qué nota, es la
-      // mitad del valor de haberlo marcado— y dejan de competir con lo que
-      // todavía espera una decisión.
+      // They stay readable — knowing that something was approved, and with what
+      // note, is half the value of having flagged it — and they stop competing
+      // with what is still waiting for a decision.
       await pumpReviews(
         tester,
         canResolve: true,
@@ -186,7 +186,7 @@ void main() {
 
       expect(find.text('Ya resueltas'), findsOneWidget);
       expect(find.text('Aprobada'), findsOneWidget);
-      // Solo la pendiente ofrece decidir.
+      // Only the pending one offers a decision.
       expect(find.text('Aprobar o rechazar'), findsOneWidget);
     });
 

@@ -56,7 +56,7 @@ void main() {
     return adapter;
   }
 
-  /// Elegir una campaña en el desplegable: la pantalla no elige por su cuenta.
+  /// Choosing a campaign in the dropdown: the screen does not choose by itself.
   Future<void> chooseCampaign(WidgetTester tester, String name) async {
     await tester.tap(find.byType(DropdownButtonFormField<String>));
     await tester.pumpAndSettle();
@@ -102,8 +102,8 @@ void main() {
   });
 
   testWidgets('nobody is taken out of the general campaign', (tester) async {
-    // El servidor responde 422 si se intenta; ofrecerlo sería prometer algo
-    // que no se puede cumplir.
+    // The server answers 422 if you try; offering it would be promising
+    // something that cannot be delivered.
     await pumpMembers(
       tester,
       coordinator: true,
@@ -159,7 +159,8 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Beto Ruiz'), findsOneWidget);
-    // Ana ya participa: sigue en la lista de atrás, pero no en la hoja.
+    // Ana already takes part: she is still in the list behind, but not in the
+    // sheet.
     expect(find.text('Ana Pérez'), findsOneWidget);
   });
 }

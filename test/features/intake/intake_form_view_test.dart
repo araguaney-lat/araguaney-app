@@ -53,8 +53,8 @@ void main() {
     final container = ProviderContainer(
       overrides: [
         writeCenterIdProvider.overrideWithValue(null),
-        // La hoja de campañas pregunta por el rol para ofrecer la ficha, y
-        // preguntarlo arrastra la sesión entera a esta prueba.
+        // The campaign sheet asks for the role in order to offer the record,
+        // and asking drags the whole session into this test.
         canBrowseCampaignsProvider.overrideWithValue(false),
         captureIdGeneratorProvider.overrideWithValue(() => 'capture-fixed'),
         intakeRepositoryProvider.overrideWithValue(
@@ -64,9 +64,10 @@ void main() {
           CatalogRepository(api: ProductTypesApi(dio), database: db),
         ),
         myCampaignsProvider.overrideWith((ref) async => campaigns),
-        // Estas pruebas son las de la fase anterior y siguen midiendo lo
-        // mismo: con conexión la captura viaja en el momento. Sin sesión no
-        // hay cola posible, que es exactamente lo que se quiere aquí.
+        // These tests are the previous phase's and go on measuring the same
+        // thing: with a connection the capture travels there and then. With no
+        // session there is no possible queue, which is exactly what is wanted
+        // here.
         currentUserIdProvider.overrideWithValue(null),
         connectivityProbeProvider.overrideWithValue(probe),
       ],
@@ -86,8 +87,7 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  /// Agrega una caja pasando por el selector de producto, como lo haría una
-  /// persona.
+  /// Adds a box through the product picker, as a person would.
   Future<void> addBox(
     WidgetTester tester, {
     String product = 'Paracetamol 500 mg',
@@ -139,8 +139,8 @@ void main() {
       find.widgetWithText(FilledButton, 'Registrar'),
     );
     expect(send.onPressed, isNotNull);
-    // El catálogo se buscó en el cache: la única petición posible sería la de
-    // enviar, que todavía no ocurrió.
+    // The catalogue was searched in the cache: the only possible request would
+    // be the submission, which has not happened yet.
     expect(adapter.requests, isEmpty);
   });
 
@@ -154,8 +154,8 @@ void main() {
 
     final body = adapter.requests.single.data as Map<String, dynamic>;
     expect(body['capture_id'], 'capture-fixed');
-    // Retrofit deja los objetos anidados sin serializar hasta que dio los
-    // codifica; leerlos tipados es más fiel que asumir un mapa.
+    // Retrofit leaves the nested objects unserialised until dio encodes them;
+    // reading them typed is truer than assuming a map.
     final boxes = (body['boxes'] as List).cast<BoxDraft>();
     expect(boxes.single.quantity, 12);
     expect(boxes.single.unit, 'caja');
@@ -209,7 +209,7 @@ void main() {
     await tester.tap(find.text('Registrar'));
     await tester.pumpAndSettle();
 
-    // El servidor pregunta; la persona registra el motivo en vez de detenerse.
+    // The server asks; the person records the reason instead of stopping.
     expect(find.text('Falta identificar a quien dona'), findsOneWidget);
     await tester.tap(find.text('No quiso identificarse'));
     await tester.pumpAndSettle();
@@ -220,7 +220,7 @@ void main() {
 
     expect(attempts, 2);
     final retry = adapter.requests.last.data as Map<String, dynamic>;
-    // La misma llave de captura: reintentar no puede duplicar inventario.
+    // The same capture key: retrying cannot duplicate inventory.
     expect(retry['capture_id'], 'capture-fixed');
     expect(retry['anonymous_exception_reason'], 'Se fue sin dar datos');
     expect(find.text('Captura registrada'), findsOneWidget);
@@ -244,7 +244,7 @@ void main() {
     await tester.tap(find.text('Campaña de invierno'));
     await tester.pumpAndSettle();
 
-    // Cambiar la cabecera cambia la captura, no solo lo que se lee en ella.
+    // Changing the header changes the capture, not only what is read on it.
     expect(find.text('Campaña de invierno'), findsOneWidget);
     await addBox(tester);
     await tester.tap(find.text('Registrar'));
@@ -278,8 +278,8 @@ void main() {
     await tester.tap(find.text('Elegir producto'));
     await tester.pumpAndSettle();
 
-    // La clave del servidor no se enseña: se traduce, y con la misma tabla que
-    // usa el stock por categoría.
+    // The server's key is not shown: it is translated, and with the same table
+    // the stock by category uses.
     expect(find.text('Insumo médico'), findsWidgets);
     expect(find.text('MEDICAL_SUPPLY'), findsNothing);
   });

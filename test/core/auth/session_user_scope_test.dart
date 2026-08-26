@@ -9,9 +9,8 @@ import 'package:flutter_test/flutter_test.dart';
 
 import '../../support/fake_auth.dart';
 
-/// El cache de lectura es por persona. Un dispositivo de centro se comparte
-/// entre turnos, y lo que se consultó en uno no puede quedar a la vista del
-/// siguiente.
+/// The read cache is per person. A centre device is shared across shifts, and
+/// what was looked up in one cannot be left in sight of the next.
 ({
   ProviderContainer container,
   SessionController controller,
@@ -136,8 +135,9 @@ void main() {
 
         await built.controller.restoration;
 
-        // Un refresh guardado no se convierte en otra persona: preguntar sería
-        // una petición de más en el arranque, y sin señal ni siquiera es posible.
+        // A stored refresh does not become another person: asking would be one
+        // request too many at launch, and without signal it is not even
+        // possible.
         expect(repository.meCount, 0);
         expect(built.reset.count, 0);
         expect(_sessionOf(built.container).userId, 'user-1');

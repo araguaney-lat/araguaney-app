@@ -76,14 +76,15 @@ void main() {
     expect(find.text('Quien Sea'), findsOneWidget);
     expect(find.text('quien@sea.example'), findsOneWidget);
     expect(find.text('Centro Caracas'), findsOneWidget);
-    // El rol se lee en español, no como la clave del servidor.
+    // The role reads in Spanish, not as the server's key.
     expect(find.text('Coordinación'), findsOneWidget);
     expect(find.text('coordinator'), findsNothing);
   });
 
   testWidgets('with no second factor it says what that means', (tester) async {
-    // No es un ajuste apagado: es una cuenta protegida solo por su contraseña,
-    // y decirlo así es la diferencia entre un interruptor y una advertencia.
+    // It is not a setting that is off: it is an account protected by its
+    // password alone, and saying it that way is the difference between a switch
+    // and a warning.
     await pumpProfile(tester, totp: false);
 
     expect(
@@ -107,7 +108,7 @@ void main() {
   });
 
   testWidgets('pending terms are offered, never interposed', (tester) async {
-    // El servidor no bloquea por ellos, así que la aplicación tampoco.
+    // The server does not block over them, so neither does the application.
     await pumpProfile(tester, totp: false, terms: true);
 
     expect(find.text('Términos pendientes de aceptar'), findsOneWidget);

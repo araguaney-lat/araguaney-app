@@ -81,8 +81,8 @@ void main() {
 
   group('the centres list', () {
     testWidgets('a refusal is not an error, it is an answer', (tester) async {
-      // Listar centros exige administración nacional, así que una sesión de
-      // coordinación recibe un 403 cada vez. Eso no es un fallo que reportar.
+      // Listing centres requires national administration, so a coordination
+      // session gets a 403 every time. That is not a failure to report.
       await pumpCenters(
         tester,
         respond: (_) => FakeResponse(403, {
@@ -97,7 +97,7 @@ void main() {
     });
 
     testWidgets('deactivated centres go last and say so', (tester) async {
-      // Siguen existiendo y casi nunca son lo que alguien viene a buscar.
+      // They still exist and are almost never what somebody comes looking for.
       await pumpCenters(
         tester,
         respond: (_) => FakeResponse(200, [
@@ -117,8 +117,8 @@ void main() {
     testWidgets('a centre with no place shown has no second line', (
       tester,
     ) async {
-      // El modelo generado trae estos campos anulables: se omite lo que no
-      // venga en vez de dibujar una línea vacía.
+      // The generated model brings these fields nullable: what does not arrive
+      // is omitted instead of drawing an empty line.
       await pumpCenters(
         tester,
         respond: (_) => FakeResponse(200, [
@@ -153,8 +153,8 @@ void main() {
           restClientProvider.overrideWithValue(RestClient(fakeDio(adapter))),
           myCenterIdProvider.overrideWithValue('c-1'),
           isNationalAdminProvider.overrideWithValue(canListCentres),
-          // La lista ofrece proponer una transferencia, y eso pregunta por el
-          // rol: sin esto la pantalla arrastra la sesión entera a la prueba.
+          // The list offers proposing a transfer, and that asks for the role:
+          // without this the screen drags the whole session into the test.
           isCenterCoordinatorProvider.overrideWithValue(false),
         ],
       );
@@ -184,13 +184,14 @@ void main() {
     testWidgets('a session that cannot stays silent, without a gap', (
       tester,
     ) async {
-      // Enseñar un identificador sería peor que no enseñar nada. La fila queda
-      // igual que antes de que existiera esta feature.
+      // Showing an identifier would be worse than showing nothing. The row
+      // stays as it was before this feature existed.
       await pumpTransfers(tester, canListCentres: false);
 
       expect(find.text('Saliente'), findsOneWidget);
       expect(find.textContaining('c-2'), findsNothing);
-      // La segunda línea es solo la fecha: sin nombre y sin separador colgando.
+      // The second line is only the date: no name and no separator left
+      // dangling.
       final row = tester.widget<ListTile>(
         find.ancestor(
           of: find.text('Saliente'),
@@ -207,8 +208,8 @@ void main() {
       Map<String, Object?>? existing,
       FakeResponse? saveResponse,
     }) async {
-      // Nueve campos y un botón no caben en la ventana por defecto del arnés,
-      // y desplazarse en cada test añade ruido a lo que se quiere probar.
+      // Nine fields and a button do not fit in the harness's default window,
+      // and scrolling in every test adds noise to what is being tested.
       tester.view.physicalSize = const Size(1080, 3600);
       tester.view.devicePixelRatio = 3;
       addTearDown(tester.view.reset);
@@ -254,8 +255,9 @@ void main() {
     testWidgets(
       'only the name is required, because that is all the server asks',
       (tester) async {
-        // Inventar obligatorios que el contrato no tiene seria una regla de
-        // negocio propia, que es justo lo que este cliente no lleva.
+        // Inventing required fields the contract does not have would be a
+        // business rule of our own, which is exactly what this client does not
+        // carry.
         final sent = await pumpForm(tester);
 
         await tester.tap(find.text('Crear centro'));
@@ -275,7 +277,7 @@ void main() {
       final post = sent.firstWhere((r) => r.method == 'POST');
       final body = post.data! as Map;
       expect(body['name'], 'Centro Nuevo');
-      // Lo vacio no viaja como cadena vacia: viaja ausente.
+      // What is empty does not travel as an empty string: it travels absent.
       expect(body['address'], isNull);
       expect(body['legal_name'], isNull);
     });
@@ -292,8 +294,8 @@ void main() {
     });
 
     testWidgets('a refusal is shown as the server phrased it', (tester) async {
-      // Describe algo que quien escribe puede corregir, como un correo mal
-      // formado, y por eso llega entero a la pantalla.
+      // It describes something whoever writes can correct, like a malformed
+      // email address, and that is why it reaches the screen whole.
       await pumpForm(
         tester,
         saveResponse: FakeResponse(422, {

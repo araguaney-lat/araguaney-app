@@ -1,6 +1,6 @@
 import 'package:araguaney_app/core/api/update_prompt_memory.dart';
 
-/// Memoria de aplazamientos en el aire, que además apunta lo que le pidieron.
+/// In-memory memory of the snoozes, which also notes what was asked of it.
 class FakeUpdatePromptMemory implements UpdatePromptMemory {
   FakeUpdatePromptMemory({this.snoozed = false});
 

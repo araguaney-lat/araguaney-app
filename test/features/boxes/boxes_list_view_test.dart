@@ -44,9 +44,9 @@ void main() {
       overrides: [
         writeCenterIdProvider.overrideWithValue(null),
         connectivityProbeProvider.overrideWithValue(probe),
-        // La pantalla dispara el coordinador al abrirse, y este vacía la cola
-        // de quien tenga sesión. Aquí no hay sesión: lo que se prueba es la
-        // lista.
+        // The screen fires the coordinator when it opens, and that flushes the
+        // queue of whoever holds the session. There is no session here: what is
+        // being tested is the list.
         currentUserIdProvider.overrideWithValue(null),
         catalogRepositoryProvider.overrideWithValue(
           CatalogRepository(
@@ -111,8 +111,8 @@ void main() {
 
     await pumpList(tester);
 
-    // El refresco de apertura falla sin red, y el aviso aparece con la
-    // antigüedad de lo que sí hay.
+    // The opening refresh fails with no network, and the notice appears with
+    // the age of what there is.
     expect(find.textContaining('Sin conexión · datos de hace'), findsOneWidget);
   });
 
@@ -186,8 +186,8 @@ void main() {
     });
 
     testWidgets('each status carries its own count', (tester) async {
-      // Ofrecer un filtro que deja la pantalla vacía sin avisar es peor que no
-      // ofrecerlo.
+      // Offering a filter that empties the screen without warning is worse than
+      // not offering it.
       await pumpWithBoxes(tester);
 
       expect(find.text('Sin sellar · 1'), findsOneWidget);
@@ -212,9 +212,9 @@ void main() {
   });
 
   group('sealing from the list', () {
-    /// Con señal: el adaptador por defecto de estas pruebas no llega al
-    /// servidor, y el coordinador lo reporta como sin conexión — que es
-    /// precisamente cuando sellar no se ofrece.
+    /// With signal: these tests' default adapter does not reach the server, and
+    /// the coordinator reports it as offline — which is precisely when sealing
+    /// is not offered.
     FakeHttpAdapter onlineWith(List<Map<String, Object?>> boxes) =>
         FakeHttpAdapter(
           (options) => FakeResponse(
@@ -236,8 +236,8 @@ void main() {
     });
 
     testWidgets('offline it is not offered at all', (tester) async {
-      // Sellar decide sobre estado compartido que puede estar cambiando en otro
-      // dispositivo, así que exige conexión.
+      // Sealing decides about shared state that may be changing on another
+      // device, so it requires a connection.
       await db.boxesDao.replaceAll([boxRow(id: 'b1', code: 'BX-0001')]);
       await pumpList(tester);
 
@@ -246,8 +246,8 @@ void main() {
     });
 
     testWidgets('it asks first, and shows what is inside', (tester) async {
-      // Desde la lista no se ve el contenido, y sellar es la frontera entre
-      // «esto se corrige» y «esto ya viaja».
+      // The contents are not visible from the list, and sealing is the boundary
+      // between «this can still be corrected» and «this is already travelling».
       await pumpList(
         tester,
         adapter: onlineWith([boxJson(id: 'b1', code: 'BX-0001')]),
@@ -256,8 +256,9 @@ void main() {
       await tester.tap(find.widgetWithText(TextButton, 'Sellar'));
       await tester.pumpAndSettle();
 
-      // La fila de atrás también dice el contenido; lo que importa es que el
-      // diálogo lo repita, para decidir sin volver a la lista.
+      // The row behind also states the contents; what matters is that the
+      // dialog repeats them, so the decision is taken without going back to the
+      // list.
       expect(find.text('Sellar BX-0001'), findsOneWidget);
       expect(find.textContaining('10 unidad'), findsNWidgets(2));
       expect(find.textContaining('ya no admite cambios'), findsOneWidget);

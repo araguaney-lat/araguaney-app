@@ -91,8 +91,8 @@ void main() {
   });
 
   testWidgets('a volunteer is told whose job this is', (tester) async {
-    // El backend exige coordinación y sigue siendo quien decide; esto solo
-    // evita ofrecer un botón que va a responder 403.
+    // The backend requires coordination and is still the one that decides; this
+    // only avoids offering a button that is going to answer 403.
     await pumpDetail(tester, canOperate: false, offline: false);
 
     expect(find.textContaining('cosa de la coordinación'), findsOneWidget);
@@ -114,7 +114,7 @@ void main() {
       find.widgetWithText(FilledButton, 'Agregar cajas'),
     );
     expect(scan.onPressed, isNull);
-    // Y tampoco se puede quitar ninguna de las que lleva.
+    // Nor can any of the ones it carries be removed.
     expect(find.byTooltip('Quitar de la tarima'), findsNothing);
   });
 }

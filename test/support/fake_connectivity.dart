@@ -2,16 +2,17 @@ import 'dart:async';
 
 import 'package:araguaney_app/core/connectivity/connectivity_probe.dart';
 
-/// Sonda de conectividad controlada por la prueba.
+/// A connectivity probe driven by the test.
 class FakeConnectivityProbe implements ConnectivityProbe {
   FakeConnectivityProbe({this.initialInterface = true});
 
   final _controller = StreamController<bool>.broadcast();
 
-  /// Lo que responde el primer sondeo, el que ocurre al construir el estado.
+  /// What the first probe answers, the one that happens while the state is
+  /// built.
   bool initialInterface;
 
-  /// Simula un cambio de interfaz del sistema operativo.
+  /// Simulates an interface change from the operating system.
   void emit({required bool hasInterface}) => _controller.add(hasInterface);
 
   @override

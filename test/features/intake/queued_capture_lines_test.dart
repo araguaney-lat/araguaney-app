@@ -19,9 +19,9 @@ void main() {
   });
 
   test('a product the local catalog no longer has says what is known', () {
-    // El nombre no está en el payload —el contrato manda identificadores— y el
-    // catálogo pudo cambiar. Inventar un nombre sería peor que quedarse corto:
-    // quien decide si descarta necesita datos ciertos.
+    // The name is not in the payload — the contract sends identifiers — and the
+    // catalogue may have changed. Inventing a name would be worse than falling
+    // short: whoever decides whether to discard needs facts.
     final lines = queuedCaptureLines(
       payloadWith([
         {'product_type_id': 'pt-gone', 'quantity': 60, 'unit': 'sobre'},
@@ -45,9 +45,9 @@ void main() {
   });
 
   test('a payload that cannot be read leaves the screen standing', () {
-    // Es dato en disco: puede venir de una versión anterior. Una pantalla que
-    // se cae al leer la cola deja a la persona sin ver lo que no se ha enviado,
-    // que es exactamente lo contrario de para lo que existe.
+    // It is data on disk: it may come from an earlier version. A screen that
+    // crashes while reading the queue leaves the person unable to see what has
+    // not been sent, which is exactly the opposite of what it exists for.
     expect(queuedCaptureLines('no es json', const {}), isEmpty);
     expect(queuedCaptureLines('[]', const {}), isEmpty);
     expect(queuedCaptureLines('{"boxes":"nope"}', const {}), isEmpty);

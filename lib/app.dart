@@ -7,8 +7,8 @@ import 'core/i18n/language_preference.dart';
 import 'core/routing/session_gate.dart';
 import 'core/ui/theme/app_theme.dart';
 
-/// Raíz de la aplicación: tema, localización (español por defecto) y la puerta
-/// que decide qué se ve según haya sesión o no.
+/// The application's root: theme, localisation and the gate that decides what
+/// is seen depending on whether there is a session.
 class AraguaneyApp extends ConsumerWidget {
   const AraguaneyApp({super.key});
 
@@ -17,15 +17,13 @@ class AraguaneyApp extends ConsumerWidget {
     return MaterialApp(
       onGenerateTitle: (context) => AppLocalizations.of(context)!.appTitle,
       theme: AppTheme.light,
-      // El diseño trae las dos versiones, así que se ofrecen las dos y decide
-      // el sistema. Un centro de acopio trabaja de noche tan a menudo como de
-      // día.
+      // The design brings both versions, so both are offered and the system
+      // decides. A collection centre works at night as often as by day.
       darkTheme: AppTheme.dark,
       themeMode: ThemeMode.system,
-      // Nulo mientras no se haya elegido uno, que es lo normal: manda el
-      // teléfono. Elegirlo a mano existe para el dispositivo compartido de
-      // centro, donde quien lo configuró y quien lo usa no son la misma
-      // persona.
+      // Null while none has been chosen, which is the normal case: the phone
+      // decides. Choosing by hand exists for the shared centre device, where
+      // whoever set it up and whoever uses it are not the same person.
       locale: ref.watch(languageProvider).valueOrNull,
       supportedLocales: AppLocalizations.supportedLocales,
       localizationsDelegates: const [

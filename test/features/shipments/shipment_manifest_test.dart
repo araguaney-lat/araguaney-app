@@ -20,7 +20,8 @@ void main() {
     );
   }
 
-  /// No espera de verdad: el sondeo se mide en peticiones, no en segundos.
+  /// It does not really wait: the polling is measured in requests, not in
+  /// seconds.
   Future<void> noWait(Duration _) async {}
 
   group('asking for the manifest', () {
@@ -77,8 +78,8 @@ void main() {
         adapter,
       ).manifest('shipment-1', wait: noWait);
 
-      // El trabajo terminó en error y el servidor dijo por qué: sus palabras
-      // viajan tal cual, como cualquier rechazo de regla de negocio.
+      // The job ended in error and the server said why: its words travel as
+      // they are, like any business-rule refusal.
       expect(
         (outcome as DocumentFailed).serverError,
         'El envío no tiene tarimas',
@@ -88,8 +89,8 @@ void main() {
     test(
       'a job that never finishes stops instead of spinning forever',
       () async {
-        // Dejar a alguien mirando una rueda es peor que decirle que vuelva a
-        // intentarlo: el trabajo sigue vivo en el servidor.
+        // Leaving somebody watching a spinner is worse than telling them to try
+        // again: the job is still alive on the server.
         final adapter = FakeHttpAdapter(
           (_) => FakeResponse(202, exportJobJson(status: 'RUNNING')),
         );
@@ -148,11 +149,11 @@ void main() {
 
     test('a state change reads in the language it is operated in', () async {
       final l10n = await spanish();
-      // Este test fijaba «CLOSED → IN_TRANSIT», que estaba mal dos veces: la
-      // clave cruda no es lo que una persona debe leer, y `IN_TRANSIT` no es
-      // un estado de envio sino de transferencia —`SHIPMENT_STATUSES` es
-      // OPEN, CLOSED, SHIPPED, DELIVERED, RECONCILED. Traducir las etiquetas
-      // fue lo que destapo el fixture inventado.
+      // This test pinned «CLOSED → IN_TRANSIT», which was wrong twice: the raw
+      // key is not what a person should read, and `IN_TRANSIT` is not a
+      // shipment state but a transfer one — `SHIPMENT_STATUSES` is OPEN,
+      // CLOSED, SHIPPED, DELIVERED, RECONCILED. Translating the labels is what
+      // uncovered the invented fixture.
       final described = describeEvent(
         l10n,
         QrEventOut(
@@ -169,8 +170,8 @@ void main() {
 
     test('a milestone this version does not know still reads', () async {
       final l10n = await spanish();
-      // El vocabulario del backend puede crecer, y un envío no puede perder un
-      // paso de su recorrido porque el teléfono sea viejo.
+      // The backend's vocabulary can grow, and a shipment cannot lose a step of
+      // its journey because the phone is old.
       expect(milestoneLabel(l10n, 'LOADED_ON_SHIP'), 'LOADED_ON_SHIP');
     });
   });

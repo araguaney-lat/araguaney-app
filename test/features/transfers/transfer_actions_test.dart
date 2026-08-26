@@ -38,7 +38,7 @@ void main() {
     });
 
     test('someone without a center sees it as neither', () {
-      // Una administración nacional no tiene centro propio.
+      // A national administration has no centre of its own.
       expect(
         transferDirection(fromCenterId: 'a', toCenterId: 'b', myCenterId: null),
         TransferDirection.other,
@@ -68,7 +68,8 @@ void main() {
     });
 
     test('the origin cannot receive what it sent', () {
-      // Recibir es del destino. Ofrecerlo aquí sería un botón que responde 403.
+      // Receiving belongs to the destination. Offering it here would be a
+      // button that answers 403.
       expect(
         actionsFor(
           status: TransferStatus.inTransit,
@@ -114,7 +115,7 @@ void main() {
     });
 
     test('still cannot receive on behalf of the destination', () {
-      // El servidor exige que reciba la coordinación del destino.
+      // The server requires the destination's coordination to receive.
       expect(
         actionsFor(
           status: TransferStatus.inTransit,
@@ -151,9 +152,9 @@ void main() {
   });
 
   test('every status has a name, and unknown ones survive', () async {
-    // Un estado que esta version no conoce se enseña crudo a proposito: el
-    // contrato es aditivo y un binario viejo puede recibir uno nuevo. Verlo
-    // dice «esto es nuevo» en vez de inventar una traduccion.
+    // A state this version does not know is shown raw on purpose: the contract
+    // is additive and an old binary can receive a new one. Seeing it says «this
+    // is new» instead of inventing a translation.
     final l10n = await spanish();
 
     expect(transferStatusLabel(l10n, TransferStatus.inTransit), 'En tránsito');

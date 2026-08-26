@@ -24,16 +24,16 @@ void main() {
   });
 
   test('a kind this version does not know is shown but goes nowhere', () {
-    // El contrato es solo-aditivo: un binario de hace meses tiene que
-    // sobrevivir a una clase de aviso que no conocía.
+    // The contract is additive only: a months-old binary has to survive a kind
+    // of notice it did not know about.
     final destination = parsePushDestination({'kind': 'message_received'});
 
     expect((destination as UnknownDestination).kind, 'message_received');
   });
 
   test('a known kind missing its identifier does not route half way', () {
-    // No es un aviso de otra clase: es este llegando incompleto, y enrutarlo a
-    // medias sería peor que no enrutarlo.
+    // It is not a notice of another kind: it is this one arriving incomplete,
+    // and routing it halfway would be worse than not routing it.
     expect(
       parsePushDestination({'kind': 'risk_review'}),
       isA<UnknownDestination>(),

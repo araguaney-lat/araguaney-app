@@ -40,8 +40,8 @@ void main() {
     final container = ProviderContainer(
       overrides: [
         connectivityProbeProvider.overrideWithValue(probe),
-        // Sin sesión no hay cola que vaciar, que es el caso de la mayoría de
-        // estas pruebas: lo que se está midiendo es el refresco.
+        // With no session there is no queue to flush, which is the case in most
+        // of these tests: what is being measured is the refresh.
         currentUserIdProvider.overrideWithValue(userId),
         captureQueueSyncProvider.overrideWithValue(
           CaptureQueueSync(
@@ -132,7 +132,7 @@ void main() {
     probe.emit(hasInterface: true);
     await Future<void>.delayed(const Duration(milliseconds: 50));
 
-    // Un refresco por recurso: catálogo y cajas.
+    // One refresh per resource: catalogue and boxes.
     expect(adapter.requests, hasLength(2));
   });
 

@@ -1,6 +1,6 @@
 import 'package:araguaney_app/core/push/push_prompt_memory.dart';
 
-/// Memoria en el aire de si ya se ofreció activar los avisos.
+/// In-memory memory of whether turning notices on was already offered.
 class FakePushPromptMemory implements PushPromptMemory {
   FakePushPromptMemory({this.offered = false});
 

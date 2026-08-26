@@ -75,8 +75,8 @@ void main() {
   testWidgets('a volunteer reads the team but does not manage it', (
     tester,
   ) async {
-    // El backend exige coordinación para sumar y reenviar, y sigue decidiendo;
-    // esto solo evita ofrecer algo que responderá 403.
+    // The backend requires coordination to add and to resend, and it goes on
+    // deciding; this only avoids offering something that will answer 403.
     await pumpDirectory(tester, coordinator: false);
 
     expect(find.byType(FloatingActionButton), findsNothing);
@@ -95,8 +95,8 @@ void main() {
   testWidgets('a disabled account is marked and cannot be resent', (
     tester,
   ) async {
-    // El servidor rechaza reinvitar una cuenta desactivada, y reactivarla es
-    // trabajo de escritorio.
+    // The server refuses reinviting a deactivated account, and reactivating it
+    // is desk work.
     await pumpDirectory(
       tester,
       coordinator: true,
@@ -156,8 +156,8 @@ void main() {
   });
 
   testWidgets('an email already taken is said in Spanish', (tester) async {
-    // El servidor contesta «Email already registered»; quien opera lee otra
-    // cosa, y el rechazo sigue siendo el del servidor.
+    // The server answers «Email already registered»; whoever operates reads
+    // something else, and the refusal is still the server's.
     await pumpDirectory(
       tester,
       coordinator: true,

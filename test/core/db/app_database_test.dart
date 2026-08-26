@@ -18,8 +18,8 @@ void main() {
   test(
     'the offline queue and the reserved codes are usable from the start',
     () async {
-      // Llegaron en la versión 2 del esquema; que existan aquí comprueba que la
-      // creación desde cero las incluye, no solo la migración.
+      // They arrived in version 2 of the schema; that they exist here checks
+      // that creating from scratch includes them, not only the migration.
       await db.boxCodesDao.store(['BX-A'], userId: 'user-1', at: testNow);
 
       expect(await db.boxCodesDao.available('user-1'), 1);

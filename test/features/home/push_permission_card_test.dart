@@ -47,8 +47,8 @@ void main() {
   testWidgets('it says which notices arrive before asking for anything', (
     tester,
   ) async {
-    // Un diálogo del sistema sin contexto se deniega por reflejo, y en Android
-    // una denegación es casi definitiva.
+    // A system dialog with no context is denied by reflex, and on Android a
+    // denial is close to final.
     await pumpCard(tester);
 
     expect(find.text('Avisos del centro'), findsOneWidget);
@@ -58,8 +58,8 @@ void main() {
   });
 
   testWidgets('granting registers the device again', (tester) async {
-    // En iOS el token no existe hasta que hay permiso, así que el registro de
-    // la apertura de sesión no encontró ninguno.
+    // On iOS the token does not exist until there is permission, so the
+    // registration at sign-in found none.
     var registered = 0;
     final container = ProviderContainer(
       overrides: [
@@ -102,8 +102,8 @@ void main() {
   testWidgets('a build with no notifications shows nothing at all', (
     tester,
   ) async {
-    // El sabor `foss`. No hay permiso que pedir porque no hay avisos que
-    // entregar.
+    // The `foss` flavour. There is no permission to ask for because there are
+    // no notices to deliver.
     push.permissionStatus = PushPermission.unavailable;
 
     await pumpCard(tester);
@@ -114,9 +114,9 @@ void main() {
   testWidgets('Android offers it even though the system says denied', (
     tester,
   ) async {
-    // El caso que dejaba la tarjeta muerta: `firebase_messaging` en Android
-    // nunca contesta `notDetermined`, así que sin memoria propia la invitación
-    // no aparecía jamás y nadie llegaba a ver el diálogo del sistema.
+    // The case that left the card dead: `firebase_messaging` on Android never
+    // answers `notDetermined`, so without a memory of our own the invitation
+    // never appeared and nobody got to see the system dialog.
     push.permissionStatus = PushPermission.denied;
 
     await pumpCard(tester);
@@ -136,8 +136,9 @@ void main() {
   testWidgets('offering is remembered before the system dialog opens', (
     tester,
   ) async {
-    // Si el diálogo del sistema se lleva la aplicación por delante, la persona
-    // ya vio la invitación; volver a ponerla delante sería insistir.
+    // If the system dialog takes the application down with it, the person has
+    // already seen the invitation; putting it in front of them again would be
+    // insisting.
     await pumpCard(tester);
 
     await tester.tap(find.text('Activar avisos'));

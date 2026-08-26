@@ -10,9 +10,9 @@ import 'core/config/app_config.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // La versión instalada la lee el sistema, no una constante que alguien
-  // tendría que acordarse de subir. Viaja en el user agent y la usa la
-  // comprobación de versión mínima soportada.
+  // The installed version is read from the system, not from a constant
+  // somebody would have to remember to bump. It travels in the user agent and
+  // the minimum-supported-version check uses it.
   final packageInfo = await PackageInfo.fromPlatform();
 
   Widget buildApp() => ProviderScope(
@@ -24,8 +24,8 @@ Future<void> main() async {
     child: const AraguaneyApp(),
   );
 
-  // Sin DSN configurado la aplicación arranca igual, sin reportar a ningún
-  // sitio. Es el caso de cualquier compilación local y de cualquier fork.
+  // With no DSN configured the application starts all the same, reporting
+  // nowhere. That is the case for any local build and for any fork.
   if (!AppConfig.crashReportingEnabled) {
     runApp(buildApp());
     return;
@@ -41,15 +41,14 @@ void _configure(SentryFlutterOptions options, PackageInfo packageInfo) {
   options
     ..dsn = AppConfig.sentryDsn
     ..environment = AppConfig.flavor.name
-    // El release tiene que coincidir con el nombre que llevan los símbolos
-    // subidos desde el build de release: una traza de un binario ofuscado sin
-    // sus símbolos es una lista de letras.
+    // The release has to match the name carried by the symbols uploaded from
+    // the release build: a trace from an obfuscated binary without its symbols
+    // is a list of letters.
     ..release =
         '${packageInfo.packageName}@${packageInfo.version}'
         '+${packageInfo.buildNumber}'
-    // Los mensajes al operador ya son genéricos por diseño; lo que se manda
-    // aquí es el detalle técnico. Nada de cuerpos de petición: llevan datos de
-    // donantes.
+    // The operator's messages are already generic by design; what is sent here
+    // is the technical detail. No request bodies: they carry donors' data.
     ..sendDefaultPii = false
     ..maxRequestBodySize = MaxRequestBodySize.never;
 }

@@ -36,8 +36,8 @@ void main() {
   });
 
   test('being asked to identify the donor is its own outcome', () async {
-    // No es un error de campo que corregir: es una pregunta para la persona
-    // que está en el mostrador, y la interfaz responde distinto.
+    // It is not a field error to correct: it is a question for the person at
+    // the counter, and the interface answers differently.
     final adapter = FakeHttpAdapter(
       (_) => FakeResponse(422, {
         'error': {

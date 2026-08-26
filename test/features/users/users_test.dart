@@ -58,8 +58,8 @@ void main() {
     });
 
     test('inviting carries no password, because it never has one', () async {
-      // La genera el servidor y la manda por correo; que este cliente no la
-      // toque es la única forma de que no pueda filtrarla.
+      // The server generates it and sends it by email; this client not touching
+      // it is the only way it cannot leak it.
       final adapter = FakeHttpAdapter((_) => FakeResponse(201, userJson()));
 
       await UsersRepository(StudioApi(fakeDio(adapter))).invite(
@@ -70,8 +70,8 @@ void main() {
         ),
       );
 
-      // El contrato tiene el campo; lo que importa es que esta aplicación
-      // nunca lo llena, ni lo pide, ni lo enseña.
+      // The contract has the field; what matters is that this application never
+      // fills it in, never asks for it and never shows it.
       final body = adapter.requests.single.data as Map<String, Object?>;
       expect(body['password'], isNull);
       expect(body['email'], 'nueva@araguaney.lat');
@@ -128,8 +128,9 @@ void main() {
     testWidgets('the text box says it only narrows what was loaded', (
       tester,
     ) async {
-      // El servidor no busca por texto. Llamarlo «buscar» haría creer que un
-      // nombre ausente no existe, cuando puede estar en otra página.
+      // The server does not search by text. Calling it «search» would make
+      // people believe an absent name does not exist, when it may be on another
+      // page.
       await pump(
         tester,
         const UsersListView(),
@@ -178,7 +179,7 @@ void main() {
     });
 
     testWidgets('a disabled account is not offered a resend', (tester) async {
-      // El servidor lo rechaza, y activarla es trabajo de escritorio.
+      // The server refuses it, and activating the account is desk work.
       await pump(
         tester,
         UserRecordView(user: UserOut.fromJson(userJson(isActive: false))),

@@ -5,21 +5,21 @@ import 'package:araguaney_app/features/intake/domain/intake_draft.dart';
 
 import 'test_database.dart';
 
-/// Dobles de la cola y del bloque de códigos, para las pruebas de interfaz.
+/// Doubles of the queue and of the code block, for the interface tests.
 ///
-/// Existen por una limitación del entorno, no por preferencia: en un
-/// `testWidgets` el reloj es falso y una escritura real a SQLite disparada
-/// desde dentro del árbol de widgets no llega a completarse nunca. Lo que hace
-/// la base de verdad ya está cubierto contra SQLite en memoria en las pruebas
-/// de `capture_queue_test.dart` y `box_code_repository_test.dart`; aquí se mide
-/// otra cosa: qué hace la pantalla.
+/// They exist because of a limitation of the environment, not out of
+/// preference: in a `testWidgets` the clock is fake, and a real write to SQLite
+/// fired from inside the widget tree never completes. What the real database
+/// does is already covered against in-memory SQLite in the tests of
+/// `capture_queue_test.dart` and `box_code_repository_test.dart`; what is
+/// measured here is something else: what the screen does.
 ///
-/// Extienden a las clases reales en lugar de imitar una interfaz para que la
-/// firma no pueda divergir en silencio.
+/// They extend the real classes instead of imitating an interface so the
+/// signature cannot diverge in silence.
 class FakeCaptureQueue extends CaptureQueueRepository {
   FakeCaptureQueue(AppDatabase database) : super(database: database);
 
-  /// Las capturas que la pantalla mandó a la cola, en orden.
+  /// The captures the screen sent to the queue, in order.
   final enqueued = <({IntakeDraft draft, String userId})>[];
 
   @override
@@ -34,8 +34,7 @@ class FakeBoxCodes extends BoxCodeRepository {
     : pool = [...?pool],
       super(api: unusedBoxesApi());
 
-  /// Códigos disponibles. Se vacía a medida que se reparten, igual que el
-  /// bloque real.
+  /// Available codes. It empties as they are handed out, like the real block.
   final List<String> pool;
 
   @override

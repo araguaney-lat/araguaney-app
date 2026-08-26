@@ -4,10 +4,10 @@ import 'package:flutter_test/flutter_test.dart';
 
 import '../../support/fake_http_adapter.dart';
 
-/// Monta un cliente con el interceptor y un adaptador falso.
+/// Mounts a client with the interceptor and a fake adapter.
 ///
-/// El reintento usa un cliente aparte, igual que en la aplicación: si viajara
-/// por el mismo cliente, un 401 durante la renovación dispararía otra.
+/// The retry uses a separate client, as in the application: if it travelled
+/// through the same one, a 401 during the renewal would fire another.
 ({Dio dio, FakeHttpAdapter adapter, FakeHttpAdapter retryAdapter})
 _buildClient({
   required FakeResponse Function(RequestOptions) handler,
@@ -58,8 +58,8 @@ void main() {
     });
 
     test('sends no session on the login endpoint', () async {
-      // Mandar una credencial vieja al iniciar sesión no aporta nada y filtra
-      // el token de quien usó el dispositivo antes.
+      // Sending an old credential while signing in adds nothing and leaks the
+      // token of whoever used the device before.
       final client = _buildClient(
         handler: (_) => const FakeResponse(200, {'access_token': 'x'}),
         accessToken: 'stale-token',
@@ -98,8 +98,8 @@ void main() {
       final client = _buildClient(
         handler: (options) {
           served++;
-          // La primera pasada vence; tras renovar, la petición reenviada lleva
-          // el token nuevo y pasa.
+          // The first pass expires; after renewing, the resent request carries
+          // the new token and goes through.
           return options.headers['Authorization'] == 'Bearer access-2'
               ? const FakeResponse(200, {'ok': true})
               : const FakeResponse(401, {
@@ -121,9 +121,9 @@ void main() {
     });
 
     test('renews only once for requests that expire together', () async {
-      // Al abrir una pantalla salen varias peticiones juntas. Como el backend
-      // rota el refresh en cada uso, una segunda renovación llegaría con un
-      // token ya revocado y el servidor lo leería como reutilización.
+      // Opening a screen fires several requests together. Since the backend
+      // rotates the refresh on every use, a second renewal would arrive with an
+      // already revoked token and the server would read it as reuse.
       var refreshes = 0;
 
       final client = _buildClient(
@@ -152,7 +152,7 @@ void main() {
     });
 
     test('does not renew again after a renewal already happened', () async {
-      // Si tras renovar vuelve un 401, el problema no es el token.
+      // If a 401 comes back after renewing, the token is not the problem.
       var refreshes = 0;
 
       final client = _buildClient(
@@ -214,8 +214,8 @@ void main() {
     });
 
     test('a failed renewal does not block later attempts', () async {
-      // Si la marca de renovación en curso no se liberara, un fallo pasajero
-      // dejaría a la aplicación esperando para siempre una renovación muerta.
+      // If the renewal-in-progress flag were not released, a passing failure
+      // would leave the application waiting forever on a dead renewal.
       var attempts = 0;
 
       final client = _buildClient(

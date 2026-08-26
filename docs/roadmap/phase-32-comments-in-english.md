@@ -97,8 +97,8 @@ person would say. Those stay as they are; they are evidence, not prose.
 | 1 | Name the gap | Record what is inconsistent, how much of it there is, and why it is not a script. This file. | 🟢 Low | ✅ Done |
 | 2 | `lib/core` | The layer everything else reads: the failure taxonomy, the queue, the theme, the session. Its comments are the ones most often quoted by the others. | 🔴 High | ✅ Done |
 | 3 | `lib/features`, by feature | Capture and its queue first — the four invariants are the densest reasoning here. | 🔴 High | ✅ Done |
-| 4 | `test/` | Test names are already English; their comments are not, and they carry the reason a test exists, which is usually a defect somebody once shipped. | 🟠 Medium | ⬜ Pending |
-| 5 | Update the rule | `CLAUDE.md` says prose for contributors is English and product prose is Spanish. Comments belong to the first and should be named there. | 🟢 Low | ⬜ Pending |
+| 4 | `test/` | Test names are already English; their comments are not, and they carry the reason a test exists, which is usually a defect somebody once shipped. | 🟠 Medium | ✅ Done |
+| 5 | Update the rule | `CLAUDE.md` says prose for contributors is English and product prose is Spanish. Comments belong to the first and should be named there. | 🟢 Low | ✅ Done |
 | 6 | A check that keeps it | Something in CI that fails on a Spanish comment, so the drift cannot happen twice. | 🟠 Medium | ✅ Done — `test/core/i18n/comments_in_english_test.dart`, a ratchet: the list of files with Spanish can only shrink, and CI runs it with the rest of the suite. |
 
 ## Task 6 is the one that matters afterwards

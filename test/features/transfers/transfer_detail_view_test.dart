@@ -105,8 +105,8 @@ void main() {
   });
 
   testWidgets('rejecting asks for a reason before sending it', (tester) async {
-    // Es lo único que el otro centro va a leer para entender por qué sus cajas
-    // no salieron.
+    // It is the only thing the other centre is going to read to understand why
+    // their boxes did not leave.
     final adapter = await pumpDetail(
       tester,
       status: 'REQUESTED',

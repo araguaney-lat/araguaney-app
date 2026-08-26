@@ -72,8 +72,8 @@ void main() {
       overrides: [
         restClientProvider.overrideWithValue(RestClient(fakeDio(adapter))),
         isCenterCoordinatorProvider.overrideWithValue(coordinator),
-        // La ficha pregunta también por administración nacional: entregar y
-        // registrar la recepción son suyas.
+        // The record also asks about national administration: delivering and
+        // recording the reception belong to it.
         isNationalAdminProvider.overrideWithValue(national),
         openLinkProvider.overrideWithValue((
           url, {
@@ -115,7 +115,7 @@ void main() {
     expect(find.text('ENV-77'), findsOneWidget);
     expect(find.text('8 de 10 llegaron bien'), findsOneWidget);
 
-    // Las incidencias van al final de la ficha: en un teléfono hay que bajar.
+    // The incidents go at the end of the record: on a phone you have to scroll.
     await tester.scrollUntilVisible(find.text('Daño'), 200);
 
     expect(find.text('Daño'), findsOneWidget);
@@ -144,8 +144,8 @@ void main() {
   });
 
   testWidgets('a volunteer reads but does not raise', (tester) async {
-    // El backend exige coordinación para levantarlas y sigue decidiendo; esto
-    // solo evita ofrecer algo que responderá 403.
+    // The backend requires coordination to raise them and goes on deciding;
+    // this only avoids offering something that will answer 403.
     await pumpRecord(tester, coordinator: false);
 
     expect(find.byType(FloatingActionButton), findsNothing);
@@ -191,9 +191,9 @@ void main() {
   testWidgets('asking for the manifest opens it outside the application', (
     tester,
   ) async {
-    // Fuera y no dentro: el manifiesto es un PDF firmado, y el visor del
-    // sistema es donde se guarda, se imprime o se manda. Traérselo al
-    // navegador interno le quitaría todo eso a quien lo abre.
+    // Outside and not inside: the manifest is a signed PDF, and the system's
+    // viewer is where it gets saved, printed or sent. Bringing it into the
+    // internal browser would take all of that away from whoever opens it.
     final opened = <String>[];
     final targets = <LinkTarget>[];
 
@@ -203,7 +203,7 @@ void main() {
       opened: opened,
       targets: targets,
     );
-    // Ahora son cuatro documentos detrás del mismo icono, así que se elige.
+    // There are now four documents behind the same icon, so one gets chosen.
     await tester.tap(find.byTooltip('Documentos'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Manifiesto (PDF)'));
@@ -246,7 +246,7 @@ void main() {
       await tester.tap(find.text('Cerrar el envío'));
       await tester.pumpAndSettle();
 
-      // Cerrar no se deshace, así que dice qué está en juego antes.
+      // Closing is not undone, so it says what is at stake beforehand.
       expect(find.text('¿Cerrar el envío?'), findsOneWidget);
       expect(find.textContaining('1 tarima'), findsOneWidget);
       expect(find.textContaining('Caracas'), findsWidgets);
@@ -276,7 +276,8 @@ void main() {
     });
 
     testWidgets('a dispatched one offers nothing further', (tester) async {
-      // Lo que sigue —entregar, conciliar— no es del centro de origen.
+      // What comes next — delivering, reconciling — does not belong to the
+      // origin centre.
       await pumpRecord(tester, coordinator: true, status: 'SHIPPED');
 
       expect(find.text('Despachar'), findsNothing);
@@ -334,8 +335,9 @@ void main() {
   testWidgets('a height warning is repeated as the server phrased it', (
     tester,
   ) async {
-    // El umbral es del perfil del envío y el servidor decide; la aplicación
-    // no lo interpreta ni lo convierte en un bloqueo, porque él tampoco.
+    // The threshold belongs to the shipment's profile and the server decides;
+    // the application neither interprets it nor turns it into a block, because
+    // the server does not either.
     await pumpRecord(
       tester,
       coordinator: true,

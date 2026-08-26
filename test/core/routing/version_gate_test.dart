@@ -14,12 +14,12 @@ import 'package:flutter_test/flutter_test.dart';
 import '../../support/fake_auth.dart';
 import '../../support/fake_update_prompt_memory.dart';
 
-/// La compuerta de versión mínima, conectada.
+/// The minimum-version gate, wired up.
 ///
-/// Estuvo escrita y probada durante seis fases sin que ningún archivo la
-/// llamara, así que lo que hay que fijar no es la comparación —eso ya lo cubre
-/// `client_version_gate_test.dart`— sino que el resultado llegue a la pantalla
-/// y, sobre todo, **que un fallo de la comprobación no deje a nadie fuera**.
+/// It sat written and tested for six phases without a single file calling it,
+/// so what has to be pinned is not the comparison — `client_version_gate_test`
+/// already covers that — but that the result reaches the screen and, above all,
+/// **that a failure of the check leaves nobody out**.
 void main() {
   Future<void> pumpGate(
     WidgetTester tester, {
@@ -73,15 +73,14 @@ void main() {
 
     expect(find.text('Esta versión ya no funciona'), findsOneWidget);
     expect(find.text('Actualizar'), findsOneWidget);
-    // Ni el acceso ni ninguna forma de seguir.
+    // Neither the sign-in screen nor any way of carrying on.
     expect(find.widgetWithText(TextFormField, 'Contraseña'), findsNothing);
     expect(find.text('Entrar'), findsNothing);
     expect(find.byType(BackButton), findsNothing);
   });
 
   testWidgets('the wall says which build is installed', (tester) async {
-    // Quien llega aquí es exactamente la persona a la que hay que preguntarle
-    // qué versión tiene.
+    // Whoever gets here is exactly the person to ask which version they have.
     await pumpGate(
       tester,
       status: () async => ClientVersionStatus.updateRequired,
@@ -91,9 +90,9 @@ void main() {
   });
 
   testWidgets('a failed check never locks anybody out', (tester) async {
-    // Es el punto entero: el endpoint es una petición más que puede agotar el
-    // tiempo en un sótano, y negarse a abrir por eso sería peor que correr un
-    // poco atrasado.
+    // That is the whole point: the endpoint is one more request that can time
+    // out in a basement, and refusing to open over it would be worse than
+    // running slightly behind.
     await pumpGate(tester, status: () async => throw Exception('sin red'));
 
     expect(find.text('Esta versión ya no funciona'), findsNothing);
@@ -119,8 +118,8 @@ void main() {
 
   group('a newer version is offered at launch and can wait', () {
     testWidgets('it offers both, and the way out is real', (tester) async {
-      // A diferencia del muro: la version instalada funciona, asi que seguir no
-      // arriesga nada que el servidor no acepte.
+      // Unlike the wall: the installed version works, so carrying on risks
+      // nothing the server will not accept.
       await pumpGate(
         tester,
         status: () async => ClientVersionStatus.updateAvailable,
@@ -174,10 +173,11 @@ void main() {
       await tester.tap(find.text('Más tarde'));
       await tester.pumpAndSettle();
 
-      // Se quita de en medio y deja pasar al acceso.
+      // It gets out of the way and lets the sign-in screen through.
       expect(find.text('Hay una versión más nueva'), findsNothing);
       expect(find.widgetWithText(TextFormField, 'Contraseña'), findsOneWidget);
-      // Y queda anotado contra esa version, no contra la aplicacion entera.
+      // And it is noted against that version, not against the whole
+      // application.
       expect(memory.snoozedVersions, ['2.0.0']);
     });
 
@@ -194,8 +194,8 @@ void main() {
     });
 
     testWidgets('being below the minimum wins over it', (tester) async {
-      // El muro no admite «Más tarde», y llegar a ofrecerlo seria ofrecer una
-      // salida que no existe.
+      // The wall takes no «later», and getting as far as offering one would be
+      // offering a way out that does not exist.
       await pumpGate(
         tester,
         status: () async => ClientVersionStatus.updateRequired,
@@ -209,8 +209,9 @@ void main() {
 
   group('how long «later» lasts', () {
     test('it starts long and tightens with each dismissal', () {
-      // Cinco dias, dos, y uno de ahi en adelante: si volviera cada pocas horas
-      // se tocaria por reflejo, y el muro llegaria como una sorpresa.
+      // Five days, two, and one from there on: if it came back every few hours
+      // it would be dismissed by reflex, and the wall would arrive as a
+      // surprise.
       expect(snoozeDaysFor(0), 5);
       expect(snoozeDaysFor(1), 2);
       expect(snoozeDaysFor(2), 1);

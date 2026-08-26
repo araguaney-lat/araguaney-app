@@ -12,9 +12,9 @@ void main() {
     await tester.pumpWidget(
       MediaQuery(
         data: MediaQueryData(
-          // `padding` es lo que queda del inset del sistema después del
-          // teclado: es cero mientras el teclado está abierto, porque el
-          // teclado ya cubre la barra.
+          // `padding` is what is left of the system inset after the keyboard:
+          // it is zero while the keyboard is open, because the keyboard already
+          // covers the bar.
           padding: EdgeInsets.only(bottom: keyboard > 0 ? 0 : systemBar),
           viewPadding: EdgeInsets.only(bottom: systemBar),
           viewInsets: EdgeInsets.only(bottom: keyboard),
@@ -33,8 +33,8 @@ void main() {
   testWidgets('with three-button navigation it clears the system bar', (
     tester,
   ) async {
-    // Es el caso que un emulador con gestos no enseña: allí la barra mide
-    // casi nada y el botón parece bien colocado.
+    // It is the case an emulator with gestures does not show: there the bar is
+    // barely anything and the button looks well placed.
     expect(await measure(tester, systemBar: 48, keyboard: 0), 64);
   });
 
@@ -47,8 +47,8 @@ void main() {
   testWidgets('with the keyboard open it clears the keyboard, once', (
     tester,
   ) async {
-    // No se suman los dos: el teclado se dibuja encima de la barra, así que
-    // contar ambos dejaría un hueco del tamaño de la barra bajo el teclado.
+    // The two are not added: the keyboard is drawn over the bar, so counting
+    // both would leave a gap the size of the bar under the keyboard.
     expect(await measure(tester, systemBar: 48, keyboard: 300), 316);
   });
 }

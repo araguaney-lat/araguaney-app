@@ -36,7 +36,7 @@ void main() {
   test('a failed replaceAll leaves the previous catalog intact', () async {
     await db.catalogDao.replaceAll([productTypeRow(id: 'pt-1')]);
 
-    // Dos filas con la misma clave primaria: la transacción entera revienta.
+    // Two rows with the same primary key: the whole transaction blows up.
     await expectLater(
       db.catalogDao.replaceAll([
         productTypeRow(id: 'pt-2'),

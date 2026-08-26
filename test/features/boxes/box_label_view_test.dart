@@ -7,8 +7,8 @@ import 'package:qr_flutter/qr_flutter.dart';
 
 void main() {
   test('the QR carries the same address the backend prints', () {
-    // Si las dos etiquetas de la misma caja llevaran a sitios distintos, quien
-    // la recibe vería una ficha y quien la despachó otra.
+    // If the two labels of the same box led to different places, whoever
+    // receives it would see one record and whoever dispatched it another.
     expect(
       BoxLabelView.payloadFor('BX-0001'),
       '${AppConfig.webBaseUrl}/b/BX-0001',
@@ -29,9 +29,9 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    // Qué se codifica lo comprueban las pruebas de `payloadFor`: el widget
-    // guarda ese dato en privado, así que aquí se verifica que la etiqueta
-    // existe y que el código se puede leer a simple vista.
+    // What gets encoded is checked by the `payloadFor` tests: the widget keeps
+    // that value private, so what is verified here is that the label exists and
+    // that the code can be read at a glance.
     expect(find.text('BX-0007'), findsWidgets);
     expect(find.byType(QrImageView), findsOneWidget);
   });

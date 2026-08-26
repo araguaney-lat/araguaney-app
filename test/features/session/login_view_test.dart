@@ -68,8 +68,8 @@ void main() {
         (widget.image as AssetImage).assetName == 'assets/icon/ic_mark_lg.png',
   );
 
-  /// La ruta de `MaterialApp` trae su propio `FadeTransition`, así que hay que
-  /// quedarse con el más cercano al árbol y no con cualquiera.
+  /// `MaterialApp`'s route brings its own `FadeTransition`, so what must be
+  /// kept is the one closest to the tree and not just any of them.
   double markOpacity(WidgetTester tester) => tester
       .widget<FadeTransition>(
         find
@@ -80,8 +80,8 @@ void main() {
       .value;
 
   testWidgets('the login shows the mark', (tester) async {
-    // El splash del sistema dibuja este árbol y el inicio lo vuelve a dibujar;
-    // durante meses el acceso fue el hueco entre los dos.
+    // The system splash draws this tree and the sign-in screen draws it again;
+    // for months the sign-in was the gap between the two.
     await pumpLogin(tester);
     await tester.pumpAndSettle();
 
@@ -99,8 +99,8 @@ void main() {
   });
 
   testWidgets('the animation does not hold the form', (tester) async {
-    // Quien llega aquí se quedó sin sesión, a veces a mitad de un turno. Los
-    // campos responden desde el primer fotograma; nada espera al tween.
+    // Whoever arrives here lost their session, sometimes mid-shift. The fields
+    // respond from the first frame; nothing waits for the tween.
     await pumpLogin(tester);
     await tester.pump(const Duration(milliseconds: 16));
 
@@ -125,8 +125,8 @@ void main() {
   testWidgets('with animations disabled the tree is simply there', (
     tester,
   ) async {
-    // La sensibilidad al movimiento no es una preferencia que una marca pueda
-    // pisar: con las animaciones apagadas se dibuja el estado final y ya.
+    // Motion sensitivity is not a preference a brand gets to override: with
+    // animations off the final state is drawn and that is that.
     await pumpLogin(tester, disableAnimations: true);
     await tester.pump();
 
@@ -145,10 +145,10 @@ void main() {
     testWidgets('it opens inside the application, not beside it', (
       tester,
     ) async {
-      // Es una página pública que no pide contraseña, y quien la toca sigue
-      // en el acceso. Custom Tabs sigue siendo el navegador del sistema: no
-      // es un WebView nuestro, así que la verificación antiabuso de la página
-      // trabaja donde debe.
+      // It is a public page that asks for no password, and whoever taps it
+      // stays on the sign-in screen. Custom Tabs is still the system browser:
+      // it is not a WebView of ours, so the page's anti-abuse check works where
+      // it should.
       final targets = <LinkTarget>[];
       await pumpLogin(tester, opened: <String>[], targets: targets);
       await tester.pumpAndSettle();
@@ -159,8 +159,8 @@ void main() {
     });
 
     testWidgets('a phone in Spanish reaches the Spanish form', (tester) async {
-      // Explícito: el arnés de pruebas arranca en `en_US`, así que dar por
-      // hecho el español aquí probaría el caso contrario sin avisar.
+      // Explicit: the test harness starts in `en_US`, so taking Spanish for
+      // granted here would test the opposite case without saying so.
       tester.platformDispatcher.localeTestValue = const Locale('es', 'VE');
       addTearDown(tester.platformDispatcher.clearLocaleTestValue);
 
@@ -171,13 +171,15 @@ void main() {
     });
 
     testWidgets('a phone in English reaches the English form', (tester) async {
-      // La interfaz sigue en español —es el idioma en que se opera un centro—
-      // pero quien toca esto todavía no opera ninguno, y la página pública
-      // existe en los dos. El slug en inglés es otro, no el mismo traducido.
+      // The interface stays in Spanish — it is the language a centre is
+      // operated in — but whoever taps this does not operate one yet, and the
+      // public page exists in both. The English slug is another one, not the
+      // same one translated.
       //
-      // La base es la de `AppConfig`, que sin `--dart-define` es la de
-      // desarrollo: eso es justo lo que se quiere fijar, que el enlace salga
-      // de la configuración y no de una constante escrita en la pantalla.
+      // The base is `AppConfig`'s, which without `--dart-define` is the
+      // development one: that is exactly what this pins down, that the link
+      // comes from the configuration and not from a constant written into the
+      // screen.
       tester.platformDispatcher.localeTestValue = const Locale('en', 'US');
       addTearDown(tester.platformDispatcher.clearLocaleTestValue);
 
@@ -207,9 +209,9 @@ void main() {
 
   group('the installed version, at the foot', () {
     testWidgets('it names the build, not only the version', (tester) async {
-      // El nombre se repite entre publicaciones; el que identifica un binario
-      // es el numero de compilacion, que es el que hace falta para saber que
-      // se esta mirando cuando alguien reporta algo.
+      // The name repeats between releases; what identifies a binary is the
+      // build number, which is the one needed to know what is being looked at
+      // when somebody reports something.
       await pumpLogin(tester);
       await tester.pumpAndSettle();
 
@@ -217,8 +219,9 @@ void main() {
     });
 
     testWidgets('a newer version is mentioned, not imposed', (tester) async {
-      // Hay una nueva y no pasa nada por seguir: una interrupcion seria
-      // desproporcionada. El muro es otra cosa y tiene su propia pantalla.
+      // There is a new one and nothing happens by carrying on: an interruption
+      // would be out of proportion. The wall is another thing and has its own
+      // screen.
       await pumpLogin(
         tester,
         versionStatus: ClientVersionStatus.updateAvailable,

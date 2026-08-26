@@ -3,30 +3,30 @@ import 'dart:async';
 import 'package:araguaney_app/core/push/push_destination.dart';
 import 'package:araguaney_app/core/push/push_service.dart';
 
-/// Servicio de avisos gobernado por la prueba.
+/// A notice service governed by the test.
 class FakePushService implements PushService {
   FakePushService({this.token});
 
-  /// La dirección que este dispositivo dice tener. Nula imita al sabor `foss`,
-  /// a un permiso denegado o a un dispositivo sin servicios de Google.
+  /// The address this device claims to have. Null imitates the `foss` flavour,
+  /// a denied permission or a device without Google services.
   String? token;
 
   int startCount = 0;
   int permissionRequests = 0;
 
-  /// Lo que responde el sistema. La prueba lo cambia para recorrer los caminos.
+  /// What the system answers. The test changes it to walk the paths.
   PushPermission permissionStatus = PushPermission.notDetermined;
 
-  /// Lo que la persona decide cuando se le pregunta.
+  /// What the person decides when they are asked.
   PushPermission answerWhenAsked = PushPermission.granted;
 
   final _rotations = StreamController<String>.broadcast();
   final _opened = StreamController<PushDestination>.broadcast();
 
-  /// Simula que alguien tocó un aviso.
+  /// Simulates somebody having tapped a notice.
   void open(PushDestination destination) => _opened.add(destination);
 
-  /// Simula que FCM rotó el token.
+  /// Simulates FCM having rotated the token.
   void rotate(String newToken) {
     token = newToken;
     _rotations.add(newToken);

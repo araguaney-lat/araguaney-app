@@ -19,8 +19,8 @@ void main() {
   group('a refusal that does not name a rule', () {
     test('a plain forbidden says nothing about the check it failed', () async {
       final l10n = await spanish();
-      // El mensaje del servidor describe la comprobación, no el remedio, y a
-      // veces está en inglés.
+      // The server's message describes the check, not the remedy, and it is
+      // sometimes in English.
       expect(
         messageFor(
           l10n,
@@ -35,8 +35,8 @@ void main() {
 
     test('a named refusal this version does not know stays generic', () async {
       final l10n = await spanish();
-      // El contrato es aditivo: un binario viejo no puede adivinar si lo que
-      // llegó es apto para leerse.
+      // The contract is additive: an old binary cannot guess whether what
+      // arrived is fit to be read.
       expect(
         messageFor(
           l10n,
@@ -52,8 +52,8 @@ void main() {
   group('a refusal the backend named', () {
     test('resolving your own review explains what to do instead', () async {
       final l10n = await spanish();
-      // Es la única salida que le queda a esa persona, y callarla convierte
-      // una explicación en un muro.
+      // It is the only way out left to that person, and staying quiet about it
+      // turns an explanation into a wall.
       expect(
         messageFor(
           l10n,
@@ -82,8 +82,8 @@ void main() {
 
     test('a disabled account reads the same at 400 and at 403', () async {
       final l10n = await spanish();
-      // El backend usa ese código en los dos sitios; para quien lo lee es el
-      // mismo hecho.
+      // The backend uses that code in both places; for whoever reads it, it is
+      // the same fact.
       const disabled = 'Esa cuenta está desactivada.';
       expect(
         messageFor(l10n, 403, 'ACCOUNT_DISABLED', 'Account is disabled'),
@@ -136,9 +136,10 @@ void main() {
   group('what is read while signing in', () {
     test('wrong credentials do not claim a session expired', () async {
       final l10n = await spanish();
-      // El 401 cubre dos momentos: una sesion que caduco y unas credenciales
-      // que no coinciden en la pantalla donde todavia no hay sesion. Decir
-      // «tu sesion expiro» en el segundo describe algo que no ocurrio.
+      // The 401 covers two moments: a session that expired, and credentials
+      // that do not match on the screen where there is no session yet. Saying
+      // «your session expired» in the second describes something that did not
+      // happen.
       const failure = UnauthorizedFailure(
         code: 'INVALID_CREDENTIALS',
         message: 'Invalid credentials',
@@ -162,8 +163,8 @@ void main() {
 
     test('a locked account is not described as too many requests', () async {
       final l10n = await spanish();
-      // Llega con 429 igual que un limite de peticiones, y son dos cosas
-      // distintas: solo el codigo las separa.
+      // It arrives with 429 just like a request limit, and they are two
+      // different things: only the code separates them.
       const failure = RateLimitFailure(
         code: 'ACCOUNT_LOCKED',
         message: 'Too many failed attempts.',
@@ -185,8 +186,8 @@ void main() {
 
     test('neither message publishes a threshold or a window', () async {
       final l10n = await spanish();
-      // La regla del repositorio: se publica el mecanismo, nunca el valor que
-      // determina cuando salta.
+      // The repository's rule: the mechanism is published, never the value that
+      // decides when it fires.
       for (final code in ['INVALID_CREDENTIALS', 'ACCOUNT_LOCKED']) {
         expect(refusalCopyFor(l10n, code), isNotNull);
         expect(refusalCopyFor(l10n, code), isNot(matches(RegExp(r'\d'))));

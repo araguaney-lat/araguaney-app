@@ -15,8 +15,8 @@ Widget _appWith({
 }) => ProviderScope(
   overrides: [
     appVersionProvider.overrideWithValue('1.0.0-test'),
-    // Con sesión, la puerta construye el enrutador de avisos y la tarjeta del
-    // permiso. Sin doble, las dos irían a buscar Firebase.
+    // With a session, the gate builds the notice router and the permission
+    // card. With no double, both would go looking for Firebase.
     pushServiceProvider.overrideWithValue(FakePushService()),
     authRepositoryProvider.overrideWithValue(repository),
     tokenStorageProvider.overrideWithValue(storage),
@@ -75,8 +75,8 @@ void main() {
   testWidgets('a forced password change is interposed before the app', (
     tester,
   ) async {
-    // La clave temporal tiene que dejar de servir en cuanto se usa; saltarse
-    // esta pantalla la dejaría viva.
+    // The temporary key has to stop working as soon as it is used; skipping
+    // this screen would leave it alive.
     await tester.pumpWidget(
       _appWith(
         repository: FakeAuthRepository(
