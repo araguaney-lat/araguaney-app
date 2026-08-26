@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-/// El botón que confirma, en dorado.
+/// The button that confirms, in gold.
 ///
-/// «Azul navega, dorado confirma» es una regla del diseño, y una regla solo
-/// enseña algo si se cumple en todas las pantallas. Existe este widget para que
-/// ninguna vuelva a escribir el color a mano: el dorado sale del tema
-/// (`ColorScheme.secondary`), así que cambiarlo es cambiarlo en un sitio.
+/// «Azul navega, dorado confirma» is a rule of the design, and a rule only
+/// teaches anything if it holds on every screen. This widget exists so that no
+/// screen writes the colour by hand again: the gold comes from the theme
+/// (`ColorScheme.secondary`), so changing it means changing it in one place.
 class ConfirmButton extends StatelessWidget {
   const ConfirmButton({
     super.key,
@@ -15,8 +15,8 @@ class ConfirmButton extends StatelessWidget {
 
   final String label;
 
-  /// Nulo deshabilita el botón, que es lo que corresponde mientras falte algo
-  /// por capturar.
+  /// Null disables the button, which is what belongs while something is still
+  /// missing from the capture.
   final VoidCallback? onPressed;
 
   @override

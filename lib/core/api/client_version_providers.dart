@@ -5,33 +5,33 @@ import 'client_version_gate.dart';
 import 'generated/rest_client.dart';
 import 'update_prompt_memory.dart';
 
-/// Lo que el backend publica sobre las versiones que soporta.
+/// What the backend publishes about the versions it supports.
 ///
-/// Va por el `Dio` **sin sesión**: la ruta es pública, y preguntarla desde el
-/// cliente con sesión la ataría a estar dentro, que es justo al revés de lo que
-/// hace falta —quien está bloqueado por versión ni siquiera debería poder
-/// intentar iniciar sesión.
+/// It goes through the **session-less** `Dio`: the route is public, and asking
+/// it from the client that carries a session would tie it to being signed in,
+/// which is the opposite of what is needed — somebody blocked by version should
+/// not even be able to try to sign in.
 final _clientVersionApiProvider = Provider(
   (ref) => RestClient(ref.watch(authDioProvider)).client,
 );
 
-/// Lo que hay que saber de la versión: en qué estado está y cuál es la última
-/// publicada.
+/// What has to be known about the version: what state it is in, and which one
+/// is the latest published.
 ///
-/// La segunda hace falta para aplazar el aviso **por versión**: sin ella, un
-/// «Más tarde» callaría también la publicación siguiente.
+/// The second is needed to snooze the notice **per version**: without it, one
+/// «Más tarde» would silence the next release too.
 typedef ClientVersion = ({ClientVersionStatus status, String? latest});
 
-/// Estado de la versión instalada frente a la que el backend soporta.
+/// The state of the installed version against the one the backend supports.
 ///
-/// **Se pregunta una vez por arranque y no bloquea nunca por fallar.** El
-/// endpoint es una petición más que puede agotar el tiempo en un sótano, y una
-/// aplicación que se niega a abrir porque no pudo consultar una versión es peor
-/// que una que corre un poco atrasada. Sin respuesta utilizable el resultado es
-/// [ClientVersionStatus.unknown], que no interpone nada.
+/// **It is asked once per launch and never blocks by failing.** The endpoint is
+/// one more request that can time out in a basement, and an application that
+/// refuses to open because it could not look up a version is worse than one
+/// running slightly behind. With no usable answer the result is
+/// [ClientVersionStatus.unknown], which gets in nobody's way.
 ///
-/// La decisión de qué hacer con cada estado no vive aquí: esto responde qué
-/// pasa, y `SessionGate` decide qué se ve.
+/// The decision of what to do with each state does not live here: this answers
+/// what is going on, and `SessionGate` decides what is seen.
 final clientVersionStatusProvider = FutureProvider<ClientVersion>((ref) async {
   final installed = ref.watch(appVersionProvider);
   try {
@@ -47,28 +47,28 @@ final clientVersionStatusProvider = FutureProvider<ClientVersion>((ref) async {
       latest: published.latest,
     );
   } on Object {
-    // Falla abierta, a propósito: ver arriba.
+    // Fails open, on purpose: see above.
     return (status: ClientVersionStatus.unknown, latest: null);
   }
 });
 
-/// La memoria de los aplazamientos, para que una prueba no toque disco.
+/// The memory of the snoozes, so a test does not touch disk.
 final updatePromptMemoryProvider = Provider<UpdatePromptMemory>(
   (ref) => const PrefsUpdatePromptMemory(),
 );
 
-/// Si el aviso de «hay una nueva» ya se descartó en este arranque.
+/// Whether the «there is a new one» notice was already dismissed this launch.
 ///
-/// **Es lo que lo mantiene en el arranque y fuera del turno.** Sin esto, el
-/// aviso volvería en cuanto la sesión cambiara de estado —al entrar, al cambiar
-/// una contraseña obligada— que son justo los momentos en que alguien está
-/// haciendo algo.
+/// **It is what keeps the notice at launch and out of the shift.** Without it
+/// the notice would come back the moment the session changed state — signing
+/// in, changing a forced password — which are exactly the moments when somebody
+/// is in the middle of something.
 final updatePromptDismissedProvider = StateProvider<bool>((ref) => false);
 
-/// Si el aviso de la última versión publicada está aplazado.
+/// Whether the notice about the latest published version is snoozed.
 ///
-/// Empieza en «sí, calla» mientras se resuelve: un aviso que parpadea al abrir
-/// y desaparece es peor que uno que no sale.
+/// It starts as «yes, stay quiet» while it resolves: a notice that flashes on
+/// opening and vanishes is worse than one that never shows.
 final updateSnoozedProvider = FutureProvider<bool>((ref) async {
   final latest = ref.watch(clientVersionStatusProvider).valueOrNull?.latest;
   if (latest == null) return true;

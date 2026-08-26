@@ -9,19 +9,19 @@ import 'push_prompt_memory.dart';
 import 'push_service.dart';
 import 'push_session_binder.dart';
 
-/// El servicio de avisos activo.
+/// The active notice service.
 ///
-/// Esta línea y el archivo `fcm_push_service.dart` son todo lo que el sabor
-/// `foss` tiene que quitar: su rama devuelve siempre [NoopPushService]. La
-/// comprobación de [AppConfig.pushEnabled] se queda igualmente, porque un
-/// binario compilado con `APP_FLAVOR=foss` desde esta rama tampoco debe
-/// inicializar Firebase.
+/// This line and the file `fcm_push_service.dart` are everything the `foss`
+/// flavour has to remove: its branch always returns [NoopPushService]. The
+/// [AppConfig.pushEnabled] check stays anyway, because a binary built with
+/// `APP_FLAVOR=foss` from this branch must not initialise Firebase either.
 final pushServiceProvider = Provider<PushService>((ref) {
   if (!AppConfig.pushEnabled) return const NoopPushService();
   return FcmPushService();
 });
 
-/// Lo que ya se decidió sobre recibir avisos. Se invalida después de preguntar.
+/// What has already been decided about receiving notices. It is invalidated
+/// after asking.
 final pushPermissionProvider = FutureProvider<PushPermission>(
   (ref) => ref.watch(pushServiceProvider).permission(),
 );
@@ -30,15 +30,16 @@ final pushPromptMemoryProvider = Provider<PushPromptMemory>(
   (ref) => const PrefsPushPromptMemory(),
 );
 
-/// Si hay que ofrecer activar los avisos.
+/// Whether turning notices on should be offered.
 ///
-/// Se ofrece cuando todavía no llegan y **nunca se ofreció antes**. Lo segundo
-/// es lo que hace falta en Android, donde el sistema no distingue a quien no ha
-/// decidido de quien dijo que no: sin esa memoria, la invitación no aparecía
-/// jamás, y nadie llegaba a ver el diálogo del sistema.
+/// It is offered when they do not arrive yet and **it was never offered
+/// before**. The second half is what Android needs, where the system does not
+/// tell somebody who has not decided from somebody who said no: without that
+/// memory the invitation never appeared, and nobody ever got to see the
+/// system's dialog.
 ///
-/// Un `foss` sin servicio de avisos responde `unavailable` y tampoco ofrece
-/// nada, que es lo correcto: ahí no hay nada que activar.
+/// A `foss` build with no notice service answers `unavailable` and offers
+/// nothing either, which is right: there is nothing to turn on there.
 final shouldOfferPushProvider = FutureProvider<bool>((ref) async {
   final permission = await ref.watch(pushPermissionProvider.future);
   if (permission != PushPermission.denied &&
@@ -63,11 +64,11 @@ final pushSessionBinderProvider = Provider<PushSessionBinder>(
   ),
 );
 
-/// Lo que la sesión llama al abrirse y al cerrarse.
+/// What the session calls when it opens and when it closes.
 ///
-/// Se exponen como funciones sueltas para que `core/auth` no tenga que conocer
-/// nada de avisos: la sesión decide *cuándo*, y esta capa sabe *qué*. Es el
-/// mismo arreglo que el borrado del modelo de lectura.
+/// They are exposed as loose functions so `core/auth` does not have to know
+/// anything about notices: the session decides *when*, and this layer knows
+/// *what*. It is the same arrangement as clearing the read model.
 typedef SessionPushHook = Future<void> Function();
 
 final onSessionStartedProvider = Provider<SessionPushHook>(

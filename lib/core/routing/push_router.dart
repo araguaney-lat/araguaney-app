@@ -8,13 +8,13 @@ import '../../features/shipments/ui/shipment_record_view.dart';
 import '../push/push_destination.dart';
 import '../push/push_providers.dart';
 
-/// Lleva a quien tocó un aviso a donde el aviso hablaba.
+/// Takes whoever tapped a notice to what the notice was about.
 ///
-/// Vive envolviendo la parte autenticada del árbol y no más arriba, y eso es
-/// deliberado: navegar exige sesión, y un aviso tocado mientras la aplicación
-/// está en la pantalla de inicio de sesión o en el cambio de contraseña
-/// obligatorio no puede saltarse ninguna de las dos. Cuando la sesión se abra,
-/// el mensaje inicial sigue ahí y el destino se abre entonces.
+/// It wraps the authenticated part of the tree and not anything above it, and
+/// that is deliberate: navigating requires a session, and a notice tapped while
+/// the application sits on the sign-in screen or the forced password change
+/// cannot skip either of them. When the session opens, the initial message is
+/// still there and the destination opens then.
 class PushRouter extends ConsumerStatefulWidget {
   const PushRouter({super.key, required this.child});
 
@@ -42,9 +42,9 @@ class _PushRouterState extends ConsumerState<PushRouter> {
   void _go(PushDestination destination) {
     if (!mounted) return;
 
-    // Un aviso de una clase que esta versión no conoce se queda sin navegar.
-    // El texto lo compuso el servidor y ya se mostró; abrir una pantalla
-    // cualquiera sería peor que no abrir ninguna.
+    // A notice of a kind this version does not know goes nowhere. The server
+    // composed the text and it has already been shown; opening some arbitrary
+    // screen would be worse than opening none.
     final route = switch (destination) {
       RiskReviewDestination(:final intakeId) => RiskReviewsView.route(
         highlightIntakeId: intakeId,

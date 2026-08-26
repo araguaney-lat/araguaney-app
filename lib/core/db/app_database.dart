@@ -14,11 +14,11 @@ import 'tables/sync_markers_table.dart';
 
 part 'app_database.g.dart';
 
-/// Base local del modelo de lectura.
+/// The local database behind the read model.
 ///
-/// Guarda lo que el servidor sirvió para que consultar funcione sin señal. No
-/// guarda nada que el servidor no haya dicho, y no deriva nada de lo guardado:
-/// es una copia, no una segunda fuente de verdad.
+/// It stores what the server served so that reading works without signal. It
+/// stores nothing the server did not say, and derives nothing from what it
+/// stores: it is a copy, not a second source of truth.
 @DriftDatabase(
   tables: [
     ProductTypes,
@@ -36,12 +36,12 @@ class AppDatabase extends _$AppDatabase {
   @override
   int get schemaVersion => 3;
 
-  /// Las fechas se guardan como texto ISO-8601 con desfase horario.
+  /// Dates are stored as ISO-8601 text with the offset.
   ///
-  /// El formato por defecto de Drift son segundos unix interpretados en la zona
-  /// local: un `DateTime` en UTC vuelve de la base convertido, y las marcas de
-  /// sincronización se comparan contra lo que devuelve el servidor, que siempre
-  /// viene en UTC. Guardar el desfase evita esa traducción silenciosa.
+  /// Drift's default is unix seconds read in the local zone: a `DateTime` in
+  /// UTC comes back from the database converted, and the sync markers are
+  /// compared against what the server returns, which is always UTC. Storing the
+  /// offset avoids that silent translation.
   @override
   DriftDatabaseOptions get options =>
       const DriftDatabaseOptions(storeDateTimeAsText: true);
@@ -50,9 +50,9 @@ class AppDatabase extends _$AppDatabase {
   MigrationStrategy get migration => MigrationStrategy(
     onCreate: (m) => m.createAll(),
     onUpgrade: (m, from, to) async {
-      // v2 agrega la cola de captura sin conexión y los códigos reservados.
-      // Se crean vacías: un dispositivo que actualiza no tenía capturas
-      // encoladas porque no existía dónde encolarlas.
+      // v2 adds the offline capture queue and the reserved codes. They are
+      // created empty: a device that updates had no queued captures, because
+      // there was nowhere to queue them.
       if (from < 2) {
         await m.createTable(queuedCaptures);
         await m.createTable(boxCodeReservations);
@@ -66,18 +66,19 @@ class AppDatabase extends _$AppDatabase {
     },
   );
 
-  /// Vacía el modelo de **lectura**.
+  /// Empties the **read** model.
   ///
-  /// Se usa al iniciar sesión alguien distinto en un dispositivo compartido:
-  /// nadie hereda el cache del turno anterior. Va en una transacción porque un
-  /// borrado a medias dejaría cajas apuntando a un catálogo que ya no está.
+  /// It is used when somebody different signs in on a shared device: nobody
+  /// inherits the previous shift's cache. It runs in a transaction because a
+  /// half-finished delete would leave boxes pointing at a catalogue that is no
+  /// longer there.
   ///
-  /// **No toca la cola de capturas ni los códigos reservados**, y esa omisión
-  /// es la funcionalidad. Lo que una persona capturó en un sótano es suyo y
-  /// sigue pendiente aunque otra abra sesión en el mismo teléfono; borrarlo
-  /// aquí sería perder inventario por el camino de cambiar de turno. Que no se
-  /// envíe con la sesión equivocada lo garantiza el `user_id` de cada fila, no
-  /// el borrado.
+  /// **It does not touch the capture queue or the reserved codes**, and that
+  /// omission is the feature. What somebody captured in a basement is theirs
+  /// and stays pending even if another person signs in on the same phone;
+  /// deleting it here would mean losing inventory on the way through a change
+  /// of shift. What keeps it from being sent under the wrong session is the
+  /// `user_id` on each row, not deletion.
   Future<void> clearReadModel() => transaction(() async {
     await delete(boxes).go();
     await delete(productTypes).go();

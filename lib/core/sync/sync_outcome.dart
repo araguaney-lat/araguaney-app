@@ -1,11 +1,11 @@
 import '../api/api_failure.dart';
 
-/// Resultado de refrescar un recurso cacheado.
+/// The result of refreshing a cached resource.
 ///
-/// Un refresco **nunca lanza** hacia la interfaz. La pantalla ya tiene datos
-/// que mostrar; lo que necesita saber es si siguen siendo los últimos y, si no,
-/// por qué. Devolverlo como valor obliga a decidirlo en cada sitio en vez de
-/// dejar que una excepción se lleve la pantalla por delante.
+/// A refresh **never throws** towards the interface. The screen already has
+/// data to show; what it needs to know is whether it is still the latest and,
+/// if not, why. Returning it as a value forces the decision at each site
+/// instead of letting an exception take the screen down with it.
 sealed class SyncOutcome {
   const SyncOutcome();
 }
@@ -22,7 +22,8 @@ final class SyncFailed extends SyncOutcome {
 
   final ApiFailure failure;
 
-  /// Si el fallo fue de red. Lo usa el estado de conexión: un rechazo del
-  /// servidor prueba que el servidor está ahí, y no debe marcarse sin señal.
+  /// Whether the failure was a network one. The connection state uses it: a
+  /// refusal from the server proves the server is there, and must not be marked
+  /// as having no signal.
   bool get isNetworkFailure => failure is NetworkFailure;
 }

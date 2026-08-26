@@ -1,56 +1,58 @@
 import 'push_destination.dart';
 
-/// Qué ha decidido quien usa el teléfono sobre recibir avisos.
+/// What the person using the phone has decided about receiving notices.
 enum PushPermission {
-  /// Concedido: los avisos se muestran.
+  /// Granted: notices are shown.
   granted,
 
-  /// Denegado. No se vuelve a preguntar desde la aplicación; se cambia en los
-  /// ajustes del sistema.
+  /// Denied. The application does not ask again; it is changed in the system
+  /// settings.
   denied,
 
-  /// Todavía no se ha preguntado.
+  /// Nobody has been asked yet.
   notDetermined,
 
-  /// No hay a quién preguntar: esta compilación no entrega avisos. Es el caso
-  /// del sabor `foss`.
+  /// There is nobody to ask: this build does not deliver notices. That is the
+  /// `foss` flavour's case.
   unavailable,
 }
 
-/// El único punto por donde entra Firebase.
+/// The only door Firebase comes through.
 ///
-/// Todo lo que la aplicación necesita de los avisos cabe en estos cuatro
-/// miembros, y ninguno menciona FCM. Esa es la razón de que exista: el sabor
-/// `foss` compila con [NoopPushService] y sin una sola dependencia propietaria,
-/// y el resto del código no distingue un sabor del otro.
+/// Everything the application needs from notices fits in these few members, and
+/// none of them mentions FCM. That is why it exists: the `foss` flavour builds
+/// with [NoopPushService] and not one proprietary dependency, and the rest of
+/// the code cannot tell one flavour from the other.
 abstract interface class PushService {
-  /// Pone en marcha el servicio. Idempotente: llamarlo dos veces no duplica
-  /// suscripciones.
+  /// Starts the service. Idempotent: calling it twice does not duplicate
+  /// subscriptions.
   Future<void> start();
 
-  /// La dirección de este dispositivo, o nulo si todavía no hay ninguna —sin
-  /// permiso, sin servicios de Google, o en el sabor `foss`.
+  /// This device's address, or null when there is not one yet — no permission,
+  /// no Google services, or the `foss` flavour.
   Future<String?> currentToken();
 
-  /// Direcciones nuevas. FCM rota el token por su cuenta, y cada rotación deja
-  /// la anterior muerta: quien escuche esto tiene que registrar la nueva.
+  /// New addresses. FCM rotates the token on its own, and every rotation
+  /// leaves the previous one dead: whoever listens has to register the new
+  /// one.
   Stream<String> get onTokenRotated;
 
-  /// Avisos que alguien tocó, ya interpretados.
+  /// Notices somebody tapped, already interpreted.
   Stream<PushDestination> get onOpened;
 
-  /// Qué se decidió ya, sin preguntar nada.
+  /// What has already been decided, without asking anything.
   Future<PushPermission> permission();
 
-  /// Pide el permiso al sistema. Devuelve lo que se decidió.
+  /// Asks the system for the permission. Returns what was decided.
   Future<PushPermission> requestPermission();
 }
 
-/// Implementación que no hace nada.
+/// The implementation that does nothing.
 ///
-/// Es la del sabor `foss` y también la de cualquier compilación sin Firebase
-/// configurado. No es un placeholder: es el comportamiento correcto cuando no
-/// hay a dónde entregar avisos, y el resto de la aplicación funciona igual.
+/// It is the `foss` flavour's, and also that of any build without Firebase
+/// configured. It is not a placeholder: it is the correct behaviour when there
+/// is nowhere to deliver notices, and the rest of the application works the
+/// same.
 class NoopPushService implements PushService {
   const NoopPushService();
 
@@ -66,8 +68,8 @@ class NoopPushService implements PushService {
   @override
   Stream<PushDestination> get onOpened => const Stream.empty();
 
-  /// No hay permiso que pedir porque no hay avisos que entregar. Decir
-  /// «denegado» sugeriría que alguien lo denegó.
+  /// There is no permission to ask for because there are no notices to
+  /// deliver. Saying «denied» would suggest somebody denied it.
   @override
   Future<PushPermission> permission() async => PushPermission.unavailable;
 

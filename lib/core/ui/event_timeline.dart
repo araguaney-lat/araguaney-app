@@ -5,13 +5,13 @@ import '../api/generated/models/qr_event_out.dart';
 import '../i18n/l10n_extension.dart';
 import 'record_field.dart';
 
-/// El recorrido de un objeto, dibujado igual en los tres sitios que lo tienen.
+/// An object's journey, drawn the same way in the three places that have one.
 ///
-/// Envíos, cajas y tarimas responden el mismo `QrEventOut` y responden la misma
-/// pregunta —«¿qué le pasó a esto?»—, así que compartir el dibujo es lo
-/// correcto. Lo que **no** se comparte es el vocabulario: cada objeto tiene su
-/// tabla de estados y se pasa desde fuera, porque una tarima «CERRADA» y un
-/// envío «CERRADO» son cosas distintas y ninguna de las dos es «CLOSED».
+/// Shipments, boxes and pallets answer the same `QrEventOut` and answer the
+/// same question — «¿qué le pasó a esto?» — so sharing the drawing is right.
+/// What is **not** shared is the vocabulary: each object has its own table of
+/// states and it is passed in from outside, because a pallet «CERRADA» and a
+/// shipment «CERRADO» are different things and neither of them is «CLOSED».
 class EventTimeline extends StatelessWidget {
   const EventTimeline({
     super.key,
@@ -22,10 +22,10 @@ class EventTimeline extends StatelessWidget {
 
   final List<QrEventOut> events;
 
-  /// La tabla del objeto al que pertenecen estos eventos.
+  /// The table of the object these events belong to.
   final String Function(String) statusLabel;
 
-  /// Qué decir cuando no hay nada. Nulo usa el texto general.
+  /// What to say when there is nothing. Null uses the general text.
   final String? empty;
 
   @override

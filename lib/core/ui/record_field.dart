@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-/// Una línea de una ficha: etiqueta arriba, valor abajo.
+/// One line of a record: label above, value below.
 ///
-/// Vive en `core` porque la usan varias fichas de solo lectura y conviene que
-/// una caja se vea igual venga del cache o de un escaneo.
+/// It lives in `core` because several read-only records use it, and a box
+/// should look the same whether it comes from the cache or from a scan.
 class RecordField extends StatelessWidget {
   const RecordField({super.key, required this.label, required this.value});
 
@@ -18,18 +18,18 @@ class RecordField extends StatelessWidget {
   );
 }
 
-/// Fecha corta en el orden que se lee en la región.
+/// A short date in the order the region reads it.
 ///
-/// `intl` formatearía lo mismo a cambio de arrastrar la localización a
-/// pantallas de solo lectura que no la necesitan para nada más.
+/// `intl` would format the same thing in exchange for dragging localisation
+/// into read-only screens that need it for nothing else.
 String formatShortDate(DateTime date) =>
     '${date.day.toString().padLeft(2, '0')}/'
     '${date.month.toString().padLeft(2, '0')}/${date.year}';
 
-/// La misma fecha con la hora, para lo que ocurrió en una jornada concreta.
+/// The same date with the time, for what happened during one particular shift.
 ///
-/// Una captura encolada esta mañana y otra de anteayer se distinguen por el
-/// día; dos de la misma mañana, solo por la hora.
+/// A capture queued this morning and one from the day before yesterday are told
+/// apart by the day; two from the same morning, only by the time.
 String formatShortDateTime(DateTime at) =>
     '${formatShortDate(at)} ${at.hour.toString().padLeft(2, '0')}:'
     '${at.minute.toString().padLeft(2, '0')}';

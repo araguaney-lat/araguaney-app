@@ -1,37 +1,37 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
-/// Cuántas veces se aplazó el aviso de una versión, y hasta cuándo callar.
+/// How many times a version's notice was snoozed, and until when to stay quiet.
 ///
-/// **El «Más tarde» tiene que significar más tarde.** Si el aviso volviera cada
-/// pocas horas se tocaría por reflejo, y el día que llegue el muro de verdad
-/// llegaría como una sorpresa después de semanas descartando lo mismo. Por eso
-/// el silencio empieza largo.
+/// **«Más tarde» has to mean later.** If the notice came back every few hours
+/// it would be dismissed by reflex, and the day the real wall arrives it would
+/// arrive as a surprise after weeks of waving away the same thing. That is why
+/// the silence starts long.
 ///
-/// Y tiene que ir apretando, porque una versión de hace tres días y una de hace
-/// tres meses no merecen la misma insistencia. No hay fechas de publicación en
-/// el contrato, así que la edad se aproxima por cuántas veces se ha aplazado
-/// **esta misma** versión: quien la ignora acumula aplazamientos, y el silencio
-/// se acorta con ellos.
+/// And it has to tighten, because a version from three days ago and one from
+/// three months ago do not deserve the same insistence. The contract carries no
+/// publication dates, so age is approximated by how many times **this same**
+/// version has been snoozed: whoever ignores it piles up snoozes, and the
+/// silence shortens with them.
 ///
-/// El contador se guarda contra la versión concreta, así que una publicación
-/// nueva empieza de cero: es otra cosa la que se está pidiendo.
+/// The counter is stored against the specific version, so a new release starts
+/// from zero: what is being asked for is a different thing.
 ///
-/// No es información sensible ni de la sesión: es del dispositivo, igual que
-/// [PushPromptMemory], y por eso vive en las preferencias.
+/// It is neither sensitive nor session information: it belongs to the device,
+/// like [PushPromptMemory], and that is why it lives in the preferences.
 abstract interface class UpdatePromptMemory {
-  /// Si el aviso de [version] está aplazado en [now].
+  /// Whether [version]'s notice is snoozed at [now].
   Future<bool> isSnoozed(String version, DateTime now);
 
-  /// Aplaza el aviso de [version], contando desde [now].
+  /// Snoozes [version]'s notice, counting from [now].
   Future<void> snooze(String version, DateTime now);
 }
 
-/// Cuánto calla cada aplazamiento sucesivo de la misma versión.
+/// How long each successive snooze of the same version stays quiet.
 ///
-/// Cinco días la primera vez, dos la segunda, uno de la tercera en adelante.
-/// Son valores de esta aplicación y no de ningún control del servidor: aquí no
-/// hay nada que ocultar, solo una decisión de producto escrita donde se puede
-/// discutir.
+/// Five days the first time, two the second, one from the third onwards. These
+/// are this application's values and not those of any server control: there is
+/// nothing to hide here, only a product decision written where it can be
+/// argued with.
 const updateSnoozeDays = [5, 2, 1];
 
 int snoozeDaysFor(int previousSnoozes) =>
@@ -56,8 +56,8 @@ class PrefsUpdatePromptMemory implements UpdatePromptMemory {
   @override
   Future<void> snooze(String version, DateTime now) async {
     final prefs = await SharedPreferences.getInstance();
-    // Otra versión: el contador vuelve a empezar, porque lo que se pide es
-    // otra cosa y no una repetición de lo mismo.
+    // A different version: the counter starts over, because what is being
+    // asked for is another thing and not a repeat of the same one.
     final sameVersion = prefs.getString(_versionKey) == version;
     final previous = sameVersion ? (prefs.getInt(_countKey) ?? 0) : 0;
 

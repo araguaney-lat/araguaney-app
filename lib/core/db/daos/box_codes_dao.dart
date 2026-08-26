@@ -10,7 +10,7 @@ class BoxCodesDao extends DatabaseAccessor<AppDatabase>
     with _$BoxCodesDaoMixin {
   BoxCodesDao(super.db);
 
-  /// Guarda un bloque recién reservado.
+  /// Stores a freshly reserved block.
   Future<void> store(
     Iterable<String> codes, {
     required String userId,
@@ -28,7 +28,7 @@ class BoxCodesDao extends DatabaseAccessor<AppDatabase>
     ], mode: InsertMode.insertOrIgnore),
   );
 
-  /// Cuántos códigos sin gastar le quedan a esta persona en el dispositivo.
+  /// How many unspent codes this person has left on the device.
   ///
   /// [centerId] narrows the count to the ones that are good where the work is
   /// happening. Null counts every one, which is right for a session that
@@ -59,16 +59,16 @@ class BoxCodesDao extends DatabaseAccessor<AppDatabase>
       : boxCodeReservations.centerId.equals(centerId) |
             boxCodeReservations.centerId.isNull();
 
-  /// Toma [count] códigos y los marca gastados **en una sola sentencia**.
+  /// Takes [count] codes and marks them spent **in a single statement**.
   ///
-  /// Reclamar y marcar tienen que ser un solo acto: leer los libres y después
-  /// escribirlos deja una carrera justo en medio, y el premio de esa carrera
-  /// son dos cajas con la misma etiqueta —dos bultos que el manifiesto declara
-  /// como uno—. `UPDATE ... RETURNING` no tiene ese hueco: lo que devuelve es
-  /// exactamente lo que marcó.
+  /// Claiming and marking have to be one act: reading the free ones and then
+  /// writing them leaves a race right in the middle, and the prize for winning
+  /// that race is two boxes with the same label — two parcels the manifest
+  /// declares as one. `UPDATE ... RETURNING` has no such gap: what it returns
+  /// is exactly what it marked.
   ///
-  /// Devuelve menos de [count] si el bloque se agotó. Quedarse sin códigos no
-  /// puede impedir capturar, solo etiquetar.
+  /// It returns fewer than [count] if the block ran out. Running out of codes
+  /// cannot stop anybody capturing, only labelling.
   ///
   /// [centerId] keeps a block reserved for one centre from being spent in
   /// another. It travels twice into the statement because the condition is

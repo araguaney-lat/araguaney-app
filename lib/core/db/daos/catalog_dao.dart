@@ -5,19 +5,20 @@ import '../tables/product_types_table.dart';
 
 part 'catalog_dao.g.dart';
 
-/// Acceso al catálogo cacheado.
+/// Access to the cached catalogue.
 @DriftAccessor(tables: [ProductTypes])
 class CatalogDao extends DatabaseAccessor<AppDatabase> with _$CatalogDaoMixin {
   CatalogDao(super.db);
 
-  /// Catálogo visible, ordenado por nombre. [category] filtra igual que el
-  /// parámetro del endpoint, para que la pantalla no tenga que filtrar en
-  /// memoria una lista que puede ser larga.
+  /// The visible catalogue, ordered by name. [category] filters the same way
+  /// the endpoint's parameter does, so the screen does not have to filter a
+  /// possibly long list in memory.
   ///
-  /// [search] busca en el nombre, la marca y el principio activo: quien captura
-  /// teclea lo que ve en la caja, que tanto puede ser la marca comercial como
-  /// el genérico. La búsqueda es local a propósito —el catálogo ya está en el
-  /// dispositivo— y por eso funciona igual sin señal.
+  /// [search] looks at the name, the brand and the active ingredient: whoever
+  /// is capturing types what they see on the box, which can be the brand name
+  /// as easily as the generic one. The search is deliberately local — the
+  /// catalogue is already on the device — which is why it works the same
+  /// without signal.
   Stream<List<ProductTypeRow>> watchAll({String? category, String? search}) {
     final query = select(productTypes)
       ..orderBy([(t) => OrderingTerm(expression: t.displayName)]);
@@ -40,7 +41,8 @@ class CatalogDao extends DatabaseAccessor<AppDatabase> with _$CatalogDaoMixin {
     return query.watch();
   }
 
-  /// Categorías presentes en el catálogo local, para navegarlo sin teclear.
+  /// The categories present in the local catalogue, for browsing it without
+  /// typing.
   Future<List<String>> categories() async {
     final query = selectOnly(productTypes, distinct: true)
       ..addColumns([productTypes.category])
@@ -54,10 +56,11 @@ class CatalogDao extends DatabaseAccessor<AppDatabase> with _$CatalogDaoMixin {
 
   Future<List<ProductTypeRow>> all() => select(productTypes).get();
 
-  /// El producto cuyo código de barras es [gtin], si está descargado.
+  /// The product whose barcode is [gtin], if it is downloaded.
   ///
-  /// Es la consulta que hace que escanear funcione sin señal: el catálogo local
-  /// guarda el `gtin` que sirvió el servidor, con su visibilidad por campaña.
+  /// This is the query that makes scanning work without signal: the local
+  /// catalogue keeps the `gtin` the server served, with its campaign
+  /// visibility.
   Future<ProductTypeRow?> findByGtin(String gtin) => (select(
     productTypes,
   )..where((t) => t.gtin.equals(gtin))).getSingleOrNull();
@@ -65,18 +68,19 @@ class CatalogDao extends DatabaseAccessor<AppDatabase> with _$CatalogDaoMixin {
   Future<ProductTypeRow?> findById(String id) =>
       (select(productTypes)..where((t) => t.id.equals(id))).getSingleOrNull();
 
-  /// Sustituye el catálogo entero por [rows], en una sola transacción.
+  /// Replaces the whole catalogue with [rows], in a single transaction.
   ///
-  /// Es un reemplazo y no una fusión a propósito: un tipo de producto que el
-  /// servidor dejó de servir tiene que desaparecer del dispositivo. Fusionar
-  /// dejaría ofreciendo sin señal algo que el servidor ya rechaza.
+  /// It is deliberately a replacement rather than a merge: a product type the
+  /// server stopped serving has to disappear from the device. Merging would
+  /// leave the application offering, without signal, something the server
+  /// already refuses.
   Future<void> replaceAll(Iterable<ProductTypeRow> rows) =>
       transaction(() async {
         await delete(productTypes).go();
         await batch((b) => b.insertAll(productTypes, rows));
       });
 
-  /// Guarda un producto suelto, el que se acaba de crear o corregir.
+  /// Stores a single product, the one just created or corrected.
   ///
   /// It is not a merge of the catalogue — [replaceAll] stays the only way the
   /// window is rebuilt. It is one row the server just confirmed, put where

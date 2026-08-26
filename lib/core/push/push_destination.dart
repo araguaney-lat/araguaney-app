@@ -1,53 +1,54 @@
-/// A dónde lleva tocar un aviso.
+/// Where tapping a notice leads.
 ///
-/// El servidor compone el título y el cuerpo en español; la aplicación solo los
-/// muestra. Lo que sirve para navegar viaja aparte, en el `data` del mensaje, y
-/// esto lo interpreta.
+/// The server composes the title and body; the application only shows them.
+/// What is there to navigate with travels separately, in the message's `data`,
+/// and this interprets it.
 ///
-/// Una nota de diseño que viene del backend y conviene no deshacer aquí: **el
-/// aviso de revisión de riesgo no dice por qué se levantó**. Se lee en una
-/// pantalla de bloqueo, a veces con alguien al lado; el motivo vive dentro de la
-/// revisión.
+/// A design note that comes from the backend and is worth not undoing here:
+/// **a risk-review notice does not say why the review was raised**. It is read
+/// on a lock screen, sometimes with somebody standing next to you; the reason
+/// lives inside the review.
 sealed class PushDestination {
   const PushDestination();
 }
 
-/// Se abrió una revisión de riesgo sobre una captura del centro.
+/// A risk review was opened on one of the centre's captures.
 final class RiskReviewDestination extends PushDestination {
   const RiskReviewDestination(this.intakeId);
 
   final String intakeId;
 }
 
-/// Un envío del centro de origen llegó a su destino.
+/// A shipment from the sending centre reached its destination.
 final class ShipmentDeliveredDestination extends PushDestination {
   const ShipmentDeliveredDestination(this.shipmentId);
 
   final String shipmentId;
 }
 
-/// Un aviso que esta versión no sabe enrutar.
+/// A notice this build does not know how to route.
 ///
-/// Existe porque el contrato es solo-aditivo y un binario de hace meses tiene
-/// que sobrevivir a una clase de aviso que no conocía: se muestra igual —el
-/// texto lo compuso el servidor— y tocarlo simplemente no navega a ningún
-/// sitio, en vez de romperse.
+/// It exists because the contract is additive and a months-old binary has to
+/// survive a kind of notice it never knew about: it is shown anyway — the
+/// server composed the text — and tapping it simply navigates nowhere instead
+/// of breaking.
 final class UnknownDestination extends PushDestination {
   const UnknownDestination(this.kind);
 
   final String? kind;
 }
 
-/// Nombres que el servidor usa en `data.kind`.
+/// The names the server uses in `data.kind`.
 abstract final class PushKind {
   static const riskReview = 'risk_review';
   static const shipmentDelivered = 'shipment_delivered';
 }
 
-/// Interpreta el `data` de un aviso.
+/// Interprets a notice's `data`.
 ///
-/// Un campo que falta no es un aviso de otra clase: es este aviso llegando
-/// incompleto, y enrutarlo a medias sería peor que no enrutarlo.
+/// A missing field is not a notice of some other kind: it is this notice
+/// arriving incomplete, and routing it halfway would be worse than not routing
+/// it at all.
 PushDestination parsePushDestination(Map<String, String> data) {
   final kind = data['kind'];
 

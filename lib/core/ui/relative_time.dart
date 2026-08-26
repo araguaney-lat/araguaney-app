@@ -1,12 +1,11 @@
 import '../i18n/generated/app_localizations.dart';
 
-/// Antigüedad de un dato, en español y en la escala que le importa a quien
-/// opera.
+/// How old a piece of data is, on the scale that matters to whoever operates.
 ///
-/// No se usa `intl` a propósito: sus formatos relativos son otra tabla de
-/// traducciones que mantener, y aquí hacen falta cuatro escalones. Lo que
-/// necesita entender alguien en un centro es si lo que ve es de hace un
-/// momento, de esta jornada o de otro día.
+/// `intl` is not used on purpose: its relative formats are one more translation
+/// table to maintain, and four steps are all that is needed here. What somebody
+/// in a centre needs to understand is whether what they see is from a moment
+/// ago, from this shift or from another day.
 String describeAge(AppLocalizations l10n, DateTime moment, DateTime now) {
   final elapsed = now.difference(moment);
 

@@ -4,25 +4,26 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'connectivity_probe.dart';
 
-/// Qué se sabe de la conexión con el servidor.
+/// What is known about the connection to the server.
 enum ConnectivityStatus {
-  /// Una petición reciente llegó al servidor.
+  /// A recent request reached the server.
   online,
 
-  /// No hay interfaz de red, o una petición reciente no llegó.
+  /// There is no network interface, or a recent request did not arrive.
   offline,
 
-  /// Hay interfaz levantada pero todavía nadie la ha probado.
+  /// An interface is up but nobody has tried it yet.
   unknown,
 }
 
-/// Estado de conexión de la aplicación.
+/// The application's connection state.
 ///
-/// Combina dos hechos distintos a propósito. El sistema operativo dice si hay
-/// una interfaz levantada; solo el tráfico real dice si hay servidor al otro
-/// lado. Por eso una interfaz que aparece deja el estado en [
-/// ConnectivityStatus.unknown] y no en `online`: el wifi de un centro de acopio
-/// sin salida a internet es exactamente el caso que más importa no confundir.
+/// It combines two different facts on purpose. The operating system says
+/// whether an interface is up; only real traffic says whether there is a server
+/// on the other side. That is why an interface appearing leaves the state at
+/// [ConnectivityStatus.unknown] and not at `online`: a collection centre's wifi
+/// with no way out to the internet is exactly the case it matters most not to
+/// confuse.
 class ConnectivityController extends Notifier<ConnectivityStatus> {
   StreamSubscription<bool>? _subscription;
 
@@ -33,9 +34,10 @@ class ConnectivityController extends Notifier<ConnectivityStatus> {
     _subscription = probe.onInterfaceChanged.listen(_onInterfaceChanged);
     ref.onDispose(() => _subscription?.cancel());
 
-    // El primer sondeo no puede ir en `build`, que es síncrono. Solo se usa
-    // para descubrir que no hay red: si la hay, el estado sigue sin probarse y
-    // este resultado tardío no debe pisar una petición que ya haya llegado.
+    // The first probe cannot go inside `build`, which is synchronous. It is
+    // used only to find out there is no network: if there is, the state stays
+    // untested, and this late result must not overwrite a request that already
+    // got through.
     unawaited(
       probe.hasInterface().then((hasInterface) {
         if (!hasInterface) state = ConnectivityStatus.offline;
@@ -45,15 +47,15 @@ class ConnectivityController extends Notifier<ConnectivityStatus> {
     return ConnectivityStatus.unknown;
   }
 
-  /// Una petición llegó al servidor.
+  /// A request reached the server.
   void reportReachable() => state = ConnectivityStatus.online;
 
-  /// Una petición no llegó: sin red, DNS o tiempo agotado.
+  /// A request did not arrive: no network, no DNS, or a timeout.
   void reportUnreachable() => state = ConnectivityStatus.offline;
 
   void _onInterfaceChanged(bool hasInterface) {
-    // Sin interfaz la respuesta es definitiva. Con interfaz solo se sabe que
-    // vale la pena intentarlo.
+    // With no interface the answer is final. With one, all that is known is
+    // that it is worth trying.
     state = hasInterface
         ? ConnectivityStatus.unknown
         : ConnectivityStatus.offline;

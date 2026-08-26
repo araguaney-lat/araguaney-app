@@ -1,10 +1,10 @@
 import 'package:drift/drift.dart';
 
-/// Cajas del centro, espejo de lectura de `GET /v1/boxes`.
+/// The centre's boxes, a read mirror of `GET /v1/boxes`.
 ///
-/// [status] se guarda como texto sin interpretarlo: qué significa cada estado y
-/// cuáles cuentan para qué es una regla del backend. El cliente lo muestra y lo
-/// ordena, nunca lo deduce.
+/// [status] is stored as text without being interpreted: what each state means,
+/// and which ones count towards what, is the backend's rule. The client shows
+/// it and orders by it, never deduces it.
 @DataClassName('BoxRow')
 class Boxes extends Table {
   TextColumn get id => text()();
@@ -17,8 +17,8 @@ class Boxes extends Table {
   TextColumn get batch => text().nullable()();
   DateTimeColumn get expiryDate => dateTime().nullable()();
 
-  /// Decimal del servidor, guardado como texto por la misma razón que el peso
-  /// unitario del catálogo.
+  /// A decimal from the server, stored as text for the same reason as the
+  /// catalogue's unit weight.
   TextColumn get weightKg => text().nullable()();
   DateTimeColumn get sealedAt => dateTime().nullable()();
   TextColumn get palletId => text().nullable()();

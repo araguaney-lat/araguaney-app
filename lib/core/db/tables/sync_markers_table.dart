@@ -1,13 +1,13 @@
 import 'package:drift/drift.dart';
 
-/// Cuándo se sincronizó por última vez cada recurso, y con qué resultado.
+/// When each resource was last synced, and how it went.
 ///
-/// Existe para que la interfaz pueda decir «datos de hace 12 minutos» en vez de
-/// mostrar una lista vieja sin avisar. [lastFailureCode] conserva el código del
-/// último fallo para explicar por qué el dato no se pudo refrescar.
+/// It exists so the interface can say «data from 12 minutes ago» instead of
+/// showing a stale list without warning. [lastFailureCode] keeps the last
+/// failure's code, to explain why the data could not be refreshed.
 @DataClassName('SyncMarkerRow')
 class SyncMarkers extends Table {
-  /// Identificador del recurso: `product_types`, `boxes`.
+  /// The resource's identifier: `product_types`, `boxes`.
   TextColumn get resource => text()();
   DateTimeColumn get lastSyncedAt => dateTime().nullable()();
   TextColumn get lastFailureCode => text().nullable()();

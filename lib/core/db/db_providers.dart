@@ -8,11 +8,11 @@ final appDatabaseProvider = Provider<AppDatabase>((ref) {
   return database;
 });
 
-/// Vacía el modelo de lectura.
+/// Empties the read model.
 ///
-/// Se expone como función y no como la base entera para que `core/auth` pueda
-/// borrar el cache al cambiar de persona sin conocer Drift. La sesión decide
-/// *cuándo* se borra; la base sabe *qué* se borra.
+/// It is exposed as a function rather than the whole database so `core/auth`
+/// can clear the cache when the person changes without knowing about Drift. The
+/// session decides *when* it is cleared; the database knows *what* is.
 typedef ReadModelReset = Future<void> Function();
 
 final readModelResetProvider = Provider<ReadModelReset>(

@@ -1,11 +1,11 @@
 import 'package:drift/drift.dart';
 
-/// Catálogo de tipos de producto, tal como lo sirve el servidor.
+/// The catalogue of product types, exactly as the server serves it.
 ///
-/// La columna que importa entender es [campaignId]: la visibilidad por campaña
-/// se guarda exactamente como vino en `GET /v1/product-types`. Aquí no se
-/// decide qué es elegible; se conserva la respuesta del servidor para que un
-/// producto que se puede elegir sin señal sea uno que el servidor va a aceptar.
+/// The column worth understanding is [campaignId]: campaign visibility is
+/// stored precisely as it arrived from `GET /v1/product-types`. Nothing here
+/// decides what is eligible; the server's answer is kept so that a product that
+/// can be chosen without signal is one the server is going to accept.
 @DataClassName('ProductTypeRow')
 class ProductTypes extends Table {
   TextColumn get id => text()();
@@ -20,12 +20,13 @@ class ProductTypes extends Table {
   BoolColumn get isControlled => boolean()();
   IntColumn get minShelfLifeDays => integer().nullable()();
 
-  /// Decimal del servidor. Se guarda como texto para no perder precisión al
-  /// pasar por un `double`.
+  /// A decimal from the server. Stored as text so no precision is lost passing
+  /// through a `double`.
   TextColumn get unitWeightKg => text().nullable()();
   TextColumn get unspscCode => text().nullable()();
 
-  /// Campaña que restringe la visibilidad del producto, o nulo si es general.
+  /// The campaign that restricts the product's visibility, or null if it is
+  /// general.
   TextColumn get campaignId => text().nullable()();
   DateTimeColumn get createdAt => dateTime()();
 

@@ -1,6 +1,7 @@
 import '../i18n/generated/app_localizations.dart';
 
-/// Las ocho categorías de `PRODUCT_CATEGORIES` en el backend, en su orden.
+/// The eight categories of `PRODUCT_CATEGORIES` in the backend, in their
+/// order.
 ///
 /// The list is here and not in the form that offers it because it is the
 /// server's vocabulary, not one screen's: the same eight keys name a category
@@ -19,16 +20,16 @@ const productCategories = [
   'OTHER',
 ];
 
-/// Cómo se lee una categoría del catálogo.
+/// How a catalogue category reads.
 ///
-/// Las ocho claves son las de `PRODUCT_CATEGORIES` en el backend. Una que esta
-/// versión no conozca se dibuja tal cual: el catálogo puede crecer y un binario
-/// viejo no puede hacer desaparecer una fila entera por no reconocer su nombre.
+/// The eight keys are those of `PRODUCT_CATEGORIES` in the backend. One this
+/// version does not know is drawn as it is: the catalogue can grow, and an old
+/// binary cannot make a whole row disappear for failing to recognise its name.
 ///
-/// Vive en `core` y no dentro de una pantalla porque la categoría se enseña en
-/// varias, y una tabla de traducción que solo importa una acaba dejando a las
-/// demás enseñando la clave del servidor. Fue exactamente lo que pasó: el
-/// selector de producto llevaba meses mostrando `MEDICAL_SUPPLY`.
+/// It lives in `core` and not inside a screen because the category is shown in
+/// several, and a translation table that only one of them imports ends up
+/// leaving the rest showing the server's key. That is exactly what happened:
+/// the product picker spent months showing `MEDICAL_SUPPLY`.
 String categoryLabel(AppLocalizations l10n, String category) =>
     switch (category) {
       'MEDICINE' => l10n.categoryMedicine,

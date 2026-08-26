@@ -2,14 +2,14 @@ import 'package:dio/dio.dart';
 
 import 'api_failure.dart';
 
-/// Traduce lo que lanza dio al sobre de error del backend.
+/// Translates what dio throws into the backend's error envelope.
 ///
-/// Vive aparte de [ApiFailure] a propósito: los tipos de fallo no deben
-/// depender de la librería HTTP. Si mañana se cambia dio, se reescribe este
-/// archivo y nada más.
+/// It lives apart from [ApiFailure] on purpose: the failure types must not
+/// depend on the HTTP library. If dio is swapped out tomorrow, this file gets
+/// rewritten and nothing else.
 abstract final class ApiErrorMapper {
-  /// Códigos que el backend usa para decir "esto no es un fallo técnico, es una
-  /// regla de negocio". Su mensaje sí se le muestra a quien opera.
+  /// Statuses the backend uses to say "this is not a technical failure, it is
+  /// a business rule". Their message is shown to whoever is operating.
   static const _businessStatuses = {400, 409, 422};
 
   static ApiFailure fromDioException(DioException error) {
@@ -40,24 +40,23 @@ abstract final class ApiErrorMapper {
     }
   }
 
-  /// Traduce cualquier cosa que se haya atrapado.
+  /// Translates anything that was caught.
   ///
-  /// Existe porque un `catch` amplio recibe `Object`, y quien lo escribe no
-  /// debería tener que distinguir a mano entre un fallo ya traducido, uno de
-  /// dio y un error de programación.
+  /// It exists because a broad `catch` receives `Object`, and whoever writes it
+  /// should not have to tell an already-translated failure, a dio one and a
+  /// programming error apart by hand.
   static ApiFailure fromAny(Object error) => switch (error) {
     ApiFailure() => error,
     DioException() => fromDioException(error),
     _ => UnknownFailure(code: 'UNEXPECTED', message: error.toString()),
   };
 
-  /// Interpreta el cuerpo de una respuesta de error.
+  /// Reads the body of an error response.
   ///
-  /// Un backend sano manda `{"error": {...}}`, pero esta capa también tiene que
-  /// sobrevivir a lo que se cruza en el camino: una página de error de
-  /// Cloudflare, un proxy que responde texto plano o un cuerpo vacío. Por eso
-  /// nada aquí asume la forma del cuerpo, y el estado HTTP decide cuando el
-  /// cuerpo no dice nada.
+  /// A healthy backend sends `{"error": {...}}`, but this layer also has to
+  /// survive whatever sits in the way: a Cloudflare error page, a proxy that
+  /// answers plain text, or an empty body. So nothing here assumes the body's
+  /// shape, and the HTTP status decides when the body says nothing.
   static ApiFailure fromResponse(
     int? statusCode,
     Object? body, {
@@ -126,8 +125,8 @@ abstract final class ApiErrorMapper {
     return error.map((key, value) => MapEntry(key.toString(), value));
   }
 
-  /// Espejo del mapa de estados del backend, para que un cuerpo ausente no deje
-  /// el código en blanco.
+  /// A mirror of the backend's status map, so a missing body does not leave the
+  /// code blank.
   static String _defaultCode(int? statusCode) => switch (statusCode) {
     400 => 'BAD_REQUEST',
     401 => 'UNAUTHORIZED',

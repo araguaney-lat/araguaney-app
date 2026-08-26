@@ -1,22 +1,22 @@
 import 'package:drift/drift.dart';
 
-/// Códigos de caja apartados con señal para gastarse sin ella.
+/// Box codes set aside with signal, to be spent without it.
 ///
-/// Un código reservado **no es inventario**: es un número apartado, y un bloque
-/// que nadie usó no ensucia nada. Lo que sí importa es que se gaste una sola
-/// vez, porque dos cajas con la misma etiqueta son dos bultos que el manifiesto
-/// declara como uno.
+/// A reserved code **is not inventory**: it is a number put aside, and a block
+/// nobody used dirties nothing. What matters is that it is spent once, because
+/// two boxes with the same label are two parcels the manifest declares as
+/// one.
 ///
-/// [spentAt] marca el consumo **local**, al asignarlo a una caja capturada sin
-/// señal. El consumo real lo registra el servidor cuando la captura llega; el
-/// local existe para que dos cajas del mismo dispositivo no reciban el mismo
-/// número mientras tanto.
+/// [spentAt] marks the **local** spending, when it is assigned to a box
+/// captured without signal. The real spending is recorded by the server when
+/// the capture arrives; the local one exists so two boxes on the same device do
+/// not get the same number in the meantime.
 @DataClassName('BoxCodeReservationRow')
 class BoxCodeReservations extends Table {
   TextColumn get code => text()();
 
-  /// Quién lo reservó. La cola es por persona y los códigos también: en un
-  /// dispositivo compartido, dos turnos no pueden repartirse el mismo bloque.
+  /// Who reserved it. The queue is per person and so are the codes: on a
+  /// shared device, two shifts cannot split the same block between them.
   TextColumn get userId => text()();
 
   /// Which centre the block was reserved for.
