@@ -74,6 +74,7 @@ standing next to you; the reason lives inside the review.
 | 9 | Roadmap update | Mark tasks and update totals. | 🟢 Low | ✅ Done |
 | 10 | Default notification channel and icon | An own channel at high importance, declared in the manifest and created at start-up, so an operational notice arrives as a banner and can be silenced on its own without silencing the application. Monochrome status-bar icon and brand accent colour. | 🟠 Medium | ✅ Done |
 | 11 | Permission card on Android | Whether the invitation was already offered is remembered by the application, because Android reports "not granted" and never "not asked". The card no longer depends on a state that platform never produces. | 🟠 Medium | ✅ Done |
+| 12 | `private_message` routes | The backend sends that kind when a private thread is opened or replied to, and had been sending it for a while: this client knew two kinds, so the notice arrived, was displayed and led nowhere when tapped. It opens the thread now. Campaign threads deliberately do not notify — that rule is the server's and this changes none of it. | 🟢 Low | ✅ Done |
 
 ---
 

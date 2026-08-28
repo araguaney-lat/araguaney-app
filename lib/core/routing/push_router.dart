@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../features/messaging/ui/thread_view.dart';
 import '../../features/risk_reviews/ui/risk_reviews_view.dart';
 import '../../features/shipments/ui/shipment_record_view.dart';
 import '../push/push_destination.dart';
@@ -51,6 +52,7 @@ class _PushRouterState extends ConsumerState<PushRouter> {
       ),
       ShipmentDeliveredDestination(:final shipmentId) =>
         ShipmentRecordView.route(shipmentId),
+      PrivateMessageDestination(:final threadId) => ThreadView.route(threadId),
       UnknownDestination() => null,
     };
 

@@ -26,6 +26,23 @@ final class ShipmentDeliveredDestination extends PushDestination {
   final String shipmentId;
 }
 
+/// Somebody wrote in a private thread.
+///
+/// **Only private threads notify.** A campaign thread is a broadcast, and
+/// buzzing every member of it on each reply is the fastest way to teach people
+/// to silence notices — including the ones that do ask something of them. That
+/// rule lives in the backend, which sends this kind for private threads only
+/// and sends email for both.
+///
+/// The notice carries the thread's title and who wrote, and **not the body**:
+/// it is read on a lock screen, and a message between operators can name a
+/// donor. The body is what opening the thread is for.
+final class PrivateMessageDestination extends PushDestination {
+  const PrivateMessageDestination(this.threadId);
+
+  final String threadId;
+}
+
 /// A notice this build does not know how to route.
 ///
 /// It exists because the contract is additive and a months-old binary has to
@@ -42,6 +59,7 @@ final class UnknownDestination extends PushDestination {
 abstract final class PushKind {
   static const riskReview = 'risk_review';
   static const shipmentDelivered = 'shipment_delivered';
+  static const privateMessage = 'private_message';
 }
 
 /// Interprets a notice's `data`.
@@ -59,6 +77,10 @@ PushDestination parsePushDestination(Map<String, String> data) {
     },
     PushKind.shipmentDelivered => switch (data['shipment_id']) {
       final String id when id.isNotEmpty => ShipmentDeliveredDestination(id),
+      _ => UnknownDestination(kind),
+    },
+    PushKind.privateMessage => switch (data['thread_id']) {
+      final String id when id.isNotEmpty => PrivateMessageDestination(id),
       _ => UnknownDestination(kind),
     },
     _ => UnknownDestination(kind),

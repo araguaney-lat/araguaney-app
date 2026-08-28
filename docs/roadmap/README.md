@@ -52,7 +52,7 @@ pie title Tasks completed (239 tasks, backlog aside)
 | 4 | [QR scanning](phase-04-qr-scanning.md) | 6 | 0 | ✅ 100% |
 | 5 | [Online intake and box operations](phase-05-intake-online.md) | 10 | 0 | ✅ 100% |
 | 6 | [Offline capture queue](phase-06-offline-queue.md) | 10 | 0 | ✅ 100% |
-| 7 | [Push notifications](phase-07-push-notifications.md) | 10 | 1 | 🟨 91% (1 partial) |
+| 7 | [Push notifications](phase-07-push-notifications.md) | 11 | 1 | 🟨 92% (1 partial) |
 | 8 | [Android release and distribution](phase-08-android-release.md) | 9 | 0 | ✅ 100% |
 | 9 | [iOS enablement](phase-09-ios-enablement.md) | 0 | 6 | ⬜ 0% |
 | 10 | [Operational parity backlog](phase-10-operational-parity.md) *(backlog, not counted)* | 5 | 9 | 🟨 36% (5 partial, 1 blocked) |
@@ -78,7 +78,7 @@ pie title Tasks completed (239 tasks, backlog aside)
 | 30 | [Writing as a national administrator](phase-30-writing-as-national-admin.md) | 8 | 1 | 🟨 89% |
 | 31 | [Speaking more than one language](phase-31-internationalisation.md) | 9 | 1 | 🟨 90% |
 | 32 | [The commentary in English](phase-32-comments-in-english.md) | 6 | 0 | ✅ 100% |
-| **Total** (Phase 10 aside) | | **205** | **36** | **🟢 85%** |
+| **Total** (Phase 10 aside) | | **206** | **36** | **🟢 85%** |
 
 ## What is missing, and how that is kept honest
 
