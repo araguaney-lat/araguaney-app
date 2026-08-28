@@ -168,6 +168,24 @@ show real counts. That is a deliberate choice over mocked data: a listing whose
 screenshots do not match what the application looks like is a small lie that
 somebody notices on their first launch.
 
+### How each asset was made, because Play asks
+
+Play's **AI asset declaration** covers the files uploaded to the listing, not
+the application. It is asked again whenever the graphics change, and it is the
+kind of fact nobody remembers a year later, so it is recorded here:
+
+- **The tree artwork was generated with AI.** The icon was declared as such on
+  2026-08-28. The feature graphic is composed from that same tree, so the same
+  declaration applies to it — if it is ever re-uploaded on its own, it is
+  labelled too.
+- **The screenshots were not.** They are frames of the application running
+  against production. That some screen shows results a model produced —the
+  request matching, for one— does not make the file AI-generated; it is a
+  capture.
+
+What the application does with AI is declared elsewhere, in Data safety, and
+belongs to the backend rather than to this listing.
+
 ## Content declarations, which are not copy
 
 Play asks for these before it will publish to any track beyond internal, and
