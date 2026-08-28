@@ -1,4 +1,4 @@
-package lat.araguaney.araguaney_app
+package org.araguaney.app
 
 import android.app.NotificationChannel
 import android.app.NotificationManager

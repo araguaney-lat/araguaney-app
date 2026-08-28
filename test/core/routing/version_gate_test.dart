@@ -31,7 +31,7 @@ void main() {
       overrides: [
         appVersionProvider.overrideWithValue('1.0.0'),
         appBuildNumberProvider.overrideWithValue('3'),
-        appPackageNameProvider.overrideWithValue('lat.araguaney.test'),
+        appPackageNameProvider.overrideWithValue('org.araguaney.test'),
         clientVersionStatusProvider.overrideWith(
           (ref) async => (status: await status(), latest: latest),
         ),
@@ -140,7 +140,7 @@ void main() {
         overrides: [
           appVersionProvider.overrideWithValue('1.0.0'),
           appBuildNumberProvider.overrideWithValue('3'),
-          appPackageNameProvider.overrideWithValue('lat.araguaney.test'),
+          appPackageNameProvider.overrideWithValue('org.araguaney.test'),
           clientVersionStatusProvider.overrideWith(
             (ref) async =>
                 (status: ClientVersionStatus.updateAvailable, latest: '2.0.0'),

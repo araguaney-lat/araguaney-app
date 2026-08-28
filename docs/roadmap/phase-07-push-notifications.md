@@ -63,7 +63,7 @@ standing next to you; the reason lives inside the review.
 
 | # | Task | Description | Complexity | Status |
 |---|------|-------------|------------|--------|
-| 1 | Register the Android app in Firebase | Package `lat.araguaney.araguaney_app`; SHA-1 not needed for FCM. The file goes to `android/app/google-services.json`, git-ignored. Everything around it is wired: without the file the build works and the application starts without notices. External prerequisite. | 🟠 Medium | ✅ Done |
+| 1 | Register the Android app in Firebase | Package `org.araguaney.app`; SHA-1 not needed for FCM. The file goes to `android/app/google-services.json`, git-ignored. Everything around it is wired: without the file the build works and the application starts without notices. External prerequisite. | 🟠 Medium | ✅ Done |
 | 2 | `PushService` interface | Four members, none mentioning FCM: start, current token, rotations, opened notices. `NoopPushService` is the implementation today and the `foss` one forever. | 🟠 Medium | ✅ Done |
 | 3 | FCM implementation | `FcmPushService` is the only file in the project that imports Firebase: init, token, rotations, and taps from both sources — background and cold start. The Google Services Gradle plugin applies only when the configuration file exists. | 🔴 High | ✅ Done |
 | 4 | `foss` flavor verification | CI proves the `foss` flavor picks no push service. That it carries no Firebase **is not proven**: the `foss` branch this row cited does not exist, here or on the remote. What is true is that CI runs the flavor test and that the decision is documented in `docs/release/foss.md`. Auditing the board on 2026-08-23 found the citation pointing at nothing. | 🟠 Medium | 🟨 Partial |

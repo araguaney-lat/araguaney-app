@@ -30,7 +30,7 @@ if (hasSigningConfig) {
 }
 
 android {
-    namespace = "lat.araguaney.araguaney_app"
+    namespace = "org.araguaney.app"
     // flutter_secure_storage 11 exige compilar contra el SDK 37 de Android.
     compileSdk = 37
     ndkVersion = flutter.ndkVersion
@@ -41,7 +41,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "lat.araguaney.araguaney_app"
+        applicationId = "org.araguaney.app"
 
         // Explícito y no `flutter.minSdkVersion`, que hoy vale lo mismo pero lo
         // decide la versión de Flutter y cambia sola al actualizarla. Quién

@@ -3,6 +3,36 @@
 The laptop is an editor. CI is the binary factory: what gets distributed is
 built by `.github/workflows/release.yml`, with a pinned toolchain, from a tag.
 
+## The application id is permanent
+
+`org.araguaney.app` — reverse DNS of the domain the project owns, which is also
+what an App Links `assetlinks.json` on `araguaney.org` will have to match.
+
+**Play binds a package name to an app entry forever.** It cannot be edited
+later, it cannot be reused by another entry, and for somebody who already has
+the application installed a new one is not an update but a second application.
+The id was changed once, on 2026-08-27, from `lat.araguaney.araguaney_app`
+before the first public release; the cost then was a handful of testers
+reinstalling. After a public rollout the same change would mean asking every
+centre to uninstall and install again.
+
+Changing it means, in this order and not another:
+
+1. Register an Android app with the new package in Firebase, and download its
+   `google-services.json`.
+2. Replace the `GOOGLE_SERVICES_JSON` secret with that file.
+3. Only then merge the id change. **Reversing 2 and 3 stops the factory**: the
+   Google Services Gradle plugin refuses a configuration file that does not
+   contain the package being built, and fails the build rather than producing a
+   binary that cannot receive notices.
+4. Create the app in the Play console under the new id, configure the internal
+   track, and paste the listing from [`store-listing.md`](store-listing.md).
+   The upload keystore is reused; the Play signing key is per app and is new.
+
+The iOS bundle id follows the same string. It costs nothing to set while no
+build has reached App Store Connect, and it would cost the same as the Android
+one afterwards.
+
 ## What has to exist before the factory works
 
 These are external prerequisites; the repository cannot supply them.
@@ -12,7 +42,7 @@ These are external prerequisites; the repository cannot supply them.
 | Google Play developer account | Registered, identity verified, paid |
 | Upload keystore | Generated on the publisher's machine, stored outside the repository |
 | Play App Signing | Enabled when the app is created in the console |
-| Android app registered in Firebase | Package `lat.araguaney.araguaney_app`; produces `google-services.json` |
+| Android app registered in Firebase | Package `org.araguaney.app`; produces `google-services.json` |
 | Sentry project | Produces the DSN, and an auth token for uploading symbols |
 
 ### Repository secrets

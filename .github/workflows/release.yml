@@ -174,7 +174,7 @@ jobs:
           # El nombre del release tiene que ser exactamente el que arma la
           # aplicación en tiempo de ejecución (ver `lib/main.dart`), o los
           # símbolos quedan colgando de una versión que nadie está corriendo.
-          release="lat.araguaney.araguaney_app@$VERSION"
+          release="org.araguaney.app@$VERSION"
           sentry-cli debug-files upload build/symbols
           sentry-cli releases new "$release"
           sentry-cli releases finalize "$release"
