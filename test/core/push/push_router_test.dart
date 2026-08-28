@@ -101,6 +101,32 @@ void main() {
     );
   });
 
+  testWidgets('a private message opens the thread it came from', (
+    tester,
+  ) async {
+    // The notice carries the title and who wrote, never the body: it is read on
+    // a lock screen. Opening the thread is what shows what was said.
+    final adapter = FakeHttpAdapter(
+      (_) => FakeResponse(
+        200,
+        threadDetailJson(
+          body: 'Nos falta suero en el centro',
+          replies: [replyJson(body: 'Salgo con dos cajas')],
+        ),
+      ),
+    );
+    await pumpRouter(tester, adapter);
+
+    push.open(const PrivateMessageDestination('thread-7'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Salgo con dos cajas'), findsOneWidget);
+    expect(
+      adapter.requests.map((r) => r.path),
+      contains('/v1/messages/thread-7'),
+    );
+  });
+
   testWidgets('an unknown notice navigates nowhere', (tester) async {
     // The server composed the text and it has already been shown; opening some
     // arbitrary screen would be worse than opening none.

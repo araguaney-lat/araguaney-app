@@ -23,6 +23,18 @@ void main() {
     );
   });
 
+  test('a private message routes with the thread it came from', () {
+    // Only private threads notify: a campaign thread is a broadcast, and
+    // buzzing every member on each reply teaches people to silence the ones
+    // that do ask something of them.
+    final destination = parsePushDestination({
+      'kind': 'private_message',
+      'thread_id': 'thread-7',
+    });
+
+    expect((destination as PrivateMessageDestination).threadId, 'thread-7');
+  });
+
   test('a kind this version does not know is shown but goes nowhere', () {
     // The contract is additive only: a months-old binary has to survive a kind
     // of notice it did not know about.
@@ -44,6 +56,10 @@ void main() {
     );
     expect(
       parsePushDestination({'kind': 'shipment_delivered'}),
+      isA<UnknownDestination>(),
+    );
+    expect(
+      parsePushDestination({'kind': 'private_message'}),
       isA<UnknownDestination>(),
     );
   });

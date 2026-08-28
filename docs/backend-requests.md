@@ -379,7 +379,18 @@ Recorded here so they are not mistaken for gaps:
 - **Reconciling a reception requiring `national_admin`** is a decision, not an
   omission. The application ships what a center can do — reading the reception,
   raising incidents — and says so.
-- **Message notifications not being wired** is a pending decision in the backend
-  about a rule that does not teach people to silence everything. The client is
-  ready for a new `kind`: an unknown one is displayed and simply does not
-  navigate.
+- **Message notifications reaching only private threads** is a decision, not a
+  gap. `thread_service.py` sends `kind: private_message` when a private thread
+  is opened and when one is replied to, and sends it only to participants with
+  nothing already unread — somebody who has not opened the previous message was
+  told by that one. A campaign thread is a broadcast, and buzzing every member
+  of it on each reply is the fastest way to teach people to silence the notices
+  that do ask something of them; email goes out for both types, because it waits
+  in an inbox instead of interrupting.
+
+  This line said the opposite until 2026-08-27 — that the backend had not wired
+  them. It was true when it was written and stopped being true without anybody
+  noticing, which is what a claim about another repository does when nothing
+  checks it. The client-side half was real: this application knew only
+  `risk_review` and `shipment_delivered`, so the notice arrived, was displayed,
+  and led nowhere when tapped. It routes to the thread as of the same day.
