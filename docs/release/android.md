@@ -33,6 +33,24 @@ The iOS bundle id follows the same string. It costs nothing to set while no
 build has reached App Store Connect, and it would cost the same as the Android
 one afterwards.
 
+### What was retired with the old id, on 2026-08-28
+
+The Firebase Android app for `lat.araguaney.araguaney_app` was deleted, and its
+Play entry with it. Two consequences worth knowing before somebody wonders:
+
+- **Any device still running the old binary silently stops receiving notices.**
+  Deleting a Firebase app invalidates its tokens. If an old build ever turns up
+  in somebody's hands, that is why its notifications are gone — it is not a bug
+  to chase.
+- **The old package name is still reserved.** Deleting a Play entry does not
+  free it; `lat.araguaney.araguaney_app` cannot be used again by anybody,
+  including us. That was the price of the change and it is already paid.
+
+The `google-services.json` in use declares both packages, because it was
+downloaded while both existed. Nothing breaks: the Gradle plugin only requires
+the package being built to be present. It can be downloaded again whenever
+somebody wants the file to describe only what exists.
+
 ## What has to exist before the factory works
 
 These are external prerequisites; the repository cannot supply them.
