@@ -52,6 +52,7 @@
   "refusalUsernameTaken": "That username is taken.",
   "refusalInvalidRole": "The role has to be coordination or volunteering.",
   "refusalProtectedCampaign": "Nobody can be taken out of the general campaign: it is where everything that belongs to no other campaign goes.",
+  "refusalProductTypeNotFound": "This product is no longer in the catalogue. Refresh it and choose it again.",
   "donationStatusPendingEmail": "Unconfirmed",
   "donationStatusRegistered": "Registered",
   "donationStatusReceived": "Received",

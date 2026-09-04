@@ -29,6 +29,7 @@ String? refusalCopyFor(AppLocalizations l10n, String code) => switch (code) {
   'USERNAME_TAKEN' => l10n.refusalUsernameTaken,
   'INVALID_ROLE' => l10n.refusalInvalidRole,
   'PROTECTED_CAMPAIGN' => l10n.refusalProtectedCampaign,
+  'PRODUCT_TYPE_NOT_FOUND' => l10n.refusalProductTypeNotFound,
   // Only a national administrator can be refused this, and only if a screen
   // forgot to name the working centre. It says what to do rather than what
   // happened: the server's own words are about a field nobody filled in.
