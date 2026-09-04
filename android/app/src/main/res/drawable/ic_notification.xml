@@ -1,6 +1,19 @@
-<!-- Icono de la barra de estado. Android descarta el color y usa solo la
-     silueta, así que esto es blanco y macizo a propósito: un icono con degradado
-     o con color se ve como un cuadrado blanco en el teléfono. -->
+<!-- Status bar icon. Android throws the colour away and keeps only the
+     silhouette, so this is solid white on purpose: an icon with a gradient or
+     with colour renders as a white square on the phone.
+
+     It is a drawing, not a traced logo. The launcher mark is a photographic
+     araguaney in bloom, and reducing that file to one ink gives a speckled
+     blob at 24dp — the same reason `pubspec.yaml` declines to ship it as the
+     monochrome layer of the adaptive icon. What survives at this size is the
+     tree's outline: a broad lobed crown over a trunk that flares at the base.
+     The crown is seven overlapping circles so the lobes stay visible once the
+     system antialiases it down.
+
+     Geometry sits inside the 20dp live area of the 24dp canvas (x 2..22,
+     y 3.7..20.3). Crown and trunk are separate paths on purpose: merged into
+     one, the trunk's winding would cancel against the circles and punch a hole
+     through the middle. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="24dp"
     android:height="24dp"
@@ -8,9 +21,8 @@
     android:viewportHeight="24">
     <path
         android:fillColor="#FFFFFFFF"
-        android:pathData="M3,4h18v4h-18z" />
+        android:pathData="M7.91,8.83 a4.09,4.09 0 1,0 8.18,0 a4.09,4.09 0 1,0 -8.18,0 Z M4.0,9.7 a3.13,3.13 0 1,0 6.26,0 a3.13,3.13 0 1,0 -6.26,0 Z M13.74,9.7 a3.13,3.13 0 1,0 6.26,0 a3.13,3.13 0 1,0 -6.26,0 Z M2.0,11.09 a2.52,2.52 0 1,0 5.04,0 a2.52,2.52 0 1,0 -5.04,0 Z M16.96,11.09 a2.52,2.52 0 1,0 5.04,0 a2.52,2.52 0 1,0 -5.04,0 Z M6.09,6.48 a2.78,2.78 0 1,0 5.56,0 a2.78,2.78 0 1,0 -5.56,0 Z M12.35,6.48 a2.78,2.78 0 1,0 5.56,0 a2.78,2.78 0 1,0 -5.56,0 Z" />
     <path
         android:fillColor="#FFFFFFFF"
-        android:fillType="evenOdd"
-        android:pathData="M4,9h16v11h-16z M9,12h6v2h-6z" />
+        android:pathData="M10.78,8.48 L13.22,8.48 L13.74,17.7 L15.39,20.3 L8.61,20.3 L10.26,17.7 Z" />
 </vector>
