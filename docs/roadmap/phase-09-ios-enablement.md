@@ -24,7 +24,7 @@
 | # | Task | Description | Complexity | Status |
 |---|------|-------------|------------|--------|
 | 1 | Apple Developer Program | Enrollment and verification. External prerequisite, USD 99/year. | 🟠 Medium | ⬜ Pending |
-| 2 | Local iOS toolchain | Xcode installed, simulator run, camera/permission strings in `Info.plist` with Spanish rationale. | 🟠 Medium | ⬜ Pending |
+| 2 | Local iOS toolchain | Xcode installed, simulator run, camera/permission strings in `Info.plist` with Spanish rationale. **The permission strings landed early**: `NSCameraUsageDescription` has shipped since Phase 04, because the scanner needed it on both platforms at once. What remains is Xcode and a simulator run, and a second string only if a screen ever asks for the photo library. **This is the only task in the phase that does not need a paid account.** | 🟠 Medium | ⬜ Pending |
 | 3 | Signing and TestFlight from CI | Certificates/profiles managed via CI secrets; macOS runner builds and uploads to TestFlight. | 🔴 High | ⬜ Pending |
 | 4 | APNs key in Firebase | Push flows through the same FCM channel on iOS. | 🟠 Medium | ⬜ Pending |
 | 5 | Device verification pass | The manual test plans from earlier phases executed on physical iPhones. | 🟠 Medium | ⬜ Pending |
