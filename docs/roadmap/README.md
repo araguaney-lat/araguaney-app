@@ -11,7 +11,12 @@ it contains.
 
 Counted from the task tables of each phase file, which are the source of truth.
 A row is done, partial, blocked/external, or pending; the totals below are the
-sum of those rows and nothing else.
+sum of those rows and nothing else. **The «Pending» column holds everything that
+is not done**, partial and blocked rows included, with the breakdown in the
+progress cell — otherwise a blocked row disappears from the board while still
+being work. Recounted against the tables on 2026-09-04, which is what moved the
+total from 242 rows to 243: Phase 23's blocked row was annotated but never
+added.
 
 **Phase 10 is excluded from the total.** It is a backlog of candidate blocks,
 not a task list: its own header says that a block gets split into its own phase
@@ -36,11 +41,11 @@ written down and being paid off. A percentage is only as honest as the list it
 divides by.
 
 ```mermaid
-pie title Tasks completed (239 tasks, backlog aside)
-    "Done" : 149
-    "Pending" : 89
-    "Partial" : 1
-    "Blocked or external" : 0
+pie title Tasks completed (243 tasks, backlog aside)
+    "Done" : 206
+    "Pending" : 33
+    "Partial" : 3
+    "Blocked or external" : 1
 ```
 
 | Phase | Name | Done | Pending | Progress |
@@ -55,7 +60,7 @@ pie title Tasks completed (239 tasks, backlog aside)
 | 7 | [Push notifications](phase-07-push-notifications.md) | 11 | 1 | 🟨 92% (1 partial) |
 | 8 | [Android release and distribution](phase-08-android-release.md) | 9 | 0 | ✅ 100% |
 | 9 | [iOS enablement](phase-09-ios-enablement.md) | 0 | 6 | ⬜ 0% |
-| 10 | [Operational parity backlog](phase-10-operational-parity.md) *(backlog, not counted)* | 5 | 9 | 🟨 36% (5 partial, 1 blocked) |
+| 10 | [Operational parity backlog](phase-10-operational-parity.md) *(backlog, not counted)* | 10 | 4 | 🟨 71% (3 partial, 1 blocked) |
 | 11 | [Design system](phase-11-design-system.md) | 14 | 0 | ✅ 100% |
 | 12 | [Measuring a pallet with the camera](phase-12-pallet-height.md) | 0 | 6 | ⬜ 0% |
 | 13 | [Finding a product by its barcode](phase-13-product-barcode.md) | 4 | 1 | 🟨 80% |
@@ -68,7 +73,7 @@ pie title Tasks completed (239 tasks, backlog aside)
 | 20 | [Campaigns](phase-20-campaigns.md) | 4 | 1 | 🟨 80% |
 | 21 | [Centres](phase-21-centers.md) | 4 | 1 | 🟨 80% |
 | 22 | [The centre application queue](phase-22-center-applications.md) | 5 | 1 | 🟨 83% |
-| 23 | [Incidents and the audit log](phase-23-incidents-and-audit.md) | 4 | 1 | 🟨 80% (1 blocked) |
+| 23 | [Incidents and the audit log](phase-23-incidents-and-audit.md) | 4 | 2 | 🟨 67% (1 blocked) |
 | 24 | [Users beyond one centre](phase-24-users-beyond-a-center.md) | 4 | 2 | 🟨 67% (1 partial) |
 | 25 | [The studio](phase-25-the-studio.md) | 1 | 2 | 🟨 33% |
 | 26 | [The shipment, from dispatch to delivery](phase-26-shipment-to-delivery.md) | 5 | 1 | 🟨 83% |
@@ -78,7 +83,7 @@ pie title Tasks completed (239 tasks, backlog aside)
 | 30 | [Writing as a national administrator](phase-30-writing-as-national-admin.md) | 8 | 1 | 🟨 89% |
 | 31 | [Speaking more than one language](phase-31-internationalisation.md) | 9 | 1 | 🟨 90% |
 | 32 | [The commentary in English](phase-32-comments-in-english.md) | 6 | 0 | ✅ 100% |
-| **Total** (Phase 10 aside) | | **206** | **36** | **🟢 85%** |
+| **Total** (Phase 10 aside) | | **206** | **37** | **🟢 85%** |
 
 ## What is missing, and how that is kept honest
 
@@ -98,11 +103,14 @@ What this application needs from the backend is collected in
 unblocks and what the application does instead meanwhile. The entries below are
 the ones that block roadmap tasks.
 
-- **Phase 08, tasks 1, 5 and 8** need a Google Play developer account, the app
-  created in its console, and listing assets. No code unblocks them. The upload
-  keystore (task 2) and the Sentry DSN (task 7) are key material that does not
-  belong in a repository; both are documented and the build reads them from
-  outside.
+- **Phase 08 is closed and nothing in it is blocked any more.** What used to
+  stand here — the Play developer account, the app in its console, the listing
+  assets — was resolved between 2026-08-16 and 2026-08-23: the account was
+  registered on the 20th, the internal track received its first installable AAB
+  the same day, and the listing landed on the 23rd. The upload keystore and the
+  Sentry DSN remain key material that does not belong in a repository; both are
+  documented and the build reads them from outside, which is why a fork still
+  builds without them.
 - **Phase 03 is complete.** Its last task was recorded as blocked on a missing
   endpoint; the endpoint existed. The screen ships as «Capturado por categoría»,
   which is what the number means. Reading it as stock needs request 1.
@@ -123,8 +131,9 @@ the ones that block roadmap tasks.
   is registered in Firebase, and everything from the token to the tap is wired.
   What remains is the `foss` packaging, which is a release concern.
   **09 still waits on the Apple Developer Program.**
-- **08 task 1 (Google Play account) is external** and can proceed in parallel
-  with any phase.
+- **08 is closed**, account and keystore included, so no phase waits on it any
+  more. **12 depends on nothing** — no endpoint, no permission, no contract
+  change — which makes it the one body of work that can start on any day.
 
 ## First release target
 
@@ -133,6 +142,16 @@ The first internal-testing release worth handing to a real center is
 offline, distributed through Play internal testing. Push (07), iOS (09), and
 parity blocks (10) follow.
 
-Phases 01–06 are done, and Phase 08's code half with them. What stands between
-the current state and that release is the material only a person can provide: a
-Play account and an upload keystore.
+**That target was met.** Phases 01–06 and 08 are done, the account and the
+keystore exist, and an AAB has been installed from the internal track on a real
+phone. Push (07) followed and is all but closed — what is left there is the
+`foss` packaging, a release concern rather than a feature.
+
+What stands between the current state and a wider release is of two kinds, and
+only one is code. **Phase 12 is the only unstarted body of work**, and it is
+unblocked. Everything else pending is either a device pass — nineteen rows
+across Phases 13 to 30 that ask somebody to scan a real package, approve a real
+application, follow a real shipment — or waiting on something a repository
+cannot provide: the Apple Developer Program (09), a reader of Portuguese
+(31.7), a backend contract (18.3, 23.5, 24.2), or a package ecosystem that does
+not resolve yet (Phase 10, block 8).
