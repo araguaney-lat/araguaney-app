@@ -208,6 +208,10 @@
   "@refusalProtectedCampaign": {
     "description": "Nobody can be removed from the general campaign."
   },
+  "refusalProductTypeNotFound": "Este producto ya no está en el catálogo. Actualízalo y vuelve a elegirlo.",
+  "@refusalProductTypeNotFound": {
+    "description": "PRODUCT_TYPE_NOT_FOUND on intake creation: the box references a product type the server no longer has, most often a stale cached catalogue."
+  },
   "donationStatusPendingEmail": "Sin confirmar",
   "@donationStatusPendingEmail": {
     "description": "A donation registered on the web whose email has not been confirmed."

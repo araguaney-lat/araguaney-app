@@ -327,10 +327,18 @@ abstract final class AppTheme {
         labelStyle: text.bodyMedium?.copyWith(color: muted),
         hintStyle: text.bodyMedium?.copyWith(color: muted),
       ),
+      // `backgroundColor` is left to Material's default (`scheme.inverseSurface`),
+      // which flips between light and dark scheme brightness. `contentTextStyle`
+      // has to flip with it — a color hardcoded to white read fine against the
+      // dark background this app used to ship in light mode's inverse, but
+      // turned invisible once dark mode's inverse became a light background.
       snackBarTheme: SnackBarThemeData(
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        contentTextStyle: text.bodyMedium?.copyWith(color: Colors.white),
+        backgroundColor: scheme.inverseSurface,
+        contentTextStyle: text.bodyMedium?.copyWith(
+          color: scheme.onInverseSurface,
+        ),
       ),
     );
   }

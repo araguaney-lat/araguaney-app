@@ -117,6 +117,22 @@ void main() {
         'Ese correo ya tiene una cuenta.',
       );
     });
+
+    test('a stale cached product type says what to do about it', () async {
+      final l10n = await spanish();
+      // Answered as 400, not 404: it is a reference inside the request body,
+      // not a URL resource, so it gets the same named-code treatment as the
+      // rest of this group instead of the dead-end NotFoundFailure below.
+      expect(
+        messageFor(
+          l10n,
+          400,
+          'PRODUCT_TYPE_NOT_FOUND',
+          'No existe el tipo de producto abc-123',
+        ),
+        contains('Actualízalo'),
+      );
+    });
   });
 
   group('the other kinds of failure are untouched', () {
