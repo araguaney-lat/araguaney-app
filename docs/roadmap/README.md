@@ -60,7 +60,7 @@ pie title Tasks completed (243 tasks, backlog aside)
 | 7 | [Push notifications](phase-07-push-notifications.md) | 11 | 1 | 🟨 92% (1 partial) |
 | 8 | [Android release and distribution](phase-08-android-release.md) | 9 | 0 | ✅ 100% |
 | 9 | [iOS enablement](phase-09-ios-enablement.md) | 0 | 6 | ⬜ 0% |
-| 10 | [Operational parity backlog](phase-10-operational-parity.md) *(backlog, not counted)* | 10 | 4 | 🟨 71% (3 partial, 1 blocked) |
+| 10 | [Operational parity backlog](phase-10-operational-parity.md) *(backlog, not counted)* | 10 | 5 | 🟨 67% (3 partial, 1 blocked) |
 | 11 | [Design system](phase-11-design-system.md) | 14 | 0 | ✅ 100% |
 | 12 | [Measuring a pallet with the camera](phase-12-pallet-height.md) | 0 | 6 | ⬜ 0% |
 | 13 | [Finding a product by its barcode](phase-13-product-barcode.md) | 4 | 1 | 🟨 80% |
